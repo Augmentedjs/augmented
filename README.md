@@ -1,2 +1,4 @@
 # augmented
-The Augmented.js framwork
+The Augmented.js framework.
+
+Augmented is a framework based on Backbone.js.
