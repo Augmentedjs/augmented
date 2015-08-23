@@ -9,7 +9,7 @@ define([
 		});
 		
 		it('has a version defined', function() {
-			expect(Augmented.VERSION).not.toEqual('1.0.0');
+			expect(Augmented.VERSION).toBeDefined();;
 		});
 		
 		it('supports noConflict', function() {

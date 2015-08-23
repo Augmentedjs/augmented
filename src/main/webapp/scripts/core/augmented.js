@@ -38,7 +38,7 @@
 	 */
 	var previousAugmented = root.Augmented;
 
-	Augmented.VERSION = '2.0.0';
+	Augmented.VERSION = '1.0.0';
 	Augmented.codename = "JC Denton";
 	Augmented.releasename = "UNATCO";
 
@@ -53,6 +53,58 @@
 	};
 
 	 /* Packages */
+	
+	/** 
+	 * Security Package and API
+	 */
+	Augmented.Security = {};
+	
+	/** Role (ACL) Security */
+	var roles = [];
+	
+	/** OAUTH 2 Tokens */
+	var accessToken = "";
+	var authorizationToken = "";
+	
+	var principal = { 
+			fullName: "",
+			id: 0,
+			login: "",
+			roles: roles,
+			token: {
+				authorization: authorizationToken,
+				access: accessToken
+			}		
+	};
+	
+	Augmented.Security.Principal = principal;
+	
+	var authenticationFactory = function() {
+		this.getPrincipal = function() {
+			var p = new principal();
+			
+			
+			return p;
+		};
+		
+		this.authorizeApplication = function(applicationName) {
+			authorizationToken = "";
+		}
+		
+		this.access = function(principal) {
+			accessToken = "";
+		}
+	};
+	
+	
+	Augmented.Security.AuthenticationFactory = authenticationFactory;
+	
+	
+	/** 
+	 * Utility Package
+	 * 
+	 * Small utilities
+	 */
 
     Augmented.Utility = {};
     
@@ -2488,15 +2540,30 @@
 			return Backbone.sync(method, model, options);
 		}
 	});
+
+	var AugmentedView = Backbone.View.extend({
+		name: "",
+		
+		setName: function(name) { 
+			this.name = name;
+		},
+		getName: function() { 
+			return this.name;
+		}
+		
+	});
+	
+	
 	
 	/** Augmented Backbone - Extend Backbone with awesome */
 	Augmented.Model = AugmentedModel;
 	Augmented.Collection = AugmentedCollection;
-	Augmented.View = Backbone.View;
+	Augmented.View = AugmentedView;
 
-	/** Application Context
-	 * 
+	/** 
+	 * Application Context
 	 */
+	
 	
 	
 	/** Application Context Schema */
@@ -2573,16 +2640,20 @@
 
 	/** Core Package */
 
-	/** Security */
+	/** 
+	 * Application Context 
+	 * 
+	 * Collection of data for use to define the application
+	 */
 	var applicationContextModel = Augmented.Model.extend({
-		url: "rest/application",
 		schema: applicationContextSchema,
 		defaults: {
 			"metadata" : {
 				"title" : "",
 				"context" : ""
 			},
-			"security" : {
+			"principal": "",
+			"security" : {  // Replace this
 				"loginName" : "",
 				"userName" : "",
 				"userId" : 0,

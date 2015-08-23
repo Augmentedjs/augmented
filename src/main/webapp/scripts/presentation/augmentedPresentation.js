@@ -17,7 +17,7 @@
 }(function($, _, Augmented) {
 	Augmented.Presentation = {};
 
-	Augmented.Presentation.VERSION = '2.0.0';
+	Augmented.Presentation.VERSION = '1.0.0';
 
 	/** 
 	 * Navigation Component
@@ -34,16 +34,30 @@
 	undelegateEvents = Augmented.View.prototype.undelegateEvents;
 
 	var abstractMediator = Augmented.View.extend({
-		observeColleague : function(colleague) {
-
+		defaultChannel: "augmentedChannel",
+		
+		observeColleague: function(colleague, callback, channel) {
+			if (!channel) {
+				channel = this.defaultChannel;
+			}
+			
+			this.subscribe(channel, callback, colleague, false);
 		},
-		dismissColleague : function(colleague) {
-
+		
+		dismissColleague: function(colleague, channel) {
+			if (!channel) {
+				channel = this.defaultChannel;
+			}
+			
+			this.unsubscribe(channel, callback, colleague);
 		},
 		/**
 		 * Subscribe to a channel
 		 *
 		 * @param channel
+		 * @param subscription
+		 * @param context
+		 * @param once
 		 */
 		subscribe: function(channel, subscription, context, once) {
 			if (!channels[channel])
@@ -54,6 +68,7 @@
 				once : once
 			});
 		},
+		
 		/**
 		 * Trigger all callbacks for a channel
 		 *
@@ -75,6 +90,7 @@
 				}
 			}
 		},
+		
 		/**
 		 * Cancel subscription
 		 *
@@ -108,11 +124,30 @@
 			this.subscribe(channel, subscription, context, true);
 		},
 
-		getColleagues : function() {
-
+		getColleagues: function() {
+			// TODO: return collection of colleagues not channels
+			return channels;
 		},
-		getColleague : function(colleague) {
-
+		
+		getChannels: function() {
+			return channels;
+		},
+		
+		getChannel: function(channel) {
+			return channels[channel];
+		},
+		
+		getDefaultChannel: function() {
+			return channels[this.defaultChannel];
+		},
+		
+		getColleague: function(colleague, channel) {
+			if (!channel) {
+				channel = this.defaultChannel;
+			}
+			
+			var channel = channels[channel];
+			return channel.context;
 		}
 	});
 
@@ -124,7 +159,6 @@
 	 * @class
 	 */
 	var abstractColleague = Augmented.View.extend({
-
 		/**
 		 * Extend delegateEvents() to set subscriptions
 		 */
