@@ -24,6 +24,56 @@
 	 * Navigation Component
 	 */
 
+	
+	/**
+	 * Augmented Presentation View extension
+	 * 
+	 * Two-way binding to models
+	 */
+	Augmented.Utility.extend(Augmented.View, {
+	    getFormData: function(region) {
+		// Get form data.
+		var arr = $(':input', region).serializeArray();
+		
+		// Get unchecked checkboxes, since they are dropped by serializeArray().
+		arr = arr.concat(
+			$('input[type=checkbox]:not(:checked)', region).map(
+				function() {
+					return { "name": this.name, "value": "off" }
+				}
+			).get()
+		);
+		
+		// Format data to save to model.
+		var data = _(arr).reduce(function(obj, field) {			
+			var myField = $('input[name=' + field.name + ']');
+			
+			switch (myField.attr('type')) {
+				case 'number': 
+					if (field.value != "") {
+						obj[field.name] = parseFloat(field.value); // for fields that are numbers.
+					}
+					break;
+					
+				case 'checkbox': 
+					obj[field.name] = (field.value == 'on') ? true : false; // for checkboxes.
+					break;
+					
+				default: 
+					obj[field.name] = field.value; // default for fields that are text.
+					break;
+			}
+
+			return obj;
+		}, {});
+
+		return data;
+	    }
+	});
+	
+	
+	
+	
 	/**
 	 * Mediator
 	 */

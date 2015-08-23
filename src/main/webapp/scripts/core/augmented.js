@@ -2559,12 +2559,12 @@
 	Augmented.Model = AugmentedModel;
 	Augmented.Collection = AugmentedCollection;
 	Augmented.View = AugmentedView;
-
+	Augmented.history = Backbone.history;
+	Augmented.router = Backbone.router;
+	
 	/** 
 	 * Application Context
 	 */
-	
-	
 	
 	/** Application Context Schema */
 	var applicationContextSchema = {
@@ -3058,8 +3058,27 @@
 	Augmented.MockService = new mockService();
 
 
-
+	/**
+	 * Application Class for use to define an application
+	 */
+	var application = function(reg) {
+	    var region = reg;
+	    
+	    this.getRegion = function() {
+		return reg;
+	    }
+	    
+	    this.start = function() {
+		if(!Augmented.History.started) {
+		    Augmented.history.start();
+		}
+	    }
+	    
+	    
+	    
+	};
 	
+	Augmented.Application = application;
 	
 	return Augmented;
 }));

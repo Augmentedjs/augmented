@@ -1,5 +1,5 @@
 require.config({ 
-	'baseUrl': 'scripts/',
+	'baseUrl': '/augmented/scripts/',
 	
     'paths': { 
 		'jquery': 'lib/jquery/jquery-2.1.4.min',
@@ -41,11 +41,11 @@ require.config({
 require(
 	['backbone', 'augmented', 'handlebars'], 
 	function(Backbone, Augmented, Handlebars) {
-		Backbone.history.start();
+	    Augmented.history.start();
 		
-		$("#augmented").html("Version " + Augmented.VERSION + " (" + Augmented.codename + ") Release " + Augmented.releasename);
+	    $("#augmented").html("Version " + Augmented.VERSION + " (" + Augmented.codename + ") Release " + Augmented.releasename);
 		
-		var libraries = {};
+	    var libraries = {};
 		libraries.jQuery = "jQuery version " + $().jquery;
 		libraries.underscore = "underscore.js version " + _.VERSION;
 		libraries.backbone = "Backbone.js version " + Backbone.VERSION;

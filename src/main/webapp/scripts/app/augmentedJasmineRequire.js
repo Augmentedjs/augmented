@@ -43,7 +43,7 @@ require.config({
 		},
 		
 		augmentedPresentation: {
-			'deps': ['jquery', 'augmented'],
+			'deps': ['jquery', 'underscore', 'augmented'],
 			'exports': 'augmentedPresentation'
 		},
 
