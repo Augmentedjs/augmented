@@ -3,7 +3,7 @@ define([
 ], function(
 	presentation
 ) {
-	describe('Given Augmented.Presentation', function() {
+	describe('Given Augmented Presentation', function() {
 		it('is defined', function() {
 			expect(Augmented.Presentation).toBeDefined();
 		});
@@ -32,6 +32,7 @@ define([
 				
 				afterEach(function() {
 					m = null;
+					c = null;
 				});
 				
 				it('can create an instance that is a mediator', function() {
@@ -53,7 +54,6 @@ define([
 				});
 				
 				it('the mediator can subscribe a colleague in the channel "monkey"', function() {
-					//m.subscribe("monkey", function() { return "EEAK!";}, c, true);
 					m.observeColleague(c, function() { return "EEAK!";}, "monkey");
 					
 					var channels = m.getChannel("monkey");

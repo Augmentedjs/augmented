@@ -1,9 +1,10 @@
 /**
- * AugmentedPresentation.js - The Core UI Component and package
+ * AugmentedPresentation.js - The Presentation Core UI Component and package
  * 
  * @author Bob Warren
  * 
  * @requires jquery.js
+ * @requires underscore.js
  * @requires augmented.js
  */
 (function(moduleFactory) {
@@ -36,21 +37,39 @@
 	var abstractMediator = Augmented.View.extend({
 		defaultChannel: "augmentedChannel",
 		
+		/**
+		 * Observe a Colleague View
+		 * 
+		 * @param colleague
+		 * @param callback
+		 * @param channel
+		 */
 		observeColleague: function(colleague, callback, channel) {
-			if (!channel) {
-				channel = this.defaultChannel;
+			if (colleague instanceof Augmented.Presentation.Colleague) {
+				if (!channel) {
+					channel = this.defaultChannel;
+				}
+				
+				this.subscribe(channel, callback, colleague, false);
 			}
-			
-			this.subscribe(channel, callback, colleague, false);
 		},
 		
+		/**
+		 * Dismiss a Colleague View
+		 * 
+		 * @param colleague
+		 * @param channel
+		 */
 		dismissColleague: function(colleague, channel) {
-			if (!channel) {
-				channel = this.defaultChannel;
+			if (colleague instanceof Augmented.Presentation.Colleague) {
+				if (!channel) {
+					channel = this.defaultChannel;
+				}
+				
+				this.unsubscribe(channel, callback, colleague);
 			}
-			
-			this.unsubscribe(channel, callback, colleague);
 		},
+		
 		/**
 		 * Subscribe to a channel
 		 *
@@ -124,30 +143,45 @@
 			this.subscribe(channel, subscription, context, true);
 		},
 
-		getColleagues: function() {
-			// TODO: return collection of colleagues not channels
-			return channels;
-		},
-		
-		getChannels: function() {
-			return channels;
-		},
-		
-		getChannel: function(channel) {
-			return channels[channel];
-		},
-		
-		getDefaultChannel: function() {
-			return channels[this.defaultChannel];
-		},
-		
-		getColleague: function(colleague, channel) {
+		/**
+		 * Get All the Colleagues for a channel
+		 * 
+		 * @param channel
+		 */
+		getColleagues: function(channel) {
 			if (!channel) {
 				channel = this.defaultChannel;
 			}
 			
 			var channel = channels[channel];
 			return channel.context;
+		},
+		
+		/**
+		 * Get Channels
+		 */
+		getChannels: function() {
+			return channels;
+		},
+		
+		/**
+		 * Get a specific channel
+		 * 
+		 * @param channel
+		 */
+		getChannel: function(channel) {
+			if (!channel) {
+				channel = this.defaultChannel;
+			}
+			return channels[channel];
+		},
+		
+		/**
+		 * Get the default channel
+		 * Convenience method for getChannel(null)
+		 */
+		getDefaultChannel: function() {
+			return channels[this.defaultChannel];
 		}
 	});
 
@@ -182,7 +216,6 @@
 		 * Subscribe to each subscription
 		 * @param {Object} [subscriptions] An optional hash of subscription to add
 		 */
-
 		setSubscriptions: function(subscriptions) {
 			if (subscriptions) {
 				Augmented.Utility.extend(this.subscriptions || {}, subscriptions);
@@ -211,7 +244,7 @@
 		 * Unsubscribe to each subscription
 		 * @param {Object} [subscriptions] An optional hash of subscription to remove
 		 */
-		unsetSubscriptions : function(subscriptions) {
+		unsetSubscriptions: function(subscriptions) {
 			subscriptions = subscriptions || this.subscriptions;
 			if (!subscriptions || _.isEmpty(subscriptions)) {
 				return;
