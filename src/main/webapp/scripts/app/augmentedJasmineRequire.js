@@ -12,7 +12,8 @@ require.config({
 
 		'augmented': 'core/augmented',
 		'augmentedPresentation': 'presentation/augmentedPresentation',
-
+		'augmentedService': 'service/augmentedService',
+		    
 		'jasmine': 'lib/jasmine-2.x/jasmine',
 		'jasmine_html': 'lib/jasmine-2.x/jasmine-html',
 		'boot': 'lib/jasmine-2.x/boot'
@@ -23,7 +24,7 @@ require.config({
 			'exports': '$'
 		},
 		backbone: {
-			'deps': ['jquery', 'underscore', 'handlebars', 'mockjax'],
+			'deps': ['jquery', 'underscore', 'handlebars'],
 			'exports': 'Backbone'
 		},
 		underscore: {
@@ -46,6 +47,11 @@ require.config({
 			'deps': ['jquery', 'underscore', 'augmented'],
 			'exports': 'augmentedPresentation'
 		},
+		
+		augmentedService: {
+			'deps': ['jquery', 'mockjax', 'underscore', 'augmented'],
+			'exports': 'augmentedService'
+		},
 
 		jasmine: {
 			exports : 'window.jasmineRequire'
@@ -64,13 +70,13 @@ require.config({
 //Define all of your specs here. These are RequireJS modules.
 var specs = [ 'core/test/coreSpec', 
               'core/test/applicationContextSpec',
-              'core/test/mockServiceSpec',
               'core/test/validationSpec',
               'core/test/localStorageSpec',
               'core/test/utilitySpec',
               'core/test/polyfillSpec',
               
-              'presentation/test/presentationSpec'
+              'presentation/test/presentationSpec',
+              'service/test/mockServiceSpec'
             ];
 
 // Load Jasmine - This will still create all of the normal Jasmine browser globals unless `boot.js` is re-written to use the

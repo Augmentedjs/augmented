@@ -3,35 +3,31 @@
  * 
  * @author Bob Warren
  * 
- * @requires jquery.js
  * @requires Backbone.js
- * @requires mockjax
  */
 (function(root, factory) {
 
 	// Set up Augmented appropriately for the environment. Start with AMD.
 	if (typeof define === 'function' && define.amd) {
-		define([ 'backbone', 'jquery', 'exports', 'mockjax'],
-				function(Backbone, $, exports, mockjax) {
+		define([ 'backbone', 'exports'],
+				function(Backbone, exports) {
 					// Export global even in AMD case in case this script is
 					// loaded with
 					// others that may still expect a global Augmented.
-					root.Augmented = factory(root, exports, Backbone, $,
-											 mockjax);
+					root.Augmented = factory(root, exports, Backbone);
 				});
 
 		// Next for Node.js or CommonJS.
 	} else if (typeof exports !== 'undefined') {
-		var _ = require('backbone', 'jquery', 'mockjax');
-		factory(root, exports, Backbone, $, mockjax);
+		var _ = require('backbone');
+		factory(root, exports, Backbone);
 
 		// Finally, as a browser global.
 	} else {
-		root.Augmented = factory(root, {}, root.Backbone, (root.jQuery
-				|| root.Zepto || root.ender || root.$), root.mockjax);
+		root.Augmented = factory(root, {}, root.Backbone);
 	}
 
-}(this, function(root, Augmented, Backbone, $, mockjax) {
+}(this, function(root, Augmented, Backbone) {
 	/*
 	 * Save the previous value of the `Augmented` variable, so that it can be
 	 * restored later on, if `noConflict` is used (just like Backbone)
@@ -2967,95 +2963,6 @@
 	};
 
 	Augmented.LocalStorageFactory = localStorageFactory;
-
-	/** MockService
-	 *
-	 *  Sets up mocked REST calls that will intercept AJAX calls
-	 *  and responds with a mocked response of our own choosing.
-	 *
-	 *  This will also support CORS and persistence via local storage
-	 *  in the future, played as a separate story.
-	 *
-	 *  In essence, a syntactic sugar coating around a subset of 
-	 *  mockjax, using DSL notation.
-	 *
-	 *  Usage: Augmented.MockService.at("rest/product/123")
-	 *					 			.on("GET")
-	 *                   			.respondWithText("Hello World")
-	 *                   			.respondWithStatus(200)
-	 *								.respondWithHeaders({Content-Type: "text/plain", User: "Simba"})
-	 *                   			.register();
-     *
-	 */
-	var mockService = function() {
-		
-		
-		//Reserved for future CORS and persistence use.
-		//this.myStore = Augmented.LocalStorageFactory.getStorage(false);
-
-
-		var options = {};
-
-		/** 
-		 *  This url can be a string, or a regular expression. The 
-		 *  string supports the wildcard '*'.
-		 */
-		this.at = function(url) {
-			options.url = url;
-			return this;
-		}
-
-		/**
-		 *  HTTP methods 'GET', 'POST', 'PATCH', 'DELETE', and so on.
-		 */
-		this.on = function(method) {
-			options.type = method;
-			return this;
-		}
-
-		/**
-		 *	Accepts a string or accepts a JSON object if a
-		 *  JSON.stringify() method is available.
-		 */
-		this.respondWithText = function(responseText) {
-			options.responseText = responseText;
-			return this;
-		}
-
-		this.respondWithStatus = function(responseStatus) {
-			options.status = responseStatus;
-			return this;
-		}
-		
-		/**
-		 *  The function parameter is an object that contains
-		 *  {header field name: header field value} pairs.
-		 */
-		this.respondWithHeaders = function(responseHeaders) {
-			options.headers = responseHeaders;
-			return this;
-		}
-
-		/**
-		 *  Registers the mock and activates it for mocking.
-		 *  Returns the id number of the registered mock.
-		 *  The id number will mostly be used to clear the
-		 *  handler if it is not needed later on down the code.
-		 */
-		this.register = function() {
-			return mockjax(options);
-		}
-
-		/**
-		 *  Clears the mock handler attached to the id number. If 
-		 *  no id is provided, it clears all the handlers.
-		 */
-		this.clear = function(id) {
-			mockjax.clear(id);
-		}
-	};
-
-	Augmented.MockService = new mockService();
 
 
 	/**

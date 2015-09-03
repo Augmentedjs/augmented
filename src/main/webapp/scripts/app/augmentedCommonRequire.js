@@ -10,13 +10,14 @@ require.config({
 
 		'augmented': augmented.base + 'scripts/core/augmented',
 		'augmentedPresentation':  augmented.base + 'scripts/presentation/augmentedPresentation',
+		'augmentedService':  augmented.base + 'scripts/service/augmentedService',
 	},	
 	'shim': {
 		jquery: {
 			'exports': '$'
 		},
 		backbone: {
-			'deps': ['jquery', 'underscore', 'handlebars', 'mockjax'],
+			'deps': ['jquery', 'underscore', 'handlebars'],
 			'exports': 'Backbone'
 		},
 		underscore: {
@@ -38,6 +39,11 @@ require.config({
 		augmentedPresentation: {
 			'deps': ['jquery', 'underscore', 'augmented'],
 			'exports': 'augmentedPresentation'
+		},
+		
+		augmentedService: {
+			'deps': ['jquery', 'mockjax', 'underscore', 'augmented'],
+			'exports': 'augmentedService'
 		}
 	}	
 }); 

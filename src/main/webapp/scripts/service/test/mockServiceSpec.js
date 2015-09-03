@@ -1,14 +1,16 @@
 define([
 	"augmented",
+	"augmentedService",
 	"jquery"
 ], function(
 	Augmented,
+	AugmentedService,
 	$
 ) {
 	describe("Given the Augmented mock service", function() {
 
 		it("is defined", function() {
-			expect(Augmented.MockService).toBeDefined();
+			expect(Augmented.Service.Mock).toBeDefined();
 		});
 
 		describe("when I register a concrete URL with a mocked text response and status, " +
@@ -22,8 +24,8 @@ define([
 				mockedResponse = null;
 
 			beforeEach(function(done) {
-				Augmented.MockService.clear();
-				Augmented.MockService.at(testUrl)
+				Augmented.Service.Mock.clear();
+				Augmented.Service.Mock.at(testUrl)
 									 .on(testMethod)
 									 .respondWithText(testText)
 									 .respondWithStatus(testStatus)
@@ -64,8 +66,8 @@ define([
 				mockedResponse = null;
 
 			beforeEach(function(done) {
-				Augmented.MockService.clear();
-				Augmented.MockService.at(testUrl)
+				Augmented.Service.Mock.clear();
+				Augmented.Service.Mock.at(testUrl)
 									 .on(testMethod)
 									 .respondWithText(testText)
 									 .respondWithStatus(testStatus)
@@ -99,8 +101,8 @@ define([
 				mockedResponse = null;
 
 			beforeEach(function(done) {
-				Augmented.MockService.clear();
-				Augmented.MockService.at(testUrl)
+				Augmented.Service.Mock.clear();
+				Augmented.Service.Mock.at(testUrl)
 									 .on(testMethod)
 									 .respondWithText(testText)
 									 .respondWithStatus(testStatus)
@@ -132,7 +134,7 @@ define([
 
 		describe("when I register a regex URL with a mocked text response, " +
 				 "then make an AJAX call to a URL that matches the regex", function () {
-			Augmented.MockService.clear();
+			Augmented.Service.Mock.clear();
 			var testUrl =  /^\/tests\/(red|blue)$/i,
 				testMethod = "PATCH",
 				testText = "Bonjour Monde",
@@ -141,8 +143,8 @@ define([
 				mockedResponse = null;
 
 			beforeEach(function(done) {
-				Augmented.MockService.clear()
-				Augmented.MockService.at(testUrl)
+				Augmented.Service.Mock.clear()
+				Augmented.Service.Mock.at(testUrl)
 									 .on(testMethod)
 									 .respondWithText(testText)
 									 .respondWithStatus(testStatus)

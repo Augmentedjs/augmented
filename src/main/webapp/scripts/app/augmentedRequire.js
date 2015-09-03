@@ -11,13 +11,15 @@ require.config({
 		'mockjax': 'lib/jquery.mockjax',
 
 		'augmented': 'core/augmented',
+		'augmentedPresentation': 'presentation/augmentedPresentation',
+		'augmentedService': 'service/augmentedService'
 	},	
 	'shim': {
 		jquery: {
 			'exports': '$'
 		},
 		backbone: {
-			'deps': ['jquery', 'underscore', 'handlebars', 'mockjax'],
+			'deps': ['jquery', 'underscore', 'handlebars'],
 			'exports': 'Backbone'
 		},
 		underscore: {
@@ -34,7 +36,18 @@ require.config({
 		augmented: {
 			'deps': ['backbone'],
 			'exports': 'Augmented'
+		},
+		
+		augmentedPresentation: {
+			'deps': ['jquery', 'underscore', 'augmented'],
+			'exports': 'augmentedPresentation'
+		},
+		
+		augmentedService: {
+			'deps': ['jquery', 'mockjax', 'underscore', 'augmented'],
+			'exports': 'augmentedService'
 		}
+		
 	}	
 }); 
 
