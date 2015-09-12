@@ -16,6 +16,19 @@ define([
 			expect(typeof Augmented.noConflict === 'function').toBeTruthy();
 		});
 		
+		describe('Given an Augmented Object', function() {
+			it('is defined', function() {
+				expect(Augmented.Object).toBeDefined();
+			});
+			
+			it('can be created with options', function() {
+				var object = new Augmented.Object({stuff: "stuff"});
+				
+				expect(object.options.stuff).toEqual("stuff");
+			});
+			
+		});
+		
 		describe('Given an Augmented Model', function() {
 			it('is defined', function() {
 				expect(Augmented.Model).toBeDefined();

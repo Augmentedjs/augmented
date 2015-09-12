@@ -44,8 +44,8 @@
      * object.
      */
     Augmented.noConflict = function() {
-	root.Augmented = previousAugmented;
-	return this;
+		root.Augmented = previousAugmented;
+		return this;
     };
 
 
@@ -54,11 +54,9 @@
      * 
      */
 
-    /*
-     * { url: filename, async: false, cache: settings.cache, contentType:
-     * 'text/plain;charset=' + settings.encoding, dataType: 'text', success:
-     * function (data, status) { parseData(data, settings.mode); } }
-     */
+    Augmented.extend = Backbone.Model.extend;
+
+
 
     /** AJAX capability using simple jQuery-like API
      * Supports the following object properties and features:
@@ -78,48 +76,48 @@
      * @returns success or failure callback
      */
     Augmented.ajax = function(ajaxObject) {
-	if (ajaxObject) {
-	    var uri = ajaxObject.url;
-	    
-	    if (uri) {
-        	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
-        	    var cache = (ajaxObject.cache) ? (ajaxObject.cache) : true;
-        	    
-        	    var xhr = new XMLHttpRequest();
-        	    
-        	    var async = (ajaxObject.async !== undefined) ? ajaxObject.async : true;
-        	    
-        	    // CORS
-        	    if (ajaxObject.withCredentials) {
-        		xhr.withCredentials = ajaxObject.withCredentials;
-        		// Sync Not supported for all browsers in CORS mode
-        		async = true;
-        	    }
-        	    
-        	    if (async && ajaxObject.dataType) {
-        		xhr.responseType = (ajaxObject.dataType) ? ajaxObject.dataType : 'text';
-        	    }
+		if (ajaxObject) {
+		    var uri = ajaxObject.url;
+		    
+		    if (uri) {
+	        	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
+	        	    var cache = (ajaxObject.cache) ? (ajaxObject.cache) : true;
+	        	    
+	        	    var xhr = new XMLHttpRequest();
+	        	    
+	        	    var async = (ajaxObject.async !== undefined) ? ajaxObject.async : true;
+	        	    
+	        	    // CORS
+	        	    if (ajaxObject.withCredentials) {
+	        		xhr.withCredentials = ajaxObject.withCredentials;
+	        		// Sync Not supported for all browsers in CORS mode
+	        		async = true;
+	        	    }
+	        	    
+	        	    if (async && ajaxObject.dataType) {
+	        		xhr.responseType = (ajaxObject.dataType) ? ajaxObject.dataType : 'text';
+	        	    }
 
-        	    xhr.open(method, encodeURI(uri), async, 
-        		(ajaxObject.user !== undefined) ? ajaxObject.user : '', 
-        		(ajaxObject.password !== undefined) ? ajaxObject.password : '');
-        	    xhr.setRequestHeader('Content-Type', (ajaxObject.contentType) ? ajaxObject.contentType : 'text/plain');
-        	    
-        	    if (!cache) {
-        		xhr.setRequestHeader('Cache-Control', 'no-cache');
-        	    }
-        	    
-        	    xhr.onload = function() {
-        		    if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 204) {
-        			return ajaxObject.success(xhr.responseText, xhr.status);
-        		    } else {
-        			return ajaxObject.failure(xhr.responseText, xhr.status);
-        		    }
-        		};
-        
-        	    xhr.send();
-	    }
-	}
+	        	    xhr.open(method, encodeURI(uri), async, 
+	        		(ajaxObject.user !== undefined) ? ajaxObject.user : '', 
+	        		(ajaxObject.password !== undefined) ? ajaxObject.password : '');
+	        	    xhr.setRequestHeader('Content-Type', (ajaxObject.contentType) ? ajaxObject.contentType : 'text/plain');
+	        	    
+	        	    if (!cache) {
+	        		xhr.setRequestHeader('Cache-Control', 'no-cache');
+	        	    }
+	        	    
+	        	    xhr.onload = function() {
+	        		    if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 204) {
+	        			return ajaxObject.success(xhr.responseText, xhr.status);
+	        		    } else {
+	        			return ajaxObject.failure(xhr.responseText, xhr.status);
+	        		    }
+	        		};
+	        
+	        	    xhr.send();
+		    }
+		}
     };
 
 
@@ -143,41 +141,29 @@
 	    login: "",
 	    roles: roles,
 	    token: {
-		authorization: authorizationToken,
-		access: accessToken
+			authorization: authorizationToken,
+			access: accessToken
 	    }		
     };
 
     Augmented.Security.Principal = principal;
+	    var authenticationFactory = function() {
+		this.getPrincipal = function() {
+		    var p = new Augmented.Security.Principal();
+		    return p;
+		};
 
-    var authenticationFactory = function() {
-	this.getPrincipal = function() {
-	    var p = new principal();
+		this.authorizeApplication = function(applicationName) {
+		    authorizationToken = "";
+		}
 
-
-	    return p;
-	};
-
-	this.authorizeApplication = function(applicationName) {
-	    authorizationToken = "";
-	}
-
-	this.access = function(principal) {
-	    accessToken = "";
-	}
+		this.access = function(principal) {
+		    accessToken = "";
+		}
     };
 
 
     Augmented.Security.AuthenticationFactory = authenticationFactory;
-
-
-    /**
-     * Utility Package
-     * 
-     * Small utilities
-     */
-
-    Augmented.Utility = {};
 
     /**
      * Polyfills for basic capability of ES5.1 and ES6
@@ -300,15 +286,6 @@
 	    }
 	};
     }
-
-    /** Object Extend native ability vs jQuery.extend() */
-    Augmented.Utility.extend = function() {
-	for(var i=1; i<arguments.length; i++)
-	    for(var key in arguments[i])
-		if(arguments[i].hasOwnProperty(key))
-		    arguments[0][key] = arguments[i][key];
-	return arguments[0];
-    };
 
     /**
      * Cross-Browser Split 1.0.1 (c) Steven Levithan <stevenlevithan.com>; MIT
@@ -434,6 +411,22 @@
 	};
     }
 
+    /**
+     * Utility Package
+     * 
+     * Small utilities
+     */
+
+    Augmented.Utility = {};
+
+    /** Object Extend native ability vs jQuery.extend() */
+    Augmented.Utility.extend = function() {
+	for(var i=1; i<arguments.length; i++)
+	    for(var key in arguments[i])
+		if(arguments[i].hasOwnProperty(key))
+		    arguments[0][key] = arguments[i][key];
+	return arguments[0];
+    };
 
     /** ES6-like Map */
 
@@ -566,9 +559,29 @@
 
     Augmented.Utility.AugmentedMap = augmentedMap;
 
-    /** Important base support */
+    /**
+     * Base Classes
+     */
 
-    /** base Validation framework - forked from TV4 and extended */
+    /** 
+     * Augmented Object
+	 * Base class for other classes to extend from
+	 * triggers events with Backbone.Events
+     */
+	Augmented.Object = function(options) {
+    	this.options = Augmented.Utility.extend({}, _.result(this, 'options'), options);
+	    this.initialize.apply(this, arguments);
+	};
+  	
+  	Augmented.Object.extend = Augmented.extend;
+  
+  	Augmented.Utility.extend(Augmented.Object.prototype, Backbone.Events, {
+  		initialize: function() {}
+	});
+
+
+
+    /** Validation framework - forked from TV4 and extended */
     var Validator = function() {
 	// Based on: https://github.com/geraintluff/uri-templates, but with all
 	// the de-substitution stuff removed
@@ -2078,8 +2091,7 @@
 
 	return tv4;
     };
-    // End of TV4 fork, will provide base JSON-Schema Draft 4 support and then
-    // some
+    // End of TV4 fork, will provide base JSON-Schema Draft 4 support and then some
 
 
     /**
@@ -2542,8 +2554,8 @@
 
 
     /**
-     * The Validation Framework
-     * 
+     * The Validation Framework Base Wrapper Class
+     * Provides abstraction for base validation build-in library
      */
     var validationFramework = function() {
 	var myValidator;
@@ -2624,6 +2636,9 @@
 
     });
 
+    // Extend Model with Object base functions
+    Augmented.Utility.extend(AugmentedModel, Augmented.Object);
+
     /**
      * Abstract Augmented Collection Supports: CORS Schemas Security * TODO:
      * implement OAUTH 2
@@ -2678,29 +2693,33 @@
 	}
     });
 
+	// Extend Collection with Object base functions
+    Augmented.Utility.extend(AugmentedCollection, Augmented.Object);
+
     var AugmentedView = Backbone.View.extend({
-	name: "",
+		name: "",
 
-	setName: function(name) { 
-	    this.name = name;
-	},
-	getName: function() { 
-	    return this.name;
-	}
-
+		setName: function(name) { 
+		    this.name = name;
+		},
+		getName: function() { 
+		    return this.name;
+		}
     });
 
-
+    // Extend View with Object base functions
+    Augmented.Utility.extend(AugmentedView, Augmented.Object);
 
     /** Augmented Backbone - Extend Backbone with awesome */
     Augmented.Model = AugmentedModel;
     Augmented.Collection = AugmentedCollection;
     Augmented.View = AugmentedView;
-    Augmented.history = Backbone.history;
-    Augmented.router = Backbone.router;
+    Augmented.History = Backbone.history;
+    Augmented.Router = Backbone.router;
 
     /**
      * Application Context
+     * @deprecated Use Augmented.Application and Augmented.Security instead
      */
 
     /** Application Context Schema */
@@ -3109,22 +3128,28 @@
     /**
      * Application Class for use to define an application
      */
-    var application = function(reg) {
-	var region = reg;
+    var application = function() {
+		var metadata = new Augmented.Utility.AugmentedMap();
+		this.started = false;
 
-	this.getRegion = function() {
-	    return reg;
-	}
-	
-	this.setRegion = function(reg) {
-	    region = reg;
-	}
+		this.getMetadata = function() {
+			return metadata;
+		}
 
-	this.start = function() {
-	    if(!Augmented.History.started) {
-		Augmented.history.start();
-	    }
-	}
+		this.setMetadataItem = function(key, value) {
+			metadata.set(key, value);
+		}
+
+		this.getMetadataItem = function(key) {
+			return metadata.get(key);
+		}
+
+		this.start = function() {
+		    if (!Augmented.History.started) {
+				Augmented.History.start();
+		    }
+		    this.started = true;
+		}
     };
 
     Augmented.Application = application;
