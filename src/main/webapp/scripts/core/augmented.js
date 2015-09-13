@@ -1,8 +1,8 @@
 /**
  * Augmented.js - The Core UI Component and package
- * 
+ *
  * @author Bob Warren
- * 
+ *
  * @requires Backbone.js
  */
 (function(root, factory) {
@@ -51,16 +51,41 @@
 
     /**
      * Base functionality
-     * 
+     * Set of base capabilities used throughout the framework
+     * . ajax
+     * . result
+     * . isFunction
      */
 
     Augmented.extend = Backbone.Model.extend;
 
+    /**
+     * Augmented.isFunction
+     * returns if called name is a function
+     * simular to jQuery .isFunction method
+     */
+    var isFunction = function(name) {
+     return Object.prototype.toString.call(name) == '[object Function]';
+     }
 
+     Augmented.isFunction = isFunction;
+
+    /**
+     * Augmented.result
+     * returns named property in an object
+     * simular to underscore .result method
+     */
+     var res = function(object, property) {
+         if (object == null) return;
+         var value = object[property];
+         return Augmented.isFunction(value) ? value.call(object) : value;
+     };
+
+     Augmented.result = res;
 
     /** AJAX capability using simple jQuery-like API
      * Supports the following object properties and features:
-     * 
+     *
      * method
      * url
      * async
@@ -72,104 +97,62 @@
      * password
      * withCredentials
      * cache
-     * 
+     *
      * @returns success or failure callback
      */
     Augmented.ajax = function(ajaxObject) {
-		if (ajaxObject) {
-		    var uri = ajaxObject.url;
-		    
-		    if (uri) {
-	        	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
-	        	    var cache = (ajaxObject.cache) ? (ajaxObject.cache) : true;
-	        	    
-	        	    var xhr = new XMLHttpRequest();
-	        	    
-	        	    var async = (ajaxObject.async !== undefined) ? ajaxObject.async : true;
-	        	    
-	        	    // CORS
-	        	    if (ajaxObject.withCredentials) {
-	        		xhr.withCredentials = ajaxObject.withCredentials;
-	        		// Sync Not supported for all browsers in CORS mode
-	        		async = true;
-	        	    }
-	        	    
-	        	    if (async && ajaxObject.dataType) {
-	        		xhr.responseType = (ajaxObject.dataType) ? ajaxObject.dataType : 'text';
-	        	    }
+  		if (ajaxObject) {
+  		    var uri = ajaxObject.url;
 
-	        	    xhr.open(method, encodeURI(uri), async, 
-	        		(ajaxObject.user !== undefined) ? ajaxObject.user : '', 
-	        		(ajaxObject.password !== undefined) ? ajaxObject.password : '');
-	        	    xhr.setRequestHeader('Content-Type', (ajaxObject.contentType) ? ajaxObject.contentType : 'text/plain');
-	        	    
-	        	    if (!cache) {
-	        		xhr.setRequestHeader('Cache-Control', 'no-cache');
-	        	    }
-	        	    
-	        	    xhr.onload = function() {
-	        		    if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 204) {
-	        			return ajaxObject.success(xhr.responseText, xhr.status);
-	        		    } else {
-	        			return ajaxObject.failure(xhr.responseText, xhr.status);
-	        		    }
-	        		};
-	        
-	        	    xhr.send();
-		    }
-		}
+  		    if (uri) {
+  	        	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
+  	        	    var cache = (ajaxObject.cache) ? (ajaxObject.cache) : true;
+
+  	        	    var xhr = new XMLHttpRequest();
+
+  	        	    var async = (ajaxObject.async !== undefined) ? ajaxObject.async : true;
+
+  	        	    // CORS
+  	        	    if (ajaxObject.withCredentials) {
+  	        		xhr.withCredentials = ajaxObject.withCredentials;
+  	        		// Sync Not supported for all browsers in CORS mode
+  	        		async = true;
+  	        	    }
+
+  	        	    if (async && ajaxObject.dataType) {
+  	        		xhr.responseType = (ajaxObject.dataType) ? ajaxObject.dataType : 'text';
+  	        	    }
+
+  	        	    xhr.open(method, encodeURI(uri), async,
+  	        		(ajaxObject.user !== undefined) ? ajaxObject.user : '',
+  	        		(ajaxObject.password !== undefined) ? ajaxObject.password : '');
+  	        	    xhr.setRequestHeader('Content-Type', (ajaxObject.contentType) ? ajaxObject.contentType : 'text/plain');
+
+  	        	    if (!cache) {
+  	        		xhr.setRequestHeader('Cache-Control', 'no-cache');
+  	        	    }
+
+  	        	    xhr.onload = function() {
+  	        		    if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 204) {
+  	        			return ajaxObject.success(xhr.responseText, xhr.status);
+  	        		    } else {
+  	        			return ajaxObject.failure(xhr.responseText, xhr.status);
+  	        		    }
+  	        		};
+
+  	        	    xhr.send();
+  		    }
+  		}
     };
 
 
-    /* Packages */
 
-    /**
-     * Security Package and API
-     */
-    Augmented.Security = {};
-
-    /** Role (ACL) Security */
-    var roles = [];
-
-    /** OAUTH 2 Tokens */
-    var accessToken = "";
-    var authorizationToken = "";
-
-    var principal = { 
-	    fullName: "",
-	    id: 0,
-	    login: "",
-	    roles: roles,
-	    token: {
-			authorization: authorizationToken,
-			access: accessToken
-	    }		
-    };
-
-    Augmented.Security.Principal = principal;
-	    var authenticationFactory = function() {
-		this.getPrincipal = function() {
-		    var p = new Augmented.Security.Principal();
-		    return p;
-		};
-
-		this.authorizeApplication = function(applicationName) {
-		    authorizationToken = "";
-		}
-
-		this.access = function(principal) {
-		    accessToken = "";
-		}
-    };
-
-
-    Augmented.Security.AuthenticationFactory = authenticationFactory;
 
     /**
      * Polyfills for basic capability of ES5.1 and ES6
-     * 
+     *
      * Object.keys Object.create Array.isArray Array.indexOf
-     * 
+     *
      */
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FObject%2Fkeys
     if (!Object.keys) {
@@ -411,9 +394,53 @@
 	};
     }
 
+    /* Packages */
+
+    /**
+     * Security Package and API
+     */
+    Augmented.Security = {};
+
+    /** Role (ACL) Security */
+    var roles = [];
+
+    /** OAUTH 2 Tokens */
+    var accessToken = "";
+    var authorizationToken = "";
+
+    var principal = {
+	    fullName: "",
+	    id: 0,
+	    login: "",
+	    roles: roles,
+	    token: {
+			authorization: authorizationToken,
+			access: accessToken
+	    }
+    };
+
+    Augmented.Security.Principal = principal;
+	    var authenticationFactory = function() {
+		this.getPrincipal = function() {
+		    var p = new Augmented.Security.Principal();
+		    return p;
+		};
+
+		this.authorizeApplication = function(applicationName) {
+		    authorizationToken = "";
+		}
+
+		this.access = function(principal) {
+		    accessToken = "";
+		}
+    };
+
+
+    Augmented.Security.AuthenticationFactory = authenticationFactory;
+
     /**
      * Utility Package
-     * 
+     *
      * Small utilities
      */
 
@@ -563,18 +590,18 @@
      * Base Classes
      */
 
-    /** 
+    /**
      * Augmented Object
 	 * Base class for other classes to extend from
 	 * triggers events with Backbone.Events
      */
 	Augmented.Object = function(options) {
-    	this.options = Augmented.Utility.extend({}, _.result(this, 'options'), options);
+    	this.options = Augmented.Utility.extend({}, Augmented.result(this, 'options'), options);
 	    this.initialize.apply(this, arguments);
 	};
-  	
+
   	Augmented.Object.extend = Augmented.extend;
-  
+
   	Augmented.Utility.extend(Augmented.Object.prototype, Backbone.Events, {
   		initialize: function() {}
 	});
@@ -2106,7 +2133,7 @@
 	/**
 	 * Load and parse message bundle files (.properties), making bundles
 	 * keys available as javascript variables.
-	 * 
+	 *
 	 * i18n files are named <name>.js, or <name>_<language>.js or <name>_<language>_<country>.js
 	 * Where: The <language> argument is a valid ISO Language Code. These
 	 * codes are the lower-case, two-letter codes as defined by ISO-639. You
@@ -2116,11 +2143,11 @@
 	 * two-letter codes as defined by ISO-3166. You can find a full list of
 	 * these codes at a number of sites, such as:
 	 * http://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html
-	 * 
+	 *
 	 * Sample usage for a bundles/Messages.properties bundle:
 	 * i18n.properties({ name: 'Messages', language: 'en_US', path:
 	 * 'bundles' });
-	 * 
+	 *
 	 * @param name
 	 *                (string/string[], optional) names of file to load (eg,
 	 *                'Messages' or ['Msg1','Msg2']). Defaults to "Messages"
@@ -2187,7 +2214,7 @@
 	    if (settings.callback) {
 		settings.callback();
 	    }
-	};		
+	};
 
 	/**
 	 * When configured with mode: 'map', allows access to bundle values by
@@ -2213,7 +2240,7 @@
 	     * '{1}'{1}'zxcv test.t3=This is \"a quote" 'a''{0}''s'd{fgh{ij'
 	     * test.t4="'''{'0}''" {0}{a} test.t5="'''{0}'''" {1} test.t6=a {1}
 	     * b {0} c test.t7=a 'quoted \\ s\ttringy' \t\t x
-	     * 
+	     *
 	     * Produces: test.t1, p1 ==> asdf 'p1' test.t2, p1 ==> asdf {0}
 	     * {1}{1}zxcv test.t3, p1 ==> This is "a quote" a'{0}'sd{fgh{ij
 	     * test.t4, p1 ==> "'{0}'" p1{a} test.t5, p1 ==> "'{0}'" {1}
@@ -2536,7 +2563,7 @@
 
     /**
      * Augmented.Utility.MessageKeyFormatter
-     * 
+     *
      * concatenate the pieces of the error together if a portion of the key is
      * missing, the rest of the key is ignored. ex. if the "rule" attribute is
      * missing, then the key will return with the error.level + error.kind only
@@ -2620,7 +2647,7 @@
 	},
 	crossOrigin: false,
 	sync: function(method, model, options) {
-	    if (!options) { 
+	    if (!options) {
 		options = {};
 	    }
 	    if (this.crossOrigin === true) {
@@ -2678,7 +2705,7 @@
 	},
 	crossOrigin: false,
 	sync: function(method, model, options) {
-	    if (!options) { 
+	    if (!options) {
 		options = {};
 	    }
 	    if (this.crossOrigin === true) {
@@ -2699,10 +2726,10 @@
     var AugmentedView = Backbone.View.extend({
 		name: "",
 
-		setName: function(name) { 
+		setName: function(name) {
 		    this.name = name;
 		},
-		getName: function() { 
+		getName: function() {
 		    return this.name;
 		}
     });
@@ -2798,7 +2825,7 @@
 
     /**
      * Application Context
-     * 
+     *
      * Collection of data for use to define the application
      */
     var applicationContextModel = Augmented.Model.extend({
@@ -2863,7 +2890,7 @@
 
 	}
 
-	this.getAllPrivileges = function() { 
+	this.getAllPrivileges = function() {
 	    if (this.model
 		    && this.model.attributes.security.privilege != undefined) {
 		var priv = this.model.attributes.security.privilege;
@@ -2983,7 +3010,7 @@
     var applicationContextFactory = {
 	    getApplicationContext : function() {
 		if(!Augmented.ApplicationContext) {
-		    Augmented.ApplicationContext = new applicationContext(); 
+		    Augmented.ApplicationContext = new applicationContext();
 		}
 		return Augmented.ApplicationContext;
 	    }

@@ -7,7 +7,7 @@ define([
 		it('is defined', function() {
 			expect(Augmented.Utility).toBeDefined();
 		});
-		
+
 		describe('Given AugmentedMap', function() {
 			it('is defined', function() {
 				expect(Augmented.Utility.AugmentedMap).toBeDefined();
@@ -102,19 +102,18 @@ define([
 				expect(map.values().length).toEqual(3);
 			});
 		});
-		
+
 		describe('Given Augmented Object Extend', function() {
-			
 			it('Extends an object with data', function() {
 				expect(Augmented.Utility.extend({}, {"A": "B"})).toEqual({"A": "B"});
 			});
 		});
 
 		describe('Given Resource Bundle Support and Message Utilities', function() {
-			Augmented.Utility.ResourceBundle.getBundle({ 
-				name: 'scripts/bundle/Messages', 
-				mode: 'both', 
-				cache: true 
+			Augmented.Utility.ResourceBundle.getBundle({
+				name: 'scripts/bundle/Messages',
+				mode: 'both',
+				cache: true
 			});
 
 			describe('Given ResourceBundle', function() {
@@ -189,11 +188,11 @@ define([
 					expect(Augmented.Utility.MessageKeyFormatter.format(emptyError)).toBeDefined();
 				});
 
-				it('returns the correct string for a complete error model', function() {	
+				it('returns the correct string for a complete error model', function() {
 					expect(Augmented.Utility.MessageKeyFormatter.format(errorComplete)).toBe(keyComplete);
 				});
 
-				it('returns the correct string for a partial error model', function() {	
+				it('returns the correct string for a partial error model', function() {
 					expect(Augmented.Utility.MessageKeyFormatter.format(errorPartial)).toBe(keyPartial);
 				});
 			});
