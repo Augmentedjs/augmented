@@ -13,7 +13,7 @@ require.config({
 		'augmented': 'core/augmented',
 		'augmentedPresentation': 'presentation/augmentedPresentation',
 		'augmentedService': 'service/augmentedService',
-		    
+
 		'jasmine': 'lib/jasmine-2.x/jasmine',
 		'jasmine_html': 'lib/jasmine-2.x/jasmine-html',
 		'boot': 'lib/jasmine-2.x/boot'
@@ -42,12 +42,12 @@ require.config({
 			'deps': ['backbone'],
 			'exports': 'Augmented'
 		},
-		
+
 		augmentedPresentation: {
 			'deps': ['jquery', 'underscore', 'augmented'],
 			'exports': 'augmentedPresentation'
 		},
-		
+
 		augmentedService: {
 			'deps': ['jquery', 'mockjax', 'underscore', 'augmented'],
 			'exports': 'augmentedService'
@@ -68,7 +68,7 @@ require.config({
 });
 
 //Define all of your specs here. These are RequireJS modules.
-var specs = [ 'core/test/coreSpec', 
+var specs = [ 'core/test/coreSpec',
               'core/test/applicationContextSpec',
               'core/test/validationSpec',
               'core/test/localStorageSpec',
@@ -76,7 +76,8 @@ var specs = [ 'core/test/coreSpec',
               'core/test/polyfillSpec',
               'core/test/ajaxSpec',
               'core/test/applicationSpec',
-              
+							'core/test/securitySpec',
+
               'presentation/test/presentationSpec',
               'service/test/mockServiceSpec'
             ];
@@ -92,7 +93,7 @@ require([ 'augmented', 'boot' ], function(Augmented) {
 
 		// Initialize the HTML Reporter and execute the environment (setup by `boot.js`)
 		window.onload();
-		
+
 		$("#augmented").html("Version " + Augmented.VERSION + " (" + Augmented.codename + ") Release " + Augmented.releasename);
 	});
 });

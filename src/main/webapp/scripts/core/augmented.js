@@ -4,6 +4,8 @@
  * @author Bob Warren
  *
  * @requires Backbone.js
+ * @module Augmented
+ * @version 1.0.0
  */
 (function(root, factory) {
 
@@ -33,23 +35,35 @@
      * restored later on, if `noConflict` is used (just like Backbone)
      */
     var previousAugmented = root.Augmented;
-
+    /**
+     * The standard version property
+     * @constant VERSION
+     */
     Augmented.VERSION = '1.0.0';
+    /**
+     * A codename for internal use
+     * @constant codename
+     */
     Augmented.codename = "JC Denton";
+    /**
+     * A release name to help with identification of minor releases
+     * @constant releasename
+     */
     Augmented.releasename = "UNATCO";
 
-    /*
+    /**
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'
      * variable to its previous owner. Returns a reference to 'this' Augmented
      * object.
+     * @property Augmented.noConflict
      */
     Augmented.noConflict = function() {
-		root.Augmented = previousAugmented;
-		return this;
+  		root.Augmented = previousAugmented;
+  		return this;
     };
 
 
-    /**
+    /*
      * Base functionality
      * Set of base capabilities used throughout the framework
      * . ajax
@@ -57,11 +71,16 @@
      * . isFunction
      */
 
+     /**
+      * Augmented.extend - Can extend base classes via .extend simular to Backbone.js
+      * @function Augmented.extend
+      */
     Augmented.extend = Backbone.Model.extend;
 
     /**
      * Augmented.isFunction
-     * returns if called name is a function
+     * @function Augmented.isFunction
+     * @returns returns true if called name is a function
      * simular to jQuery .isFunction method
      */
     var isFunction = function(name) {
@@ -72,7 +91,8 @@
 
     /**
      * Augmented.result
-     * returns named property in an object
+     * @function Augmented.result
+     * @returns returns named property in an object
      * simular to underscore .result method
      */
      var res = function(object, property) {
@@ -83,7 +103,8 @@
 
      Augmented.result = res;
 
-    /** AJAX capability using simple jQuery-like API
+    /**
+     * AJAX capability using simple jQuery-like API
      * Supports the following object properties and features:
      *
      * method
@@ -97,7 +118,8 @@
      * password
      * withCredentials
      * cache
-     *
+     * @function Augmented.ajax
+     * @param {object} ajaxObject object of configuration properties and callbacks.
      * @returns success or failure callback
      */
     Augmented.ajax = function(ajaxObject) {
@@ -152,72 +174,84 @@
      * Polyfills for basic capability of ES5.1 and ES6
      *
      * Object.keys Object.create Array.isArray Array.indexOf
-     *
+     * @function Object.keys
      */
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FObject%2Fkeys
     if (!Object.keys) {
-	Object.keys = (function () {
-	    var hasOwnProperty = Object.prototype.hasOwnProperty,
-	    hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
-	    dontEnums = [
-	                 'toString',
-	                 'toLocaleString',
-	                 'valueOf',
-	                 'hasOwnProperty',
-	                 'isPrototypeOf',
-	                 'propertyIsEnumerable',
-	                 'constructor'
-	                 ],
-	                 dontEnumsLength = dontEnums.length;
+  	Object.keys = (function () {
+  	    var hasOwnProperty = Object.prototype.hasOwnProperty,
+  	    hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+  	    dontEnums = [
+  	                 'toString',
+  	                 'toLocaleString',
+  	                 'valueOf',
+  	                 'hasOwnProperty',
+  	                 'isPrototypeOf',
+  	                 'propertyIsEnumerable',
+  	                 'constructor'
+  	                 ],
+  	                 dontEnumsLength = dontEnums.length;
 
-	    return function (obj) {
-		if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null) {
-		    throw new TypeError('Object.keys called on non-object');
-		}
+  	    return function (obj) {
+  		if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null) {
+  		    throw new TypeError('Object.keys called on non-object');
+  		}
 
-		var result = [];
+  		var result = [];
 
-		for (var prop in obj) {
-		    if (hasOwnProperty.call(obj, prop)) {
-			result.push(prop);
-		    }
-		}
+  		for (var prop in obj) {
+  		    if (hasOwnProperty.call(obj, prop)) {
+  			result.push(prop);
+  		    }
+  		}
 
-		if (hasDontEnumBug) {
-		    for (var i=0; i < dontEnumsLength; i++) {
-			if (hasOwnProperty.call(obj, dontEnums[i])) {
-			    result.push(dontEnums[i]);
-			}
-		    }
-		}
-		return result;
-	    };
-	})();
-    }
+  		if (hasDontEnumBug) {
+  		    for (var i=0; i < dontEnumsLength; i++) {
+  			if (hasOwnProperty.call(obj, dontEnums[i])) {
+  			    result.push(dontEnums[i]);
+  			}
+  		    }
+  		}
+  		return result;
+  	    };
+  	})();
+  }
 
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create
+    /**
+     * Object.create Polyfill
+     * @function Object.create
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create
+     */
     if (!Object.create) {
-	Object.create = (function(){
-	    function F(){}
+    	Object.create = (function(){
+    	    function F(){}
 
-	    return function(o){
-		if (arguments.length !== 1) {
-		    throw new Error('Object.create implementation only accepts one parameter.');
-		}
-		F.prototype = o;
-		return new F();
-	    };
-	})();
+    	    return function(o){
+    		if (arguments.length !== 1) {
+    		    throw new Error('Object.create implementation only accepts one parameter.');
+    		}
+    		F.prototype = o;
+    		return new F();
+    	    };
+    	})();
     }
 
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FArray%2FisArray
+    /**
+     * Array.isArray Polyfill
+     * @function Array.isArray
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FArray%2FisArray
+     */
     if(!Array.isArray) {
 	Array.isArray = function (vArg) {
 	    return Object.prototype.toString.call(vArg) === "[object Array]";
 	};
     }
 
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FArray%2FindexOf
+    /**
+     * Array.indexOf Polyfill
+     * @function Array.indexOf
+     * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf?redirectlocale=en-US&redirectslug=JavaScript%2FReference%2FGlobal_Objects%2FArray%2FindexOf
+     */
     if (!Array.prototype.indexOf) {
 	Array.prototype.indexOf = function (searchElement /* , fromIndex */ ) {
 	    if (this === null) {
@@ -252,27 +286,29 @@
     }
 
     /**
-     * Object.isFrozen hack if needed
+     * Object.isFrozen hack Polyfill if needed
+     * @function Object.isFrozen
      */
     if (!Object.isFrozen) {
-	Object.isFrozen = function (obj) {
-	    var key = "test_frozen_key";
-	    while (obj.hasOwnProperty(key)) {
-		key += Math.random();
-	    }
-	    try {
-		obj[key] = true;
-		delete obj[key];
-		return false;
-	    } catch (e) {
-		return true;
-	    }
-	};
+    	Object.isFrozen = function (obj) {
+    	    var key = "test_frozen_key";
+    	    while (obj.hasOwnProperty(key)) {
+        		key += Math.random();
+        	    }
+        	    try {
+        		obj[key] = true;
+        		delete obj[key];
+    		return false;
+    	    } catch (e) {
+    		return true;
+    	    }
+    	};
     }
 
     /**
      * Cross-Browser Split 1.0.1 (c) Steven Levithan <stevenlevithan.com>; MIT
      * License An ECMA-compliant, uniform cross-browser split method
+     * @function String.split
      */
 
     if (!String.prototype.split) {
@@ -397,72 +433,43 @@
     /* Packages */
 
     /**
-     * Security Package and API
-     */
-    Augmented.Security = {};
-
-    /** Role (ACL) Security */
-    var roles = [];
-
-    /** OAUTH 2 Tokens */
-    var accessToken = "";
-    var authorizationToken = "";
-
-    var principal = {
-	    fullName: "",
-	    id: 0,
-	    login: "",
-	    roles: roles,
-	    token: {
-			authorization: authorizationToken,
-			access: accessToken
-	    }
-    };
-
-    Augmented.Security.Principal = principal;
-	    var authenticationFactory = function() {
-		this.getPrincipal = function() {
-		    var p = new Augmented.Security.Principal();
-		    return p;
-		};
-
-		this.authorizeApplication = function(applicationName) {
-		    authorizationToken = "";
-		}
-
-		this.access = function(principal) {
-		    accessToken = "";
-		}
-    };
-
-
-    Augmented.Security.AuthenticationFactory = authenticationFactory;
-
-    /**
      * Utility Package
      *
      * Small utilities
+     * @namespace Augmented.Utility
      */
-
     Augmented.Utility = {};
 
-    /** Object Extend native ability vs jQuery.extend() */
+    /**
+     * Object Extend ability simular to jQuery.extend()
+     * @function Augmented.Utility.extend
+     */
     Augmented.Utility.extend = function() {
-	for(var i=1; i<arguments.length; i++)
-	    for(var key in arguments[i])
-		if(arguments[i].hasOwnProperty(key))
-		    arguments[0][key] = arguments[i][key];
-	return arguments[0];
+    	for(var i=1; i<arguments.length; i++)
+    	    for(var key in arguments[i])
+    		if(arguments[i].hasOwnProperty(key))
+    		    arguments[0][key] = arguments[i][key];
+    	return arguments[0];
     };
 
-    /** ES6-like Map */
 
+    /**
+     * ES6-like Map
+     * @constructor Augmented.Utility.AugmentedMap
+     * @param myData {object} Map data to fill map
+     */
     var augmentedMap = function(myData) {
 	this.keys = [];
 	this.data = {};
 
 	// API
 
+  /**
+   * Set the value by key in the map
+   * @function set
+   * @param key {string} name of the key
+   * @param value {any} value for the key
+   */
 	this.set = function(key, value) {
 	    if (key != null && value != null) {
 		if (this.data[key] == null) {
@@ -472,24 +479,52 @@
 	    }
 	};
 
+  /**
+   * Get the value by key in the map
+   * @function get
+   * @param key {string} name of the key
+   * @returns The value for the key
+   */
 	this.get = function(key) {
 	    return this.data[key];
 	};
 
+  /**
+   * Index of the key in the map
+   * @function indexOf
+   * @param key {string} name of the key
+   * @returns index of the key
+   */
 	this.indexOf = function(key) {
 	    return this.keys.indexOf(key);
 	};
 
+  /**
+   * Remove the value by key in the map
+   * @function remove
+   * @param key {string} name of the key
+   */
 	this.remove = function(key) {
 	    var i = this.indexOf(key);
 	    this.keys.splice(i, 1);
 	    delete this.data[key];
 	};
 
+  /**
+   * Has returns whether a key exists in the map
+   * @function has
+   * @param key {string} name of the key
+   * @returns true if the key exists in the map
+   */
 	this.has = function(key) {
 	    return (this.indexOf(key) !== -1);
 	};
 
+  /**
+   * Iterator forEach key to value in the map
+   * @function forEach
+   * @param fn {function} callback for the iterator
+   */
 	this.forEach = function(fn) {
 	    if (typeof fn !== 'function') {
 		return;
@@ -503,10 +538,21 @@
 	    }
 	};
 
+  /**
+   * Get the key for the index in the map
+   * @function key
+   * @param i {number} index of the key
+   * @returns the key at index
+   */
 	this.key = function(i) {
 	    return this.keys[i];
 	};
 
+  /**
+   * The entries value object in the map
+   * @function entries
+   * @returns Array of entries value objects
+   */
 	this.entries = function() {
 	    var len = this.keys.length;
 	    var entries = new Array(len);
@@ -519,6 +565,11 @@
 	    return entries;
 	};
 
+  /**
+   * The values in the map as an Array
+   * @function values
+   * @returns values as an Array
+   */
 	this.values = function() {
 	    var len = this.keys.length;
 	    var values = new Array(len);
@@ -528,24 +579,49 @@
 	    return values;
 	};
 
+  /**
+   * Clear the map
+   * @function clear
+   */
 	this.clear = function() {
 	    this.keys = [];
 	    this.data = {};
 	};
 
+  /**
+   * The size of the map in keys
+   * @function size
+   * @returns size of map by keys
+   */
 	this.size = function() {
 	    return this.keys.length;
 	};
 
+  /**
+   * Represent the map in JSON
+   * @function toJSON
+   * @returns JSON of the map
+   */
 	this.toJSON = function() {
 	    return this.data;
 	};
 
+  /**
+   * Represent the map in a String of JSON
+   * @function toString
+   * @returns Stringified JSON of the map
+   */
 	this.toString = function() {
 	    return JSON.stringify(this.data);
 	};
 
 	// non-es6 API
+
+  /**
+   * Checks of the map is empty (not ES6)
+   * @function isEmpty
+   * @returns true if the map is empty
+   */
 	this.isEmpty = function() {
 	    return this.keys.length === 0;
 	};
@@ -592,26 +668,121 @@
 
     /**
      * Augmented Object
-	 * Base class for other classes to extend from
-	 * triggers events with Backbone.Events
+	  * Base class for other classes to extend from
+	   * triggers events with Backbone.Events
+     * @constructor Augmented.Object
      */
 	Augmented.Object = function(options) {
     	this.options = Augmented.Utility.extend({}, Augmented.result(this, 'options'), options);
 	    this.initialize.apply(this, arguments);
 	};
 
+  /**
+   * Entend the Object as a new instance
+   * @function Augmented.Object.extend
+   * @returns Child class of Augmented.Object
+   */
   	Augmented.Object.extend = Augmented.extend;
 
   	Augmented.Utility.extend(Augmented.Object.prototype, Backbone.Events, {
   		initialize: function() {}
 	});
 
+  /**
+   * Security Package and API
+   * @namespace Augmented.Security
+   */
+  Augmented.Security = {};
+  Augmented.Security.Client = {};
+
+  /** OAUTH 2 Tokens */
+  var accessToken = "";
+  var authorizationToken = "";
+
+  var principal = {
+    fullName: "",
+    id: 0,
+    login: "",
+    roles: [],
+    privileges: [],
+    token: {
+    authorization: authorizationToken,
+    access: accessToken
+    }
+  };
+
+  Augmented.Security.Principal = principal;
+
+  Augmented.Security.ClientType = { OAUTH2 : 0,
+                                    ACL: 1
+                                  };
+
+  var abstractSecurityClient = Augmented.Object.extend({
+    type: null,
+    principal: null,
+    getPrincipal: function() {
+        if (!this.principal) {
+          this.principal = new Augmented.Security.Principal();
+        }
+        return this.principal;
+    }
+  });
+
+  Augmented.Security.Client.OAUTH2Client = abstractSecurityClient.extend({
+    type: Augmented.Security.ClientType.OAUTH2,
+    accessToken: "",
+    authorizationToken: "",
+    authorize: function(applicationName) {
+      // TODO: Go authorize the app and get a token
+      this.authorizationToken = "";
+    },
+    // TODO: Refresh the token and store it
+    access: function(principal) {
+      this.accessToken = "";
+    }
+  });
+
+  /** Role/Privilege (ACL) Security */
+  Augmented.Security.Client.ACLClient = abstractSecurityClient.extend({
+    type: Augmented.Security.ClientType.ACL,
+    roles: [],
+    privileges: [],
+
+    getRoles: function() {
+      return this.roles;
+    },
+    getPrivileges: function() {
+      return this.privileges;
+    }
+  });
+
+  var authenticationFactory = {
+    getSecurityClient: function(clientType) {
+        //if (typeof clientType === Augmented.Security.ClientType) {
+          if (clientType === Augmented.Security.ClientType.OAUTH2) {
+            return new Augmented.Security.Client.OAUTH2Client();
+          } else if (clientType === Augmented.Security.ClientType.ACL) {
+            return new Augmented.Security.Client.ACLClient();
+          }
+        //}
+        return null;
+    }
+  };
+
+  /**
+   * AuthenticationFactory Class
+   * Returns a client of given type for use with security
+   */
+  Augmented.Security.AuthenticationFactory = authenticationFactory;
 
 
-    /** Validation framework - forked from TV4 and extended */
+    /** Validation framework - forked from TV4 and extended
+     * @see https://github.com/geraintluff/uri-templates
+     * but with all the de-substitution stuff removed
+     * @constructor
+    */
     var Validator = function() {
-	// Based on: https://github.com/geraintluff/uri-templates, but with all
-	// the de-substitution stuff removed
+	//
 
 	var uriTemplateGlobalModifiers = {
 		"+": true,
@@ -2123,6 +2294,7 @@
 
     /**
      * Fork of Jquery i18n plugin turned component
+     * @constructor
      */
     var i18nBase = function() {
 	var i18n = {};
@@ -2147,6 +2319,7 @@
 	 * Sample usage for a bundles/Messages.properties bundle:
 	 * i18n.properties({ name: 'Messages', language: 'en_US', path:
 	 * 'bundles' });
+   * @function properties
 	 *
 	 * @param name
 	 *                (string/string[], optional) names of file to load (eg,
@@ -2219,6 +2392,7 @@
 	/**
 	 * When configured with mode: 'map', allows access to bundle values by
 	 * specifying its key. Eg, prop('com.company.bundles.menu_add')
+   * @function prop
 	 */
 	this.prop = function(key /*
 				     * Add parameters as function arguments as
@@ -2371,12 +2545,20 @@
 	    return s;
 	};
 
-	/** Language reported by browser, normalized code */
+	/**
+   * Language reported by browser, normalized code
+   * @function browserLang
+    * @returns Browser language code
+   */
 	function browserLang() {
 	    return normaliseLanguageCode(navigator.language /* Mozilla */ || navigator.userLanguage /* IE */);
 	};
 
-	/** Load and parse .properties files */
+	/** Load and parse .properties files
+   * @function loadAndParseFile
+   * @param filename
+   * @param settings
+   */
 	function loadAndParseFile(filename, settings) {
 	    Augmented.ajax({
 		url: filename,
@@ -2390,7 +2572,12 @@
 	    });
 	}
 
-	/** Parse .properties files */
+	/**
+   * Parse .properties files
+   * @function parseData
+   * @param data
+   * @param mode
+   */
 	function parseData(data, mode) {
 	    var parsed = '';
 	    var parameters = data.split(/\n/);
@@ -3154,6 +3341,7 @@
 
     /**
      * Application Class for use to define an application
+     * @constructor
      */
     var application = function() {
 		var metadata = new Augmented.Utility.AugmentedMap();
