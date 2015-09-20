@@ -77,6 +77,7 @@ var specs = [ 'core/test/coreSpec',
               'core/test/ajaxSpec',
               'core/test/applicationSpec',
 							'core/test/securitySpec',
+							'core/test/loggerSpec',
 
               'presentation/test/presentationSpec',
               'service/test/mockServiceSpec'

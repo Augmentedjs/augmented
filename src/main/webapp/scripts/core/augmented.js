@@ -39,17 +39,17 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = '1.0.0';
+    Augmented.VERSION = '0.1.0';
     /**
      * A codename for internal use
      * @constant codename
      */
-    Augmented.codename = "JC Denton";
+    Augmented.codename = "Adam Jensen";
     /**
      * A release name to help with identification of minor releases
      * @constant releasename
      */
-    Augmented.releasename = "UNATCO";
+    Augmented.releasename = "Tai Yong";
 
     /**
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'
@@ -452,6 +452,21 @@
     	return arguments[0];
     };
 
+    /**
+     * Augmented Array Utility
+     * @function Augmented.Utility.extend
+     */
+    Augmented.Utility.Array = function(arr) {
+      /**
+       * Has returns whether a key exists in the Array
+       * @function has
+       * @param key {string} name of the key
+       * @returns true if the key exists in the Array
+       */
+    	this.has = function(key) {
+    	    return (arr.indexOf(key) !== -1);
+    	};
+    };
 
     /**
      * ES6-like Map
@@ -687,6 +702,71 @@
   	Augmented.Utility.extend(Augmented.Object.prototype, Backbone.Events, {
   		initialize: function() {}
 	});
+
+     Augmented.Logger = {};
+
+     /**
+      * Augmented Logger
+      * @constructor
+      * @abstract
+      */
+     var abstractLogger = function(l) {
+       this.loggerLevel = (l) ? l : "info";
+
+       this.getLogTime = function() {
+           var now = new Date();
+           return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() + " " +
+            now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds();
+       }
+
+       this.log = function(message, level) {
+            if (message) {
+                if (!level) {
+                    level = "info";
+                }
+
+                if (this.loggerLevel === "debug" && level === "debug") {
+                    this.logMe(this.getLogTime() + " [debug] " + message);
+                } else if (level === "error") {
+                    this.logMe(this.getLogTime() + " [error] " + message);
+                } else if (this.loggerLevel === "debug" || this.loggerLevel === "info") {
+                    this.logMe(this.getLogTime() + " [info] " + message);
+                }
+            }
+       }
+
+       this.info = function(message) {
+         this.log(message, "info");
+       }
+       this.error = function(message) {
+         this.log(message, "error");
+       }
+       this.debug = function(message) {
+           this.log(message, "debug");
+       }
+       //this.logMe = function(message) {}
+
+   };
+
+    var consoleLogger = function() {
+       abstractLogger.apply(this, arguments);
+    };
+    consoleLogger.prototype = Object.create(abstractLogger.prototype);
+    consoleLogger.prototype.constructor = consoleLogger;
+
+    consoleLogger.prototype.logMe = function(message) {
+        console.log(message);
+    }
+
+     Augmented.Logger.LoggerFactory = {
+       getLogger: function(type, level) {
+         if (type === 'console') {
+           return new consoleLogger(level);
+         }
+       }
+     }
+
+
 
   /**
    * Security Package and API
@@ -2911,14 +2991,29 @@
     Augmented.Utility.extend(AugmentedCollection, Augmented.Object);
 
     var AugmentedView = Backbone.View.extend({
-		name: "",
+  		name: "",
+  		setName: function(name) {
+  		    this.name = name;
+  		},
+  		getName: function() {
+  		    return this.name;
+  		},
+      security: [],
+      setSecurity: function(security) {
+        if (security != null && Array.isArray(security)) {
+  		    this.security = security;
+        }
+  		},
+  		getSecurity: function() {
+  		    return this.security;
+  		},
+      matchesSecurityItem: function(match) {
+        return (this.security.indexOf(match) !== -1);
+      },
+      canDisplay: function(principal) {
+        return true;
+      }
 
-		setName: function(name) {
-		    this.name = name;
-		},
-		getName: function() {
-		    return this.name;
-		}
     });
 
     // Extend View with Object base functions
@@ -3060,20 +3155,14 @@
 	    return ret;
 	}
 	this.hasRole = function(roleName){
-
+    var ret = false;
 	    if (this.model
 		    && this.model.attributes.security.role != undefined) {
 		var role = this.model.attributes.security.role;
 
-		for (var i = 0, maxi = role.length; i < maxi; ++i) {
-		    if (role[i] == roleName) {
-			return true;
-		    }
-		}
-
-		return false;
-
+		ret = (role.indexOf(roleName) != -1);
 	    }
+	    return ret;
 
 	}
 
@@ -3085,23 +3174,6 @@
 	    }
 	}
 
-	this.hasRole = function(roleName){
-
-	    if (this.model
-		    && this.model.attributes.security.role != undefined) {
-		var role = this.model.attributes.security.role;
-
-		for (var i = 0, maxi = role.length; i < maxi; ++i) {
-		    if (role[i] == roleName) {
-			return true;
-		    }
-		}
-
-		return false;
-
-	    }
-
-	}
 	this.getAllRoles = function(){
 	    if (this.model
 		    && this.model.attributes.security.role != undefined) {

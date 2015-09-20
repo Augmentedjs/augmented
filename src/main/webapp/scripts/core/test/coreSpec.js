@@ -113,5 +113,29 @@ define([
 				expect(Augmented.Collection).toBeDefined();
 			});
 		});
+
+		describe('Given an Augmented View', function() {
+			var view = new Augmented.View();
+
+			it('has an augmented View', function() {
+				expect(Augmented.View).toBeDefined();
+			});
+			it('can set a name property', function() {
+				view.setName("test");
+				expect(view.getName()).toEqual("test");
+			});
+			it('can set security', function() {
+				view.setSecurity(['admin']);
+				expect(view.getSecurity()).not.toEqual([]);
+			});
+			it('can match a security item', function() {
+				view.setSecurity(['admin', 'bubba']);
+				expect(view.matchesSecurityItem('bubba')).toBeTruthy();
+			});
+			it('contains a overridable canDisplay', function() {
+				expect(view.canDisplay()).toBeTruthy();
+			});
+
+		});
 	});
 });

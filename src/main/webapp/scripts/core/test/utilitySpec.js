@@ -8,6 +8,14 @@ define([
 			expect(Augmented.Utility).toBeDefined();
 		});
 
+    describe('Given an Array Utility', function() {
+      var arr = [ 'x', 'y', 'z'];
+      it('can check if an Array has an item', function() {
+        var au = new Augmented.Utility.Array(arr);
+        expect(au.has('z')).toBeTruthy();
+      });
+    });
+
 		describe('Given AugmentedMap', function() {
 			it('is defined', function() {
 				expect(Augmented.Utility.AugmentedMap).toBeDefined();
