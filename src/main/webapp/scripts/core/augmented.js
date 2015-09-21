@@ -103,6 +103,14 @@
 
      Augmented.result = res;
 
+     var mockXHR = {
+         responseType: "",
+         responseText: "",
+         status: 200,
+         send: function() { this.onload(); },
+         setRequestHeader: function(header, value) { }
+     }
+
     /**
      * AJAX capability using simple jQuery-like API
      * Supports the following object properties and features:
@@ -118,6 +126,7 @@
      * password
      * withCredentials
      * cache
+     * mock - special flag for mocking response
      * @function Augmented.ajax
      * @param {object} ajaxObject object of configuration properties and callbacks.
      * @returns success or failure callback
@@ -130,7 +139,7 @@
   	        	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
   	        	    var cache = (ajaxObject.cache) ? (ajaxObject.cache) : true;
 
-  	        	    var xhr = new XMLHttpRequest();
+  	        	    var xhr = (ajaxObject.mock) ? new mockXHR() : new XMLHttpRequest();
 
   	        	    var async = (ajaxObject.async !== undefined) ? ajaxObject.async : true;
 
@@ -151,14 +160,14 @@
   	        	    xhr.setRequestHeader('Content-Type', (ajaxObject.contentType) ? ajaxObject.contentType : 'text/plain');
 
   	        	    if (!cache) {
-  	        		xhr.setRequestHeader('Cache-Control', 'no-cache');
+  	        		           xhr.setRequestHeader('Cache-Control', 'no-cache');
   	        	    }
 
   	        	    xhr.onload = function() {
   	        		    if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 204) {
-  	        			return ajaxObject.success(xhr.responseText, xhr.status);
+  	        			              return ajaxObject.success(xhr.responseText, xhr.status);
   	        		    } else {
-  	        			return ajaxObject.failure(xhr.responseText, xhr.status);
+  	        			              return ajaxObject.failure(xhr.responseText, xhr.status);
   	        		    }
   	        		};
 
@@ -744,8 +753,10 @@
        this.debug = function(message) {
            this.log(message, "debug");
        }
-       //this.logMe = function(message) {}
-
+       /*
+        * override this in an instance
+        * this.logMe = ...
+        */
    };
 
     var consoleLogger = function() {
@@ -758,13 +769,37 @@
         console.log(message);
     }
 
-     Augmented.Logger.LoggerFactory = {
-       getLogger: function(type, level) {
-         if (type === 'console') {
-           return new consoleLogger(level);
-         }
-       }
-     }
+    var restLogger = function() {
+        abstractLogger.apply(this, arguments);
+    };
+
+    restLogger.prototype = Object.create(abstractLogger.prototype);
+    restLogger.prototype.constructor = restLogger;
+    restLogger.prototype.setURI = function(uri) {
+        this.uri = uri;
+    }
+    restLogger.prototype.logMe = function(message) {
+        Augmented.ajax({
+            url: this.uri,
+            method: "POST",
+            contentType: 'text/plain',
+            dataType: 'text',
+            async: true,
+            data: message,
+            success: function (data, status) { this.success(); },
+            failure: function (data, status) { this.failure(); }
+        });
+    }
+
+    Augmented.Logger.LoggerFactory = {
+        getLogger: function(type, level) {
+            if (type === 'console') {
+                return new consoleLogger(level);
+            } else if (type === 'rest') {
+                return new restLogger(level);
+            }
+        }
+    }
 
 
 
@@ -2959,12 +2994,7 @@
 
 		// TODO: Should we validate every model to call this valid or is
 		// this be a 'instance' validation?
-
-
-
-
-		this.validationMessages = Augmented.ValidationFramework
-		.validate(this.toJSON(), this.schema);
+		this.validationMessages = Augmented.ValidationFramework.validate(this.toJSON(), this.schema);
 	    } else {
 		this.validationMessages.valid = true;
 	    }
