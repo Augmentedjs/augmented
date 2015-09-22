@@ -1,32 +1,27 @@
 /**
  * AugmentedPresentation.js - The Presentation Core UI Component and package
- * 
+ *
  * @author Bob Warren
- * 
- * @requires jquery.js
+ *
  * @requires underscore.js
  * @requires augmented.js
  */
 (function(moduleFactory) {
     if (typeof exports === 'object') {
-	module.exports = moduleFactory(require('jquery'), require('underscore'), require('augmented'));
+	module.exports = moduleFactory(require('underscore'), require('augmented'));
     } else if (typeof define === 'function' && define.amd) {
-	define([ 'jquery', 'underscore', 'augmented' ], moduleFactory);
+	define([ 'underscore', 'augmented' ], moduleFactory);
     } else {
-	window.Augmented.Presentation = moduleFactory(window.$, window._, window.Augmented);
+	window.Augmented.Presentation = moduleFactory(window._, window.Augmented);
     }
-}(function($, _, Augmented) {
+}(function(_, Augmented) {
     Augmented.Presentation = {};
 
-    Augmented.Presentation.VERSION = '1.0.0';
-
-    /** 
-     * Navigation Component
-     */
+    Augmented.Presentation.VERSION = '0.1.0';
 
     /**
      * Augmented Presentation View extension
-     * 
+     *
      * Two-way binding to models
      */
     Augmented.Utility.extend(Augmented.View, {
@@ -54,17 +49,17 @@
 
 	    var data = _(n).reduce(function(obj, field) {
 		switch (field.type) {
-		case 'number': 
+		case 'number':
 		    if (field.value !== "") {
 			obj[field.name] = parseFloat(field.value); // for fields that are numbers.
 		    }
 		    break;
 
-		case 'checkbox': 
+		case 'checkbox':
 		    obj[field.name] = (field.value === 'on') ? true : false; // for checkboxes.
 		    break;
 
-		default: 
+		default:
 		    obj[field.name] = field.value; // default for fields that are text.
 		break;
 		}
@@ -94,7 +89,7 @@
 
 	/**
 	 * Observe a Colleague View
-	 * 
+	 *
 	 * @param colleague
 	 * @param callback
 	 * @param channel
@@ -111,7 +106,7 @@
 
 	/**
 	 * Dismiss a Colleague View
-	 * 
+	 *
 	 * @param colleague
 	 * @param channel
 	 */
@@ -200,7 +195,7 @@
 
 	/**
 	 * Get All the Colleagues for a channel
-	 * 
+	 *
 	 * @param channel
 	 */
 	getColleagues: function(channel) {
@@ -221,7 +216,7 @@
 
 	/**
 	 * Get a specific channel
-	 * 
+	 *
 	 * @param channel
 	 */
 	getChannel: function(channel) {
@@ -315,6 +310,28 @@
 
     Augmented.Presentation.Mediator = abstractMediator;
     Augmented.Presentation.Colleague = abstractColleague;
+
+    /**
+     * Add registration of mediators to the application
+     */
+    var app = function() {
+        Augmented.Application.apply(this, arguments);
+        this.Mediators = [];
+    };
+    app.prototype = Object.create(Augmented.Application.prototype);
+    app.prototype.constructor = app;
+
+    //app.prototype.Mediators = (app.prototype.Mediators) ? [] : [];
+
+    app.prototype.registerMediator = function(mediator) {
+        this.Mediators.push(mediator);
+    }
+
+    app.prototype.getMediators = function() {
+        return this.Mediators;
+    }
+
+    Augmented.Presentation.Application = app;
 
     return Augmented.Presentation;
 }));

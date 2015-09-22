@@ -59,9 +59,9 @@
      */
     Augmented.noConflict = function() {
   		root.Augmented = previousAugmented;
+        Backbone.noConflict();
   		return this;
     };
-
 
     /*
      * Base functionality
@@ -176,8 +176,8 @@
   		}
     };
 
-
-
+    /* Overide Backbone.ajax so models and collections use Augmented Ajax instead */
+    Backbone.ajax = Augmented.ajax;
 
     /**
      * Polyfills for basic capability of ES5.1 and ES6
@@ -2826,15 +2826,16 @@
 	}
     }
 
-    var resourceBundle = new i18nBase();
+    /* Assign an object if null */
+    var resourceBundle = (!resourceBundle) ? new i18nBase() : resourceBundle;
 
     Augmented.Utility.ResourceBundle = {
 	    getBundle: function() {
-		return resourceBundle.properties.apply(this, arguments);
+		          return resourceBundle.properties.apply(this, arguments);
 	    },
 
 	    getString: function() {
-		return resourceBundle.prop.apply(this, arguments);
+		          return resourceBundle.prop.apply(this, arguments);
 	    }
     }
 
@@ -2879,9 +2880,6 @@
 	    }
     };
 
-
-
-
     /**
      * The Validation Framework Base Wrapper Class
      * Provides abstraction for base validation build-in library
@@ -2915,7 +2913,7 @@
 	}
     };
 
-    Augmented.ValidationFramework = new validationFramework();
+    Augmented.ValidationFramework = (!Augmented.ValidationFramework) ? new validationFramework() : Augmented.ValidationFramework;
 
     /**
      * Abstract Augmented Model Supports: CORS Schemas Security * TODO:
@@ -2940,8 +2938,7 @@
 	    if (this.supportsValidation()
 		    && Augmented.ValidationFramework.supportsValidation()) {
 		// validate from Validator
-		this.validationMessages = Augmented.ValidationFramework
-		.validate(this.toJSON(), this.schema);
+		this.validationMessages = Augmented.ValidationFramework.validate(this.toJSON(), this.schema);
 	    } else {
 		this.validationMessages.valid = true;
 	    }
@@ -3033,8 +3030,8 @@
         if (security != null && Array.isArray(security)) {
   		    this.security = security;
         }
-  		},
-  		getSecurity: function() {
+        },
+        getSecurity: function() {
   		    return this.security;
   		},
       matchesSecurityItem: function(match) {
@@ -3445,9 +3442,24 @@
      * Application Class for use to define an application
      * @constructor
      */
-    var application = function() {
+    var application = function(name) {
 		var metadata = new Augmented.Utility.AugmentedMap();
+
+        if (name) {
+            metadata.set("name", name);
+        } else {
+            metadata.set("name", "untitled");
+        }
+
 		this.started = false;
+
+        this.getName = function() {
+            return this.getMetadataItem("name");
+        }
+
+        this.setName = function(n) {
+            return this.setMetadataItem("name", n);
+        }
 
 		this.getMetadata = function() {
 			return metadata;
