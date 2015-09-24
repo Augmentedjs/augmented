@@ -85,6 +85,12 @@ define([
 				expect(app.getMediators().length > 0).toBeTruthy();
 			});
 
+			it('can register an extended Mediator View', function() {
+				var view = Augmented.Presentation.Mediator.extend({ });
+				app.registerMediator(view);
+				expect(app.getMediators().length > 0).toBeTruthy();
+			});
+
 			it('can return a few registered Mediator Views', function() {
 				var view1 = new Augmented.Presentation.Mediator();
 				var view2 = new Augmented.Presentation.Mediator();
@@ -96,6 +102,16 @@ define([
 
 				expect(app.getMediators().length === 3).toBeTruthy();
 			});
+
+			it('has a Stylesheet Registry', function() {
+				expect(app.Stylesheets instanceof Array).toBeTruthy();
+			});
+
+			it('can register a Stylesheet', function() {
+				app.registerStylesheet("x");
+				expect(app.Stylesheets.length > 0).toBeTruthy();
+			});
+
 		});
 	});
 });
