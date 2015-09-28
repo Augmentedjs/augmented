@@ -31,6 +31,11 @@ define([
         		    app.start();
         		    expect(app.started).toBeTruthy();
         		});
+
+				it('can stop', function() {
+        		    app.stop();
+        		    expect(app.started).toBeFalsy();
+        		});
 		});
 	});
 });

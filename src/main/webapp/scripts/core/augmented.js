@@ -5,13 +5,13 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.0.0
+ * @version 0.1.0
  */
 (function(root, factory) {
 
     // Set up Augmented appropriately for the environment. Start with AMD.
     if (typeof define === 'function' && define.amd) {
-	define([ 'backbone', 'exports'],
+       define([ 'backbone', 'exports'],
 		function(Backbone, exports) {
 	    // Export global even in AMD case in case this script is
 	    // loaded with
@@ -84,10 +84,10 @@
      * simular to jQuery .isFunction method
      */
     var isFunction = function(name) {
-     return Object.prototype.toString.call(name) == '[object Function]';
-     }
+        return Object.prototype.toString.call(name) == '[object Function]';
+    };
 
-     Augmented.isFunction = isFunction;
+    Augmented.isFunction = isFunction;
 
     /**
      * Augmented.result
@@ -95,21 +95,32 @@
      * @returns returns named property in an object
      * simular to underscore .result method
      */
-     var res = function(object, property) {
-         if (object == null) return;
-         var value = object[property];
-         return Augmented.isFunction(value) ? value.call(object) : value;
-     };
+    var res = function(object, property) {
+        if (object === null) return;
+        var value = object[property];
+        return Augmented.isFunction(value) ? value.call(object) : value;
+    };
 
-     Augmented.result = res;
+    Augmented.result = res;
 
-     var mockXHR = {
-         responseType: "",
+    var mockXHR = {
+         responseType: "text",
          responseText: "",
+         async: true,
          status: 200,
+         header: {},
+         timeout: 70,
+         open: function(method, uri, async, user, password) {
+             this.url = uri;
+             this.async = async;
+             this.user = user;
+             this.method = method;
+         },
          send: function() { this.onload(); },
-         setRequestHeader: function(header, value) { }
-     }
+         setRequestHeader: function(header, value) {
+             this.header.header = value;
+         }
+     };
 
     /**
      * AJAX capability using simple jQuery-like API
@@ -120,64 +131,74 @@
      * async
      * contentType
      * dataType
+     * beforeSend function
      * success callback
      * failure callback
+     * complete callback
      * user
      * password
      * withCredentials
      * cache
+     * timeout
      * mock - special flag for mocking response
      * @function Augmented.ajax
      * @param {object} ajaxObject object of configuration properties and callbacks.
      * @returns success or failure callback
      */
-    Augmented.ajax = function(ajaxObject) {
-  		if (ajaxObject) {
-  		    var uri = ajaxObject.url;
+    var ajax = Augmented.ajax = function(ajaxObject) {
+  		if (ajaxObject && ajaxObject.url) {
+    	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
+    	    var cache = (ajaxObject.cache) ? (ajaxObject.cache) : true;
 
-  		    if (uri) {
-  	        	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
-  	        	    var cache = (ajaxObject.cache) ? (ajaxObject.cache) : true;
+    	    var xhr = (ajaxObject.mock) ? new mockXHR() : new XMLHttpRequest();
 
-  	        	    var xhr = (ajaxObject.mock) ? new mockXHR() : new XMLHttpRequest();
+            if (ajaxObject.timeout) {
+                xhr.timeout = ajaxObject.timeout;
+            }
+    	    var async = (ajaxObject.async !== undefined) ? ajaxObject.async : true;
 
-  	        	    var async = (ajaxObject.async !== undefined) ? ajaxObject.async : true;
+    	    // CORS
+    	    if (ajaxObject.withCredentials) {
+        		xhr.withCredentials = ajaxObject.withCredentials;
+        		// Sync Not supported for all browsers in CORS mode
+        		async = true;
+    	    }
 
-  	        	    // CORS
-  	        	    if (ajaxObject.withCredentials) {
-  	        		xhr.withCredentials = ajaxObject.withCredentials;
-  	        		// Sync Not supported for all browsers in CORS mode
-  	        		async = true;
-  	        	    }
+    	    if (async && ajaxObject.dataType) {
+                xhr.responseType = (ajaxObject.dataType) ? ajaxObject.dataType : 'text';
+    	    }
 
-  	        	    if (async && ajaxObject.dataType) {
-  	        		xhr.responseType = (ajaxObject.dataType) ? ajaxObject.dataType : 'text';
-  	        	    }
+    	    xhr.open(method, encodeURI(ajaxObject.url), async,
+    		      (ajaxObject.user !== undefined) ? ajaxObject.user : '',
+	            (ajaxObject.password !== undefined) ? ajaxObject.password : '');
+    	    xhr.setRequestHeader('Content-Type', (ajaxObject.contentType) ? ajaxObject.contentType : 'text/plain');
 
-  	        	    xhr.open(method, encodeURI(uri), async,
-  	        		(ajaxObject.user !== undefined) ? ajaxObject.user : '',
-  	        		(ajaxObject.password !== undefined) ? ajaxObject.password : '');
-  	        	    xhr.setRequestHeader('Content-Type', (ajaxObject.contentType) ? ajaxObject.contentType : 'text/plain');
+    	    if (!cache) {
+                xhr.setRequestHeader('Cache-Control', 'no-cache');
+    	    }
 
-  	        	    if (!cache) {
-  	        		           xhr.setRequestHeader('Cache-Control', 'no-cache');
-  	        	    }
+    	    xhr.onload = function() {
+    		    if (xhr.status > 199 && xhr.status < 300) {
+                    ajaxObject.success(xhr.responseText, xhr.status);
+    		    } else if (xhr.status > 399 && xhr.status < 600) {
+                    ajaxObject.failure(xhr.responseText, xhr.status);
+    		    }
+                if (ajaxObject.complete) {
+                    ajaxObject.complete(xhr.responseText, xhr.status);
+                }
+                return xhr;
+    	    };
 
-  	        	    xhr.onload = function() {
-  	        		    if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 204) {
-  	        			              return ajaxObject.success(xhr.responseText, xhr.status);
-  	        		    } else {
-  	        			              return ajaxObject.failure(xhr.responseText, xhr.status);
-  	        		    }
-  	        		};
+            if (ajaxObject.beforeSend) {
+                ajaxObject.beforeSend(xhr);
+            }
 
-  	        	    xhr.send();
-  		    }
+        	xhr.send();
   		}
     };
 
     /* Overide Backbone.ajax so models and collections use Augmented Ajax instead */
-    Backbone.ajax = Augmented.ajax;
+    Backbone.ajax = ajax;
 
     /**
      * Polyfills for basic capability of ES5.1 and ES6
@@ -439,6 +460,38 @@
 	};
     }
 
+    // ES7 Polyfill
+    if (!Array.prototype.includes) {
+        Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
+            'use strict';
+            var O = Object(this);
+            var len = parseInt(O.length) || 0;
+            if (len === 0) {
+                return false;
+            }
+            var n = parseInt(arguments[1]) || 0;
+            var k;
+            if (n >= 0) {
+                k = n;
+            } else {
+                k = len + n;
+                if (k < 0) {
+                    k = 0;
+                }
+            }
+            var currentElement;
+            while (k < len) {
+                currentElement = O[k];
+                if (searchElement === currentElement ||
+                    (searchElement !== searchElement && currentElement !== currentElement)) {
+                    return true;
+                }
+                k++;
+            }
+            return false;
+        };
+    }
+
     /* Packages */
 
     /**
@@ -463,7 +516,7 @@
 
     /**
      * Augmented Array Utility
-     * @function Augmented.Utility.extend
+     * @function Augmented.Utility.Array
      */
     Augmented.Utility.Array = function(arr) {
       /**
@@ -692,8 +745,8 @@
 
     /**
      * Augmented Object
-	  * Base class for other classes to extend from
-	   * triggers events with Backbone.Events
+	 * Base class for other classes to extend from
+	 * triggers events with Backbone.Events
      * @constructor Augmented.Object
      */
 	Augmented.Object = function(options) {
@@ -720,39 +773,44 @@
       * @abstract
       */
      var abstractLogger = function(l) {
-       this.loggerLevel = (l) ? l : "info";
+         this.label = { info: "info",
+                        debug: "debug",
+                        error: "error"
+                      };
+
+       this.loggerLevel = (l) ? l : this.label.info;
 
        this.getLogTime = function() {
            var now = new Date();
            return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() + " " +
             now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds();
-       }
+       };
 
        this.log = function(message, level) {
             if (message) {
                 if (!level) {
-                    level = "info";
+                    level = this.label.info;
                 }
 
-                if (this.loggerLevel === "debug" && level === "debug") {
-                    this.logMe(this.getLogTime() + " [debug] " + message);
-                } else if (level === "error") {
-                    this.logMe(this.getLogTime() + " [error] " + message);
-                } else if (this.loggerLevel === "debug" || this.loggerLevel === "info") {
-                    this.logMe(this.getLogTime() + " [info] " + message);
+                if (this.loggerLevel === this.label.debug && level === this.label.debug) {
+                    this.logMe(this.getLogTime() + " [" + this.label.debug + "] " + message);
+                } else if (level === this.label.error) {
+                    this.logMe(this.getLogTime() + " [" + this.label.error + "] " + message);
+                } else if (this.loggerLevel === this.label.debug || this.loggerLevel === this.label.info) {
+                    this.logMe(this.getLogTime() + " [" + this.label.info + "] " + message);
                 }
             }
-       }
+       };
 
        this.info = function(message) {
-         this.log(message, "info");
-       }
+         this.log(message, this.label.info);
+     };
        this.error = function(message) {
-         this.log(message, "error");
-       }
+         this.log(message, this.label.error);
+     };
        this.debug = function(message) {
-           this.log(message, "debug");
-       }
+           this.log(message, this.label.debug);
+       };
        /*
         * override this in an instance
         * this.logMe = ...
@@ -767,7 +825,7 @@
 
     consoleLogger.prototype.logMe = function(message) {
         console.log(message);
-    }
+    };
 
     var restLogger = function() {
         abstractLogger.apply(this, arguments);
@@ -777,9 +835,9 @@
     restLogger.prototype.constructor = restLogger;
     restLogger.prototype.setURI = function(uri) {
         this.uri = uri;
-    }
+    };
     restLogger.prototype.logMe = function(message) {
-        Augmented.ajax({
+        ajax({
             url: this.uri,
             method: "POST",
             contentType: 'text/plain',
@@ -789,17 +847,21 @@
             success: function (data, status) { this.success(); },
             failure: function (data, status) { this.failure(); }
         });
-    }
+    };
+
+    var loggerType = Augmented.Logger.Type = { console: "console",
+                                               rest: "rest"
+                                           };
 
     Augmented.Logger.LoggerFactory = {
         getLogger: function(type, level) {
-            if (type === 'console') {
+            if (type === loggerType.console) {
                 return new consoleLogger(level);
-            } else if (type === 'rest') {
+            } else if (type === loggerType.rest) {
                 return new restLogger(level);
             }
         }
-    }
+    };
 
 
 
@@ -810,23 +872,46 @@
   Augmented.Security = {};
   Augmented.Security.Client = {};
 
-  /** OAUTH 2 Tokens */
-  var accessToken = "";
-  var authorizationToken = "";
-
-  var principal = {
+  var principal = Augmented.Security.Principal = {
     fullName: "",
     id: 0,
     login: "",
-    roles: [],
-    privileges: [],
-    token: {
-    authorization: authorizationToken,
-    access: accessToken
-    }
+    email: ""
   };
 
-  Augmented.Security.Principal = principal;
+  /**
+   * Augmented.Security.Context
+   * Used as a security data storage class
+   * @class
+   */
+  var securityContext = Augmented.Security.Context = function(principal, permissions) {
+      this.principal = (principal) ? principal : "guest";
+      this.permissions = (permissions) ? permissions : [];
+      this.getPrincipal = function() {
+          return this.principal;
+      };
+
+      this.getPermission = function() {
+          return this.permissions;
+      };
+
+      this.setPermissions = function(p) {
+          this.permissions = p;
+      };
+
+      this.addPermission = function(p) {
+          this.permissions.push(p);
+      };
+
+      this.removePermission = function(p) {
+          var i = this.permissions.indexOf(p);
+          this.permissions.splice(i, 1);
+      };
+
+      this.hasPermission = function(p) {
+          return (this.permissions.indexOf(p) != -1);
+      };
+  };
 
   Augmented.Security.ClientType = { OAUTH2 : 0,
                                     ACL: 1
@@ -834,13 +919,7 @@
 
   var abstractSecurityClient = Augmented.Object.extend({
     type: null,
-    principal: null,
-    getPrincipal: function() {
-        if (!this.principal) {
-          this.principal = new Augmented.Security.Principal();
-        }
-        return this.principal;
-    }
+    uri: ""
   });
 
   Augmented.Security.Client.OAUTH2Client = abstractSecurityClient.extend({
@@ -857,38 +936,85 @@
     }
   });
 
-  /** Role/Privilege (ACL) Security */
+  /** Role/Privilege (ACL) Security
+   * assuming data to be the following from an ajax call:
+   * login, u
+  */
   Augmented.Security.Client.ACLClient = abstractSecurityClient.extend({
     type: Augmented.Security.ClientType.ACL,
-    roles: [],
-    privileges: [],
-
-    getRoles: function() {
-      return this.roles;
-    },
-    getPrivileges: function() {
-      return this.privileges;
+    authenticate: function(username, password) {
+        var c = null;
+        ajax({
+            url: this.uri,
+            method: "GET",
+            user: username,
+            password: password,
+            success: function(data, status) {
+                var p = new principal({
+                    fullName: data.fullName,
+                    id: data.id,
+                    login: data.login,
+                    email: data.email
+                });
+                c = new securityContext(p, data.permissions);
+            },
+            failure: function(data, status) {
+                // TODO: Bundle this perhaps
+                throw new Error("Failed to authenticate with response of - " + status);
+            }
+        });
+        return c;
     }
+
   });
 
-  var authenticationFactory = {
-    getSecurityClient: function(clientType) {
-        //if (typeof clientType === Augmented.Security.ClientType) {
-          if (clientType === Augmented.Security.ClientType.OAUTH2) {
-            return new Augmented.Security.Client.OAUTH2Client();
-          } else if (clientType === Augmented.Security.ClientType.ACL) {
-            return new Augmented.Security.Client.ACLClient();
-          }
-        //}
-        return null;
-    }
-  };
+
 
   /**
    * AuthenticationFactory Class
    * Returns a client of given type for use with security
    */
-  Augmented.Security.AuthenticationFactory = authenticationFactory;
+  var authenticationFactory = Augmented.Security.AuthenticationFactory = {
+    getSecurityClient: function(clientType) {
+          if (clientType === Augmented.Security.ClientType.OAUTH2) {
+            return new Augmented.Security.Client.OAUTH2Client();
+          } else if (clientType === Augmented.Security.ClientType.ACL) {
+            return new Augmented.Security.Client.ACLClient();
+          }
+        return null;
+    }
+  };
+
+/**
+ * Augmented.Security.Entry
+ * Used to secure a resource
+ * @class
+ */
+  var securityEntry = Augmented.Security.Entry = function(p, neg) {
+      this.permissions = (p) ? p : [];
+      this.isNegative = (neg) ? neg : false;
+
+      this.getPermissions = function() {
+          return this.permissions;
+      };
+      this.setPermissions = function(p) {
+          this.permissions = p;
+      };
+      this.addPermission = function(p) {
+          this.permissions.push(p);
+      };
+      this.removePermission = function(p) {
+          var i = this.permissions.indexOf(p);
+          this.permissions.splice(i, 1);
+      };
+      this.hasPermission = function(p) {
+          return (this.permissions.indexOf(p) != -1);
+      };
+      this.setNegative = function(n) {
+          this.isNegative = n;
+      };
+  };
+
 
 
     /** Validation framework - forked from TV4 and extended
@@ -2675,7 +2801,7 @@
    * @param settings
    */
 	function loadAndParseFile(filename, settings) {
-	    Augmented.ajax({
+	    ajax({
 		url: filename,
 		async: false,
 		cache: settings.cache,
@@ -3018,29 +3144,28 @@
     Augmented.Utility.extend(AugmentedCollection, Augmented.Object);
 
     var AugmentedView = Backbone.View.extend({
-  		name: "",
-  		setName: function(name) {
-  		    this.name = name;
-  		},
-  		getName: function() {
-  		    return this.name;
-  		},
-      security: [],
-      setSecurity: function(security) {
-        if (security != null && Array.isArray(security)) {
-  		    this.security = security;
-        }
+        name: "",
+        setName: function(name) {
+            this.name = name;
+        },
+        getName: function() {
+            return this.name;
+        },
+        permissions: [],
+        setSecurity: function(permissions) {
+            if (permissions != null && Array.isArray(permissions)) {
+                this.permissions = permissions;
+            }
         },
         getSecurity: function() {
-  		    return this.security;
-  		},
-      matchesSecurityItem: function(match) {
-        return (this.security.indexOf(match) !== -1);
-      },
-      canDisplay: function(principal) {
-        return true;
-      }
-
+            return this.permissions;
+        },
+        matchesSecurityItem: function(match) {
+            return (this.permissions.indexOf(match) !== -1);
+        },
+        canDisplay: function() {
+            return true;
+        }
     });
 
     // Extend View with Object base functions
@@ -3050,260 +3175,11 @@
     Augmented.Model = AugmentedModel;
     Augmented.Collection = AugmentedCollection;
     Augmented.View = AugmentedView;
-    Augmented.History = Backbone.history;
+    Augmented.history = Backbone.history;
+    Augmented.History = Backbone.History;
     Augmented.Router = Backbone.router;
 
-    /**
-     * Application Context
-     * @deprecated Use Augmented.Application and Augmented.Security instead
-     */
-
-    /** Application Context Schema */
-    var applicationContextSchema = {
-	    "id" : "applicationContext",
-	    "type" : "object",
-	    "properties" : {
-		"metadata" : {
-		    "type" : "object",
-		    "required" : true,
-		    "properties" : {
-			"title" : {
-			    "type" : "string",
-			    "required" : true
-			},
-			"context" : {
-			    "type" : "string"
-			}
-		    }
-		},
-		"security" : {
-		    "type" : "object",
-		    "required" : true,
-		    "properties" : {
-			"user" : {
-			    "type" : "string",
-			    "required" : false
-			},
-			"loginName" : {
-			    "type" : "string",
-			    "required" : false
-			},
-			"userName" : {
-			    "type" : "string",
-			    "required" : false
-			},
-			"userId" : {
-			    "type" : "number",
-			    "required" : true
-			},
-			"email" : {
-			    "type" : "string",
-			    "required" : false
-			},
-			"role" : {
-			    "type" : "array",
-			    "required" : true,
-			    "items" : {
-				"type" : "string"
-			    }
-			},
-			"privilege" : {
-			    "type" : "array",
-			    "required" : true,
-			    "items" : {
-				"type" : "string"
-			    }
-			},
-			"oauth" : {
-			    "type" : "object",
-			    "properties" : {
-				"authorization" : {
-				    "type" : "string"
-				},
-				"access" : {
-				    "type" : "string"
-				}
-			    }
-			}
-		    }
-		}
-	    }
-    };
-
     /** Core Package */
-
-    /**
-     * Application Context
-     *
-     * Collection of data for use to define the application
-     */
-    var applicationContextModel = Augmented.Model.extend({
-	schema: applicationContextSchema,
-	defaults: {
-	    "metadata" : {
-		"title" : "",
-		"context" : ""
-	    },
-	    "principal": "",
-	    "security" : {  // Replace this
-		"loginName" : "",
-		"userName" : "",
-		"userId" : 0,
-		"email" : "",
-		"role" :[],
-		"privilege" : [],
-		"oauth" : {
-		    "authorization" : "",
-		    "access" : ""
-		}
-	    }
-	},
-	save: function() {
-	    throw new Error("Not Supported!");
-	},
-	remove: function() {
-	    throw new Error("Not Supported!");
-	}
-    });
-
-    var applicationContext = function() {
-	if(!this.model) {
-	    this.model = new applicationContextModel();
-	}
-	this.hasPrivilege = function(privilegeName) {
-	    var ret = false;
-
-	    if (this.model
-		    && this.model.attributes.security.privilege != undefined) {
-		var priv = this.model.attributes.security.privilege;
-
-		ret = (priv.indexOf(privilegeName) != -1);
-	    }
-	    return ret;
-	}
-	this.hasRole = function(roleName){
-    var ret = false;
-	    if (this.model
-		    && this.model.attributes.security.role != undefined) {
-		var role = this.model.attributes.security.role;
-
-		ret = (role.indexOf(roleName) != -1);
-	    }
-	    return ret;
-
-	}
-
-	this.getAllPrivileges = function() {
-	    if (this.model
-		    && this.model.attributes.security.privilege != undefined) {
-		var priv = this.model.attributes.security.privilege;
-		return priv;
-	    }
-	}
-
-	this.getAllRoles = function(){
-	    if (this.model
-		    && this.model.attributes.security.role != undefined) {
-		var priv = this.model.attributes.security.role;
-		return priv;
-	    }
-	}
-
-	this.hasMetadata = function(metadataName) {
-	    var ret = false;
-
-	    if (this.model && this.model.attributes.metadata != undefined
-		    && (metadataName in this.model.attributes.metadata)) {
-		ret = true;
-	    }
-	    return ret;
-	}
-
-	this.getAllMetadata = function() {
-
-	    if (this.model && this.model.attributes.metadata != undefined) {
-		return this.model.attributes.metadata;
-	    }
-
-	}
-
-	this.getMetadata = function(metadataName){
-
-	    if (this.model && this.model.attributes.metadata != undefined
-		    && (metadataName in this.model.attributes.metadata)) {
-		if (this.model.attributes.metadata.hasOwnProperty(metadataName)) {
-		    return this.model.attributes.metadata[metadataName];
-		}
-	    }
-	}
-
-	this.setMetadata = function(metadata)
-	{
-	    if (this.model && this.model.attributes.metadata != undefined){
-
-		this.model.attributes.metadata[metadata[0]] = metadata[1];
-
-	    }
-	    return this.model.attributes.metadata;
-	}
-
-
-	this.authorize = function() {
-
-	}
-	this.access = function() {
-
-	}
-	this.fetch = function() {
-	    if (this.model) {
-		this.model.fetch();
-	    }
-	}
-	this.save = function() {
-	    if (this.model) {
-		this.model.save();
-	    }
-	}
-	this.isValid = function() {
-	    if (this.model) {
-		return this.model.isValid();
-	    }
-	    return false;
-	}
-	this.populate = function(data) {
-	    if (this.model && data) {
-		this.model = new applicationContextModel(data);
-	    }
-	}
-	this.setURI = function(uri) {
-	    if (this.model && uri) {
-		this.model.url = uri;
-		this.model.attributes.url = uri;
-	    }
-	}
-
-	this.clear = function()
-	{
-	    this.model = new applicationContextModel();
-	}
-
-    };
-
-    /** Application Context - The Security Object for the framework */
-
-    Augmented.ApplicationContext;
-
-    var applicationContextFactory = {
-	    getApplicationContext : function() {
-		if(!Augmented.ApplicationContext) {
-		    Augmented.ApplicationContext = new applicationContext();
-		}
-		return Augmented.ApplicationContext;
-	    }
-    };
-
-    Augmented.ApplicationContextFactory = applicationContextFactory;
-
 
     /** local Storage */
 
@@ -3443,15 +3319,18 @@
      * @constructor
      */
     var application = function(name) {
-		var metadata = new Augmented.Utility.AugmentedMap();
+		var metadata;
+        this.started = false;
+
+        if (!metadata) {
+            metadata = new Augmented.Utility.AugmentedMap();
+        }
 
         if (name) {
             metadata.set("name", name);
         } else {
             metadata.set("name", "untitled");
         }
-
-		this.started = false;
 
         this.getName = function() {
             return this.getMetadataItem("name");
@@ -3474,10 +3353,17 @@
 		}
 
 		this.start = function() {
-		    if (!Augmented.History.started) {
-				Augmented.History.start();
+		    if (!Augmented.history.started) {
+				Augmented.history.start();
 		    }
 		    this.started = true;
+		}
+
+        this.stop = function() {
+		    if (Augmented.history.started) {
+				Augmented.history.stop();
+		    }
+		    this.started = false;
 		}
     };
 

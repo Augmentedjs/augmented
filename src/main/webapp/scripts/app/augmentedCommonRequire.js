@@ -1,9 +1,9 @@
-require.config({ 
-	'paths': { 
-    	'jquery': augmented.base + 'scripts/lib/jquery/jquery-2.1.4.min',
-		'underscore': augmented.base + 'scripts/lib/underscore-min',
+require.config({
+	'paths': {
+    	'jquery': augmented.base + 'scripts/lib/jquery-2.1.4.min',
+		'underscore': augmented.base + 'scripts/lib/lodash.min',
 		'backbone': augmented.base + 'scripts/lib/backbone-min',
-		'handlebars': augmented.base + 'scripts/lib/handlebars-v3.0.3',
+		'handlebars': augmented.base + 'scripts/lib/handlebars-v4.0.2',
 		'text': augmented.base + 'scripts/lib/text',
 		'json': augmented.base + 'scripts/lib/json',
 		'mockjax': augmented.base + 'scripts/lib/jquery.mockjax.js',
@@ -11,7 +11,7 @@ require.config({
 		'augmented': augmented.base + 'scripts/core/augmented',
 		'augmentedPresentation':  augmented.base + 'scripts/presentation/augmentedPresentation',
 		'augmentedService':  augmented.base + 'scripts/service/augmentedService',
-	},	
+	},
 	'shim': {
 		jquery: {
 			'exports': '$'
@@ -35,17 +35,17 @@ require.config({
 			'deps': ['backbone'],
 			'exports': 'Augmented'
 		},
-		
+
 		augmentedPresentation: {
 			'deps': ['jquery', 'underscore', 'augmented'],
 			'exports': 'augmentedPresentation'
 		},
-		
+
 		augmentedService: {
 			'deps': ['jquery', 'mockjax', 'underscore', 'augmented'],
 			'exports': 'augmentedService'
 		}
-	}	
-}); 
+	}
+});
 
 require(['augmented']);

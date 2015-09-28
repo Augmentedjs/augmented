@@ -2,10 +2,10 @@ require.config({
 	'baseUrl': 'scripts/',
 
 	'paths': {
-		'jquery': 'lib/jquery/jquery-2.1.4.min',
-		'underscore': 'lib/underscore-min',
+		'jquery': 'lib/jquery-2.1.4.min',
+		'underscore': 'lib/lodash.min',
 		'backbone': 'lib/backbone-min',
-		'handlebars': 'lib/handlebars-v3.0.3',
+		'handlebars': 'lib/handlebars-v4.0.2',
 		'text': 'lib/text',
 		'json': 'lib/json',
 		'mockjax': 'lib/jquery.mockjax',
@@ -13,6 +13,7 @@ require.config({
 		'augmented': 'core/augmented',
 		'augmentedPresentation': 'presentation/augmentedPresentation',
 		'augmentedService': 'service/augmentedService',
+		'augmentedLegacy': 'legacy/legacy',
 
 		'jasmine': 'lib/jasmine-2.x/jasmine',
 		'jasmine_html': 'lib/jasmine-2.x/jasmine-html',
@@ -44,13 +45,18 @@ require.config({
 		},
 
 		augmentedPresentation: {
-			'deps': ['jquery', 'underscore', 'augmented'],
+			'deps': ['augmented'],
 			'exports': 'augmentedPresentation'
 		},
 
 		augmentedService: {
 			'deps': ['jquery', 'mockjax', 'underscore', 'augmented'],
 			'exports': 'augmentedService'
+		},
+
+		augmentedLegacy: {
+			'deps': ['augmented'],
+			'exports': 'augmentedLegacy'
 		},
 
 		jasmine: {
@@ -69,18 +75,19 @@ require.config({
 
 //Define all of your specs here. These are RequireJS modules.
 var specs = [ 'core/test/coreSpec',
-              'core/test/applicationContextSpec',
               'core/test/validationSpec',
               'core/test/localStorageSpec',
               'core/test/utilitySpec',
               'core/test/polyfillSpec',
               'core/test/ajaxSpec',
               'core/test/applicationSpec',
-							'core/test/securitySpec',
-							'core/test/loggerSpec',
+			  'core/test/securitySpec',
+			  'core/test/loggerSpec',
 
               'presentation/test/presentationSpec',
-              'service/test/mockServiceSpec'
+              'service/test/mockServiceSpec',
+
+			  'legacy/test/applicationContextSpec'
             ];
 
 // Load Jasmine - This will still create all of the normal Jasmine browser globals unless `boot.js` is re-written to use the

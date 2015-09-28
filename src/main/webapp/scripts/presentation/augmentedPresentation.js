@@ -3,18 +3,18 @@
  *
  * @author Bob Warren
  *
- * @requires underscore.js
  * @requires augmented.js
+ * @module
  */
 (function(moduleFactory) {
     if (typeof exports === 'object') {
-	module.exports = moduleFactory(require('underscore'), require('augmented'));
+	       module.exports = moduleFactory(require('augmented'));
     } else if (typeof define === 'function' && define.amd) {
-	define([ 'underscore', 'augmented' ], moduleFactory);
+	       define([ 'augmented' ], moduleFactory);
     } else {
-	window.Augmented.Presentation = moduleFactory(window._, window.Augmented);
+	       window.Augmented.Presentation = moduleFactory(window.Augmented);
     }
-}(function(_, Augmented) {
+}(function(Augmented) {
     Augmented.Presentation = {};
 
     Augmented.Presentation.VERSION = '0.1.0';
@@ -82,7 +82,7 @@
     /** @borrows Augmented.View#delegateEvents */
     var undelegateEvents = Augmented.View.prototype.undelegateEvents;
 
-    var abstractMediator = Augmented.View.extend({
+    var abstractMediator = Augmented.Presentation.Mediator = Augmented.View.extend({
 	defaultChannel: "augmentedChannel",
     channels: {},
 	/**
@@ -236,7 +236,7 @@
      *
      * @class
      */
-    var abstractColleague = Augmented.View.extend({
+    var abstractColleague = Augmented.Presentation.Colleague = Augmented.View.extend({
 	/**
 	 * Extend delegateEvents() to set subscriptions
 	 */
@@ -260,28 +260,47 @@
 	 * Subscribe to each subscription
 	 * @param {Object} [subscriptions] An optional hash of subscription to add
 	 */
+     //TODO: not quite working
 	setSubscriptions: function(subscriptions) {
 	    if (subscriptions) {
-		Augmented.Utility.extend(this.subscriptions || {}, subscriptions);
+		          Augmented.Utility.extend(this.subscriptions || {}, subscriptions);
 	    }
 	    subscriptions = subscriptions || this.subscriptions;
-	    if (!subscriptions || _.isEmpty(subscriptions)) {
-		return;
+	    if (!subscriptions || (subscriptions.length === 0)) {
+		          return;
 	    }
 	    // Just to be sure we don't set duplicate
 	    this.unsetSubscriptions(subscriptions);
 
-	    _.each(subscriptions, function(subscription, channel) {
-		var once;
-		if (subscription.$once) {
-		    subscription = subscription.$once;
-		    once = true;
-		}
-		if (_.isString(subscription)) {
-		    subscription = this[subscription];
-		}
-		abstractMediator.subscribe(channel, subscription, this, once);
-	    }, this);
+        var i = 0;
+        for (i; i < subscriptions.length; i++) {
+            var subscription = subscriptions[i];
+            var once = false;
+            if (subscription.$once) {
+                subscription = subscription.$once;
+                once = true;
+            }
+            if (typeof subscription == 'string') {
+                subscription = this[subscription];
+            }
+            this.subscribe(subscription.channel, subscription, this, once);
+        }
+        /*
+        subscriptions.forEach(
+	    //_.each(subscriptions,
+            function(subscription, channel) {
+        		var once;
+        		if (subscription.$once) {
+        		    subscription = subscription.$once;
+        		    once = true;
+        		}
+        		if (typeof subscription == 'string') {
+        		    subscription = this[subscription];
+        		}
+        		abstractMediator.subscribe(channel, subscription, this, once);
+    	    },
+        this);
+        */
 	},
 
 	/**
@@ -290,25 +309,42 @@
 	 */
 	unsetSubscriptions: function(subscriptions) {
 	    subscriptions = subscriptions || this.subscriptions;
-	    if (!subscriptions || _.isEmpty(subscriptions)) {
+	    if (!subscriptions || (subscriptions.length === 0)) {
 		return;
 	    }
-	    _.each(subscriptions, function(subscription, channel) {
-		if (_.isString(subscription)) {
+
+        var i = 0;
+        for (i; i < subscriptions.length; i++) {
+            var subscription = subscriptions[i];
+            var once = false;
+            if (subscription.$once) {
+                subscription = subscription.$once;
+                once = true;
+            }
+            if (typeof subscription == 'string') {
+                subscription = this[subscription];
+            }
+            this.unsubscribe(subscription.channel, subscription.$once || subscription, this);
+        }
+
+        /*
+	    //_.each(subscriptions,
+        subscriptions.forEach(
+            function(subscription, channel) {
+		if (typeof subscription == 'string') {
 		    subscription = this[subscription];
 		}
 		abstractMediator.unsubscribe(channel, subscription.$once || subscription, this);
 	    }, this);
+        */
 	}
     });
 
-    Augmented.Presentation.Mediator = abstractMediator;
-    Augmented.Presentation.Colleague = abstractColleague;
-
     /**
      * Add registration of mediators to the application
+     * @class
      */
-    var app = function() {
+    var app = Augmented.Presentation.Application = function() {
         Augmented.Application.apply(this, arguments);
         this.Mediators = [];
         this.Stylesheets = [];
@@ -352,12 +388,7 @@
             link.href = this.Stylesheets[i];
             headElement.appendChild(link);
         }
-    }
-
-    Augmented.Presentation.Application = app;
-
-
-
+    };
 
     return Augmented.Presentation;
 }));

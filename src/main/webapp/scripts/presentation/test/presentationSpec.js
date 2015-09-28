@@ -63,6 +63,19 @@ define([
 					expect(channels[0].context).toEqual(c);
 				});
 
+				xit('the mediator can add subscriptions to the channel "monkey"', function() {
+					m.observeColleague(c, function() { return "EEAK!";}, "monkey");
+
+					var channels = m.getChannel("monkey");
+
+					var sub = m.getChannel("monkey");
+
+					m.setSubscriptions(sub);
+
+					expect(channels).toBeDefined();
+					expect(channels instanceof Array).toBeTruthy();
+					expect(channels[0].context).toEqual(c);
+				});
 			});
 		});
 
@@ -73,7 +86,7 @@ define([
 			});
 			afterEach(function() {
 				app = null;
-			})
+			});
 
 			it('has a Mediator Registry', function() {
 				expect(app.Mediators instanceof Array).toBeTruthy();
