@@ -355,7 +355,7 @@
         if (mediator) {//} && ((mediator instanceof Augmented.Presentation.Mediator) || (typeof mediator === Augmented.Presentation.Mediator))) {
             this.Mediators.push(mediator);
         }
-    }
+    };
     app.prototype.deregisterMediator = function(mediator) {
         if (mediator) {
             var i = this.Mediators.indexOf(mediator);
@@ -363,23 +363,22 @@
                 this.Mediators.splice(i, 1);
             }
         }
-    }
+    };
     app.prototype.getMediators = function() {
         return this.Mediators;
-    }
+    };
     app.prototype.registerStylesheet = function(s) {
         if (s) {
             this.Stylesheets.push(s);
         }
-    }
+    };
     app.prototype.deregisterStylesheet = function(s) {
         if (s) {
-            var i = this.Stylesheets.indexOf(s);
-            this.Stylesheets.splice(i, 1);
+            this.Stylesheets.splice((this.Stylesheets.indexOf(s)), 1);
         }
-    }
+    };
     app.prototype.attachStylesheets = function() {
-        var headElement = document.getElementByTagName("head")[0];
+        var headElement = document.getElementsByTagName("head")[0];
         var i = 0;
         for (i; i<this.Stylesheets.length; i++) {
             var link = document.createElement("link");

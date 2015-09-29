@@ -9,7 +9,7 @@ define([
 		});
 
 		it('has a version defined', function() {
-			expect(Augmented.VERSION).toBeDefined();;
+			expect(Augmented.VERSION).toBeDefined();
 		});
 
 		it('supports noConflict', function() {
@@ -124,13 +124,17 @@ define([
 				view.setName("test");
 				expect(view.getName()).toEqual("test");
 			});
-			it('can set security', function() {
-				view.setSecurity(['admin']);
-				expect(view.getSecurity()).not.toEqual([]);
+			it('can set permissions', function() {
+				view.addPermission('admin');
+				expect(view.getPermissions().include).not.toEqual([]);
 			});
-			it('can match a security item', function() {
-				view.setSecurity(['admin', 'bubba']);
-				expect(view.matchesSecurityItem('bubba')).toBeTruthy();
+			it('can match a permission', function() {
+				view.setPermissions(['admin', 'bubba']);
+				expect(view.matchesPermission('bubba')).toBeTruthy();
+			});
+			it('does not match a negative permission', function() {
+				view.setPermissions(['admin', 'bubba']);
+				expect(view.matchesPermission('bubba', true)).toBeFalsy();
 			});
 			it('contains a overridable canDisplay', function() {
 				expect(view.canDisplay()).toBeTruthy();

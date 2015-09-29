@@ -2957,11 +2957,11 @@
 
     Augmented.Utility.ResourceBundle = {
 	    getBundle: function() {
-		          return resourceBundle.properties.apply(this, arguments);
+		    return resourceBundle.properties.apply(this, arguments);
 	    },
 
 	    getString: function() {
-		          return resourceBundle.prop.apply(this, arguments);
+		    return resourceBundle.prop.apply(this, arguments);
 	    }
     }
 
@@ -3045,7 +3045,7 @@
      * Abstract Augmented Model Supports: CORS Schemas Security * TODO:
      * implement OAUTH 2
      */
-    var AugmentedModel = Backbone.Model.extend({
+    var augmentedModel = Backbone.Model.extend({
 	schema: null,
 	validationMessages: {
 	    valid: true
@@ -3089,13 +3089,13 @@
     });
 
     // Extend Model with Object base functions
-    Augmented.Utility.extend(AugmentedModel, Augmented.Object);
+    Augmented.Utility.extend(augmentedModel, Augmented.Object);
 
     /**
      * Abstract Augmented Collection Supports: CORS Schemas Security * TODO:
      * implement OAUTH 2
      */
-    var AugmentedCollection = Backbone.Collection.extend({
+    var augmentedCollection = Backbone.Collection.extend({
 	schema: null,
 	validationMessages: {
 	    valid: true
@@ -3141,9 +3141,9 @@
     });
 
 	// Extend Collection with Object base functions
-    Augmented.Utility.extend(AugmentedCollection, Augmented.Object);
+    Augmented.Utility.extend(augmentedCollection, Augmented.Object);
 
-    var AugmentedView = Backbone.View.extend({
+    var augmentedView = Backbone.View.extend({
         name: "",
         setName: function(name) {
             this.name = name;
@@ -3151,17 +3151,42 @@
         getName: function() {
             return this.name;
         },
-        permissions: [],
-        setSecurity: function(permissions) {
-            if (permissions != null && Array.isArray(permissions)) {
-                this.permissions = permissions;
+        permissions: { include: [],
+                       exclude: []
+                     },
+        addPermission: function(permission, negative) {
+            if (permission != null && !Array.isArray(permission)) {
+                var p = (negative) ? this.permissions.exclude : this.permissions.include;
+                p.push(permission);
             }
         },
-        getSecurity: function() {
+        removePermission: function(permission, negative) {
+            if (permission != null && !Array.isArray(permission)) {
+                var p = (negative) ? this.permissions.exclude : this.permissions.include;
+                p.splice((p.indexOf(permission)), 1);
+            }
+        },
+        setPermissions: function(permissions, negative) {
+            if (permissions != null && Array.isArray(permissions)) {
+                if (negative) {
+                    this.permissions.exclude = permissions;
+                } else {
+                    this.permissions.include = permissions;
+                }
+            }
+        },
+        getPermissions: function() {
             return this.permissions;
         },
-        matchesSecurityItem: function(match) {
-            return (this.permissions.indexOf(match) !== -1);
+        clearPermissions: function() {
+            this.permissions = {
+                            include: [],
+                            exclude: []
+                            };
+        },
+        matchesPermission: function(match, negative) {
+            var p = (negative) ? this.permissions.exclude : this.permissions.include;
+            return (p.indexOf(match) !== -1);
         },
         canDisplay: function() {
             return true;
@@ -3169,67 +3194,67 @@
     });
 
     // Extend View with Object base functions
-    Augmented.Utility.extend(AugmentedView, Augmented.Object);
+    Augmented.Utility.extend(augmentedView, Augmented.Object);
 
     /** Augmented Backbone - Extend Backbone with awesome */
-    Augmented.Model = AugmentedModel;
-    Augmented.Collection = AugmentedCollection;
-    Augmented.View = AugmentedView;
+    Augmented.Model = augmentedModel;
+    Augmented.Collection = augmentedCollection;
+    Augmented.View = augmentedView;
     Augmented.history = Backbone.history;
     Augmented.History = Backbone.History;
-    Augmented.Router = Backbone.router;
+    Augmented.Router = Backbone.Router;
 
     /** Core Package */
 
     /** local Storage */
 
     var augmentedLocalStorage = function(persist) {
-	this.isPersisted = persist;
-	this.myStore = null;
-	this.isSupported = function() {
-	    return (typeof (Storage) !== "undefined");
-	}
+    	this.isPersisted = persist;
+    	this.myStore = null;
+    	this.isSupported = function() {
+    	    return (typeof (Storage) !== "undefined");
+    	}
 
-	// true = localStorage, false = sessionStorage
-	if (this.isSupported()) {
-	    console.log("localStorage exists");
+    	// true = localStorage, false = sessionStorage
+    	if (this.isSupported()) {
+    	    console.log("localStorage exists");
 
-	    if (this.isPersisted) {
-		this.myStore = localStorage;
-	    } else {
-		this.myStore = sessionStorage;
-	    }
-	} else {
-	    console.log("No localStorage.");
-	}
+    	    if (this.isPersisted) {
+    		this.myStore = localStorage;
+    	    } else {
+    		this.myStore = sessionStorage;
+    	    }
+    	} else {
+    	    console.log("No localStorage.");
+    	}
 
-	this.getItem = function(itemKey) {
-	    var item = this.myStore.getItem(itemKey);
-	    if (item) {
-		return JSON.parse(item);
-	    }
-	    return null;
-	}
+    	this.getItem = function(itemKey) {
+    	    var item = this.myStore.getItem(itemKey);
+    	    if (item) {
+    		return JSON.parse(item);
+    	    }
+    	    return null;
+    	}
 
-	this.setItem = function(itemKey, object) {
-	    this.myStore.setItem(itemKey, JSON.stringify(object));
-	}
+    	this.setItem = function(itemKey, object) {
+    	    this.myStore.setItem(itemKey, JSON.stringify(object));
+    	}
 
-	this.removeItem = function(itemKey) {
-	    this.myStore.removeItem(itemKey);
-	}
+    	this.removeItem = function(itemKey) {
+    	    this.myStore.removeItem(itemKey);
+    	}
 
-	this.clear = function() {
-	    this.myStore.clear();
-	}
+    	this.clear = function() {
+    	    this.myStore.clear();
+    	}
 
-	this.key = function(i) {
-	    return this.myStore.key(i);
-	}
+    	this.key = function(i) {
+    	    return this.myStore.key(i);
+    	}
 
-	this.length = function() {
-	    return this.myStore.length;
-	}
+    	this.length = function() {
+    	    return this.myStore.length;
+    	}
     };
 
     var namespacedAugmentedLocalStorage = function(persist,namespace) {
@@ -3296,29 +3321,31 @@
 	}
     };
 
-    var localStorageFactory = {
-	    getStorage : function(persist,namespace) {
-		var ls = null;
-		if (namespace) {
-		    ls = new namespacedAugmentedLocalStorage(persist,namespace);
-		} else {
-		    ls = new augmentedLocalStorage(persist);
-		}
-		if (ls && ls.isSupported()) {
-		    return ls;
-		}
-		return null;
+    /**
+     * Augmented.LocalStorageFactory
+     * Retrieve a local storage Object
+     * @function
+     */
+    var localStorageFactory = Augmented.LocalStorageFactory = {
+	    getStorage: function(persist, namespace) {
+    		var ls = null;
+    		if (namespace) {
+    		    ls = new namespacedAugmentedLocalStorage(persist,namespace);
+    		} else {
+    		    ls = new augmentedLocalStorage(persist);
+    		}
+    		if (ls && ls.isSupported()) {
+    		    return ls;
+    		}
+    		return null;
 	    }
     };
-
-    Augmented.LocalStorageFactory = localStorageFactory;
-
 
     /**
      * Application Class for use to define an application
      * @constructor
      */
-    var application = function(name) {
+    var application = Augmented.Application = function(name) {
 		var metadata;
         this.started = false;
 
@@ -3366,8 +3393,6 @@
 		    this.started = false;
 		}
     };
-
-    Augmented.Application = application;
 
     return Augmented;
 }));
