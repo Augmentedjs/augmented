@@ -11,6 +11,10 @@ define([
 		describe('Given Augmented Security Factory', function() {
 			var client = null;
 
+			afterEach(function() {
+				client = null;
+			});
+
 			it('is defined', function() {
 				expect(Augmented.Security.AuthenticationFactory).toBeDefined();
 			});
