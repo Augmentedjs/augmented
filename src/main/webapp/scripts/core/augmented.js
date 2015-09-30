@@ -492,6 +492,10 @@
         };
     }
 
+    Array.prototype.has = function(key) {
+        return (this.indexOf(key) !== -1);
+    };
+
     /* Packages */
 
     /**
@@ -775,7 +779,8 @@
      var abstractLogger = function(l) {
          this.label = { info: "info",
                         debug: "debug",
-                        error: "error"
+                        error: "error",
+                        warn: "warn"
                       };
 
        this.loggerLevel = (l) ? l : this.label.info;
@@ -793,11 +798,13 @@
                 }
 
                 if (this.loggerLevel === this.label.debug && level === this.label.debug) {
-                    this.logMe(this.getLogTime() + " [" + this.label.debug + "] " + message);
+                    this.logMe(this.getLogTime() + " [" + this.label.debug + "] " + message, level);
                 } else if (level === this.label.error) {
-                    this.logMe(this.getLogTime() + " [" + this.label.error + "] " + message);
+                    this.logMe(this.getLogTime() + " [" + this.label.error + "] " + message, level);
                 } else if (this.loggerLevel === this.label.debug || this.loggerLevel === this.label.info) {
-                    this.logMe(this.getLogTime() + " [" + this.label.info + "] " + message);
+                    this.logMe(this.getLogTime() + " [" + this.label.info + "] " + message, level);
+                } else if (level === this.label.warn) {
+                    this.logMe(this.getLogTime() + " [" + this.label.warn + "] " + message, level);
                 }
             }
        };
@@ -811,6 +818,9 @@
        this.debug = function(message) {
            this.log(message, this.label.debug);
        };
+       this.warn = function(message) {
+           this.log(message, this.label.warn);
+       };
        /*
         * override this in an instance
         * this.logMe = ...
@@ -823,8 +833,18 @@
     consoleLogger.prototype = Object.create(abstractLogger.prototype);
     consoleLogger.prototype.constructor = consoleLogger;
 
-    consoleLogger.prototype.logMe = function(message) {
-        console.log(message);
+    consoleLogger.prototype.logMe = function(message, level) {
+        if (level === this.label.info) {
+            console.info(message);
+        } else if (level === this.label.error) {
+            console.error(message);
+        } else if (level === this.label.debug) {
+            console.log(message);
+        } else if (level === this.label.warn) {
+            console.warn(message);
+        } else {
+            console.log(message);
+        }
     };
 
     var restLogger = function() {
@@ -3351,6 +3371,8 @@
 
         if (!metadata) {
             metadata = new Augmented.Utility.AugmentedMap();
+        } else {
+            metadata.clear();
         }
 
         if (name) {
@@ -3393,6 +3415,7 @@
 		    this.started = false;
 		}
     };
+    Augmented.Application.prototype.constructor = application;
 
     return Augmented;
 }));

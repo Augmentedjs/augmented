@@ -348,46 +348,47 @@
         Augmented.Application.apply(this, arguments);
         this.Mediators = [];
         this.Stylesheets = [];
-    };
-    app.prototype = Object.create(Augmented.Application.prototype);
-    app.prototype.constructor = app;
-    app.prototype.registerMediator = function(mediator) {
-        if (mediator) {//} && ((mediator instanceof Augmented.Presentation.Mediator) || (typeof mediator === Augmented.Presentation.Mediator))) {
-            this.Mediators.push(mediator);
-        }
-    };
-    app.prototype.deregisterMediator = function(mediator) {
-        if (mediator) {
-            var i = this.Mediators.indexOf(mediator);
-            if (i != -1) {
-                this.Mediators.splice(i, 1);
+
+        this.registerMediator = function(mediator) {
+            if (mediator) {//} && ((mediator instanceof Augmented.Presentation.Mediator) || (typeof mediator === Augmented.Presentation.Mediator))) {
+                this.Mediators.push(mediator);
             }
-        }
+        };
+        this.deregisterMediator = function(mediator) {
+            if (mediator) {
+                var i = this.Mediators.indexOf(mediator);
+                if (i != -1) {
+                    this.Mediators.splice(i, 1);
+                }
+            }
+        };
+        this.getMediators = function() {
+            return this.Mediators;
+        };
+        this.registerStylesheet = function(s) {
+            if (s) {
+                this.Stylesheets.push(s);
+            }
+        };
+        this.deregisterStylesheet = function(s) {
+            if (s) {
+                this.Stylesheets.splice((this.Stylesheets.indexOf(s)), 1);
+            }
+        };
+        this.attachStylesheets = function() {
+            var headElement = document.getElementsByTagName("head")[0];
+            var i = 0;
+            for (i; i<this.Stylesheets.length; i++) {
+                var link = document.createElement("link");
+                link.type = "text/css";
+                link.rel = "stylesheet";
+                link.href = this.Stylesheets[i];
+                headElement.appendChild(link);
+            }
+        };
     };
-    app.prototype.getMediators = function() {
-        return this.Mediators;
-    };
-    app.prototype.registerStylesheet = function(s) {
-        if (s) {
-            this.Stylesheets.push(s);
-        }
-    };
-    app.prototype.deregisterStylesheet = function(s) {
-        if (s) {
-            this.Stylesheets.splice((this.Stylesheets.indexOf(s)), 1);
-        }
-    };
-    app.prototype.attachStylesheets = function() {
-        var headElement = document.getElementsByTagName("head")[0];
-        var i = 0;
-        for (i; i<this.Stylesheets.length; i++) {
-            var link = document.createElement("link");
-            link.type = "text/css";
-            link.rel = "stylesheet";
-            link.href = this.Stylesheets[i];
-            headElement.appendChild(link);
-        }
-    };
+
+    app.prototype.constructor = app;
 
     return Augmented.Presentation;
 }));

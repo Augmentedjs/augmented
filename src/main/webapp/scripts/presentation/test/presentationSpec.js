@@ -82,10 +82,14 @@ define([
 		describe('Given an Application', function() {
 			var app = null;
 			beforeEach(function() {
-				app = new Augmented.Presentation.Application();
+				app = new Augmented.Presentation.Application("Random-" + Math.random());
 			});
 			afterEach(function() {
 				app = null;
+			});
+
+			it('has a ramdom name', function() {
+				expect(app.getName()).not.toEqual("untitled");
 			});
 
 			it('has a Mediator Registry', function() {
@@ -105,6 +109,7 @@ define([
 			});
 
 			it('can return a few registered Mediator Views', function() {
+				console.log("mediators: " + JSON.stringify(app.getMediators()));
 				var view1 = new Augmented.Presentation.Mediator();
 				var view2 = new Augmented.Presentation.Mediator();
 				var view3 = new Augmented.Presentation.Mediator();
@@ -124,6 +129,11 @@ define([
 				app.registerStylesheet("x");
 				expect(app.Stylesheets.length > 0).toBeTruthy();
 			});
+
+			it('to be able to add metadata "name"', function() {
+    		    app.setMetadataItem("name", "test");
+    			expect(app.getMetadataItem("name")).toEqual("test");
+    		});
 
 		});
 	});

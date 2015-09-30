@@ -15,27 +15,28 @@ define([
 			});
 			afterEach(function() {
 				app = null;
-			})
-        		it('can create an instance', function() {
-        		    app = new Augmented.Application();
+			});
 
-        		    expect(app instanceof Augmented.Application).toBeTruthy();
-        		});
+    		it('can create an instance', function() {
+    		    app = new Augmented.Application();
 
-        		it('to be able to add metadata "name"', function() {
-        		    app.setMetadataItem("name", "test");
-        			expect(app.getMetadataItem("name")).toEqual("test");
-        		});
+    		    expect(app instanceof Augmented.Application).toBeTruthy();
+    		});
 
-        		it('can start', function() {
-        		    app.start();
-        		    expect(app.started).toBeTruthy();
-        		});
+    		it('to be able to add metadata "name"', function() {
+    		    app.setMetadataItem("name", "test");
+    			expect(app.getMetadataItem("name")).toEqual("test");
+    		});
 
-				it('can stop', function() {
-        		    app.stop();
-        		    expect(app.started).toBeFalsy();
-        		});
+    		it('can start', function() {
+    		    app.start();
+    		    expect(app.started).toBeTruthy();
+    		});
+
+			it('can stop', function() {
+    		    app.stop();
+    		    expect(app.started).toBeFalsy();
+    		});
 		});
 	});
 });

@@ -86,7 +86,24 @@ define([
 			});
 
 		});
-
+		describe('Given Augmented Array', function() {
+			it('can check if a string is included', function() {
+				var arr = ['x','y','z'];
+				expect(arr.includes('z')).toBeTruthy();
+			});
+			it('can check if a number is included', function() {
+				var arr = [1,2,3];
+				expect(arr.includes(2)).toBeTruthy();
+			});
+			it('can check if it has a string', function() {
+				var arr = ['x','y','z'];
+				expect(arr.has('z')).toBeTruthy();
+			});
+			it('can check if it has a number', function() {
+				var arr = [1,2,3];
+				expect(arr.has(2)).toBeTruthy();
+			});
+		});
 		// test base function calls, isFunction, result
 
 		describe('Given an Augmented Model', function() {
