@@ -135,6 +135,25 @@ define([
     			expect(app.getMetadataItem("name")).toEqual("test");
     		});
 
+			it('can add a breadcrumb', function() {
+    		    app.setCurrentBreadcrumb("www.augmentedjs.org");
+    			expect(app.getCurrentBreadcrumb()).toBeDefined();
+    		});
+
+			it('stores only 2 breadcrumbs', function() {
+    		    app.setCurrentBreadcrumb("www.augmentedjs.org");
+				app.setCurrentBreadcrumb("www.augmentedjs1.org");
+				app.setCurrentBreadcrumb("www.augmentedjs2.org");
+    			expect(app.getBreadcrumbs().length).toEqual(2);
+    		});
+
+			it('can get the breadcrumbs', function() {
+    		    app.setCurrentBreadcrumb("www.augmentedjs.org");
+				app.setCurrentBreadcrumb("www.augmentedjs1.org");
+				app.setCurrentBreadcrumb("www.augmentedjs2.org");
+    			expect(app.getBreadcrumbs()).toBeDefined();
+    		});
+
 		});
 	});
 });

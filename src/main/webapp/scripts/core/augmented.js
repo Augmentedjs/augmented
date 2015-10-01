@@ -3362,6 +3362,39 @@
     };
 
     /**
+     * Augmented.Utility.Stack
+     * Standard Stack data structure
+     * @class
+     */
+    var stack = Augmented.Utility.Stack = function() {
+        this.stack = [];
+        this.empty = function() {
+            return (this.stack.length === 0);
+        };
+        this.peek = function() {
+            return this.stack[0];
+        };
+        this.pop = function() {
+            return this.stack.pop();
+        };
+        this.push = function(item) {
+            this.stack.push(item);
+        };
+        this.search = function(item) {
+            return this.stack.indexOf(item);
+        };
+        this.size = function() {
+            return this.stack.length;
+        };
+        this.clear = function() {
+            this.stack.splice(0,this.stack.length);
+        };
+        this.toArray = function() {
+            return this.stack;
+        };
+    };
+
+    /**
      * Application Class for use to define an application
      * @constructor
      */

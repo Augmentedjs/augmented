@@ -111,6 +111,62 @@ define([
 			});
 		});
 
+        describe('Given Augmented Stack', function() {
+            var s;
+            beforeEach(function() {
+                s = new Augmented.Utility.Stack();
+            });
+            afterEach(function() {
+                s = null;
+            });
+            
+			it('can create a stack', function() {
+				expect(s instanceof Augmented.Utility.Stack).toBeTruthy();
+			});
+
+            it('can check for empty', function() {
+				expect(s.empty()).toBeTruthy();
+			});
+
+            it('can push data to a stack', function() {
+                s.push("monkey");
+				expect(s.size()).not.toEqual(0);
+			});
+
+            it('can peek data in a stack', function() {
+                s.push("monkey");
+                var d = s.peek();
+				expect(s.size()).not.toEqual(0);
+                expect(d).toEqual("monkey");
+			});
+
+            it('can pop data in a stack', function() {
+                s.push("monkey");
+                s.pop();
+				expect(s.size()).toEqual(0);
+			});
+
+            it('can search for data in a stack', function() {
+                s.push("monkey");
+                s.push("bonobo");
+                s.push("chungito");
+				expect(s.search("bonobo")).toEqual(1);
+			});
+
+            it('can check the size for data in a stack', function() {
+                s.push("monkey");
+                s.push("bonobo");
+                s.push("chungito");
+				expect(s.size()).toEqual(3);
+			});
+
+            it('can clear a stack', function() {
+                s.push("monkey");
+                s.clear();
+				expect(s.size()).toEqual(0);
+			});
+		});
+
 		describe('Given Augmented Object Extend', function() {
 			it('Extends an object with data', function() {
 				expect(Augmented.Utility.extend({}, {"A": "B"})).toEqual({"A": "B"});

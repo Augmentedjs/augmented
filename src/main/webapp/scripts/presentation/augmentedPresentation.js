@@ -348,6 +348,7 @@
         Augmented.Application.apply(this, arguments);
         this.Mediators = [];
         this.Stylesheets = [];
+        this.breadcrumb = new Augmented.Utility.Stack();
 
         this.registerMediator = function(mediator) {
             if (mediator) {//} && ((mediator instanceof Augmented.Presentation.Mediator) || (typeof mediator === Augmented.Presentation.Mediator))) {
@@ -385,6 +386,19 @@
                 link.href = this.Stylesheets[i];
                 headElement.appendChild(link);
             }
+        };
+        this.setCurrentBreadcrumb = function(here) {
+            if (this.breadcrumb.size() > 1) {
+                    this.breadcrumb.pop();
+            }
+            this.breadcrumb.push(here);
+        };
+        this.getCurrentBreadcrumb = function() {
+            return this.breadcrumb.peek();
+        };
+
+        this.getBreadcrumbs = function() {
+            return this.breadcrumb.toArray();
         };
     };
 
