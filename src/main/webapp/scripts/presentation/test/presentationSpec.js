@@ -136,24 +136,28 @@ define([
     		});
 
 			it('can add a breadcrumb', function() {
-    		    app.setCurrentBreadcrumb("www.augmentedjs.org");
+    		    app.setCurrentBreadcrumb("www.augmentedjs.org", "main");
     			expect(app.getCurrentBreadcrumb()).toBeDefined();
     		});
 
 			it('stores only 2 breadcrumbs', function() {
-    		    app.setCurrentBreadcrumb("www.augmentedjs.org");
-				app.setCurrentBreadcrumb("www.augmentedjs1.org");
-				app.setCurrentBreadcrumb("www.augmentedjs2.org");
+    		    app.setCurrentBreadcrumb("www.augmentedjs.org", "main");
+				app.setCurrentBreadcrumb("www.augmentedjs1.org", "main2");
+				app.setCurrentBreadcrumb("www.augmentedjs2.org", "main3");
     			expect(app.getBreadcrumbs().length).toEqual(2);
     		});
 
 			it('can get the breadcrumbs', function() {
-    		    app.setCurrentBreadcrumb("www.augmentedjs.org");
-				app.setCurrentBreadcrumb("www.augmentedjs1.org");
-				app.setCurrentBreadcrumb("www.augmentedjs2.org");
+    		    app.setCurrentBreadcrumb("www.augmentedjs.org", "main");
+				app.setCurrentBreadcrumb("www.augmentedjs1.org", "main2");
+				app.setCurrentBreadcrumb("www.augmentedjs2.org", "main3");
     			expect(app.getBreadcrumbs()).toBeDefined();
     		});
 
+			it('can start', function() {
+    		    app.start();
+    			expect(app.started).toBeTruthy();
+    		});
 		});
 	});
 });

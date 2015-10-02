@@ -83,6 +83,7 @@ var specs = [ 'core/test/coreSpec',
               'core/test/applicationSpec',
 			  'core/test/securitySpec',
 			  'core/test/loggerSpec',
+			  'core/test/asyncQueueSpec',
 
               'presentation/test/presentationSpec',
               'service/test/mockServiceSpec',

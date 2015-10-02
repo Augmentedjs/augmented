@@ -350,6 +350,12 @@
         this.Stylesheets = [];
         this.breadcrumb = new Augmented.Utility.Stack();
 
+        this.initialize = function() {
+            if (this.Stylesheets && this.Stylesheets.length > 0) {
+                this.attachStylesheets();
+            }
+        };
+
         this.registerMediator = function(mediator) {
             if (mediator) {//} && ((mediator instanceof Augmented.Presentation.Mediator) || (typeof mediator === Augmented.Presentation.Mediator))) {
                 this.Mediators.push(mediator);
@@ -387,11 +393,11 @@
                 headElement.appendChild(link);
             }
         };
-        this.setCurrentBreadcrumb = function(here) {
+        this.setCurrentBreadcrumb = function(uri, name) {
             if (this.breadcrumb.size() > 1) {
                     this.breadcrumb.pop();
             }
-            this.breadcrumb.push(here);
+            this.breadcrumb.push({ "uri": uri, "name": name });
         };
         this.getCurrentBreadcrumb = function() {
             return this.breadcrumb.peek();

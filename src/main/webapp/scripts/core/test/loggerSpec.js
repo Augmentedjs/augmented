@@ -11,7 +11,7 @@ define([
 		describe('Given a console logger', function() {
 			var logger = null;
 			beforeEach(function() {
-				logger = Augmented.Logger.LoggerFactory.getLogger("console");
+				logger = Augmented.Logger.LoggerFactory.getLogger("console", Augmented.Logger.Level.debug);
 			});
 
 			afterEach(function() {
@@ -24,6 +24,21 @@ define([
 
 			it('can log info', function() {
 				logger.info("xx");
+				expect(logger).toBeDefined();
+			});
+
+			it('can log debug', function() {
+				logger.debug("xx");
+				expect(logger).toBeDefined();
+			});
+
+			it('can log warn', function() {
+				logger.warn("xx");
+				expect(logger).toBeDefined();
+			});
+
+			xit('can log error', function() {
+				logger.error("xx");
 				expect(logger).toBeDefined();
 			});
 

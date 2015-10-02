@@ -871,8 +871,13 @@
 
     var loggerType = Augmented.Logger.Type = { console: "console",
                                                rest: "rest"
-                                           };
+                                            };
 
+    var loggerLevel = Augmented.Logger.Level = { info: "info",
+                                                  debug: "debug",
+                                                  error: "error",
+                                                  warn: "warn"
+                                                };
     Augmented.Logger.LoggerFactory = {
         getLogger: function(type, level) {
             if (type === loggerType.console) {
@@ -3395,6 +3400,35 @@
     };
 
     /**
+     * Augmented.Utility.AsynchronousQueue
+     * An Async queue for handling async chained functions
+     */
+    var asyncQueue = Augmented.Utility.AsynchronousQueue = function(timeout) {
+        var to = (timeout) ? timeout : 2000;
+        this.process = function() {
+            var args = arguments;
+            if (args.length <= 0) {
+                return false;
+            }
+            (function chain(i) {
+                if (i >= args.length || typeof args[i] !== 'function') {
+                    return false;
+                }
+                window.setTimeout(function() {
+                    args[i]();
+                    chain(i + 1);
+                }, to);
+            })(0);
+            return true;
+        };
+        this.getTimeout = function() {
+            return to;
+        }
+
+
+    };
+
+    /**
      * Application Class for use to define an application
      * @constructor
      */
@@ -3412,6 +3446,17 @@
             metadata.set("name", name);
         } else {
             metadata.set("name", "untitled");
+        }
+
+        // Events for use in the startup of the application
+        this.initialize = function() {
+
+        }
+        this.beforeInitialize = function() {
+
+        }
+        this.afterInitialize = function() {
+
         }
 
         this.getName = function() {
@@ -3435,10 +3480,20 @@
 		}
 
 		this.start = function() {
-		    if (!Augmented.history.started) {
-				Augmented.history.start();
-		    }
-		    this.started = true;
+            var asyncQueue = new Augmented.Utility.AsynchronousQueue(1000);
+            this.started = asyncQueue.process(
+                this.beforeInitialize(),
+                this.initialize(),
+                this.afterInitialize(),
+                function() {
+                    if (!Augmented.history.started) {
+        				Augmented.history.start();
+        		    }
+                }
+            );
+            if (!this.started) {
+                this.stop();
+            }
 		}
 
         this.stop = function() {
