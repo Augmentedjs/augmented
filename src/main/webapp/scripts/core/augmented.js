@@ -63,6 +63,14 @@
   		return this;
     };
 
+    /**
+     * Configuration
+     */
+     Augmented.Configuration = {
+                                LoggerLevel: "debug",
+                                MessageBundle: "Messages"
+                                };
+
     /*
      * Base functionality
      * Set of base capabilities used throughout the framework
@@ -83,11 +91,9 @@
      * @returns returns true if called name is a function
      * simular to jQuery .isFunction method
      */
-    var isFunction = function(name) {
+    var isFunction = Augmented.isFunction = function(name) {
         return Object.prototype.toString.call(name) == '[object Function]';
     };
-
-    Augmented.isFunction = isFunction;
 
     /**
      * Augmented.result
@@ -95,13 +101,11 @@
      * @returns returns named property in an object
      * simular to underscore .result method
      */
-    var res = function(object, property) {
+    var result = Augmented.result = function(object, property) {
         if (object === null) return;
         var value = object[property];
         return Augmented.isFunction(value) ? value.call(object) : value;
     };
-
-    Augmented.result = res;
 
     var mockXHR = {
          responseType: "text",
@@ -498,6 +502,128 @@
 
     /* Packages */
 
+    Augmented.Logger = {};
+
+    /**
+     * Augmented Logger
+     * @constructor
+     * @abstract
+     */
+    var abstractLogger = function(l) {
+        this.label = { info: "info",
+                       debug: "debug",
+                       error: "error",
+                       warn: "warn"
+                     };
+
+      this.loggerLevel = (l) ? l : this.label.info;
+
+      this.getLogTime = function() {
+          var now = new Date();
+          return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() + " " +
+           now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds();
+      };
+
+      this.log = function(message, level) {
+           if (message) {
+               if (!level) {
+                   level = this.label.info;
+               }
+
+               if (this.loggerLevel === this.label.debug && level === this.label.debug) {
+                   this.logMe(this.getLogTime() + " [" + this.label.debug + "] " + message, level);
+               } else if (level === this.label.error) {
+                   this.logMe(this.getLogTime() + " [" + this.label.error + "] " + message, level);
+               } else if (this.loggerLevel === this.label.debug || this.loggerLevel === this.label.info) {
+                   this.logMe(this.getLogTime() + " [" + this.label.info + "] " + message, level);
+               } else if (level === this.label.warn) {
+                   this.logMe(this.getLogTime() + " [" + this.label.warn + "] " + message, level);
+               }
+           }
+      };
+
+      this.info = function(message) {
+        this.log(message, this.label.info);
+    };
+      this.error = function(message) {
+        this.log(message, this.label.error);
+    };
+      this.debug = function(message) {
+          this.log(message, this.label.debug);
+      };
+      this.warn = function(message) {
+          this.log(message, this.label.warn);
+      };
+      /*
+       * override this in an instance
+       * this.logMe = ...
+       */
+  };
+
+   var consoleLogger = function() {
+      abstractLogger.apply(this, arguments);
+   };
+   consoleLogger.prototype = Object.create(abstractLogger.prototype);
+   consoleLogger.prototype.constructor = consoleLogger;
+
+   consoleLogger.prototype.logMe = function(message, level) {
+       if (level === this.label.info) {
+           console.info(message);
+       } else if (level === this.label.error) {
+           console.error(message);
+       } else if (level === this.label.debug) {
+           console.log(message);
+       } else if (level === this.label.warn) {
+           console.warn(message);
+       } else {
+           console.log(message);
+       }
+   };
+
+   var restLogger = function() {
+       abstractLogger.apply(this, arguments);
+   };
+
+   restLogger.prototype = Object.create(abstractLogger.prototype);
+   restLogger.prototype.constructor = restLogger;
+   restLogger.prototype.setURI = function(uri) {
+       this.uri = uri;
+   };
+   restLogger.prototype.logMe = function(message) {
+       ajax({
+           url: this.uri,
+           method: "POST",
+           contentType: 'text/plain',
+           dataType: 'text',
+           async: true,
+           data: message,
+           success: function (data, status) { this.success(); },
+           failure: function (data, status) { this.failure(); }
+       });
+   };
+
+   var loggerType = Augmented.Logger.Type = { console: "console",
+                                              rest: "rest"
+                                           };
+
+   var loggerLevel = Augmented.Logger.Level = { info: "info",
+                                                 debug: "debug",
+                                                 error: "error",
+                                                 warn: "warn"
+                                               };
+   Augmented.Logger.LoggerFactory = {
+       getLogger: function(type, level) {
+           if (type === loggerType.console) {
+               return new consoleLogger(level);
+           } else if (type === loggerType.rest) {
+               return new restLogger(level);
+           }
+       }
+   };
+
+   /* A private logger for use in the framework only */
+   var logger = Augmented.Logger.LoggerFactory.getLogger(loggerType.console, Augmented.Configuration.LoggerLevel);
+
     /**
      * Utility Package
      *
@@ -539,209 +665,214 @@
      * @constructor Augmented.Utility.AugmentedMap
      * @param myData {object} Map data to fill map
      */
-    var augmentedMap = function(myData) {
-	this.keys = [];
-	this.data = {};
+    var augmentedMap = Augmented.Utility.AugmentedMap = function(myData) {
+    	this.keys = [];
+    	this.data = {};
 
-	// API
+    	// API
 
-  /**
-   * Set the value by key in the map
-   * @function set
-   * @param key {string} name of the key
-   * @param value {any} value for the key
-   */
-	this.set = function(key, value) {
-	    if (key != null && value != null) {
-		if (this.data[key] == null) {
-		    this.keys.push(key);
-		}
-		this.data[key] = value;
-	    }
-	};
+      /**
+       * Set the value by key in the map
+       * @function set
+       * @param key {string} name of the key
+       * @param value {any} value for the key
+       */
+    	this.set = function(key, value) {
 
-  /**
-   * Get the value by key in the map
-   * @function get
-   * @param key {string} name of the key
-   * @returns The value for the key
-   */
-	this.get = function(key) {
-	    return this.data[key];
-	};
+            // This is for debuging matches
+            //logger.debug("key: " + key + ", value: " + value);
+            //logger.debug("matches != " + (key != null && value != null));
+            //logger.debug("matches !== " + (key !== null && value !== null));
+            //logger.debug("key has null match " + (this.data[key] === null));
+            //logger.debug("key has not match " + (!this.data[key]));
 
-  /**
-   * Index of the key in the map
-   * @function indexOf
-   * @param key {string} name of the key
-   * @returns index of the key
-   */
-	this.indexOf = function(key) {
-	    return this.keys.indexOf(key);
-	};
+    	    if (key !== null && value !== null) {
+        		if (!this.data[key]) {
+        		    this.keys.push(key);
+        		}
+        		this.data[key] = value;
+    	    }
+    	};
 
-  /**
-   * Remove the value by key in the map
-   * @function remove
-   * @param key {string} name of the key
-   */
-	this.remove = function(key) {
-	    var i = this.indexOf(key);
-	    this.keys.splice(i, 1);
-	    delete this.data[key];
-	};
+      /**
+       * Get the value by key in the map
+       * @function get
+       * @param key {string} name of the key
+       * @returns The value for the key
+       */
+    	this.get = function(key) {
+    	    return this.data[key];
+    	};
 
-  /**
-   * Has returns whether a key exists in the map
-   * @function has
-   * @param key {string} name of the key
-   * @returns true if the key exists in the map
-   */
-	this.has = function(key) {
-	    return (this.indexOf(key) !== -1);
-	};
+      /**
+       * Index of the key in the map
+       * @function indexOf
+       * @param key {string} name of the key
+       * @returns index of the key
+       */
+    	this.indexOf = function(key) {
+    	    return this.keys.indexOf(key);
+    	};
 
-  /**
-   * Iterator forEach key to value in the map
-   * @function forEach
-   * @param fn {function} callback for the iterator
-   */
-	this.forEach = function(fn) {
-	    if (typeof fn !== 'function') {
-		return;
-	    }
-	    var len = this.keys.length;
-	    var i = 0;
-	    var k;
-	    for (i = 0; i < len; i++) {
-		k = this.keys[i];
-		fn(k, this.data[k], i);
-	    }
-	};
+      /**
+       * Remove the value by key in the map
+       * @function remove
+       * @param key {string} name of the key
+       */
+    	this.remove = function(key) {
+    	    var i = this.indexOf(key);
+    	    this.keys.splice(i, 1);
+    	    delete this.data[key];
+    	};
 
-  /**
-   * Get the key for the index in the map
-   * @function key
-   * @param i {number} index of the key
-   * @returns the key at index
-   */
-	this.key = function(i) {
-	    return this.keys[i];
-	};
+      /**
+       * Has returns whether a key exists in the map
+       * @function has
+       * @param key {string} name of the key
+       * @returns true if the key exists in the map
+       */
+    	this.has = function(key) {
+    	    return (this.indexOf(key) !== -1);
+    	};
 
-  /**
-   * The entries value object in the map
-   * @function entries
-   * @returns Array of entries value objects
-   */
-	this.entries = function() {
-	    var len = this.keys.length;
-	    var entries = new Array(len);
-	    for (var i = 0; i < len; i++) {
-		entries[i] = {
-			key : this.keys[i],
-			value : this.data[i]
-		};
-	    }
-	    return entries;
-	};
+      /**
+       * Iterator forEach key to value in the map
+       * @function forEach
+       * @param fn {function} callback for the iterator
+       */
+    	this.forEach = function(fn) {
+    	    if (typeof fn !== 'function') {
+    		    return;
+    	    }
+    	    var len = this.keys.length;
+    	    var i = 0;
+    	    var k;
+    	    for (i = 0; i < len; i++) {
+    		    k = this.keys[i];
+    		    fn(k, this.data[k], i);
+    	    }
+    	};
 
-  /**
-   * The values in the map as an Array
-   * @function values
-   * @returns values as an Array
-   */
-	this.values = function() {
-	    var len = this.keys.length;
-	    var values = new Array(len);
-	    for (var i = 0; i < len; i++) {
-		values[i] = this.data[i];
-	    }
-	    return values;
-	};
+      /**
+       * Get the key for the index in the map
+       * @function key
+       * @param i {number} index of the key
+       * @returns the key at index
+       */
+    	this.key = function(i) {
+    	    return this.keys[i];
+    	};
 
-  /**
-   * Clear the map
-   * @function clear
-   */
-	this.clear = function() {
-	    this.keys = [];
-	    this.data = {};
-	};
+      /**
+       * The entries value object in the map
+       * @function entries
+       * @returns Array of entries value objects
+       */
+    	this.entries = function() {
+    	    var len = this.keys.length;
+    	    var entries = new Array(len);
+    	    for (var i = 0; i < len; i++) {
+        		entries[i] = {
+        			key : this.keys[i],
+        			value : this.data[i]
+        		};
+    	    }
+    	    return entries;
+    	};
 
-  /**
-   * The size of the map in keys
-   * @function size
-   * @returns size of map by keys
-   */
-	this.size = function() {
-	    return this.keys.length;
-	};
+      /**
+       * The values in the map as an Array
+       * @function values
+       * @returns values as an Array
+       */
+    	this.values = function() {
+    	    var len = this.keys.length;
+    	    var values = new Array(len);
+    	    for (var i = 0; i < len; i++) {
+    		    values[i] = this.data[i];
+    	    }
+    	    return values;
+    	};
 
-  /**
-   * Represent the map in JSON
-   * @function toJSON
-   * @returns JSON of the map
-   */
-	this.toJSON = function() {
-	    return this.data;
-	};
+      /**
+       * Clear the map
+       * @function clear
+       */
+    	this.clear = function() {
+    	    this.keys = [];
+    	    this.data = {};
+    	};
 
-  /**
-   * Represent the map in a String of JSON
-   * @function toString
-   * @returns Stringified JSON of the map
-   */
-	this.toString = function() {
-	    return JSON.stringify(this.data);
-	};
+      /**
+       * The size of the map in keys
+       * @function size
+       * @returns size of map by keys
+       */
+    	this.size = function() {
+    	    return this.keys.length;
+    	};
 
-	// non-es6 API
+      /**
+       * Represent the map in JSON
+       * @function toJSON
+       * @returns JSON of the map
+       */
+    	this.toJSON = function() {
+    	    return this.data;
+    	};
 
-  /**
-   * Checks of the map is empty (not ES6)
-   * @function isEmpty
-   * @returns true if the map is empty
-   */
-	this.isEmpty = function() {
-	    return this.keys.length === 0;
-	};
+      /**
+       * Represent the map in a String of JSON
+       * @function toString
+       * @returns Stringified JSON of the map
+       */
+    	this.toString = function() {
+    	    return JSON.stringify(this.data);
+    	};
 
-	if (myData != null) {
-	    var i = 0;
-	    var entry, jsonData, x;
+    	// non-es6 API
 
-	    if (myData === Array) {
-		console.log("TODO: need to handle arrays!");
-	    } else if ((typeof myData === "object" && !Array.isArray(myData) && myData != null)) {
-		jsonData = [];
-		jsonData.push(myData);
-	    } else {
-		x = JSON.parse(myData);
+      /**
+       * Checks of the map is empty (not ES6)
+       * @function isEmpty
+       * @returns true if the map is empty
+       */
+    	this.isEmpty = function() {
+    	    return this.keys.length === 0;
+    	};
 
-		if ((typeof x === "object" && !Array.isArray(x) && x != null)) {
-		    jsonData = [];
-		    jsonData.push(x);
-		} else {
-		    jsonData = x;
-		}
-	    }
+        this.marshall = function(dataToMarshall) {
+            /* dataToMarshall must be the following type of data to parse:
+             * Map
+             * JSON object with properties (key/value)
+             */
+            //logger.debug("passed data: " + dataToMarshall);
 
-	    var size = Object.keys(jsonData).length;
-	    var k, key, value;
+            var dataToParse;
+            if (dataToMarshall && dataToMarshall instanceof Augmented.Utility.AugmentedMap) {
+                dataToParse = dataToMarshall.toJSON();
+            } else if(dataToMarshall && dataToMarshall instanceof Object && (Object.keys(dataToMarshall).length > 0)) {
+                dataToParse = dataToMarshall;
+            } else {
+                logger.warn("Could not marshall data: " + JSON.stringify(dataToMarshall));
+                return false;
+            }
+            //logger.debug("data to parse: " + JSON.stringify(dataToParse));
 
-	    for (i = 0; i < size; i++) {
-		entry = jsonData[i];
-		k = Object.keys(entry);
-		key = k[0];
-		value = entry[k];
+            var props = Object.keys(dataToParse);
+            for (var i = 0; i < props.length; i++) {
+                var p = props[i];
+                var v = dataToParse[p];
+                logger.debug("setting " + p + ", " + v);
+                this.set(p, v);
+            }
+            return true;
+        };
 
-		this.set(key, value);
-	    }
-	}
+    	if (myData) {
+            return this.marshall(myData);
+    	}
     };
-
-    Augmented.Utility.AugmentedMap = augmentedMap;
 
     /**
      * Base Classes
@@ -769,126 +900,7 @@
   		initialize: function() {}
 	});
 
-     Augmented.Logger = {};
-
-     /**
-      * Augmented Logger
-      * @constructor
-      * @abstract
-      */
-     var abstractLogger = function(l) {
-         this.label = { info: "info",
-                        debug: "debug",
-                        error: "error",
-                        warn: "warn"
-                      };
-
-       this.loggerLevel = (l) ? l : this.label.info;
-
-       this.getLogTime = function() {
-           var now = new Date();
-           return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() + " " +
-            now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds();
-       };
-
-       this.log = function(message, level) {
-            if (message) {
-                if (!level) {
-                    level = this.label.info;
-                }
-
-                if (this.loggerLevel === this.label.debug && level === this.label.debug) {
-                    this.logMe(this.getLogTime() + " [" + this.label.debug + "] " + message, level);
-                } else if (level === this.label.error) {
-                    this.logMe(this.getLogTime() + " [" + this.label.error + "] " + message, level);
-                } else if (this.loggerLevel === this.label.debug || this.loggerLevel === this.label.info) {
-                    this.logMe(this.getLogTime() + " [" + this.label.info + "] " + message, level);
-                } else if (level === this.label.warn) {
-                    this.logMe(this.getLogTime() + " [" + this.label.warn + "] " + message, level);
-                }
-            }
-       };
-
-       this.info = function(message) {
-         this.log(message, this.label.info);
-     };
-       this.error = function(message) {
-         this.log(message, this.label.error);
-     };
-       this.debug = function(message) {
-           this.log(message, this.label.debug);
-       };
-       this.warn = function(message) {
-           this.log(message, this.label.warn);
-       };
-       /*
-        * override this in an instance
-        * this.logMe = ...
-        */
-   };
-
-    var consoleLogger = function() {
-       abstractLogger.apply(this, arguments);
-    };
-    consoleLogger.prototype = Object.create(abstractLogger.prototype);
-    consoleLogger.prototype.constructor = consoleLogger;
-
-    consoleLogger.prototype.logMe = function(message, level) {
-        if (level === this.label.info) {
-            console.info(message);
-        } else if (level === this.label.error) {
-            console.error(message);
-        } else if (level === this.label.debug) {
-            console.log(message);
-        } else if (level === this.label.warn) {
-            console.warn(message);
-        } else {
-            console.log(message);
-        }
-    };
-
-    var restLogger = function() {
-        abstractLogger.apply(this, arguments);
-    };
-
-    restLogger.prototype = Object.create(abstractLogger.prototype);
-    restLogger.prototype.constructor = restLogger;
-    restLogger.prototype.setURI = function(uri) {
-        this.uri = uri;
-    };
-    restLogger.prototype.logMe = function(message) {
-        ajax({
-            url: this.uri,
-            method: "POST",
-            contentType: 'text/plain',
-            dataType: 'text',
-            async: true,
-            data: message,
-            success: function (data, status) { this.success(); },
-            failure: function (data, status) { this.failure(); }
-        });
-    };
-
-    var loggerType = Augmented.Logger.Type = { console: "console",
-                                               rest: "rest"
-                                            };
-
-    var loggerLevel = Augmented.Logger.Level = { info: "info",
-                                                  debug: "debug",
-                                                  error: "error",
-                                                  warn: "warn"
-                                                };
-    Augmented.Logger.LoggerFactory = {
-        getLogger: function(type, level) {
-            if (type === loggerType.console) {
-                return new consoleLogger(level);
-            } else if (type === loggerType.rest) {
-                return new restLogger(level);
-            }
-        }
-    };
-
-
+    // Security
 
   /**
    * Security Package and API
@@ -990,10 +1002,7 @@
         });
         return c;
     }
-
   });
-
-
 
   /**
    * AuthenticationFactory Class
@@ -1048,7 +1057,6 @@
      * @constructor
     */
     var Validator = function() {
-	//
 
 	var uriTemplateGlobalModifiers = {
 		"+": true,
@@ -3071,46 +3079,45 @@
      * implement OAUTH 2
      */
     var augmentedModel = Backbone.Model.extend({
-	schema: null,
-	validationMessages: {
-	    valid: true
-	},
-	supportsValidation: function() {
-	    if (this.schema != null) {
-		return true;
-	    }
-	    return false;
-	},
-	isValid: function() {
-	    this.validate();
-	    return this.validationMessages.valid;
-	},
-	validate: function() {
-	    if (this.supportsValidation()
-		    && Augmented.ValidationFramework.supportsValidation()) {
-		// validate from Validator
-		this.validationMessages = Augmented.ValidationFramework.validate(this.toJSON(), this.schema);
-	    } else {
-		this.validationMessages.valid = true;
-	    }
-	    return this.validationMessages;
-	},
-	crossOrigin: false,
-	sync: function(method, model, options) {
-	    if (!options) {
-		options = {};
-	    }
-	    if (this.crossOrigin === true) {
-		options.crossDomain = true;
-	    }
-	    if (!options.xhrFields) {
-		options.xhrFields = {
-			withCredentials: true
-		};
-	    }
-	    return Backbone.sync(method, model, options);
-	}
-
+    	schema: null,
+    	validationMessages: {
+    	    valid: true
+    	},
+    	supportsValidation: function() {
+    	    if (this.schema != null) {
+    		    return true;
+    	    }
+    	    return false;
+    	},
+    	isValid: function() {
+    	    this.validate();
+    	    return this.validationMessages.valid;
+    	},
+    	validate: function() {
+    	    if (this.supportsValidation()
+    		    && Augmented.ValidationFramework.supportsValidation()) {
+    		    // validate from Validator
+    		    this.validationMessages = Augmented.ValidationFramework.validate(this.toJSON(), this.schema);
+    	    } else {
+    		    this.validationMessages.valid = true;
+    	    }
+    	    return this.validationMessages;
+    	},
+    	crossOrigin: false,
+    	sync: function(method, model, options) {
+    	    if (!options) {
+    		    options = {};
+    	    }
+    	    if (this.crossOrigin === true) {
+    		    options.crossDomain = true;
+    	    }
+    	    if (!options.xhrFields) {
+        		options.xhrFields = {
+        			withCredentials: true
+        		};
+    	    }
+    	    return Backbone.sync(method, model, options);
+    	}
     });
 
     // Extend Model with Object base functions
@@ -3121,48 +3128,48 @@
      * implement OAUTH 2
      */
     var augmentedCollection = Backbone.Collection.extend({
-	schema: null,
-	validationMessages: {
-	    valid: true
-	},
-	supportsValidation: function() {
-	    if (this.schema != null) {
-		return true;
-	    }
-	    return false;
-	},
-	isValid: function() {
-	    this.validate();
-	    return this.validationMessages.valid;
-	},
-	validate: function() {
-	    if (this.supportsValidation()
-		    && Augmented.ValidationFramework.supportsValidation()) {
-		// validate from Validator
+    	schema: null,
+    	validationMessages: {
+    	    valid: true
+    	},
+    	supportsValidation: function() {
+    	    if (this.schema != null) {
+    		    return true;
+    	    }
+    	    return false;
+    	},
+    	isValid: function() {
+    	    this.validate();
+    	    return this.validationMessages.valid;
+    	},
+    	validate: function() {
+    	    if (this.supportsValidation()
+    		    && Augmented.ValidationFramework.supportsValidation()) {
+    		// validate from Validator
 
-		// TODO: Should we validate every model to call this valid or is
-		// this be a 'instance' validation?
-		this.validationMessages = Augmented.ValidationFramework.validate(this.toJSON(), this.schema);
-	    } else {
-		this.validationMessages.valid = true;
-	    }
-	    return this.validationMessages;
-	},
-	crossOrigin: false,
-	sync: function(method, model, options) {
-	    if (!options) {
-		options = {};
-	    }
-	    if (this.crossOrigin === true) {
-		options.crossDomain = true;
-	    }
-	    if (!options.xhrFields) {
-		options.xhrFields = {
-			withCredentials: true
-		};
-	    }
-	    return Backbone.sync(method, model, options);
-	}
+    		// TODO: Should we validate every model to call this valid or is
+    		// this be a 'instance' validation?
+    		this.validationMessages = Augmented.ValidationFramework.validate(this.toJSON(), this.schema);
+    	    } else {
+    		this.validationMessages.valid = true;
+    	    }
+    	    return this.validationMessages;
+    	},
+    	crossOrigin: false,
+    	sync: function(method, model, options) {
+    	    if (!options) {
+    		    options = {};
+    	    }
+    	    if (this.crossOrigin === true) {
+    		    options.crossDomain = true;
+    	    }
+    	    if (!options.xhrFields) {
+    		    options.xhrFields = {
+        			withCredentials: true
+        		};
+    	    }
+    	    return Backbone.sync(method, model, options);
+    	}
     });
 
 	// Extend Collection with Object base functions
@@ -3283,67 +3290,74 @@
     };
 
     var namespacedAugmentedLocalStorage = function(persist,namespace) {
-	var ls = localStorageFactory.getStorage(persist);
-	this.myNameSpacedStore = new Augmented.Utility.AugmentedMap();
-	this.namespace = namespace;
+    	var ls = localStorageFactory.getStorage(persist);
+    	this.myNameSpacedStore = new Augmented.Utility.AugmentedMap();
+    	this.namespace = namespace;
 
-	// public
-	this.isSupported = function() {
-	    return (ls && ls.isSupported());
-	}
+    	// public
+    	this.isSupported = function() {
+    	    return (ls && ls.isSupported());
+    	}
 
-	// true = localStorage, false = sessionStorage
-	if (this.isSupported() && namespace) {
-	    ls.setItem(this.namespace,JSON.stringify(this.myNameSpacedStore));
-	}
+    	// true = localStorage, false = sessionStorage
+    	if (this.isSupported() && this.namespace) {
+    	    ls.setItem(this.namespace, JSON.stringify(this.myNameSpacedStore.toJSON()));
+    	}
 
-	this.getItem = function(itemKey) {
-	    var map = ls.getItem(this.namespace);
-	    this.myNameSpacedStore = new Augmented.Utility.AugmentedMap(map);
+    	this.getItem = function(itemKey) {
+            var map = {};
+            try {
+    	        map = JSON.parse(ls.getItem(this.namespace));
+            } catch(e) {
+                logger.error("Could not parse item map fro storage!");
+                return null;
+            }
+            this.myNameSpacedStore.clear();
+            this.myNameSpacedStore.marshall(map);
 
-	    var item = this.myNameSpacedStore.get(itemKey);
+    	    var item = this.myNameSpacedStore.get(itemKey);
 
-	    if (item) {
-		// support regular string as well as object
-		var ret;
-		try {
-		    ret = JSON.parse(item);
-		} catch(e){
-		    // not JSON
-		    ret = item;
-		}
-		return ret;
-	    }
-	    return null;
-	}
+    	    if (item) {
+    		    // support regular string as well as object
+        		var ret;
+        		try {
+        		    ret = JSON.parse(item);
+        		} catch(e){
+        		    // not JSON
+        		    ret = item;
+        		}
+        		return ret;
+    	    }
+    	    return null;
+    	}
 
-	this.setItem = function(itemKey, object) {
-	    if (typeof this.myNameSpacedStore != Augmented.Utility.AugmentedMap) {
-		this.myNameSpacedStore = new Augmented.Utility.AugmentedMap();
-	    }
-	    this.myNameSpacedStore.set(itemKey, object);
-	    ls.setItem(namespace,JSON.stringify(this.myNameSpacedStore));
-	}
+    	this.setItem = function(itemKey, object) {
+            if (!this.myNameSpacedStore) {
+    		    this.myNameSpacedStore = new Augmented.Utility.AugmentedMap();
+    	    }
+    	    this.myNameSpacedStore.set(itemKey, object);
+    	    ls.setItem(namespace, JSON.stringify(this.myNameSpacedStore.toJSON()));
+    	}
 
-	this.removeItem = function(itemKey) {
-	    var item = this.getItem(itemKey);
+    	this.removeItem = function(itemKey) {
+    	    var item = this.getItem(itemKey);
 
-	    this.myNameSpacedStore.remove(itemKey);
-	    ls.setItem(namespace,JSON.stringify(this.myNameSpacedStore));
-	}
+    	    this.myNameSpacedStore.remove(itemKey);
+    	    ls.setItem(namespace, JSON.stringify(this.myNameSpacedStore.toJSON()));
+    	}
 
-	this.clear = function() {
-	    this.myNameSpacedStore.clear();
-	    ls.setItem(namespace,JSON.stringify(this.myNameSpacedStore));
-	}
+    	this.clear = function() {
+    	    this.myNameSpacedStore.clear();
+    	    ls.setItem(namespace, JSON.stringify(this.myNameSpacedStore.toJSON()));
+    	}
 
-	this.key = function(i) {
-	    return this.myNameSpacedStore.key(i);
-	}
+    	this.key = function(i) {
+    	    return this.myNameSpacedStore.key(i);
+    	}
 
-	this.length = function() {
-	    return this.myNameSpacedStore.size();
-	}
+    	this.length = function() {
+    	    return this.myNameSpacedStore.size();
+    	}
     };
 
     /**
@@ -3405,8 +3419,28 @@
      */
     var asyncQueue = Augmented.Utility.AsynchronousQueue = function(timeout) {
         var to = (timeout) ? timeout : 2000;
-        this.process = function() {
+        this.queue = {};
+
+        this.add = function() {
             var args = arguments;
+            if (args.length <= 0) {
+                return false;
+            }
+
+            Augmented.Utility.extend(this.queue, args);
+        }
+
+        this.clear = function() {
+            if (this.queue.length > 0) {
+                this.queue.splice(0,this.queue.length);
+            }
+        }
+
+        this.process = function() {
+            if (arguments) {
+                Augmented.Utility.extend(this.queue, arguments);
+            }
+            var args = this.queue;
             if (args.length <= 0) {
                 return false;
             }
@@ -3424,7 +3458,9 @@
         this.getTimeout = function() {
             return to;
         }
-
+        this.getQueue = function() {
+            return this.queue;
+        }
 
     };
 

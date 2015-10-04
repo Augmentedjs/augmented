@@ -17,39 +17,43 @@ define([
         });
 
 		describe('Given AugmentedMap', function() {
+            var map;
+
+            beforeEach(function() {
+                map = new Augmented.Utility.AugmentedMap();
+            });
+
+            afterEach(function() {
+                map = null;
+            });
+
 			it('is defined', function() {
 				expect(Augmented.Utility.AugmentedMap).toBeDefined();
 			});
 
 			it('can create an instance', function() {
-				var map = new Augmented.Utility.AugmentedMap();
-
 				expect(map instanceof Augmented.Utility.AugmentedMap).toBeTruthy();
 			});
 
 			it('can add a string to the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
 				map.set("name", "bubba");
 
 				expect(map.size()).toEqual(1);
 			});
 
 			it('can get a string from the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
 				map.set("name", "bubba");
 
 				expect(map.get("name")).toEqual("bubba");
 			});
 
 			it('can get an array from the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
 				map.set("names", ["bubba", "bob"]);
 
 				expect(map.get("names").length).toEqual(2);
 			});
 
 			it('can get an map from the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
 				map.set("map", new Augmented.Utility.AugmentedMap());
 
 				var m = map.get("map");
@@ -58,57 +62,108 @@ define([
 			});
 
 			it('can get an object to the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
 				map.set("object", { "x": "y" });
 
 				expect(map.get("object")).toEqual({ "x": "y" });
 			});
 
 			it('can remove a string to the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
 				map.set("name", "bubba");
 				map.remove("name");
 				expect(map.size()).toEqual(0);
 			});
 
 			it('has a string in the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
 				map.set("name", "bubba");
 
 				expect(map.has("name")).toBeTruthy();
 			});
 
 			it('does not have a string in the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
 				map.set("name", "bubba");
 
 				expect(map.has("x")).toBeFalsy();
 			});
 
 			it('has a string key in the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
 				map.set("name", "bubba");
 
 				expect(map.key(0)).toEqual("name");
 			});
 
 			it('has a entries in the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
-				map.set("name", "bubba");
-				map.set("age", "32");
-				map.set("height", "6.0");
+                map.set("name", "Bob");
+                map.set("age", 36);
+                map.set("height", "6.0\"");
 
 				expect(map.entries().length).toEqual(3);
 			});
 
 			it('has a values in the map', function() {
-				var map = new Augmented.Utility.AugmentedMap();
-				map.set("name", "bubba");
-				map.set("age", "32");
-				map.set("height", "6.0");
+                map.set("name", "Bob");
+                map.set("age", 36);
+                map.set("height", "6.0\"");
 
 				expect(map.values().length).toEqual(3);
 			});
+
+            it('can marshall a map via constructor', function() {
+                map.set("name", "Bob");
+                map.set("age", 36);
+                map.set("height", "6.0\"");
+
+                var map2 = new Augmented.Utility.AugmentedMap(map);
+                expect(map.values()).toEqual(map2.values());
+            });
+
+            it('can marshall a map', function() {
+                var map2 = new Augmented.Utility.AugmentedMap();
+                map2.set("name", "Bob");
+                map2.set("age", 36);
+                map2.set("height", "6.0\"");
+
+                var success = map.marshall(map2);
+                expect(map.values()).toEqual(map2.values());
+            });
+
+            it('can marshall a JSON object value pair', function() {
+                var o = {   p1: "p1",
+                            p2: "p2" };
+
+                var success = map.marshall(o);
+                expect(success);
+                expect(map.toJSON()).toEqual(o);
+            });
+
+            it('does not marshall a string', function() {
+                var success = map.marshall("junk");
+                expect(success).toBeFalsy();
+            });
+
+            it('does not marshall a number', function() {
+                var success = map.marshall(50);
+                expect(success).toBeFalsy();
+            });
+
+            it('does not marshall an empty object', function() {
+                var success = map.marshall({});
+                expect(success).toBeFalsy();
+            });
+
+            it('does marshall an array as a numbered map', function() {
+                var success = map.marshall(["x", "y", "z"]);
+                expect(success).toBeTruthy();
+            });
+
+            it('can set an item with a number as a key', function() {
+                map.set(16, "sixteen");
+                expect(map.get(16)).toEqual("sixteen");
+            });
+
+            it('can set an item with an object as a key', function() {
+                map.set({ name: "Bob", age: 36 }, { data: "xxxxxxx" });
+                expect(map.get({ name: "Bob", age: 36 })).toEqual({ data: "xxxxxxx" });
+            });
 		});
 
         describe('Given Augmented Stack', function() {
@@ -119,7 +174,7 @@ define([
             afterEach(function() {
                 s = null;
             });
-            
+
 			it('can create a stack', function() {
 				expect(s instanceof Augmented.Utility.Stack).toBeTruthy();
 			});
@@ -163,7 +218,7 @@ define([
             it('can clear a stack', function() {
                 s.push("monkey");
                 s.clear();
-				expect(s.size()).toEqual(0);
+				expect(s.empty()).toBeTruthy();
 			});
 		});
 

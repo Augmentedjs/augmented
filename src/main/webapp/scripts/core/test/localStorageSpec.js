@@ -21,53 +21,50 @@ define([
 			describe('Given Namespaced Local Storage', function() {
 
 				it('Can add an Item', function() {
-
 					nameSpacedLocalStorage.clear();
 					nameSpacedLocalStorage.setItem("monkey", "bonobo");
-					expect(nameSpacedLocalStorage.getItem("monkey")).toBeDefined();
+                    console.debug("nameSpacedLocalStorage debug: " + nameSpacedLocalStorage.getItem("monkey") );
+
+					expect(nameSpacedLocalStorage.getItem("monkey")).toEqual("bonobo");
+					expect(nameSpacedLocalStorage.length()).toEqual(1);
+				});
+
+                it('Can add a complex Item', function() {
+					nameSpacedLocalStorage.clear();
+					nameSpacedLocalStorage.setItem("monkey", { color: "brown", age: 1, name: "Lance Link" });
+                    console.debug("nameSpacedLocalStorage debug: " + nameSpacedLocalStorage.getItem("monkey") );
+
+					expect(nameSpacedLocalStorage.getItem("monkey")).toEqual({ color: "brown", age: 1, name: "Lance Link" });
 					expect(nameSpacedLocalStorage.length()).toEqual(1);
 				});
 
 				it('Can get an Item', function() {
-
 					nameSpacedLocalStorage.clear();
 					nameSpacedLocalStorage.setItem("monkey", "bonobo");
-					expect(nameSpacedLocalStorage.getItem("monkey")).toBeDefined();
-
+					expect(nameSpacedLocalStorage.getItem("monkey")).toEqual("bonobo");
 				});
 
 				it('Can remove an Item', function() {
-
 					nameSpacedLocalStorage.clear();
-					nameSpacedLocalStorage.setItem("monkey", "bonobo");	
+					nameSpacedLocalStorage.setItem("monkey", "bonobo");
 					nameSpacedLocalStorage.removeItem("monkey");
 					expect(nameSpacedLocalStorage.getItem("monkey")).toEqual(null);
 					expect(nameSpacedLocalStorage.length()).toEqual(0);
 				});
 
 				it('Can add an Item as Array', function() {
-
 					var array = [ "bonobo", "chimpanzee", "howler" ];
-
 					nameSpacedLocalStorage.setItem("monkeys", array);
-
-					expect(nameSpacedLocalStorage.getItem("monkeys")).toBeDefined();
+					expect(nameSpacedLocalStorage.getItem("monkeys")).toEqual(array);
 				});
 
 				it('Can get an Item Array', function() {
-
 					var array = [ "bonobo", "chimpanzee", "howler" ];
-
 					nameSpacedLocalStorage.setItem("monkeys", array);
-
 					var item = nameSpacedLocalStorage.getItem("monkeys");
-
-					console.log("Array: " + item );
-
+					console.debug("Array: " + item );
 					expect(item.length).toEqual(3);
 				});
-
-
 			});
 
 
@@ -159,7 +156,7 @@ define([
 				it('Can remove an Item', function() {
 
 					nameSpacedLocalStorage.clear();
-					nameSpacedLocalStorage.setItem("monkey", "bonobo");	
+					nameSpacedLocalStorage.setItem("monkey", "bonobo");
 					nameSpacedLocalStorage.removeItem("monkey");
 					expect(nameSpacedLocalStorage.getItem("monkey")).toEqual(null);
 					expect(nameSpacedLocalStorage.length()).toEqual(0);
@@ -236,5 +233,5 @@ define([
 				});
 			});
 		});
-	});	
+	});
 });

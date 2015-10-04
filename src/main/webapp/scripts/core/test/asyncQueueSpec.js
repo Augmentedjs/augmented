@@ -15,14 +15,46 @@ define([
 
 		it('can queue a few functions', function() {
 			var q = new Augmented.Utility.AsynchronousQueue(500);
+            var count = 0;
+
 			var s = q.process(
-				function() { console.log("one"); },
-				function() { console.log("two"); },
-				function() { console.log("three"); },
-				function() { console.log("four"); },
-				function() { console.log("five"); }
+				function(count) { count++; },
+				function(count) { count++; },
+				function(count) { count++; },
+				function(count) { count++; },
+				function(count) { count++; }
 			);
-			expect(s).toBeTruthy();
+            expect(s).toBeTruthy();
+		});
+
+        it('can add a few functions to the queue', function() {
+			var q = new Augmented.Utility.AsynchronousQueue(500);
+            var count = 0;
+
+			q.add(
+				function(count) { count++; },
+				function(count) { count++; },
+				function(count) { count++; },
+				function(count) { count++; },
+				function(count) { count++; }
+			);
+			expect(Object.keys(q.getQueue()).length).toEqual(5);
+		});
+
+        it('can add a few functions to the queue then run them', function() {
+			var q = new Augmented.Utility.AsynchronousQueue(500);
+            var count = 0;
+
+			q.add(
+				function(count) { count++; },
+				function(count) { count++; },
+				function(count) { count++; },
+				function(count) { count++; },
+				function(count) { count++; }
+			);
+            var s = q.process();
+
+            expect(s).toBeTruthy();
 		});
 	});
 });

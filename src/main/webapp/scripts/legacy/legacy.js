@@ -1,6 +1,6 @@
 /**
  * Legacy.js - The Legacy Component and package
- * Collection of deprecated code to be removed later
+ * Collection of legacy code (polyfills) and deprecated code to be removed later
  *
  * @author Bob Warren
  *
