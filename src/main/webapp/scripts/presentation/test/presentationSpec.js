@@ -63,18 +63,12 @@ define([
 					expect(channels[0].context).toEqual(c);
 				});
 
-				xit('the mediator can add subscriptions to the channel "monkey"', function() {
+				it('the mediator can add subscriptions to the channel "monkey"', function() {
 					m.observeColleague(c, function() { return "EEAK!";}, "monkey");
 
-					var channels = m.getChannel("monkey");
+					c.setSubscriptions();
 
-					var sub = m.getChannel("monkey");
-
-					m.setSubscriptions(sub);
-
-					expect(channels).toBeDefined();
-					expect(channels instanceof Array).toBeTruthy();
-					expect(channels[0].context).toEqual(c);
+					expect(c.subscriptions).toBeDefined();
 				});
 			});
 		});

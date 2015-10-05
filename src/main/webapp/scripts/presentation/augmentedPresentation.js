@@ -51,7 +51,7 @@
         		switch (field.type) {
         		case 'number':
         		    if (field.value !== "") {
-        			obj[field.name] = parseFloat(field.value); // for fields that are numbers.
+        			    obj[field.name] = parseFloat(field.value); // for fields that are numbers.
         		    }
         		    break;
 
@@ -61,7 +61,7 @@
 
         		default:
         		    obj[field.name] = field.value; // default for fields that are text.
-        		break;
+        		    break;
         		}
 
     		    return obj;

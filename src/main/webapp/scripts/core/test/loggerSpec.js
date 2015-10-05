@@ -36,12 +36,6 @@ define([
 				logger.warn("xx");
 				expect(logger).toBeDefined();
 			});
-
-			xit('can log error', function() {
-				logger.error("xx");
-				expect(logger).toBeDefined();
-			});
-
 		});
 	});
 });
