@@ -58,7 +58,9 @@ body { overflow-y: scroll; }
 .jasmine_html-reporter #jasmine_content { position: fixed; right: 100%; }
 .jasmine_html-reporter .version { color: #aaa; }
 .jasmine_html-reporter .banner { margin-top: 14px; }
-.jasmine_html-reporter .duration { color: #aaa; float: right; }
+.jasmine_html-reporter .duration { color: white;
+    float: right;
+    line-height: 20pt; }
 .jasmine_html-reporter .symbol-summary { overflow: hidden; *zoom: 1; margin: 14px 0; }
 .jasmine_html-reporter .symbol-summary li { display: inline-block; height: 8px; width: 16px; font-size: 30px; }
 .jasmine_html-reporter .symbol-summary li.passed { font-size: 24pt; }

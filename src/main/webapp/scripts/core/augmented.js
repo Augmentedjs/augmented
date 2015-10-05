@@ -678,14 +678,6 @@
        * @param value {any} value for the key
        */
     	this.set = function(key, value) {
-
-            // This is for debuging matches
-            //logger.debug("key: " + key + ", value: " + value);
-            //logger.debug("matches != " + (key != null && value != null));
-            //logger.debug("matches !== " + (key !== null && value !== null));
-            //logger.debug("key has null match " + (this.data[key] === null));
-            //logger.debug("key has not match " + (!this.data[key]));
-
     	    if (key !== null && value !== null) {
         		if (!this.data[key]) {
         		    this.keys.push(key);
@@ -846,8 +838,6 @@
              * Map
              * JSON object with properties (key/value)
              */
-            //logger.debug("passed data: " + dataToMarshall);
-
             var dataToParse;
             if (dataToMarshall && dataToMarshall instanceof Augmented.Utility.AugmentedMap) {
                 dataToParse = dataToMarshall.toJSON();
@@ -1048,8 +1038,6 @@
           this.isNegative = n;
       };
   };
-
-
 
     /** Validation framework - forked from TV4 and extended
      * @see https://github.com/geraintluff/uri-templates
@@ -2625,7 +2613,7 @@
 	this.properties = function(settings) {
 	    // set up settings
 	    var defaults = {
-		    name: 'Messages',
+		    name: Augmented.Configuration.MessageBundle,//'Messages',
 		    language: '',
 		    path: '',
 		    mode: 'vars',
@@ -3461,7 +3449,6 @@
         this.getQueue = function() {
             return this.queue;
         }
-
     };
 
     /**
