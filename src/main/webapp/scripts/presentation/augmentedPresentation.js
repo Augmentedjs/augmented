@@ -380,5 +380,122 @@
 
     app.prototype.constructor = app;
 
+    // Tables and Grids
+    var autoTableCollection = Augmented.Collection.extend({
+
+    });
+
+    var autoTableView = Augmented.Presentation.Mediator.extend({
+        render: function(){this.$el.html(this.template);}
+
+    });
+
+    /**
+     * Augmented.Presentation.AutomaticTable
+     * Creates a table automatically via a schema for defintion and a uri/json for data
+     * @class
+     * @constructor
+     */
+    var autoTable = Augmented.Presentation.AutomaticTable = function(schema) {
+        this.columns = {};
+        this.uri = null;
+        this.data = [];
+        this.schema = null;
+        this.view = null;
+        var isInitalized = false;
+
+        this.init = function(schema) {
+            if (!isInitalized) {
+                this.schema = schema;
+                this.columns = schema.properties;
+
+                var col = new autoTableCollection();
+                col.schema = this.schema;
+                if (this.uri) {
+                    col.url = this.uri;
+                }
+                this.view = new autoTableView();
+                this.view.collection = col;
+                isInitalized = true;
+            } else {
+                this.setSchema(schema);
+            }
+        };
+        this.fetch = function() {
+            this.view.collection.fetch();
+        };
+        this.populate = function(source) {
+            this.data = source;
+            this.view.collection.reset(this.data);
+        };
+        this.render = function() {
+            this.view.template = this.compileTemplate();
+            //this.view.render = function(){this.$el.html(this.template);//.insertAdjacentHTML('afterbegin', this.template);};
+            this.view.render();
+        };
+        this.compileTemplate = function() {
+            var html = "<table><thead>";
+
+            if (this.columns) {
+                html = html + "<tr>";
+                for (var key in this.columns) {
+                    if (this.columns.hasOwnProperty(key)) {
+                        var obj = this.columns[key];
+                        html = html + "<th>" + key + "</th>";
+
+                        /*for (var prop in obj) {
+                            // important check that this is objects own property
+                            // not from prototype prop inherited
+                            if (obj.hasOwnProperty(prop)){
+                                html = html + "<th>" + key + "</th>";
+                            }
+                        }*/
+
+                    }
+                }
+                html = html + "</tr>";
+            }
+            html = html + "</thead><tbody>";
+
+            if (this.data) {
+                for (var i=0; i< this.data.length; i++) {
+                    var d = this.data[i];
+                    html = html + "<tr>";
+                    for (var dkey in d) {
+                        if (d.hasOwnProperty(dkey)) {
+                            var dobj = d[dkey];
+                            html = html + "<td>" + dobj + "</td>";
+                        }
+                    }
+                    html = html + "</tr>";
+                }
+            }
+            html = html + "</tbody></table>";
+            return html;
+        };
+        this.setURI = function(uri) {
+            this.uri = uri;
+        };
+        this.setSchema = function(schema) {
+            this.schema = schema;
+            this.columns = schema.properties;
+            this.view.collection.reset();
+            this.view.collection.schema = schema;
+
+            if (this.uri) {
+                col.url = this.uri;
+            }
+        };
+        // init on constructor
+        this.init(schema);
+    };
+
+    /**
+     * Augmented.Presentation.AutoTable
+     * Shorthand for Augmented.Presentation.AutomaticTable
+     * @class
+     */
+    Augmented.Presentation.AutoTable = Augmented.Presentation.AutomaticTable;
+
     return Augmented.Presentation;
 }));

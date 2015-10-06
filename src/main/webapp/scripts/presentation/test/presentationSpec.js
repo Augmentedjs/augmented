@@ -1,7 +1,7 @@
 define([
 	'augmentedPresentation'
 ], function(
-	presentation
+	Presentation
 ) {
 	describe('Given Augmented Presentation', function() {
 		it('is defined', function() {

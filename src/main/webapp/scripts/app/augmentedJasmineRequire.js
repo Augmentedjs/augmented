@@ -86,6 +86,8 @@ var specs = [ 'core/test/coreSpec',
 			  'core/test/asyncQueueSpec',
 
               'presentation/test/presentationSpec',
+              'presentation/test/autoTableSpec',
+
               'service/test/mockServiceSpec',
 
 			  'legacy/test/applicationContextSpec'
