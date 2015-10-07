@@ -386,7 +386,10 @@
     });
 
     var autoTableView = Augmented.Presentation.Mediator.extend({
-        render: function(){this.$el.html(this.template);}
+        render: function(){
+            this.$el.html(this.template);
+            return this;
+        }
 
     });
 
@@ -430,7 +433,6 @@
         };
         this.render = function() {
             this.view.template = this.compileTemplate();
-            //this.view.render = function(){this.$el.html(this.template);//.insertAdjacentHTML('afterbegin', this.template);};
             this.view.render();
         };
         this.compileTemplate = function() {
