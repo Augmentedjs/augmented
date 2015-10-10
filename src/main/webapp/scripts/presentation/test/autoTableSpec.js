@@ -74,9 +74,12 @@ define([
 
             it('can render the table', function() {
     			at.populate(data);
-                //at.view.el = document.getElementsByClassName("summary")[0];
                 at.render();
                 expect(at.view).toBeDefined();
+    		});
+
+            xit('can paginate the table', function() {
+
     		});
         });
 	});

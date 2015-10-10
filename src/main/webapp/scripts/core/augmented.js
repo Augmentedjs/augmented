@@ -3111,6 +3111,10 @@
     // Extend Model with Object base functions
     Augmented.Utility.extend(augmentedModel, Augmented.Object);
 
+    var paginationConfig = {
+
+    };
+
     /**
      * Abstract Augmented Collection Supports: CORS Schemas Security * TODO:
      * implement OAUTH 2
@@ -3162,6 +3166,26 @@
 
 	// Extend Collection with Object base functions
     Augmented.Utility.extend(augmentedCollection, Augmented.Object);
+
+    var paginatedCollection = Augmented.PaginatedCollection = augmentedCollection.extend({
+        paginationConfiguration: {
+            currentPageParam: "page",
+            pageSizeParam: "per_page",
+            pageSize: 20,
+            currentPage: 1
+        },
+        setPaginationConfiguration: function(config) {
+            this.paginationConfiguration = config;
+        },
+        fetch() {
+            var p = this.paginationConfiguration;
+
+            //TODO: set the right key names
+            var mainArguments = Array.prototype.slice.call(arguments);
+            mainArguments.push({ data: {"page": p.currentPage, "per_page": p.pageSize} });
+            return Backbone.fetch.apply(this, mainArguments);
+        }
+    });
 
     var augmentedView = Backbone.View.extend({
         name: "",

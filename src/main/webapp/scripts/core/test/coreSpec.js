@@ -131,6 +131,33 @@ define([
 			});
 		});
 
+        describe('Given an Augmented Collection', function() {
+            var c = new Augmented.PaginatedCollection();
+            var defConfig = {
+                currentPageParam: "p",
+                pageSizeParam: "pp",
+                pageSize: 50,
+                currentPage: 2
+            };
+
+            it('has an augmented PaginatedCollection', function() {
+				expect(Augmented.PaginatedCollection).toBeDefined();
+			});
+
+            it('can create an augmented PaginatedCollection', function() {
+				expect(c instanceof Augmented.PaginatedCollection).toBeTruthy();
+			});
+
+            it('has a configuration object', function() {
+				expect(c.paginationConfiguration).not.toEqual({});
+			});
+
+            it('can set a configuration object', function() {
+                c.setPaginationConfiguration(defConfig);
+				expect(c.paginationConfiguration).toEqual(defConfig);
+			});
+		});
+
 		describe('Given an Augmented View', function() {
 			var view = new Augmented.View();
 

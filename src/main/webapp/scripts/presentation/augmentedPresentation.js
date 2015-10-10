@@ -381,16 +381,16 @@
     app.prototype.constructor = app;
 
     // Tables and Grids
-    var autoTableCollection = Augmented.Collection.extend({
+    var autoTableCollection = Augmented.PaginatedCollection.extend({
 
     });
 
+    //TODO: $el uses jQuery and MAY not exist
     var autoTableView = Augmented.Presentation.Mediator.extend({
         render: function(){
             this.$el.html(this.template);
             return this;
         }
-
     });
 
     /**
@@ -444,15 +444,6 @@
                     if (this.columns.hasOwnProperty(key)) {
                         var obj = this.columns[key];
                         html = html + "<th>" + key + "</th>";
-
-                        /*for (var prop in obj) {
-                            // important check that this is objects own property
-                            // not from prototype prop inherited
-                            if (obj.hasOwnProperty(prop)){
-                                html = html + "<th>" + key + "</th>";
-                            }
-                        }*/
-
                     }
                 }
                 html = html + "</tr>";
