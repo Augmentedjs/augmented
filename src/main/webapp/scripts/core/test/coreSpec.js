@@ -131,33 +131,72 @@ define([
 			});
 		});
 
-        describe('Given an Augmented Collection', function() {
-            var c = new Augmented.PaginatedCollection();
-            var defConfig = {
-                currentPageParam: "p",
-                pageSizeParam: "pp",
-                pageSize: 50,
-                currentPage: 2
-            };
+        describe('Given an Augmented Collection needing pagination', function() {
+            describe('Given an Augmented PaginationFactory', function() {
+                var c;
+                beforeEach(function() {
 
-            it('has an augmented PaginatedCollection', function() {
-				expect(Augmented.PaginatedCollection).toBeDefined();
-			});
+                });
+                afterEach(function() {
+                    c = null;
+                });
+    			it('has an augmented PaginationFactory', function() {
+    				expect(Augmented.PaginationFactory).toBeDefined();
+    			});
 
-            it('can create an augmented PaginatedCollection', function() {
-				expect(c instanceof Augmented.PaginatedCollection).toBeTruthy();
-			});
+                it('can get a "github" API PaginatedCollection', function() {
+                    c = Augmented.PaginationFactory.getPaginatedCollection(
+                        Augmented.PaginationFactory.type.github);
+                    expect(c instanceof Augmented.PaginatedCollection).toBeTruthy();
+                    expect(c.paginationConfiguration.currentPageParam).toEqual('page');
+    			});
 
-            it('has a configuration object', function() {
-				expect(c.paginationConfiguration).not.toEqual({});
-			});
+                it('can get a "solr" API PaginatedCollection', function() {
+                    c = Augmented.PaginationFactory.getPaginatedCollection(
+                        Augmented.PaginationFactory.type.solr);
+                    expect(c instanceof Augmented.PaginatedCollection).toBeTruthy();
+                    expect(c.paginationConfiguration.currentPageParam).toEqual('start');
+    			});
 
-            it('can set a configuration object', function() {
-                c.setPaginationConfiguration(defConfig);
-				expect(c.paginationConfiguration).toEqual(defConfig);
-			});
-		});
+                it('can get a "database" API PaginatedCollection', function() {
+                    c = Augmented.PaginationFactory.getPaginatedCollection(
+                        Augmented.PaginationFactory.type.database);
+                    expect(c instanceof Augmented.PaginatedCollection).toBeTruthy();
+                    expect(c.paginationConfiguration.currentPageParam).toEqual('offset');
+    			});
 
+                it('will not get a "nothing" API PaginatedCollection', function() {
+                    c = Augmented.PaginationFactory.getPaginatedCollection(
+                        "nothing");
+                    expect(c instanceof Augmented.PaginatedCollection).toBeFalsy();
+    			});
+            });
+
+            describe('Given an Augmented Collection', function() {
+                var c = new Augmented.PaginatedCollection();
+                var defConfig = {
+                    currentPageParam: "p",
+                    pageSizeParam: "pp"
+                };
+
+                it('has an augmented PaginatedCollection', function() {
+    				expect(Augmented.PaginatedCollection).toBeDefined();
+    			});
+
+                it('can create an augmented PaginatedCollection', function() {
+    				expect(c instanceof Augmented.PaginatedCollection).toBeTruthy();
+    			});
+
+                it('has a configuration object', function() {
+    				expect(c.paginationConfiguration).not.toEqual({});
+    			});
+
+                it('can set a configuration object', function() {
+                    c.setPaginationConfiguration(defConfig);
+    				expect(c.paginationConfiguration).toEqual(defConfig);
+    			});
+    		});
+        });
 		describe('Given an Augmented View', function() {
 			var view = new Augmented.View();
 
