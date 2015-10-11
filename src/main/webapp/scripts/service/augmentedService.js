@@ -1,8 +1,8 @@
 /**
  * AugmentedService.js - The Service Core Component and package
- * 
+ *
  * @author Bob Warren
- * 
+ *
  * @requires jquery.js
  * @requires mockjax.js
  * @requires underscore.js
@@ -29,7 +29,7 @@
 	 *  This will also support CORS and persistence via local storage
 	 *  in the future, played as a separate story.
 	 *
-	 *  In essence, a syntactic sugar coating around a subset of 
+	 *  In essence, a syntactic sugar coating around a subset of
 	 *  mockjax, using DSL notation.
 	 *
 	 *  Usage: Augmented.MockService.at("rest/product/123")
@@ -40,22 +40,22 @@
 	 *                              .register();
 	 */
 	var mockService = function() {
-		
-		
+
+
 		//Reserved for future CORS and persistence use.
 		//this.myStore = Augmented.LocalStorageFactory.getStorage(false);
 
 
 		var options = {};
 
-		/** 
-		 *  This url can be a string, or a regular expression. The 
+		/**
+		 *  This url can be a string, or a regular expression. The
 		 *  string supports the wildcard '*'.
 		 */
 		this.at = function(url) {
 			options.url = url;
 			return this;
-		}
+		};
 
 		/**
 		 *  HTTP methods 'GET', 'POST', 'PATCH', 'DELETE', and so on.
@@ -63,7 +63,7 @@
 		this.on = function(method) {
 			options.type = method;
 			return this;
-		}
+		};
 
 		/**
 		 *	Accepts a string or accepts a JSON object if a
@@ -72,13 +72,13 @@
 		this.respondWithText = function(responseText) {
 			options.responseText = responseText;
 			return this;
-		}
+		};
 
 		this.respondWithStatus = function(responseStatus) {
 			options.status = responseStatus;
 			return this;
-		}
-		
+		};
+
 		/**
 		 *  The function parameter is an object that contains
 		 *  {header field name: header field value} pairs.
@@ -86,7 +86,7 @@
 		this.respondWithHeaders = function(responseHeaders) {
 			options.headers = responseHeaders;
 			return this;
-		}
+		};
 
 		/**
 		 *  Registers the mock and activates it for mocking.
@@ -96,17 +96,17 @@
 		 */
 		this.register = function() {
 			return mockjax(options);
-		}
+		};
 
 		/**
-		 *  Clears the mock handler attached to the id number. If 
+		 *  Clears the mock handler attached to the id number. If
 		 *  no id is provided, it clears all the handlers.
 		 */
 		this.clear = function(id) {
 			mockjax.clear(id);
-		}
+		};
 	};
-	
+
 	var mock = new mockService();
 
 	Augmented.Service.Mock = mock;

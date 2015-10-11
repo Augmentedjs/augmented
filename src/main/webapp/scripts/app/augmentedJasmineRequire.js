@@ -83,19 +83,24 @@ var specs = [ 'core/test/coreSpec',
               'core/test/validationSpec',
               'core/test/localStorageSpec',
               'core/test/utilitySpec',
-              'core/test/polyfillSpec',
+              'core/test/resourceBundleSpec',
               'core/test/ajaxSpec',
               'core/test/applicationSpec',
 			  'core/test/securitySpec',
 			  'core/test/loggerSpec',
 			  'core/test/asyncQueueSpec',
+              'core/test/modelSpec',
+              'core/test/collectionSpec',
+              'core/test/viewSpec',
 
               'presentation/test/presentationSpec',
               'presentation/test/autoTableSpec',
 
               'service/test/mockServiceSpec',
 
-			  'legacy/test/applicationContextSpec'
+			  'legacy/test/applicationContextSpec',
+              'legacy/test/polyfillSpec'
+
             ];
 
 // Load Jasmine - This will still create all of the normal Jasmine browser globals unless `boot.js` is re-written to use the

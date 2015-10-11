@@ -38,7 +38,7 @@ define([
 					mockedResponse = response;
 					done();
 				});
-				
+
 			});
 
 			it("responds with the mocked text response", function() {
@@ -53,12 +53,12 @@ define([
 				expect(mockedResponse.getResponseHeader("ContentType")).toBe("text/plain");
 				expect(mockedResponse.getResponseHeader("User")).toBe("Mufasa");
 			});
-			
+
 		});
 
 		describe("when I register a concrete URL with a mocked failure response " +
 				 "then make an AJAX call to that URL", function () {
-			
+
 			var testUrl =  "/tests/gone",
 				testMethod = "DELETE",
 				testText = "Could not be found!",
@@ -78,7 +78,7 @@ define([
 				.fail(function(response) {
 					mockedResponse = response;
 					done();
-				});			
+				});
 			});
 
 			it("responds with the mocked text response", function() {
@@ -92,8 +92,8 @@ define([
 
 		describe("when I register a wildcard URL with a mocked text response, " +
 				 "then make an AJAX call to a URL that matches the wildcard", function () {
-			
-			var testUrl = "/tests/*"
+
+			var testUrl = "/tests/*",
 				testMethod = "POST",
 				testText = "Hola Mundo",
 				testStatus = 201,
@@ -115,7 +115,7 @@ define([
 					mockedResponse = response;
 					done();
 				});
-				
+
 			});
 
 			it("responds with the mocked text response", function() {
@@ -143,7 +143,7 @@ define([
 				mockedResponse = null;
 
 			beforeEach(function(done) {
-				Augmented.Service.Mock.clear()
+				Augmented.Service.Mock.clear();
 				Augmented.Service.Mock.at(testUrl)
 									 .on(testMethod)
 									 .respondWithText(testText)
@@ -156,7 +156,7 @@ define([
 				.done(function(data, statusText, response) {
 					mockedResponse = response;
 					done();
-				});			
+				});
 			});
 
 			it("responds with the mocked text response", function() {

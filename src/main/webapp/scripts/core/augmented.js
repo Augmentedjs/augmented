@@ -66,15 +66,16 @@
     /**
      * Configuration
      */
-     Augmented.Configuration = {
-                                LoggerLevel: "debug",
-                                MessageBundle: "Messages"
-                                };
+    Augmented.Configuration = {
+        LoggerLevel: "debug",
+        MessageBundle: "Messages"
+    };
 
     /*
      * Base functionality
      * Set of base capabilities used throughout the framework
      * . ajax
+     * . extend
      * . result
      * . isFunction
      */
@@ -143,6 +144,35 @@
         return (this.indexOf(key) !== -1);
     };
 
+    /**
+     * Utility Package
+     *
+     * Small utilities
+     * @namespace Augmented.Utility
+     */
+    Augmented.Utility = {};
+
+    /**
+     * Object Extend ability simular to jQuery.extend()
+     * @function Augmented.Utility.extend
+     */
+    Augmented.Utility.extend = function() {
+    	for(var i=1; i<arguments.length; i++)
+    	    for(var key in arguments[i])
+    		if(arguments[i].hasOwnProperty(key))
+    		    arguments[0][key] = arguments[i][key];
+    	return arguments[0];
+    };
+
+
+    var aXHR = XMLHttpRequest;
+    Augmented.Utility.extend(aXHR, {
+        done: function() {},
+        fail: function() {},
+        always: function() {},
+        then: function() {}
+    });
+
     var mockXHR = {
          responseType: "text",
          responseText: "",
@@ -161,6 +191,14 @@
              this.header.header = value;
          }
      };
+
+    Augmented.Utility.extend(mockXHR, {
+         done: function() {},
+         fail: function() {},
+         always: function() {},
+         then: function() {},
+         options: {}
+     });
 
     /**
      * AJAX capability using simple jQuery-like API
@@ -186,11 +224,12 @@
      * @returns success or failure callback
      */
     var ajax = Augmented.ajax = function(ajaxObject) {
+        var xhr = null;
   		if (ajaxObject && ajaxObject.url) {
     	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
     	    var cache = (ajaxObject.cache) ? (ajaxObject.cache) : true;
 
-    	    var xhr = (ajaxObject.mock) ? new mockXHR() : new XMLHttpRequest();
+    	    xhr = (ajaxObject.mock) ? new mockXHR() : new aXHR();
 
             if (ajaxObject.timeout) {
                 xhr.timeout = ajaxObject.timeout;
@@ -219,9 +258,13 @@
 
     	    xhr.onload = function() {
     		    if (xhr.status > 199 && xhr.status < 300) {
-                    ajaxObject.success(xhr.responseText, xhr.status);
+                    if (ajaxObject.success) {
+                        ajaxObject.success(xhr.responseText, xhr.status);
+                    }
     		    } else if (xhr.status > 399 && xhr.status < 600) {
-                    ajaxObject.failure(xhr.responseText, xhr.status);
+                    if (ajaxObject.failure) {
+                        ajaxObject.failure(xhr.responseText, xhr.status);
+                    }
     		    }
                 if (ajaxObject.complete) {
                     ajaxObject.complete(xhr.responseText, xhr.status);
@@ -235,6 +278,13 @@
 
         	xhr.send();
   		}
+
+        this.done = function() {};
+        this.fail = function() {};
+        this.always = function() {};
+        this.then = function() {};
+
+        return this;
     };
 
     /* Overide Backbone.ajax so models and collections use Augmented Ajax instead */
@@ -364,25 +414,7 @@
    /* A private logger for use in the framework only */
    var logger = Augmented.Logger.LoggerFactory.getLogger(loggerType.console, Augmented.Configuration.LoggerLevel);
 
-    /**
-     * Utility Package
-     *
-     * Small utilities
-     * @namespace Augmented.Utility
-     */
-    Augmented.Utility = {};
 
-    /**
-     * Object Extend ability simular to jQuery.extend()
-     * @function Augmented.Utility.extend
-     */
-    Augmented.Utility.extend = function() {
-    	for(var i=1; i<arguments.length; i++)
-    	    for(var key in arguments[i])
-    		if(arguments[i].hasOwnProperty(key))
-    		    arguments[0][key] = arguments[i][key];
-    	return arguments[0];
-    };
 
     /**
      * Augmented Array Utility
@@ -680,9 +712,10 @@
         };
     };
 
-    Augmented.Security.ClientType = { OAUTH2 : 0,
-                                    ACL: 1
-                                  };
+    Augmented.Security.ClientType = {
+        OAUTH2 : 0,
+        ACL: 1
+    };
 
     var abstractSecurityClient = Augmented.Object.extend({
         type: null,
@@ -2843,7 +2876,12 @@
         			withCredentials: true
         		};
     	    }
-    	    return Backbone.sync(method, model, options);
+
+            ret = Backbone.sync(method, model, options);
+
+            this.headers = ret.getAllResponseHeaders();
+
+    	    return ret;
     	}
     });
 
@@ -2895,7 +2933,12 @@
         			withCredentials: true
         		};
     	    }
-    	    return Backbone.sync(method, model, options);
+
+            ret = Backbone.sync(method, model, options);
+            console.debug("ret " + JSON.stringify(ret));
+            //this.headers = ret.getAllResponseHeaders();
+
+    	    return ret;
     	}
     });
 
@@ -2913,7 +2956,7 @@
             this.paginationConfiguration = config;
         },
         fetch: function(options) {
-            options || (options = {});
+            options = (options) ? options : {};
             var data = (options.data || {});
             var p = this.paginationConfiguration;
             var d = {};
