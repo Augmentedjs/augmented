@@ -17,7 +17,8 @@ require.config({
 
 		'jasmine': 'lib/jasmine-2.x/jasmine',
 		'jasmine_html': 'lib/jasmine-2.x/jasmine-html',
-		'boot': 'lib/jasmine-2.x/boot'
+		'boot': 'lib/jasmine-2.x/boot',
+        'jasmineajax': 'lib/mock-ajax'
 
 	},
 	'shim': {
@@ -69,7 +70,11 @@ require.config({
 		boot: {
 			deps: [ 'jasmine', 'jasmine_html' ],
 			exports: 'window.jasmineRequire'
-		}
+		},
+        jasmineajax: {
+            deps: [ 'jasmine' ],
+            exports : 'jasmine-ajax'
+        }
 	}
 });
 

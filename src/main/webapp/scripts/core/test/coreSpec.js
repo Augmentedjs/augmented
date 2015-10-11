@@ -1,5 +1,6 @@
 define([
-	'augmented'
+	'augmented',
+    'jasmineajax'
 ], function(
 	Augmented
 ) {
@@ -195,6 +196,21 @@ define([
                     c.setPaginationConfiguration(defConfig);
     				expect(c.paginationConfiguration).toEqual(defConfig);
     			});
+
+                it('can fetch', function() {
+                    jasmine.Ajax.install();
+                    jasmine.Ajax.stubRequest('/some/url').andReturn({
+                        "status": 200,
+                        "contentType": 'text/plain',
+                        "responseJSON": ['Hello from the world']
+                    });
+                    c.url = "/some/url";
+                    c.fetch();
+
+                    jasmine.Ajax.uninstall();
+                    expect(c).toBeDefined();
+                });
+
     		});
         });
 		describe('Given an Augmented View', function() {
