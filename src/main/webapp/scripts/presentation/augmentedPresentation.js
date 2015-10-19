@@ -257,7 +257,6 @@
     	 * Subscribe to each subscription
     	 * @param {Object} [subscriptions] An optional hash of subscription to add
     	 */
-         //TODO: not quite working
     	setSubscriptions: function(subscriptions) {
     	    if (subscriptions) {
     		    Augmented.Utility.extend(this.subscriptions || {}, subscriptions);

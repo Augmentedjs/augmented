@@ -68,7 +68,9 @@
      */
     Augmented.Configuration = {
         LoggerLevel: "debug",
-        MessageBundle: "Messages"
+        MessageBundle: "Messages",
+        AsynchronousQueueTimeout: 2000,
+        ApplicationInitProcessTimeout: 1000
     };
 
     /*
@@ -2935,9 +2937,9 @@
     	    }
 
             ret = Backbone.sync(method, model, options);
-            console.debug("ret " + JSON.stringify(ret));
+            //console.debug("ret " + JSON.stringify(ret));
             //this.headers = ret.getAllResponseHeaders();
-
+            // TODO: consider adding request headers
     	    return ret;
     	}
     });
@@ -2952,6 +2954,20 @@
         },
         pageSize: 20,
         currentPage: 1,
+        totalPages: 1,
+        setPageSize: function(size) {
+            if (size) {
+                this.pageSize = size;
+            }
+            this.refresh();
+        },
+        setCurrentPage: function(page) {
+            if (!page) {
+                page = 1;
+            }
+            this.currentPage = page;
+            this.refresh();
+        },
         setPaginationConfiguration: function(config) {
             this.paginationConfiguration = config;
         },
@@ -2965,7 +2981,40 @@
 
             options.data = d;
 
-            return Augmented.Collection.prototype.fetch.call(this, options);
+            var xhr = Augmented.Collection.prototype.fetch.call(this, options);
+
+            // TODO: parse header links to sync up vars
+
+            return xhr;
+        },
+        nextPage: function() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage = this.currentPage + 1;
+                this.refresh();
+            }
+        },
+        previousPage: function() {
+            if (this.currentPage > 0) {
+                this.currentPage = this.currentPage - 1;
+                this.refresh();
+            }
+        },
+        goToPage: function(page) {
+            if ((page) && (page < this.totalPages) && (page > 0)) {
+                this.currentPage = page;
+                this.refresh();
+            }
+        },
+        firstPage: function() {
+            this.currentPage = 1;
+            this.refresh();
+        },
+        lastPage: function() {
+            this.currentPage = this.totalPages;
+            this.refresh();
+        },
+        refresh: function() {
+            this.fetch();
         }
     });
 
@@ -3015,8 +3064,9 @@
         getName: function() {
             return this.name;
         },
-        permissions: { include: [],
-                       exclude: []
+        permissions: {
+                        include: [],
+                        exclude: []
                      },
         addPermission: function(permission, negative) {
             if (permission != null && !Array.isArray(permission)) {
@@ -3044,9 +3094,9 @@
         },
         clearPermissions: function() {
             this.permissions = {
-                            include: [],
-                            exclude: []
-                            };
+                                    include: [],
+                                    exclude: []
+                                };
         },
         matchesPermission: function(match, negative) {
             var p = (negative) ? this.permissions.exclude : this.permissions.include;
@@ -3067,6 +3117,7 @@
     Augmented.history = Backbone.history;
     Augmented.History = Backbone.History;
     Augmented.Router = Backbone.Router;
+    Augmented.$ = Backbone.$; // Does jQuery exist?
 
     /** Core Package */
 
@@ -3141,7 +3192,8 @@
             try {
     	        map = JSON.parse(ls.getItem(this.namespace));
             } catch(e) {
-                logger.error("Could not parse item map fro storage!");
+                // TODO: bundle this
+                logger.error("Could not parse item map from storage!");
                 return null;
             }
             this.myNameSpacedStore.clear();
@@ -3238,7 +3290,7 @@
             return this.stack.length;
         };
         this.clear = function() {
-            this.stack.splice(0,this.stack.length);
+            this.stack.splice(0, this.stack.length);
         };
         this.toArray = function() {
             return this.stack;
@@ -3250,7 +3302,7 @@
      * An Async queue for handling async chained functions
      */
     var asyncQueue = Augmented.Utility.AsynchronousQueue = function(timeout) {
-        var to = (timeout) ? timeout : 2000;
+        var to = (timeout) ? timeout : Augmented.Configuration.AsynchronousQueueTimeout;
         this.queue = {};
 
         this.add = function() {
@@ -3264,7 +3316,7 @@
 
         this.clear = function() {
             if (this.queue.length > 0) {
-                this.queue.splice(0,this.queue.length);
+                this.queue.splice(0, this.queue.length);
             }
         }
 
@@ -3347,7 +3399,7 @@
 		}
 
 		this.start = function() {
-            var asyncQueue = new Augmented.Utility.AsynchronousQueue(1000);
+            var asyncQueue = new Augmented.Utility.AsynchronousQueue(Augmented.Configuration.ApplicationInitProcessTimeout);
             this.started = asyncQueue.process(
                 this.beforeInitialize(),
                 this.initialize(),
