@@ -89,6 +89,13 @@
     Augmented.extend = Backbone.Model.extend;
 
     /**
+     * Augmented.sync - Base sync method that can pass special augmented features
+     * @function Augmented.sync
+     * TODO: think about passing the mock option through so ajax can mock from Augemented.ajax
+     */
+    Augmented.sync = Backbone.sync;
+
+    /**
      * Augmented.isFunction
      * @function Augmented.isFunction
      * @returns returns true if called name is a function
@@ -166,7 +173,9 @@
     	return arguments[0];
     };
 
-
+    /**
+     * Setup the rest of jQuery-like eventing and handlers for native xhr
+     */
     var aXHR = XMLHttpRequest;
     Augmented.Utility.extend(aXHR, {
         done: function() {},
@@ -296,55 +305,68 @@
 
     Augmented.Logger = {};
 
+    var loggerType = Augmented.Logger.Type = {
+        console: "console",
+        rest: "rest"
+    };
+
+    var loggerLevelTypes = Augmented.Logger.Level = {
+        info: "info",
+        debug: "debug",
+        error: "error",
+        warn: "warn"
+    };
+
     /**
      * Augmented Logger
      * @constructor
      * @abstract
      */
     var abstractLogger = function(l) {
-        this.label = { info: "info",
-                       debug: "debug",
-                       error: "error",
-                       warn: "warn"
-                     };
+        this.TIME_SEPERATOR = ":";
+        this.DATE_SEPERATOR = "-";
+        this.OPEN_GROUP = " [ ";
+        this.CLOSE_GROUP = " ] ";
 
-      this.loggerLevel = (l) ? l : this.label.info;
+        this.label = loggerLevelTypes;
 
-      this.getLogTime = function() {
-          var now = new Date();
-          return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() + " " +
-           now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + ":" + now.getMilliseconds();
-      };
+        this.loggerLevel = (l) ? l : loggerLevelTypes.info;
 
-      this.log = function(message, level) {
-           if (message) {
-               if (!level) {
-                   level = this.label.info;
-               }
+        this.getLogTime = function() {
+            var now = new Date();
+            return now.getFullYear() + this.DATE_SEPERATOR + (now.getMonth() + 1) + this.DATE_SEPERATOR + now.getDate() + " " +
+                now.getHours() + this.TIME_SEPERATOR + now.getMinutes() + this.TIME_SEPERATOR + now.getSeconds() + this.TIME_SEPERATOR + now.getMilliseconds();
+        };
 
-               if (this.loggerLevel === this.label.debug && level === this.label.debug) {
-                   this.logMe(this.getLogTime() + " [" + this.label.debug + "] " + message, level);
-               } else if (level === this.label.error) {
-                   this.logMe(this.getLogTime() + " [" + this.label.error + "] " + message, level);
-               } else if (this.loggerLevel === this.label.debug || this.loggerLevel === this.label.info) {
-                   this.logMe(this.getLogTime() + " [" + this.label.info + "] " + message, level);
-               } else if (level === this.label.warn) {
-                   this.logMe(this.getLogTime() + " [" + this.label.warn + "] " + message, level);
-               }
-           }
-      };
+        this.log = function(message, level) {
+            if (message) {
+                if (!level) {
+                    level = loggerLevelTypes.info;
+                }
+
+                if (this.loggerLevel === loggerLevelTypes.debug && level === loggerLevelTypes.debug) {
+                    this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.debug + this.CLOSE_GROUP + message, level);
+                } else if (level === loggerLevelTypes.error) {
+                    this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.error + this.CLOSE_GROUP + message, level);
+                } else if (this.loggerLevel === loggerLevelTypes.debug || this.loggerLevel === loggerLevelTypes.info) {
+                    this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.info + this.CLOSE_GROUP + message, level);
+                } else if (level === loggerLevelTypes.warn) {
+                    this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.warn + this.CLOSE_GROUP + message, level);
+                }
+            }
+        };
 
       this.info = function(message) {
-        this.log(message, this.label.info);
+        this.log(message, loggerLevelTypes.info);
     };
       this.error = function(message) {
-        this.log(message, this.label.error);
+        this.log(message, loggerLevelTypes.error);
     };
       this.debug = function(message) {
-          this.log(message, this.label.debug);
+          this.log(message, loggerLevelTypes.debug);
       };
       this.warn = function(message) {
-          this.log(message, this.label.warn);
+          this.log(message, loggerLevelTypes.warn);
       };
       /*
        * override this in an instance
@@ -359,13 +381,13 @@
    consoleLogger.prototype.constructor = consoleLogger;
 
    consoleLogger.prototype.logMe = function(message, level) {
-       if (level === this.label.info) {
+       if (level === loggerLevelTypes.info) {
            console.info(message);
-       } else if (level === this.label.error) {
+       } else if (level === loggerLevelTypes.error) {
            console.error(message);
-       } else if (level === this.label.debug) {
+       } else if (level === loggerLevelTypes.debug) {
            console.log(message);
-       } else if (level === this.label.warn) {
+       } else if (level === loggerLevelTypes.warn) {
            console.warn(message);
        } else {
            console.log(message);
@@ -394,15 +416,6 @@
        });
    };
 
-   var loggerType = Augmented.Logger.Type = { console: "console",
-                                              rest: "rest"
-                                           };
-
-   var loggerLevel = Augmented.Logger.Level = { info: "info",
-                                                 debug: "debug",
-                                                 error: "error",
-                                                 warn: "warn"
-                                               };
    Augmented.Logger.LoggerFactory = {
        getLogger: function(type, level) {
            if (type === loggerType.console) {
@@ -415,8 +428,6 @@
 
    /* A private logger for use in the framework only */
    var logger = Augmented.Logger.LoggerFactory.getLogger(loggerType.console, Augmented.Configuration.LoggerLevel);
-
-
 
     /**
      * Augmented Array Utility
@@ -2842,6 +2853,7 @@
      */
     var augmentedModel = Backbone.Model.extend({
     	schema: null,
+        mock: false,
     	validationMessages: {
     	    valid: true
     	},
@@ -2879,7 +2891,7 @@
         		};
     	    }
 
-            ret = Backbone.sync(method, model, options);
+            ret = Augmented.sync(method, model, options);
 
             this.headers = ret.getAllResponseHeaders();
 
@@ -3057,6 +3069,21 @@
     };
 
     var augmentedView = Backbone.View.extend({
+        initialize: function(options) {
+            this.render = _.wrap(this.render, function(render) {
+                this.beforeRender();
+                render();
+                this.afterRender();
+                return this;
+            });
+        },
+        beforeRender: function() {
+        },
+        render: function() {
+            return this;
+        },
+        afterRender: function() {
+        },
         name: "",
         setName: function(name) {
             this.name = name;
@@ -3065,9 +3092,9 @@
             return this.name;
         },
         permissions: {
-                        include: [],
-                        exclude: []
-                     },
+            include: [],
+            exclude: []
+        },
         addPermission: function(permission, negative) {
             if (permission != null && !Array.isArray(permission)) {
                 var p = (negative) ? this.permissions.exclude : this.permissions.include;
@@ -3094,9 +3121,9 @@
         },
         clearPermissions: function() {
             this.permissions = {
-                                    include: [],
-                                    exclude: []
-                                };
+                include: [],
+                exclude: []
+            };
         },
         matchesPermission: function(match, negative) {
             var p = (negative) ? this.permissions.exclude : this.permissions.include;

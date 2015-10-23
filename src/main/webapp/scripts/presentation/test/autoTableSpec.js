@@ -42,7 +42,7 @@ define([
             var at;
 
             beforeEach(function() {
-                at = new Presentation.AutomaticTable(schema);
+                at = new Presentation.AutomaticTable({schema: schema});
             });
 
             afterEach(function() {
@@ -51,7 +51,6 @@ define([
 
             it('can create an instance', function() {
     			expect(at instanceof Presentation.AutomaticTable).toBeTruthy();
-                expect(at.view).toBeDefined();
     		});
 
             it('can set uri and schema', function() {
@@ -68,14 +67,12 @@ define([
             it('can compile data to a template', function() {
     			at.populate(data);
                 var html = at.compileTemplate();
-                console.debug(html);
                 expect(html).not.toEqual("");
     		});
 
             it('can render the table', function() {
     			at.populate(data);
                 at.render();
-                expect(at.view).toBeDefined();
     		});
 
             xit('can paginate the table', function() {

@@ -8,7 +8,6 @@ require.config({
 		'handlebars': 'lib/handlebars-v4.0.2',
 		'text': 'lib/text',
 		'json': 'lib/json',
-		'mockjax': 'lib/jquery.mockjax',
 
 		'augmented': 'core/augmented',
 		'augmentedPresentation': 'presentation/augmentedPresentation'
@@ -18,7 +17,7 @@ require.config({
 			'exports': '$'
 		},
 		backbone: {
-			'deps': ['jquery', 'underscore', 'handlebars', 'mockjax'],
+			'deps': ['jquery', 'underscore', 'handlebars'],
 			'exports': 'Backbone'
 		},
 		underscore: {
@@ -26,10 +25,6 @@ require.config({
 		},
 		handlebars: {
 			'exports': 'Handlebars'
-		},
-		mockjax: {
-			'deps':['jquery'],
-			'exports': 'mockjax'
 		},
 
 		augmented: {
@@ -45,61 +40,38 @@ require.config({
 });
 
 require(['augmented', 'augmentedPresentation'], function(Augmented, Presentation) {
-	    var app = new Augmented.Application("main");
-	    app.start();
+    var app = new Augmented.Application("main");
+    app.start();
 
-        var schema = {
-            "$schema": "http://json-schema.org/draft-04/schema#",
-            "title": "User",
-            "description": "A list of users",
-            "type": "object",
-            "properties": {
-                "Name" : {
-                    "description": "Name of the user",
-                    "type" : "string"
-                },
-                "ID" : {
-                    "description": "The unique identifier for a user",
-                    "type" : "integer"
-                },
-                "Email" : {
-                    "description": "The email of the user",
-                    "type" : "string"
-                }
+    var schema = {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "title": "User",
+        "description": "A list of users",
+        "type": "object",
+        "properties": {
+            "Name" : {
+                "description": "Name of the user",
+                "type" : "string"
             },
-            "required": ["ID", "Name"]
-        };
+            "ID" : {
+                "description": "The unique identifier for a user",
+                "type" : "integer"
+            },
+            "Email" : {
+                "description": "The email of the user",
+                "type" : "string"
+            }
+        },
+        "required": ["ID", "Name"]
+    };
 
-        var data = [ { "Name": "Bob", "ID": 123, "Email": "bob@augmentedjs.org" },
-                     { "Name": "Jonathan", "ID": 234, "Email": "jonathon@augmentedjs.org" },
-                     { "Name": "Corey", "ID": 345, "Email": "corey@augmentedjs.org" },
-                     { "Name": "Seema", "ID": 456, "Email": "seema@augmentedjs.org" },
-                     { "Name": "Jasmine", "ID": 567, "Email": "jasmine@augmentedjs.org" }
-                    ];
+    var data = [ { "Name": "Bob", "ID": 123, "Email": "bob@augmentedjs.org" },
+                 { "Name": "Jonathan", "ID": 234, "Email": "jonathon@augmentedjs.org" },
+                 { "Name": "Corey", "ID": 345, "Email": "corey@augmentedjs.org" },
+                 { "Name": "Seema", "ID": 456, "Email": "seema@augmentedjs.org" },
+                 { "Name": "Jasmine", "ID": 567, "Email": "jasmine@augmentedjs.org" }
+                ];
 
-        var AppRouter = Augmented.Router.extend({
-                routes: {
-                    "" : "table",
-                    "test": "test"
-                },
-
-                table: function() {
-                    var at = new Presentation.AutomaticTable(schema);
-                    at.populate(data);
-                    at.render();
-                },
-                test: function() {
-                    document.getElementById("main").appendHTML("Testing...");
-                }
-
-            });
-
-            var at = new Presentation.AutomaticTable(schema);
-
-            at.view.$el = $('section#body');//document.getElementById('body');
-            at.view.el = 'section#body';
-            at.populate(data);
-            at.render();
-
-
+    var at = new Presentation.AutomaticTable({schema : schema, el: "#autoTable", data: data});
+    at.render();
 });

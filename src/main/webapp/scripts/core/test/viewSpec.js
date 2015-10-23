@@ -4,9 +4,20 @@ define([
 ], function(
 	Augmented
 ) {
-    
+
     describe('Given an Augmented View', function() {
-        var view = new Augmented.View();
+        var view = null;
+        var fired  = false;
+
+        beforeEach(function() {
+            fired = false;
+            view = new Augmented.View();
+        });
+
+        afterEach(function() {
+            fired  = false;
+            view = null;
+        });
 
         it('has an augmented View', function() {
             expect(Augmented.View).toBeDefined();
@@ -30,5 +41,18 @@ define([
         it('contains a overridable canDisplay', function() {
             expect(view.canDisplay()).toBeTruthy();
         });
+
+        it('supports beforeRender when attempting a render', function() {
+            view.beforeRender = function() { fired = true; };
+            view.render();
+            expect(fired).toBeTruthy();
+        });
+
+        it('supports afterRender when attempting a render', function() {
+            view.afterRender = function() { fired = true; };
+            view.render();
+            expect(fired).toBeTruthy();
+        });
+
     });
 });

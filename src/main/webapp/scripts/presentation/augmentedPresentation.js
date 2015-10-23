@@ -3,18 +3,19 @@
  *
  * @author Bob Warren
  *
+ * @requires underscore.js
  * @requires augmented.js
  * @module
  */
 (function(moduleFactory) {
     if (typeof exports === 'object') {
-	    module.exports = moduleFactory(require('augmented'));
+	    module.exports = moduleFactory(require('underscore', 'augmented'));
     } else if (typeof define === 'function' && define.amd) {
-	    define([ 'augmented' ], moduleFactory);
+	    define([ 'underscore', 'augmented' ], moduleFactory);
     } else {
-	    window.Augmented.Presentation = moduleFactory(window.Augmented);
+	    window.Augmented.Presentation = moduleFactory(window._, window.Augmented);
     }
-}(function(Augmented) {
+}(function(_, Augmented) {
     Augmented.Presentation = {};
 
     Augmented.Presentation.VERSION = '0.1.0';
@@ -23,6 +24,8 @@
      * Augmented Presentation View extension
      *
      * Two-way binding to models
+     * uses _.reduce
+     * TODO: maybe deprecate this and use something better
      */
     Augmented.Utility.extend(Augmented.View, {
     	getFormData: function(region) {
@@ -384,13 +387,40 @@
 
     });
 
-    //TODO: $el uses jQuery and MAY not exist
-    var autoTableView = Augmented.Presentation.Mediator.extend({
-        render: function(){
-            this.$el.html(this.template);
-            return this;
+    var defaultTableCompile = function(columns, data) {
+        var html = "<table>";
+
+        if (columns) {
+            html = html + "<thead><tr>";
+            var key, obj;
+            for (key in columns) {
+                if (columns.hasOwnProperty(key)) {
+                    obj = columns[key];
+                    html = html + "<th>" + key + "</th>";
+                }
+            }
+            html = html + "</tr></thead>";
         }
-    });
+
+        if (data) {
+            html = html + "<tbody>";
+            var i, d, dkey, dobj;
+            for (i=0; i< data.length; i++) {
+                d = data[i];
+                html = html + "<tr>";
+                for (dkey in d) {
+                    if (d.hasOwnProperty(dkey)) {
+                        dobj = d[dkey];
+                        html = html + "<td>" + dobj + "</td>";
+                    }
+                }
+                html = html + "</tr>";
+            }
+            html = html + "</tbody>";
+        }
+        html = html + "</table>";
+        return html;
+    };
 
     /**
      * Augmented.Presentation.AutomaticTable
@@ -398,89 +428,85 @@
      * @class
      * @constructor
      */
-    var autoTable = Augmented.Presentation.AutomaticTable = function(schema) {
-        this.columns = {};
-        this.uri = null;
-        this.data = [];
-        this.schema = null;
-        this.view = null;
-        var isInitalized = false;
-
-        this.init = function(schema) {
-            if (!isInitalized) {
-                this.schema = schema;
-                this.columns = schema.properties;
-
-                var col = new autoTableCollection();
-                col.schema = this.schema;
-                if (this.uri) {
-                    col.url = this.uri;
-                }
-                this.view = new autoTableView();
-                this.view.collection = col;
-                isInitalized = true;
+    var autoTable = Augmented.Presentation.AutomaticTable = abstractColleague.extend({
+        columns: {},
+        uri: null,
+        data: [],
+        collection: null,
+        isInitalized : false,
+        initialize: function(options) {
+            if (this.collection) {
+                this.collection.reset();
             } else {
-                this.setSchema(schema);
+                this.collection = new autoTableCollection();
             }
-        };
-        this.fetch = function() {
-            this.view.collection.fetch();
-        };
-        this.populate = function(source) {
+            if (options) {
+                if (options.schema) {
+                    this.schema = options.schema;
+                }
+
+                if (options.el) {
+                    this.el = options.el;
+                }
+
+                if (options.url) {
+                    this.url = options.url;
+                }
+
+                if (options.data) {
+                    this.populate(options.data);
+                }
+            }
+            if (!this.schema) {
+                this.isInitalized = false;
+                return this.isInitalized;
+            }
+            if (!this.isInitalized) {
+                this.columns = this.schema.properties;
+                this.collection.schema = this.schema;
+                if (this.uri) {
+                    this.collection.url = this.uri;
+                }
+                this.isInitalized = true;
+            } else {
+                // TODO: this isn't right, if I call again what do I do?  Refresh????
+            }
+            return this.isInitalized;
+        },
+        fetch: function() {
+            this.collection.fetch();
+        },
+        populate: function(source) {
             this.data = source;
-            this.view.collection.reset(this.data);
-        };
-        this.render = function() {
-            this.view.template = this.compileTemplate();
-            this.view.render();
-        };
-        this.compileTemplate = function() {
-            var html = "<table><thead>";
-
-            if (this.columns) {
-                html = html + "<tr>";
-                for (var key in this.columns) {
-                    if (this.columns.hasOwnProperty(key)) {
-                        var obj = this.columns[key];
-                        html = html + "<th>" + key + "</th>";
-                    }
-                }
-                html = html + "</tr>";
-            }
-            html = html + "</thead><tbody>";
-
-            if (this.data) {
-                for (var i=0; i< this.data.length; i++) {
-                    var d = this.data[i];
-                    html = html + "<tr>";
-                    for (var dkey in d) {
-                        if (d.hasOwnProperty(dkey)) {
-                            var dobj = d[dkey];
-                            html = html + "<td>" + dobj + "</td>";
-                        }
-                    }
-                    html = html + "</tr>";
+            this.collection.reset(this.data);
+        },
+        render: function() {
+            if (this.el) {
+                var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                if (e) {
+                    this.template = this.compileTemplate();
+                    e.innerHTML = this.template;
                 }
             }
-            html = html + "</tbody></table>";
-            return html;
-        };
-        this.setURI = function(uri) {
+            return this;
+        },
+        compileTemplate: function() {
+            return defaultTableCompile(this.columns, this.data);
+        },
+        setURI: function(uri) {
             this.uri = uri;
-        };
-        this.setSchema = function(schema) {
+        },
+        setSchema: function(schema) {
             this.schema = schema;
             this.columns = schema.properties;
-            this.view.collection.reset();
-            this.view.collection.schema = schema;
+            this.collection.reset();
+            this.collection.schema = schema;
 
             if (this.uri) {
                 col.url = this.uri;
             }
-        };
-        // init on constructor
-        this.init(schema);
-    };
+        }
+    });
 
     /**
      * Augmented.Presentation.AutoTable
