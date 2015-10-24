@@ -457,19 +457,17 @@
                     this.populate(options.data);
                 }
             }
+            if (this.uri) {
+                this.collection.url = this.uri;
+            }
             if (!this.schema) {
                 this.isInitalized = false;
-                return this.isInitalized;
+                return false;
             }
             if (!this.isInitalized) {
                 this.columns = this.schema.properties;
                 this.collection.schema = this.schema;
-                if (this.uri) {
-                    this.collection.url = this.uri;
-                }
                 this.isInitalized = true;
-            } else {
-                // TODO: this isn't right, if I call again what do I do?  Refresh????
             }
             return this.isInitalized;
         },
@@ -482,7 +480,7 @@
         },
         render: function() {
             if (this.el) {
-                var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                var e = Augmented.Utility.isString(this.el) ? document.querySelector(this.el) : this.el;
                 if (e) {
                     this.template = this.compileTemplate();
                     e.innerHTML = this.template;
