@@ -20,5 +20,12 @@ define([
             model.crossOrigin = true;
             expect(model.crossOrigin).toBeTruthy();
         });
+
+        it('with mock can return something', function() {
+            var model = new Augmented.Model();
+            model.mock = true;
+            model.url = "/info";
+            expect(model.fetch()).toBeDefined();
+        });
     });
 });

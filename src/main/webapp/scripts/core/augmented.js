@@ -184,32 +184,29 @@
         then: function() {}
     });
 
-    var mockXHR = {
-         responseType: "text",
-         responseText: "",
-         async: true,
-         status: 200,
-         header: {},
-         timeout: 70,
-         open: function(method, uri, async, user, password) {
+    var mockXHR = function(){
+         this.responseType = "text";
+         this.responseText = "";
+         this.async = true;
+         this.status = 200;
+         this.header = {};
+         this.timeout = 70;
+         this.open = function(method, uri, async, user, password) {
              this.url = uri;
              this.async = async;
              this.user = user;
              this.method = method;
-         },
-         send: function() { this.onload(); },
-         setRequestHeader: function(header, value) {
+         };
+         this.send = function() { this.onload(); };
+         this.setRequestHeader = function(header, value) {
              this.header.header = value;
-         }
+         };
+         this.done = function() {};
+         this.fail = function() {};
+         this.always = function() {};
+         this.then = function() {};
+         this.options = {};
      };
-
-    Augmented.Utility.extend(mockXHR, {
-         done: function() {},
-         fail: function() {},
-         always: function() {},
-         then: function() {},
-         options: {}
-     });
 
     /**
      * AJAX capability using simple jQuery-like API
@@ -235,6 +232,7 @@
      * @returns success or failure callback
      */
     var ajax = Augmented.ajax = function(ajaxObject) {
+        logger.debug("Ajax object: " + JSON.stringify(ajaxObject));
         var xhr = null;
   		if (ajaxObject && ajaxObject.url) {
     	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
@@ -963,7 +961,7 @@
 				result += "=";
 			    }
 			}
-			if (varSpec.truncate != null) {
+			if (varSpec.truncate !== null) {
 			    value = value.substring(0, varSpec.truncate);
 			}
 			result += shouldEscape ? encodeURIComponent(value).replace(/!/g, "%21"): notReallyPercentEncode(value);
@@ -1301,41 +1299,32 @@
 	    }
 
 	    var errorCount = this.errors.length;
-	    var error = this.validateBasic(data, schema, dataPointerPath)
-	    || this.validateNumeric(data, schema, dataPointerPath)
-	    || this.validateString(data, schema, dataPointerPath)
-	    || this.validateArray(data, schema, dataPointerPath)
-	    || this.validateObject(data, schema, dataPointerPath)
-	    || this.validateCombinations(data, schema, dataPointerPath)
-	    || this.validateHypermedia(data, schema, dataPointerPath)
-	    || this.validateFormat(data, schema, dataPointerPath)
-	    || this.validateDefinedKeywords(data, schema, dataPointerPath)
-	    || null;
+	    var error = this.validateBasic(data, schema, dataPointerPath) || this.validateNumeric(data, schema, dataPointerPath) || this.validateString(data, schema, dataPointerPath) || this.validateArray(data, schema, dataPointerPath) || this.validateObject(data, schema, dataPointerPath) || this.validateCombinations(data, schema, dataPointerPath) || this.validateHypermedia(data, schema, dataPointerPath) || this.validateFormat(data, schema, dataPointerPath) || this.validateDefinedKeywords(data, schema, dataPointerPath) || null;
 
 	    if (topLevel) {
-		while (this.scanned.length) {
-		    var item = this.scanned.pop();
-		    delete item[this.validatedSchemasKey];
-		}
-		this.scannedFrozen = [];
-		this.scannedFrozenSchemas = [];
+    		while (this.scanned.length) {
+    		    var item = this.scanned.pop();
+    		    delete item[this.validatedSchemasKey];
+    		}
+    		this.scannedFrozen = [];
+    		this.scannedFrozenSchemas = [];
 	    }
 
 	    if (error || errorCount !== this.errors.length) {
-		while ((dataPathParts && dataPathParts.length) || (schemaPathParts && schemaPathParts.length)) {
-		    var dataPart = (dataPathParts && dataPathParts.length) ? "" + dataPathParts.pop() : null;
-		    var schemaPart = (schemaPathParts && schemaPathParts.length) ? "" + schemaPathParts.pop() : null;
-		    if (error) {
-			error = error.prefixWith(dataPart, schemaPart);
-		    }
-		    this.prefixErrors(errorCount, dataPart, schemaPart);
-		}
+    		while ((dataPathParts && dataPathParts.length) || (schemaPathParts && schemaPathParts.length)) {
+    		    var dataPart = (dataPathParts && dataPathParts.length) ? "" + dataPathParts.pop() : null;
+    		    var schemaPart = (schemaPathParts && schemaPathParts.length) ? "" + schemaPathParts.pop() : null;
+    		    if (error) {
+    			    error = error.prefixWith(dataPart, schemaPart);
+    		    }
+    		    this.prefixErrors(errorCount, dataPart, schemaPart);
+    		}
 	    }
 
 	    if (scannedFrozenSchemaIndex !== null) {
-		this.scannedFrozenValidationErrors[frozenIndex][scannedFrozenSchemaIndex] = this.errors.slice(startErrorCount);
+		    this.scannedFrozenValidationErrors[frozenIndex][scannedFrozenSchemaIndex] = this.errors.slice(startErrorCount);
 	    } else if (scannedSchemasIndex !== null) {
-		data[this.validationErrorsKey][scannedSchemasIndex] = this.errors.slice(startErrorCount);
+		    data[this.validationErrorsKey][scannedSchemasIndex] = this.errors.slice(startErrorCount);
 	    }
 
 	    return this.handleError(error);
@@ -1470,10 +1459,7 @@
 	};
 
 	ValidatorContext.prototype.validateNumeric = function validateNumeric(data, schema, dataPointerPath) {
-	    return this.validateMultipleOf(data, schema, dataPointerPath)
-	    || this.validateMinMax(data, schema, dataPointerPath)
-	    || this.validateNaN(data, schema, dataPointerPath)
-	    || null;
+	    return this.validateMultipleOf(data, schema, dataPointerPath) || this.validateMinMax(data, schema, dataPointerPath) || this.validateNaN(data, schema, dataPointerPath) || null;
 	};
 
 	var CLOSE_ENOUGH_LOW = Math.pow(2, -51);
@@ -1526,9 +1512,7 @@
 	};
 
 	ValidatorContext.prototype.validateString = function validateString(data, schema, dataPointerPath) {
-	    return this.validateStringLength(data, schema, dataPointerPath)
-	    || this.validateStringPattern(data, schema, dataPointerPath)
-	    || null;
+	    return this.validateStringLength(data, schema, dataPointerPath) || this.validateStringPattern(data, schema, dataPointerPath) || null;
 	};
 
 	ValidatorContext.prototype.validateStringLength = function validateStringLength(data, schema) {
@@ -1562,10 +1546,7 @@
 	    if (!Array.isArray(data)) {
 		return null;
 	    }
-	    return this.validateArrayLength(data, schema, dataPointerPath)
-	    || this.validateArrayUniqueItems(data, schema, dataPointerPath)
-	    || this.validateArrayItems(data, schema, dataPointerPath)
-	    || null;
+	    return this.validateArrayLength(data, schema, dataPointerPath) || this.validateArrayUniqueItems(data, schema, dataPointerPath) || this.validateArrayItems(data, schema, dataPointerPath) || null;
 	};
 
 	ValidatorContext.prototype.validateArrayLength = function validateArrayLength(data, schema) {
@@ -1643,11 +1624,7 @@
 	    if (typeof data !== "object" || data === null || Array.isArray(data)) {
 		return null;
 	    }
-	    return this.validateObjectMinMaxProperties(data, schema, dataPointerPath)
-	    || this.validateObjectRequiredProperties(data, schema, dataPointerPath)
-	    || this.validateObjectProperties(data, schema, dataPointerPath)
-	    || this.validateObjectDependencies(data, schema, dataPointerPath)
-	    || null;
+	    return this.validateObjectMinMaxProperties(data, schema, dataPointerPath) || this.validateObjectRequiredProperties(data, schema, dataPointerPath) || this.validateObjectProperties(data, schema, dataPointerPath) || this.validateObjectDependencies(data, schema, dataPointerPath) || null;
 	};
 
 	ValidatorContext.prototype.validateObjectMinMaxProperties = function validateObjectMinMaxProperties(data, schema) {
@@ -1773,11 +1750,7 @@
 	};
 
 	ValidatorContext.prototype.validateCombinations = function validateCombinations(data, schema, dataPointerPath) {
-	    return this.validateAllOf(data, schema, dataPointerPath)
-	    || this.validateAnyOf(data, schema, dataPointerPath)
-	    || this.validateOneOf(data, schema, dataPointerPath)
-	    || this.validateNot(data, schema, dataPointerPath)
-	    || null;
+	    return this.validateAllOf(data, schema, dataPointerPath) || this.validateAnyOf(data, schema, dataPointerPath) || this.validateOneOf(data, schema, dataPointerPath) || this.validateNot(data, schema, dataPointerPath) || null;
 	};
 
 	ValidatorContext.prototype.validateAllOf = function validateAllOf(data, schema, dataPointerPath) {
@@ -2165,9 +2138,7 @@
 	function isTrustedUrl(baseUrl, testUrl) {
 	    if(testUrl.substring(0, baseUrl.length) === baseUrl){
 		var remainder = testUrl.substring(baseUrl.length);
-		if ((testUrl.length > 0 && testUrl.charAt(baseUrl.length - 1) === "/")
-			|| remainder.charAt(0) === "#"
-			    || remainder.charAt(0) === "?") {
+		if ((testUrl.length > 0 && testUrl.charAt(baseUrl.length - 1) === "/") || remainder.charAt(0) === "#" || remainder.charAt(0) === "?") {
 		    return true;
 		}
 	    }
@@ -2756,7 +2727,7 @@
 	    }
 	    return unescaped;
 	}
-    }
+};
 
     /* Assign an object if null */
     var resourceBundle = (!resourceBundle) ? new i18nBase() : resourceBundle;
@@ -2769,7 +2740,7 @@
 	    getString: function() {
 		    return resourceBundle.prop.apply(this, arguments);
 	    }
-    }
+    };
 
     Augmented.Utility.MessageReader = {
 	    getMessage: function(key) {
@@ -2806,9 +2777,15 @@
     Augmented.Utility.MessageKeyFormatter = {
 	    delimiter: ".",
 	    format:function(error) {
-		var key = "";
-		error.level && (key += error.level, error.kind && (key += this.delimiter + error.kind, error.rule && (key += this.delimiter + error.rule, error.values.title && (key += this.delimiter + error.values.title))));
-		return key;
+    		var key = "";
+            if (error) {
+                var x = error.level &&
+                (key += error.level, error.kind &&
+                (key += this.delimiter + error.kind, error.rule &&
+                (key += this.delimiter + error.rule, error.values.title &&
+                (key += this.delimiter + error.values.title))));
+            }
+    		return (key) ? key : "";
 	    }
     };
 
@@ -2817,32 +2794,32 @@
      * Provides abstraction for base validation build-in library
      */
     var validationFramework = function() {
-	var myValidator;
-	if (myValidator === undefined) {
-	    myValidator = new Validator();
-	}
+    	var myValidator;
+    	if (myValidator === undefined) {
+    	    myValidator = new Validator();
+    	}
 
-	this.supportsValidation = function() {
-	    return (myValidator != null);
-	}
-	this.registerSchema = function(identity, schema) {
-	    myValidator.addSchema(identity, schema);
-	}
-	this.getSchema = function(identity) {
-	    return myValidator.getSchema(identity);
-	}
-	this.getSchemas = function() {
-	    return myValidator.getSchemaMap();
-	}
-	this.clearSchemas = function() {
-	    myValidator.dropSchemas();
-	}
-	this.validate = function(data, schema) {
-	    return myValidator.validateMultiple(data, schema);
-	}
-	this.getValidationMessages = function() {
-	    return myValidator.error;
-	}
+    	this.supportsValidation = function() {
+    	    return (myValidator !== null);
+    	};
+    	this.registerSchema = function(identity, schema) {
+    	    myValidator.addSchema(identity, schema);
+    	};
+    	this.getSchema = function(identity) {
+    	    return myValidator.getSchema(identity);
+    	};
+    	this.getSchemas = function() {
+    	    return myValidator.getSchemaMap();
+    	};
+    	this.clearSchemas = function() {
+    	    myValidator.dropSchemas();
+    	};
+    	this.validate = function(data, schema) {
+    	    return myValidator.validateMultiple(data, schema);
+    	};
+    	this.getValidationMessages = function() {
+    	    return myValidator.error;
+    	};
     };
 
     Augmented.ValidationFramework = (!Augmented.ValidationFramework) ? new validationFramework() : Augmented.ValidationFramework;
@@ -2858,7 +2835,7 @@
     	    valid: true
     	},
     	supportsValidation: function() {
-    	    if (this.schema != null) {
+    	    if (this.schema !== null) {
     		    return true;
     	    }
     	    return false;
@@ -2868,8 +2845,7 @@
     	    return this.validationMessages.valid;
     	},
     	validate: function() {
-    	    if (this.supportsValidation()
-    		    && Augmented.ValidationFramework.supportsValidation()) {
+    	    if (this.supportsValidation() && Augmented.ValidationFramework.supportsValidation()) {
     		    // validate from Validator
     		    this.validationMessages = Augmented.ValidationFramework.validate(this.toJSON(), this.schema);
     	    } else {
@@ -2891,9 +2867,14 @@
         		};
     	    }
 
+            if (this.mock) {
+                options.mock = this.mock;
+            }
+
             ret = Augmented.sync(method, model, options);
 
-            this.headers = ret.getAllResponseHeaders();
+            //TODO: might want to support this
+            //this.headers = ret.getAllResponseHeaders();
 
     	    return ret;
     	}
@@ -2908,11 +2889,12 @@
      */
     var augmentedCollection = Backbone.Collection.extend({
     	schema: null,
+        mock: false,
     	validationMessages: {
     	    valid: true
     	},
     	supportsValidation: function() {
-    	    if (this.schema != null) {
+    	    if (this.schema !== null) {
     		    return true;
     	    }
     	    return false;
@@ -2922,8 +2904,7 @@
     	    return this.validationMessages.valid;
     	},
     	validate: function() {
-    	    if (this.supportsValidation()
-    		    && Augmented.ValidationFramework.supportsValidation()) {
+    	    if (this.supportsValidation() && Augmented.ValidationFramework.supportsValidation()) {
     		// validate from Validator
 
     		// TODO: Should we validate every model to call this valid or is
@@ -2947,6 +2928,10 @@
         			withCredentials: true
         		};
     	    }
+
+            if (this.mock) {
+                options.mock = this.mock;
+            }
 
             ret = Backbone.sync(method, model, options);
             //console.debug("ret " + JSON.stringify(ret));
@@ -3096,19 +3081,19 @@
             exclude: []
         },
         addPermission: function(permission, negative) {
-            if (permission != null && !Array.isArray(permission)) {
+            if (permission !== null && !Array.isArray(permission)) {
                 var p = (negative) ? this.permissions.exclude : this.permissions.include;
                 p.push(permission);
             }
         },
         removePermission: function(permission, negative) {
-            if (permission != null && !Array.isArray(permission)) {
+            if (permission !== null && !Array.isArray(permission)) {
                 var p = (negative) ? this.permissions.exclude : this.permissions.include;
                 p.splice((p.indexOf(permission)), 1);
             }
         },
         setPermissions: function(permissions, negative) {
-            if (permissions != null && Array.isArray(permissions)) {
+            if (permissions !== null && Array.isArray(permissions)) {
                 if (negative) {
                     this.permissions.exclude = permissions;
                 } else {
@@ -3155,11 +3140,11 @@
     	this.myStore = null;
     	this.isSupported = function() {
     	    return (typeof (Storage) !== "undefined");
-    	}
+    	};
 
     	// true = localStorage, false = sessionStorage
     	if (this.isSupported()) {
-    	    console.log("localStorage exists");
+    	    logger.debug("localStorage exists");
 
     	    if (this.isPersisted) {
     		this.myStore = localStorage;
@@ -3167,36 +3152,36 @@
     		this.myStore = sessionStorage;
     	    }
     	} else {
-    	    console.log("No localStorage.");
+    	    logger.debug("No localStorage.");
     	}
 
     	this.getItem = function(itemKey) {
     	    var item = this.myStore.getItem(itemKey);
     	    if (item) {
-    		return JSON.parse(item);
+    		    return JSON.parse(item);
     	    }
     	    return null;
-    	}
+    	};
 
     	this.setItem = function(itemKey, object) {
     	    this.myStore.setItem(itemKey, JSON.stringify(object));
-    	}
+    	};
 
     	this.removeItem = function(itemKey) {
     	    this.myStore.removeItem(itemKey);
-    	}
+    	};
 
     	this.clear = function() {
     	    this.myStore.clear();
-    	}
+    	};
 
     	this.key = function(i) {
     	    return this.myStore.key(i);
-    	}
+    	};
 
     	this.length = function() {
     	    return this.myStore.length;
-    	}
+    	};
     };
 
     var namespacedAugmentedLocalStorage = function(persist,namespace) {
@@ -3207,7 +3192,7 @@
     	// public
     	this.isSupported = function() {
     	    return (ls && ls.isSupported());
-    	}
+    	};
 
     	// true = localStorage, false = sessionStorage
     	if (this.isSupported() && this.namespace) {
@@ -3240,7 +3225,7 @@
         		return ret;
     	    }
     	    return null;
-    	}
+    	};
 
     	this.setItem = function(itemKey, object) {
             if (!this.myNameSpacedStore) {
@@ -3248,27 +3233,27 @@
     	    }
     	    this.myNameSpacedStore.set(itemKey, object);
     	    ls.setItem(namespace, JSON.stringify(this.myNameSpacedStore.toJSON()));
-    	}
+    	};
 
     	this.removeItem = function(itemKey) {
     	    var item = this.getItem(itemKey);
 
     	    this.myNameSpacedStore.remove(itemKey);
     	    ls.setItem(namespace, JSON.stringify(this.myNameSpacedStore.toJSON()));
-    	}
+    	};
 
     	this.clear = function() {
     	    this.myNameSpacedStore.clear();
     	    ls.setItem(namespace, JSON.stringify(this.myNameSpacedStore.toJSON()));
-    	}
+    	};
 
     	this.key = function(i) {
     	    return this.myNameSpacedStore.key(i);
-    	}
+    	};
 
     	this.length = function() {
     	    return this.myNameSpacedStore.size();
-    	}
+    	};
     };
 
     /**
@@ -3339,13 +3324,13 @@
             }
 
             Augmented.Utility.extend(this.queue, args);
-        }
+        };
 
         this.clear = function() {
             if (this.queue.length > 0) {
                 this.queue.splice(0, this.queue.length);
             }
-        }
+        };
 
         this.process = function() {
             if (arguments) {
@@ -3368,10 +3353,10 @@
         };
         this.getTimeout = function() {
             return to;
-        }
+        };
         this.getQueue = function() {
             return this.queue;
-        }
+        };
     };
 
     /**
@@ -3397,33 +3382,33 @@
         // Events for use in the startup of the application
         this.initialize = function() {
 
-        }
+        };
         this.beforeInitialize = function() {
 
-        }
+        };
         this.afterInitialize = function() {
 
-        }
+        };
 
         this.getName = function() {
             return this.getMetadataItem("name");
-        }
+        };
 
         this.setName = function(n) {
             return this.setMetadataItem("name", n);
-        }
+        };
 
 		this.getMetadata = function() {
 			return metadata;
-		}
+		};
 
 		this.setMetadataItem = function(key, value) {
 			metadata.set(key, value);
-		}
+		};
 
 		this.getMetadataItem = function(key) {
 			return metadata.get(key);
-		}
+		};
 
 		this.start = function() {
             var asyncQueue = new Augmented.Utility.AsynchronousQueue(Augmented.Configuration.ApplicationInitProcessTimeout);
@@ -3440,14 +3425,14 @@
             if (!this.started) {
                 this.stop();
             }
-		}
+		};
 
         this.stop = function() {
 		    if (Augmented.history.started) {
 				Augmented.history.stop();
 		    }
 		    this.started = false;
-		}
+		};
     };
     Augmented.Application.prototype.constructor = application;
 
