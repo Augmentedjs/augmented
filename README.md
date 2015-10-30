@@ -6,8 +6,7 @@
 *adjective*
 adjective: augmented
 
-    1.
-    having been made greater in size or value.
+    1. having been made greater in size or value.
 
 
 **Augmented.js** is a framework based on Backbone.js and provides a large set of enterprise functionality.
@@ -28,10 +27,16 @@ A few key features of the **Core** module are:
 * Application metadata Object
 * Utilities that support common abilities found in jQuery (only drastically faster)
   - Ajax (mimics jQuery API)
-  - extends
+  - Object extends
   - Array tools
+  - ES6-like Map data structure object
+  - Stack data structure object
 * HTML5 localStorage factory with namespace protection support
 * Built-in logging factory with console and REST support
+* Async Queue for processing
+* Mock support in Models and Collections
+* Full support for crossOrigin requests via property
+
 
 And much more!
 
@@ -41,6 +46,11 @@ An extension module for **Presentation** is also available and adds extensive ab
 
 This extension adds:
 * Mediator patterned PubSub Views
+* Enhanced Application Object
+    - PubSub mediation and boot-straping for Application objects
+    - CSS Stylesheet registration and injection
+    - breadcrumb management
+* Automatic Tables generated from a JSON schema and data
 
 ## Service
 
