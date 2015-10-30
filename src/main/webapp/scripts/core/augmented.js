@@ -358,10 +358,10 @@
                     this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.debug + this.CLOSE_GROUP + message, level);
                 } else if (level === loggerLevelTypes.error) {
                     this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.error + this.CLOSE_GROUP + message, level);
-                } else if (this.loggerLevel === loggerLevelTypes.debug || this.loggerLevel === loggerLevelTypes.info) {
-                    this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.info + this.CLOSE_GROUP + message, level);
                 } else if (level === loggerLevelTypes.warn) {
                     this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.warn + this.CLOSE_GROUP + message, level);
+                } else if (this.loggerLevel === loggerLevelTypes.debug || this.loggerLevel === loggerLevelTypes.info) {
+                    this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.info + this.CLOSE_GROUP + message, level);
                 }
             }
         };
