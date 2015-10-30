@@ -162,6 +162,18 @@
     Augmented.Utility = {};
 
     /**
+     * isString
+     * checks is a value is a String
+     * @function
+     * @returns true if value is a string
+     */
+    var isString = Augmented.Utility.isString = function(val) {
+        return typeof val === 'string' ||
+            ((!!val && typeof val === 'object') &&
+            Object.prototype.toString.call(val) === '[object String]');
+    };
+
+    /**
      * Object Extend ability simular to jQuery.extend()
      * @function Augmented.Utility.extend
      */
