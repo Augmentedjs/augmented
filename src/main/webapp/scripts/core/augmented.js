@@ -161,6 +161,73 @@
      */
     Augmented.Utility = {};
 
+    var transformerType = {
+        "string": 0,
+        "integer": 1,
+        "number": 2,
+        "boolean": 3,
+        "array": 4,
+        "object": 5,
+        "null": 6
+    };
+
+    var transformer = Augmented.Utility.Transformer = {
+        type: transformerType,
+        transform: function(source, type) {
+            var out = null;
+            switch(type) {
+                case transformerType.string:
+                    if (typeof source === 'object') {
+                        out = JSON.stringify(source);
+                    } else {
+                        out = String(source);
+                    }
+                break;
+                case transformerType.integer:
+                    out = parseInt(source);
+                break;
+                case transformerType.number:
+                    out = Number(source);
+                break;
+                case transformerType.boolean:
+                    out = Boolean(source);
+                break;
+                case transformerType.array:
+                    if (!Array.isArray(source)) {
+                        out = [];
+                        out[0] = source;
+                    } else {
+                        out = source;
+                    }
+                break;
+                case transformerType.object:
+                    if (typeof source !== 'object') {
+                        out = {};
+                        out[source] = source;
+                    } else {
+                        out = source;
+                    }
+                break;
+            }
+            return out;
+        },
+        isType: function(source) {
+            if (source === null) {
+                return transformerType.null;
+            } else if (typeof source === 'string') {
+                return transformerType.string;
+            } else if (typeof source === 'number') {
+                return transformerType.number;
+            } else if (typeof source === 'boolean') {
+                return transformerType.boolean;
+            } else if (Array.isArray(source)) {
+                return transformerType.array;
+            } else if (typeof source === 'object') {
+                return transformerType.object;
+            }
+        }
+    };
+
     /**
      * isString
      * checks is a value is a String

@@ -3,20 +3,23 @@
  *
  * @author Bob Warren
  *
+ * @requires jquery.js
+ * @requires mockjax.js
+ * @requires underscore.js
  * @requires augmented.js
  */
 (function(moduleFactory) {
     if (typeof exports === 'object') {
-	module.exports = moduleFactory(require('augmented'));
+	module.exports = moduleFactory(require('jquery'), require('mockjax'), require('underscore'), require('augmented'));
     } else if (typeof define === 'function' && define.amd) {
-	define([ 'augmented' ], moduleFactory);
+	define([ 'jquery', 'mockjax', 'underscore', 'augmented' ], moduleFactory);
     } else {
-	window.Augmented.Presentation = moduleFactory(window.Augmented);
+	window.Augmented.Presentation = moduleFactory(window.$, window.mockjax, window._, window.Augmented);
     }
-}(function(Augmented) {
+}(function($, mockjax, _, Augmented) {
     Augmented.Service = {};
 
-    Augmented.Service.VERSION = '0.1.0';
+    Augmented.Service.VERSION = '1.0.0';
 
     /** MockService
 	 *
@@ -29,15 +32,21 @@
 	 *  In essence, a syntactic sugar coating around a subset of
 	 *  mockjax, using DSL notation.
 	 *
-	 *  Usage: Augmented.Service.MockService.at("rest/product/123")
+	 *  Usage: Augmented.MockService.at("rest/product/123")
 	 *                              .on("GET")
 	 *                              .respondWithText("Hello World")
 	 *                              .respondWithStatus(200)
 	 *                              .respondWithHeaders({Content-Type: "text/plain", User: "Simba"})
 	 *                              .register();
 	 */
-	var mock = function() {
-		var options = {}, services = [];
+	var mockService = function() {
+
+
+		//Reserved for future CORS and persistence use.
+		//this.myStore = Augmented.LocalStorageFactory.getStorage(false);
+
+
+		var options = {};
 
 		/**
 		 *  This url can be a string, or a regular expression. The
@@ -86,7 +95,7 @@
 		 *  handler if it is not needed later on down the code.
 		 */
 		this.register = function() {
-			//return mockjax(options);
+			return mockjax(options);
 		};
 
 		/**
@@ -94,18 +103,13 @@
 		 *  no id is provided, it clears all the handlers.
 		 */
 		this.clear = function(id) {
-			services[id] = null;
+			mockjax.clear(id);
 		};
-
-        /**
-		 *  Return all Registered Services
-		 */
-        this.getRegisteredMocks = function() {
-            return services;
-        };
 	};
 
-	var mockService = Augmented.Service.MockService = new mock();
+	var mock = new mockService();
+
+	Augmented.Service.Mock = mock;
 
     return Augmented.Service;
 }));
