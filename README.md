@@ -54,7 +54,11 @@ This extension adds:
 
 ## Service
 
-Also a **Service** extension adds additional features based around backend and Ajax features.
+Also a **Service** extension adds additional features based around backend and Ajax.
 
-This extension module adds:
-* Mock service for Ajax calls
+This extension module in currently a work in progress.
+
+Planned features include:
+* Spark support
+* MicroService capability
+* MicroESB

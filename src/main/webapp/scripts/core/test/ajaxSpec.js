@@ -8,22 +8,44 @@ define([
 			expect(Augmented.ajax).toBeDefined();
 		});
 
-		var uri = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
-		var success = null;
+        describe('can fetch', function() {
+    		var uri = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
+    		var success = null;
 
-		beforeEach(function(done) {
-			Augmented.ajax({
-				url: uri,
-				contentType: 'text/plain',
-				dataType: 'text',
-				async: true,
-				success: function (data, status) { success = true; done(); },
-				failure: function (data, status) { success = false; done(); }
-			});
-		});
+    		beforeEach(function(done) {
+    			Augmented.ajax({
+    				url: uri,
+    				contentType: 'text/plain',
+    				dataType: 'text',
+    				async: true,
+    				success: function (data, status) { success = true; done(); },
+    				failure: function (data, status) { success = false; done(); }
+    			});
+    		});
 
-		it('can fetch a file via simple ajax', function() {
-		    expect(success).toBeTruthy();
-		});
+    		it('can fetch a file via simple ajax', function() {
+    		    expect(success).toBeTruthy();
+    		});
+        });
+        describe('can mock a fetch', function() {
+    		var uri = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
+    		var success = null;
+
+    		beforeEach(function(done) {
+    			Augmented.ajax({
+    				url: uri,
+    				contentType: 'text/plain',
+    				dataType: 'text',
+    				async: true,
+                    mock: true,
+    				success: function (data, status) { success = true; done(); },
+    				failure: function (data, status) { success = false; done(); }
+    			});
+    		});
+
+    		it('can fetch a file via simple ajax', function() {
+    		    expect(success).toBeTruthy();
+    		});
+        });
 	});
 });

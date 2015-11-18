@@ -7,27 +7,21 @@
  */
 (function(moduleFactory) {
     if (typeof exports === 'object') {
-	module.exports = moduleFactory(require('augmented'));
+	    module.exports = moduleFactory(require('augmented'));
     } else if (typeof define === 'function' && define.amd) {
-	define([ 'augmented' ], moduleFactory);
+	    define([ 'augmented' ], moduleFactory);
     } else {
-	window.Augmented.Presentation = moduleFactory(window.Augmented);
+	    window.Augmented.Service = moduleFactory(window.Augmented);
     }
 }(function(Augmented) {
     Augmented.Service = {};
 
-    Augmented.Service.VERSION = '0.1.0';
+    Augmented.Service.VERSION = '0.1.0 Pre';
 
     /** MockService
 	 *
 	 *  Sets up mocked REST calls that will intercept AJAX calls
 	 *  and responds with a mocked response of our own choosing.
-	 *
-	 *  This will also support CORS and persistence via local storage
-	 *  in the future, played as a separate story.
-	 *
-	 *  In essence, a syntactic sugar coating around a subset of
-	 *  mockjax, using DSL notation.
 	 *
 	 *  Usage: Augmented.Service.MockService.at("rest/product/123")
 	 *                              .on("GET")
@@ -37,7 +31,30 @@
 	 *                              .register();
 	 */
 	var mock = function() {
-		var options = {}, services = [];
+		var options = {}, services = [], enabled, idInc = 0;
+
+        this.getNextId = function() {
+            return idInc++;
+        };
+
+        /**
+         * Returns if the service is enabled
+         */
+        this.isEnabled = function() {
+            return enabled;
+        };
+        /**
+         * Enable the service
+         */
+        this.enableService = function() {
+            enabled = true;
+        };
+        /**
+         * Disable the service
+         */
+        this.disableService = function() {
+            enabled = false;
+        };
 
 		/**
 		 *  This url can be a string, or a regular expression. The
@@ -86,7 +103,11 @@
 		 *  handler if it is not needed later on down the code.
 		 */
 		this.register = function() {
-			//return mockjax(options);
+            var service = options;
+            service.id = this.getNextId();
+            services.push(service);
+            options = {};
+            return service.id;
 		};
 
 		/**

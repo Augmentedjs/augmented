@@ -39,7 +39,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = '0.1.0';
+    Augmented.VERSION = '0.1.0 Pre';
     /**
      * A codename for internal use
      * @constant codename
@@ -91,7 +91,6 @@
     /**
      * Augmented.sync - Base sync method that can pass special augmented features
      * @function Augmented.sync
-     * TODO: think about passing the mock option through so ajax can mock from Augemented.ajax
      */
     Augmented.sync = Backbone.sync;
 
@@ -328,6 +327,7 @@
     	    if (ajaxObject.withCredentials) {
         		xhr.withCredentials = ajaxObject.withCredentials;
         		// Sync Not supported for all browsers in CORS mode
+                logger.warn("Augmented.ajax: Sync Not supported for all browsers in CORS mode!");
         		async = true;
     	    }
 
