@@ -2519,6 +2519,7 @@
 	 * When configured with mode: 'map', allows access to bundle values by
 	 * specifying its key. Eg, prop('com.company.bundles.menu_add')
    * @function prop
+   * @memberof i18nBase
 	 */
 	this.prop = function(key /*
 				     * Add parameters as function arguments as
@@ -2681,6 +2682,7 @@
 
 	/** Load and parse .properties files
    * @function loadAndParseFile
+   * @memberof i18nBase
    * @param filename
    * @param settings
    */
@@ -2900,11 +2902,11 @@
 
     /**
      * Augmented.Utility.MessageKeyFormatter
-     * @function Augmented.Utility.MessageKeyFormatter
      *
-     * concatenate the pieces of the error together if a portion of the key is
+     * Concatenate the pieces of the error together if a portion of the key is
      * missing, the rest of the key is ignored. ex. if the "rule" attribute is
      * missing, then the key will return with the error.level + error.kind only
+     * @function Augmented.Utility.MessageKeyFormatter
      */
     Augmented.Utility.MessageKeyFormatter = {
         /**
@@ -2932,9 +2934,10 @@
     };
 
     /**
-     * @constructor Augmented.ValidationFramework
+     * Augmented.ValidationFramework
      * The Validation Framework Base Wrapper Class
      * Provides abstraction for base validation build-in library
+     * @constructor Augmented.ValidationFramework
      */
     var validationFramework = function() {
     	var myValidator;
@@ -2968,8 +2971,9 @@
     Augmented.ValidationFramework = (!Augmented.ValidationFramework) ? new validationFramework() : Augmented.ValidationFramework;
 
     /**
-     * Abstract Augmented Model Supports: CORS Schemas Security * TODO:
-     * implement OAUTH 2
+     * Abstract Augmented Model Supports: CORS Schemas Security
+     * TODO: implement OAUTH 2
+     * @constructor Augmented.Model
      */
     var augmentedModel = Backbone.Model.extend({
     	schema: null,
@@ -3422,7 +3426,7 @@
     /**
      * Augmented.Utility.Stack
      * Standard Stack data structure
-     * @class
+     * @class Augmented.Utility.Stack
      */
     var stack = Augmented.Utility.Stack = function() {
         this.stack = [];
@@ -3455,6 +3459,7 @@
     /**
      * Augmented.Utility.AsynchronousQueue
      * An Async queue for handling async chained functions
+     * @constructor Augmented.Utility.AsynchronousQueue
      */
     var asyncQueue = Augmented.Utility.AsynchronousQueue = function(timeout) {
         var to = (timeout) ? timeout : Augmented.Configuration.AsynchronousQueueTimeout;
@@ -3504,7 +3509,7 @@
 
     /**
      * Application Class for use to define an application
-     * @constructor
+     * @constructor Augmented.Application
      */
     var application = Augmented.Application = function(name) {
 		var metadata;
