@@ -170,6 +170,11 @@
         "null": 6
     };
 
+    /**
+     * Augmented.Utility.Transformer
+     * @function Augmented.Utility.Transformer
+     * @returns returns a transformed object or primitive
+     */
     var transformer = Augmented.Utility.Transformer = {
         type: transformerType,
         transform: function(source, type) {
@@ -230,7 +235,7 @@
     /**
      * isString
      * checks is a value is a String
-     * @function
+     * @function isString
      * @returns true if value is a string
      */
     var isString = Augmented.Utility.isString = function(val) {
@@ -380,6 +385,7 @@
 
     /* Packages */
 
+    /** @namespace Augmented.Logger */
     Augmented.Logger = {};
 
     var loggerType = Augmented.Logger.Type = {
@@ -396,7 +402,7 @@
 
     /**
      * Augmented Logger
-     * @constructor
+     * @constructor abstractLogger
      * @abstract
      */
     var abstractLogger = function(l) {
@@ -433,75 +439,75 @@
             }
         };
 
-      this.info = function(message) {
-        this.log(message, loggerLevelTypes.info);
-    };
-      this.error = function(message) {
-        this.log(message, loggerLevelTypes.error);
-    };
-      this.debug = function(message) {
-          this.log(message, loggerLevelTypes.debug);
-      };
-      this.warn = function(message) {
-          this.log(message, loggerLevelTypes.warn);
-      };
+        this.info = function(message) {
+            this.log(message, loggerLevelTypes.info);
+        };
+        this.error = function(message) {
+            this.log(message, loggerLevelTypes.error);
+        };
+        this.debug = function(message) {
+            this.log(message, loggerLevelTypes.debug);
+        };
+        this.warn = function(message) {
+            this.log(message, loggerLevelTypes.warn);
+        };
       /*
        * override this in an instance
        * this.logMe = ...
        */
-  };
+    };
 
-   var consoleLogger = function() {
-      abstractLogger.apply(this, arguments);
-   };
-   consoleLogger.prototype = Object.create(abstractLogger.prototype);
-   consoleLogger.prototype.constructor = consoleLogger;
+    var consoleLogger = function() {
+        abstractLogger.apply(this, arguments);
+    };
+    consoleLogger.prototype = Object.create(abstractLogger.prototype);
+    consoleLogger.prototype.constructor = consoleLogger;
 
-   consoleLogger.prototype.logMe = function(message, level) {
-       if (level === loggerLevelTypes.info) {
-           console.info(message);
-       } else if (level === loggerLevelTypes.error) {
-           console.error(message);
-       } else if (level === loggerLevelTypes.debug) {
-           console.log(message);
-       } else if (level === loggerLevelTypes.warn) {
-           console.warn(message);
-       } else {
-           console.log(message);
-       }
-   };
+    consoleLogger.prototype.logMe = function(message, level) {
+        if (level === loggerLevelTypes.info) {
+            console.info(message);
+        } else if (level === loggerLevelTypes.error) {
+            console.error(message);
+        } else if (level === loggerLevelTypes.debug) {
+            console.log(message);
+        } else if (level === loggerLevelTypes.warn) {
+            console.warn(message);
+        } else {
+            console.log(message);
+        }
+    };
 
-   var restLogger = function() {
+    var restLogger = function() {
        abstractLogger.apply(this, arguments);
-   };
+    };
 
-   restLogger.prototype = Object.create(abstractLogger.prototype);
-   restLogger.prototype.constructor = restLogger;
-   restLogger.prototype.setURI = function(uri) {
-       this.uri = uri;
-   };
-   restLogger.prototype.logMe = function(message) {
-       ajax({
-           url: this.uri,
-           method: "POST",
-           contentType: 'text/plain',
-           dataType: 'text',
-           async: true,
-           data: message,
-           success: function (data, status) { this.success(); },
-           failure: function (data, status) { this.failure(); }
-       });
-   };
+    restLogger.prototype = Object.create(abstractLogger.prototype);
+    restLogger.prototype.constructor = restLogger;
+    restLogger.prototype.setURI = function(uri) {
+        this.uri = uri;
+    };
+    restLogger.prototype.logMe = function(message) {
+        ajax({
+            url: this.uri,
+            method: "POST",
+            contentType: 'text/plain',
+            dataType: 'text',
+            async: true,
+            data: message,
+            success: function (data, status) { this.success(); },
+            failure: function (data, status) { this.failure(); }
+        });
+    };
 
-   Augmented.Logger.LoggerFactory = {
-       getLogger: function(type, level) {
-           if (type === loggerType.console) {
+    Augmented.Logger.LoggerFactory = {
+        getLogger: function(type, level) {
+            if (type === loggerType.console) {
                return new consoleLogger(level);
-           } else if (type === loggerType.rest) {
+            } else if (type === loggerType.rest) {
                return new restLogger(level);
-           }
-       }
-   };
+            }
+        }
+    };
 
    /* A private logger for use in the framework only */
    var logger = Augmented.Logger.LoggerFactory.getLogger(loggerType.console, Augmented.Configuration.LoggerLevel);
@@ -511,12 +517,12 @@
      * @function Augmented.Utility.Array
      */
     Augmented.Utility.Array = function(arr) {
-      /**
-       * Has returns whether a key exists in the Array
-       * @function has
-       * @param key {string} name of the key
-       * @returns true if the key exists in the Array
-       */
+        /**
+         * Has returns whether a key exists in the Array
+         * @function has
+         * @param key {string} name of the key
+         * @returns true if the key exists in the Array
+         */
     	this.has = function(key) {
     	    return (arr.indexOf(key) !== -1);
     	};
@@ -535,7 +541,7 @@
 
       /**
        * Set the value by key in the map
-       * @function set
+       * @memberof Augmented.Utility.AugmentedMap
        * @param key {string} name of the key
        * @param value {any} value for the key
        */
@@ -551,6 +557,7 @@
       /**
        * Get the value by key in the map
        * @function get
+       * @memberof Augmented.Utility.AugmentedMap
        * @param key {string} name of the key
        * @returns The value for the key
        */
@@ -561,6 +568,7 @@
       /**
        * Index of the key in the map
        * @function indexOf
+       * @memberof Augmented.Utility.AugmentedMap
        * @param key {string} name of the key
        * @returns index of the key
        */
@@ -571,6 +579,7 @@
       /**
        * Remove the value by key in the map
        * @function remove
+       * @memberof Augmented.Utility.AugmentedMap
        * @param key {string} name of the key
        */
     	this.remove = function(key) {
@@ -582,6 +591,7 @@
       /**
        * Has returns whether a key exists in the map
        * @function has
+       * @memberof Augmented.Utility.AugmentedMap
        * @param key {string} name of the key
        * @returns true if the key exists in the map
        */
@@ -592,6 +602,7 @@
       /**
        * Iterator forEach key to value in the map
        * @function forEach
+       * @memberof Augmented.Utility.AugmentedMap
        * @param fn {function} callback for the iterator
        */
     	this.forEach = function(fn) {
@@ -610,6 +621,7 @@
       /**
        * Get the key for the index in the map
        * @function key
+       * @memberof Augmented.Utility.AugmentedMap
        * @param i {number} index of the key
        * @returns the key at index
        */
@@ -620,6 +632,7 @@
       /**
        * The entries value object in the map
        * @function entries
+       * @memberof Augmented.Utility.AugmentedMap
        * @returns Array of entries value objects
        */
     	this.entries = function() {
@@ -637,6 +650,7 @@
       /**
        * The values in the map as an Array
        * @function values
+       * @memberof Augmented.Utility.AugmentedMap
        * @returns values as an Array
        */
     	this.values = function() {
@@ -651,6 +665,7 @@
       /**
        * Clear the map
        * @function clear
+       * @memberof Augmented.Utility.AugmentedMap
        */
     	this.clear = function() {
     	    this.keys = [];
@@ -660,6 +675,7 @@
       /**
        * The size of the map in keys
        * @function size
+       * @memberof Augmented.Utility.AugmentedMap
        * @returns size of map by keys
        */
     	this.size = function() {
@@ -669,6 +685,7 @@
       /**
        * Represent the map in JSON
        * @function toJSON
+       * @memberof Augmented.Utility.AugmentedMap
        * @returns JSON of the map
        */
     	this.toJSON = function() {
@@ -678,6 +695,7 @@
       /**
        * Represent the map in a String of JSON
        * @function toString
+       * @memberof Augmented.Utility.AugmentedMap
        * @returns Stringified JSON of the map
        */
     	this.toString = function() {
@@ -689,12 +707,18 @@
       /**
        * Checks of the map is empty (not ES6)
        * @function isEmpty
+       * @memberof Augmented.Utility.AugmentedMap
        * @returns true if the map is empty
        */
     	this.isEmpty = function() {
     	    return this.keys.length === 0;
     	};
 
+        /**
+         * Mashalls a map
+         * @function marshall
+         * @memberof Augmented.Utility.AugmentedMap
+         */
         this.marshall = function(dataToMarshall) {
             /* dataToMarshall must be the following type of data to parse:
              * Map
@@ -744,6 +768,7 @@
   /**
    * Entend the Object as a new instance
    * @function Augmented.Object.extend
+   * @memberof Augmented.Object
    * @returns Child class of Augmented.Object
    */
   	Augmented.Object.extend = Augmented.extend;
@@ -771,7 +796,7 @@
     /**
     * Augmented.Security.Context
     * Used as a security data storage class
-    * @class
+    * @constructor Augmented.Security.Context
     */
     var securityContext = Augmented.Security.Context = function(principal, permissions) {
         this.principal = (principal) ? principal : "guest";
@@ -2392,16 +2417,7 @@
 
     /**
      * Fork of Jquery i18n plugin turned component
-     * @constructor
-     */
-    var i18nBase = function() {
-	var i18n = {};
-
-	/** Map holding bundle keys (if mode: 'map') */
-	i18n.map = {};
-
-	/**
-	 * Load and parse message bundle files (.properties), making bundles
+     * Load and parse message bundle files (.properties), making bundles
 	 * keys available as javascript variables.
 	 *
 	 * i18n files are named <name>.js, or <name>_<language>.js or <name>_<language>_<country>.js
@@ -2417,7 +2433,19 @@
 	 * Sample usage for a bundles/Messages.properties bundle:
 	 * i18n.properties({ name: 'Messages', language: 'en_US', path:
 	 * 'bundles' });
-   * @function properties
+     *
+     * @constructor i18nBase
+     */
+    var i18nBase = function() {
+	var i18n = {};
+
+	/** Map holding bundle keys (if mode: 'map') */
+	i18n.map = {};
+
+	/**
+	 *
+     * @function properties
+     * @memberof i18nBase
 	 *
 	 * @param name
 	 *                (string/string[], optional) names of file to load (eg,
@@ -2644,10 +2672,8 @@
 	    return s;
 	};
 
-	/**
+	/*
    * Language reported by browser, normalized code
-   * @function browserLang
-    * @returns Browser language code
    */
 	function browserLang() {
 	    return normaliseLanguageCode(navigator.language /* Mozilla */ || navigator.userLanguage /* IE */);
@@ -2671,11 +2697,8 @@
 	    });
 	}
 
-	/**
+	/*
    * Parse .properties files
-   * @function parseData
-   * @param data
-   * @param mode
    */
 	function parseData(data, mode) {
 	    var parsed = '';
@@ -2717,7 +2740,7 @@
 			    i18n.map[name] = value;
 			}
 
-			/** Mode: bundle keys as vars/functions */
+			/* Mode: bundle keys as vars/functions */
 			if (mode == 'vars' || mode == 'both') {
 			    value = value.replace(/"/g, '\\"'); // escape quotation mark
 
@@ -2777,12 +2800,12 @@
 	    }
 	}
 
-	/** Make sure filename is an array */
+	/* Make sure filename is an array */
 	function getFiles(names) {
 	    return (names && names.constructor == Array) ? names : [names];
 	}
 
-	/** Ensure language code is in the format aa_AA. */
+	/* Ensure language code is in the format aa_AA. */
 	function normaliseLanguageCode(lang) {
 	    lang = lang.toLowerCase();
 	    if (lang.length > 3) {
@@ -2791,7 +2814,7 @@
 	    return lang;
 	}
 
-	/** Unescape unicode chars ('\u00e3') */
+	/* Unescape unicode chars ('\u00e3') */
 	function unescapeUnicode(str) {
 	    // unescape unicode codes
 	    var codes = [];
@@ -2811,17 +2834,46 @@
     /* Assign an object if null */
     var resourceBundle = (!resourceBundle) ? new i18nBase() : resourceBundle;
 
+/**
+ * Augmented.Utility.ResourceBundle
+ * @function Augmented.Utility.ResourceBundle
+ */
     Augmented.Utility.ResourceBundle = {
+        /**
+         * getBundle
+         * @function getBundle
+         * @memberof Augmented.Utility.ResourceBundle
+         */
 	    getBundle: function() {
 		    return resourceBundle.properties.apply(this, arguments);
 	    },
 
+        /**
+         * getString
+         * @function getString
+         * @memberof Augmented.Utility.ResourceBundle
+         */
 	    getString: function() {
 		    return resourceBundle.prop.apply(this, arguments);
 	    }
     };
 
+    /**
+     * Augmented.Utility.MessageReader
+     * @function Augmented.Utility.MessageReader
+     */
     Augmented.Utility.MessageReader = {
+        /**
+         * getMessage
+         * @function getMessage
+         * @memberof Augmented.Utility.MessageReader
+         * get the message out of the bundle.
+         * if message is not found, then ResourceBundle returns the key
+ 		 * wrapped in square brackets
+ 		 * loop through the fallback path of the key by removing the
+ 		 * last attribute and searching the bundle again
+ 		 * stop when you get back a real message (not just the [key])
+         */
 	    getMessage: function(key) {
 		// try getting the message out of the bundle
 		var msg = Augmented.Utility.ResourceBundle.getString.apply(this,arguments),
@@ -2848,14 +2900,25 @@
 
     /**
      * Augmented.Utility.MessageKeyFormatter
+     * @function Augmented.Utility.MessageKeyFormatter
      *
      * concatenate the pieces of the error together if a portion of the key is
      * missing, the rest of the key is ignored. ex. if the "rule" attribute is
      * missing, then the key will return with the error.level + error.kind only
      */
     Augmented.Utility.MessageKeyFormatter = {
+        /**
+         * delimiter
+         * @property delimiter
+         * @memberof Augmented.Utility.MessageKeyFormatter
+         */
 	    delimiter: ".",
-	    format:function(error) {
+        /**
+         * format
+         * @function format
+         * @memberof Augmented.Utility.MessageKeyFormatter
+         */
+	    format: function(error) {
     		var key = "";
             if (error) {
                 var x = error.level &&
@@ -2869,6 +2932,7 @@
     };
 
     /**
+     * @constructor Augmented.ValidationFramework
      * The Validation Framework Base Wrapper Class
      * Provides abstraction for base validation build-in library
      */
