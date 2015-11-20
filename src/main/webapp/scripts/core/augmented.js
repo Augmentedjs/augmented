@@ -55,7 +55,7 @@
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'
      * variable to its previous owner. Returns a reference to 'this' Augmented
      * object.
-     * @property Augmented.noConflict
+     * @function Augmented.noConflict
      */
     Augmented.noConflict = function() {
   		root.Augmented = previousAugmented;
@@ -65,6 +65,7 @@
 
     /**
      * Configuration
+     * @property Augmented.Configuration
      */
     Augmented.Configuration = {
         LoggerLevel: "debug",
@@ -3508,7 +3509,14 @@
     };
 
     /**
-     * Application Class for use to define an application
+     * <p>Application Class for use to define an application.<br/>
+     * An application contains metadata and initializers for the application.<br/>
+     * <em>Applications track history, and normally would contain the entire single page App startup.</em></p>
+     * @example var app = new Augmented.Application();
+     * app.setName("My Super Application!");
+     * app.setMetadataItem("description", "something very awesome");
+     * app.beforeInitialize() = function() { do some stuff... };
+     * app.start();
      * @constructor Augmented.Application
      */
     var application = Augmented.Application = function(name) {
@@ -3527,37 +3535,73 @@
             metadata.set("name", "untitled");
         }
 
-        // Events for use in the startup of the application
+        /** Event for after during startup of the application
+         * @function initialize
+         * @memberof Augmented.Application
+         */
         this.initialize = function() {
 
         };
+        /** Event for before the startup of the application
+         * @function beforeInitialize
+         * @memberof Augmented.Application
+         */
         this.beforeInitialize = function() {
 
         };
+        /** Event for after the startup of the application
+         * @function afterInitialize
+         * @memberof Augmented.Application
+         */
         this.afterInitialize = function() {
 
         };
 
+        /** Get the application name
+         * @function getName
+         * @memberof Augmented.Application
+         */
         this.getName = function() {
             return this.getMetadataItem("name");
         };
 
+        /** Set the application name
+         * @function setName
+         * @memberof Augmented.Application
+         */
         this.setName = function(n) {
             return this.setMetadataItem("name", n);
         };
 
+        /** Get the metadata map
+         * @function getMetadata
+         * @memberof Augmented.Application
+         * @returns Map of metadata in an Augmented.Utility.AugmentedMap
+         */
 		this.getMetadata = function() {
 			return metadata;
 		};
 
+        /** Set a specific item in metadata
+         * @function setMetadataItem
+         * @memberof Augmented.Application
+         */
 		this.setMetadataItem = function(key, value) {
 			metadata.set(key, value);
 		};
 
+        /** Get a specific item in metadata
+         * @function getMetadataItem
+         * @memberof Augmented.Application
+         */
 		this.getMetadataItem = function(key) {
 			return metadata.get(key);
 		};
 
+        /** Event to start the application and history
+         * @function start
+         * @memberof Augmented.Application
+         */
 		this.start = function() {
             var asyncQueue = new Augmented.Utility.AsynchronousQueue(Augmented.Configuration.ApplicationInitProcessTimeout);
             this.started = asyncQueue.process(
@@ -3575,6 +3619,10 @@
             }
 		};
 
+        /** Event to stop the application and history
+         * @function stop
+         * @memberof Augmented.Application
+         */
         this.stop = function() {
 		    if (Augmented.history.started) {
 				Augmented.history.stop();
