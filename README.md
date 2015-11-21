@@ -9,9 +9,13 @@ adjective: augmented
     1. having been made greater in size or value.
 
 
-**Augmented.js** is a framework based on Backbone.js and provides a large set of enterprise functionality.
+**Augmented.js** is a javascript framework based on Backbone.js that provides a large set of enterprise functionality.
 
-The key focus of the project is to tie a number of missing features, patterns, and what would normally be thrid-party plugins together in a powerful framework.  Also in created Augmented the goal is to limit third party for smaller footprint, easy dependency management, and high performance.  Performance is a key item in the framework, in every case the functionality will beat other libraries and frameworks (such as jQuery) in performance by large amounts.
+The key focus of the project is to tie a number of missing features, patterns, and what would normally be thrid-party plugins together in a powerful framework.  Another goal of *Augmented.js* is to limit third party libraries for a smaller footprint, easy dependency management, and high performance.  Performance is a key item in the framework.  In every case the performance will beat other libraries and frameworks (such as jQuery) usually by large amounts.
+
+# Modules
+
+*All JSDoc documentation is under the /jsdoc directory in the distribution*
 
 ## Core
 
@@ -37,7 +41,6 @@ A few key features of the **Core** module are:
 * Mock support in Models and Collections
 * Full support for crossOrigin requests via property
 
-
 And much more!
 
 ## Presentation
@@ -54,9 +57,9 @@ This extension adds:
 
 ## Service
 
-Also a **Service** extension adds additional features based around backend and Ajax.
+A **Service** extension adds additional features based around backend and Ajax.
 
-This extension module in currently a work in progress.
+*This extension module in currently a work in progress.*
 
 Planned features include:
 * Spark support
