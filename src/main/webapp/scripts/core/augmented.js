@@ -96,20 +96,21 @@
     Augmented.sync = Backbone.sync;
 
     /**
-     * Augmented.isFunction
-     * @function Augmented.isFunction
-     * @returns returns true if called name is a function
+     * Augmented.isFunction -
+     * returns true if called name is a function
      * simular to jQuery .isFunction method
+     * @function Augmented.isFunction
+     * @returns true if called name is a function
      */
     var isFunction = Augmented.isFunction = function(name) {
         return Object.prototype.toString.call(name) == '[object Function]';
     };
 
     /**
-     * Augmented.result
-     * @function Augmented.result
-     * @returns returns named property in an object
+     * Augmented.result - returns named property in an object
      * simular to underscore .result method
+     * @function Augmented.result
+     * @returns named property in an object
      */
     var result = Augmented.result = function(object, property) {
         if (object === null) return;
@@ -117,7 +118,14 @@
         return Augmented.isFunction(value) ? value.call(object) : value;
     };
 
-    // ES7 Polyfill
+    /**
+     * Array.includes - returns is a property is included in the array (can pass an start index)
+     * ES7 Polyfill
+     * @function Array.includes
+     * @param searchElement
+     * @param fromIndex
+     * @returns true if property is included in an array
+     */
     if (!Array.prototype.includes) {
         Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
             'use strict';
@@ -149,19 +157,29 @@
         };
     }
 
+    /**
+     * Array.has - returns is a property is in the array (very fast return)
+     * @function Array.has
+     * @param key
+     * @returns true if property is included in an array
+     */
     Array.prototype.has = function(key) {
         return (this.indexOf(key) !== -1);
     };
 
     /**
-     * Utility Package
-     *
-     * Small utilities
+     * Utility Package -
+     * Small Utilities
      * @namespace Augmented.Utility
      */
     Augmented.Utility = {};
 
-    var transformerType = {
+    /**
+     * Augmented.Utility.TransformerType <br/>
+     * Transformer type for use in the transformer
+     * @constant Augmented.Utility.TransformerType
+     */
+    var transformerType = Augmented.Utility.TransformerType = {
         "string": 0,
         "integer": 1,
         "number": 2,
@@ -172,12 +190,19 @@
     };
 
     /**
-     * Augmented.Utility.Transformer
-     * @function Augmented.Utility.Transformer
+     * Augmented.Utility.Transformer <br/>
+     * Transform an object, type, or array to another type, object, or array
+     * @namespace Augmented.Utility.Transformer
      * @returns returns a transformed object or primitive
      */
     var transformer = Augmented.Utility.Transformer = {
         type: transformerType,
+        /**
+         * @function transform
+         * @memberof Augmented.Utility.Transformer
+         * @param source
+         * @param type
+         */
         transform: function(source, type) {
             var out = null;
             switch(type) {
@@ -216,6 +241,12 @@
             }
             return out;
         },
+        /**
+         * @function isType
+         * @memberof Augmented.Utility.Transformer
+         * @param source
+         * @returns type of source as Augmented.Utility.TransformerType
+         */
         isType: function(source) {
             if (source === null) {
                 return transformerType.null;
@@ -234,9 +265,10 @@
     };
 
     /**
-     * isString
+     * Augmented.Utility.isString -
      * checks is a value is a String
-     * @function isString
+     * @function Augmented.Utility.isString
+     * @param variable to check
      * @returns true if value is a string
      */
     var isString = Augmented.Utility.isString = function(val) {
@@ -293,27 +325,36 @@
      };
 
     /**
-     * AJAX capability using simple jQuery-like API
+     * AJAX capability using simple jQuery-like API<br/>
      * Supports the following object properties and features:
-     *
-     * method
-     * url
-     * async
-     * contentType
-     * dataType
-     * beforeSend function
-     * success callback
-     * failure callback
-     * complete callback
-     * user
-     * password
-     * withCredentials
-     * cache
-     * timeout
-     * mock - special flag for mocking response
+     * <ul>
+     * <li>method</li>
+     * <li>url</li>
+     * <li>async</li>
+     * <li>contentType</li>
+     * <li>dataType</li>
+     * <li>beforeSend function</li>
+     * <li>success callback</li>
+     * <li>failure callback</li>
+     * <li>complete callback</li>
+     * <li>user</li>
+     * <li>password</li>
+     * <li>withCredentials</li>
+     * <li>cache</li>
+     * <li>timeout</li>
+     * <li>mock - special flag for mocking response</li>
+     </ul>
      * @function Augmented.ajax
      * @param {object} ajaxObject object of configuration properties and callbacks.
      * @returns success or failure callback
+     * @example Augmented.ajax({
+     *         url: uri,
+     *         contentType: 'text/plain',
+     *         dataType: 'text',
+     *         async: true,
+     *         success: function (data, status) { ... },
+     *         failure: function (data, status) { ... }
+     *     });
      */
     var ajax = Augmented.ajax = function(ajaxObject) {
         logger.debug("Ajax object: " + JSON.stringify(ajaxObject));
@@ -389,21 +430,31 @@
     /** @namespace Augmented.Logger */
     Augmented.Logger = {};
 
+    /** @constant Augmented.Logger.Type */
     var loggerType = Augmented.Logger.Type = {
         console: "console",
         rest: "rest"
     };
 
+    /** Augmented.Logger.Level
+     * @namespace Augmented.Logger.Level
+     * @enum { string }
+     */
     var loggerLevelTypes = Augmented.Logger.Level = {
+        /** info */
         info: "info",
+        /** debug */
         debug: "debug",
+        /** error */
         error: "error",
+        /** warn */
         warn: "warn"
     };
 
     /**
-     * Augmented Logger
+     * Augmented Logger - abstractLogger
      * @constructor abstractLogger
+     * @param {Augmented.Logger.Level} level The level to initialize the logger with
      * @abstract
      */
     var abstractLogger = function(l) {
@@ -422,6 +473,13 @@
                 now.getHours() + this.TIME_SEPERATOR + now.getMinutes() + this.TIME_SEPERATOR + now.getSeconds() + this.TIME_SEPERATOR + now.getMilliseconds();
         };
 
+        /**
+         * log a message
+         * @function log
+         * @param message The message to log
+         * @param level The level of the log message
+         * @memberof abstractLogger
+         */
         this.log = function(message, level) {
             if (message) {
                 if (!level) {
@@ -515,7 +573,8 @@
 
     /**
      * Augmented Array Utility
-     * @function Augmented.Utility.Array
+     * @constructor Augmented.Utility.Array
+     * @param array to work with
      */
     Augmented.Utility.Array = function(arr) {
         /**
@@ -523,6 +582,7 @@
          * @function has
          * @param key {string} name of the key
          * @returns true if the key exists in the Array
+         * @memberof Augmented.Utility.Array
          */
     	this.has = function(key) {
     	    return (arr.indexOf(key) !== -1);
@@ -3021,9 +3081,6 @@
 
             ret = Augmented.sync(method, model, options);
 
-            //TODO: might want to support this
-            //this.headers = ret.getAllResponseHeaders();
-
     	    return ret;
     	}
     });
@@ -3082,9 +3139,6 @@
             }
 
             ret = Backbone.sync(method, model, options);
-            //console.debug("ret " + JSON.stringify(ret));
-            //this.headers = ret.getAllResponseHeaders();
-            // TODO: consider adding request headers
     	    return ret;
     	}
     });

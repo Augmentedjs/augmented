@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: Augmented</title>
+    <title>JSDoc: Namespace: Transformer</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: Augmented</h1>
+    <h1 class="page-title">Namespace: Transformer</h1>
 
     
 
@@ -28,8 +28,8 @@
 
 <header>
     
-        
-            
+        <h2>
+            <span class="ancestors"><a href="Augmented.Utility.html">.Utility</a>.</span>Transformer</h2>
         
     
 </header>
@@ -38,32 +38,16 @@
     <div class="container-overview">
     
         
-            <div class="description">Augmented.js - The Core UI Component and package</div>
+            <div class="description">Augmented.Utility.Transformer <br/>
+Transform an object, type, or array to another type, object, or array</div>
         
 
         
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <dl class="details">
 
     
-    <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>0.1.0</li></ul></dd>
-    
 
     
 
@@ -79,13 +63,6 @@
 
     
 
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Bob Warren</li>
-        </ul>
-    </dd>
     
 
     
@@ -97,7 +74,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1">line 1</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line192">line 192</a>
     </li></ul></dd>
     
 
@@ -107,20 +84,6 @@
 
     
 </dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         
@@ -130,23 +93,7 @@
     
 
     
-        <h3 class="subsection-title">Requires</h3>
 
-        <ul>
-            <li>module:Backbone.js</li>
-        </ul>
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-Augmented-abstractLogger.html">abstractLogger</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-Augmented-i18nBase.html">i18nBase</a></dt>
-            <dd></dd>
-        </dl>
     
 
      
@@ -154,19 +101,71 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
+
+    
+        <h3 class="subsection-title">Methods</h3>
 
         
             
-<h4 class="name" id="~codename"><span class="type-signature">(inner, constant) </span>codename<span class="type-signature"></span></h4>
+
+    
+
+    <h4 class="name" id=".isType"><span class="type-signature">(static) </span>isType<span class="signature">(source)</span><span class="type-signature"></span></h4>
+
+    
 
 
 
 
-<div class="description">
-    A codename for internal use
-</div>
 
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -202,7 +201,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line43">line 43</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line244">line 244</a>
     </li></ul></dd>
     
 
@@ -218,17 +217,105 @@
 
 
 
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
         
-            
-<h4 class="name" id="~releasename"><span class="type-signature">(inner, constant) </span>releasename<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    A release name to help with identification of minor releases
+<div class="param-desc">
+    type of source as Augmented.Utility.TransformerType
 </div>
 
+
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".transform"><span class="type-signature">(static) </span>transform<span class="signature">(source, type)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -264,7 +351,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line48">line 48</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line200">line 200</a>
     </li></ul></dd>
     
 
@@ -280,62 +367,10 @@
 
 
 
-        
-            
-<h4 class="name" id="~VERSION"><span class="type-signature">(inner, constant) </span>VERSION<span class="type-signature"></span></h4>
 
 
 
 
-<div class="description">
-    The standard version property
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line38">line 38</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -343,8 +378,6 @@
 
 
         
-    
-
     
 
     
