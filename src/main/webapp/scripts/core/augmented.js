@@ -64,8 +64,12 @@
     };
 
     /**
-     * Configuration
-     * @property Augmented.Configuration
+     * Configuration - a set of configuration properties for the framework
+     * @namespace Augmented.Configuration
+     * @property {string} LoggerLevel The level of the framework internal logger
+     * @property {string} MessageBundle - the base name for messages in the framework (default: Messages)
+     * @property {number} AsynchronousQueueTimeout the default milisecond timeout (default: 2000)
+     * @property {number} ApplicationInitProcessTimeout the application init even timeout (default: 1000)
      */
     Augmented.Configuration = {
         LoggerLevel: "debug",
@@ -120,7 +124,7 @@
 
     /**
      * Array.includes - returns is a property is included in the array (can pass an start index)
-     * ES7 Polyfill
+     * <em>ES7 Polyfill</em>
      * @function Array.includes
      * @param searchElement
      * @param fromIndex
@@ -177,7 +181,7 @@
     /**
      * Augmented.Utility.TransformerType <br/>
      * Transformer type for use in the transformer
-     * @constant Augmented.Utility.TransformerType
+     * @enum {number} Augmented.Utility.TransformerType
      */
     var transformerType = Augmented.Utility.TransformerType = {
         "string": 0,
@@ -190,7 +194,7 @@
     };
 
     /**
-     * Augmented.Utility.Transformer <br/>
+     * Augmented.Utility.Transformer <br/> 
      * Transform an object, type, or array to another type, object, or array
      * @namespace Augmented.Utility.Transformer
      * @returns returns a transformed object or primitive
@@ -268,7 +272,7 @@
      * Augmented.Utility.isString -
      * checks is a value is a String
      * @function Augmented.Utility.isString
-     * @param variable to check
+     * @param {string} variable to check
      * @returns true if value is a string
      */
     var isString = Augmented.Utility.isString = function(val) {
@@ -278,8 +282,9 @@
     };
 
     /**
+     * Augmented.Utility.extend
      * Object Extend ability simular to jQuery.extend()
-     * @function Augmented.Utility.extend
+     * @function extend
      */
     Augmented.Utility.extend = function() {
     	for(var i=1; i<arguments.length; i++)
@@ -343,8 +348,8 @@
      * <li>cache</li>
      * <li>timeout</li>
      * <li>mock - special flag for mocking response</li>
-     </ul>
-     * @function Augmented.ajax
+     * </ul>
+     * @function ajax
      * @param {object} ajaxObject object of configuration properties and callbacks.
      * @returns success or failure callback
      * @example Augmented.ajax({
@@ -425,12 +430,15 @@
     /* Overide Backbone.ajax so models and collections use Augmented Ajax instead */
     Backbone.ajax = ajax;
 
-    /* Packages */
-
     /** @namespace Augmented.Logger */
     Augmented.Logger = {};
 
-    /** @constant Augmented.Logger.Type */
+    /** 
+     * Augmented.Logger.Type
+     * @enum {string}
+     * @property {string} console The console logger (HTML5 console)
+     * @property {string} rest A REST-based logger 
+     */
     var loggerType = Augmented.Logger.Type = {
         console: "console",
         rest: "rest"
@@ -439,6 +447,10 @@
     /** Augmented.Logger.Level
      * @namespace Augmented.Logger.Level
      * @enum { string }
+     * @property {string} info The Info level
+     * @property {string} debug The debug level
+     * @property {string} error The error level
+     * @property {string} warn The warning level
      */
     var loggerLevelTypes = Augmented.Logger.Level = {
         /** info */
@@ -475,10 +487,11 @@
 
         /**
          * log a message
-         * @function log
-         * @param message The message to log
-         * @param level The level of the log message
-         * @memberof abstractLogger
+         * @member log
+	 * @memberof abstractLogger
+         * @param {string} message The message to log
+         * @param {Augmented.Logger.Level} level The level of the log message
+	 *
          */
         this.log = function(message, level) {
             if (message) {
@@ -494,25 +507,58 @@
                     this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.warn + this.CLOSE_GROUP + message, level);
                 } else if (this.loggerLevel === loggerLevelTypes.debug || this.loggerLevel === loggerLevelTypes.info) {
                     this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.info + this.CLOSE_GROUP + message, level);
-                }
-            }
+                } 
+            } 
         };
 
+	/**
+	 * Logs a message in info level
+	 * @function info
+	 * @param {string} message
+	 * @memberof abstractLogger
+	 */
         this.info = function(message) {
             this.log(message, loggerLevelTypes.info);
         };
+
+	/**
+	 * Log a message in error level
+	 * @function error
+	 * @param {string} message
+	 * @memberof abstractLogger
+	 */
         this.error = function(message) {
             this.log(message, loggerLevelTypes.error);
         };
+
+	/**
+	 * Log a message in debug level
+	 * @function debug
+	 * @param {string} message
+	 * @memberof abstractLogger
+	 */
         this.debug = function(message) {
             this.log(message, loggerLevelTypes.debug);
         };
+
+	/**
+	 * Log a message in warn level
+	 * @function warn
+	 * @param {string} message
+	 * @memberof abstractLogger
+	 */
         this.warn = function(message) {
             this.log(message, loggerLevelTypes.warn);
         };
-      /*
+
+      /**
+       * logMe method - the actual logger method that logs.  Each instance will have it's own<br/>
        * override this in an instance
-       * this.logMe = ...
+       * @example this.logMe = function(message, level) { ... };
+       * @function logMe
+       * @memberof abstractLogger
+       * @param {string} message The message to log
+       * @param {string} level The level to log to
        */
     };
 
@@ -558,7 +604,20 @@
         });
     };
 
+    /**
+     * Augmented.Logger.LoggerFactory - A logger factory for creating a logger instance
+     * @namespace Augmented.Logger.LoggerFactory
+     */
     Augmented.Logger.LoggerFactory = {
+	/**
+	 * getLogger - get an instance of a logger
+	 * @function getLogger
+	 * @param {Augmented.Logger.Type} type Type of logger instance
+	 * @param {Augmented.Logger.Level} level Level to set the logger to
+	 * @memberof Augmented.Logger.LoggerFactory
+	 * @returns {Augmented.Logger.abstractLogger} logger Instance of a logger by istance type
+	 * @example Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.Type.console, Augmented.Logger.Level.debug);
+	 */
         getLogger: function(type, level) {
             if (type === loggerType.console) {
                return new consoleLogger(level);
@@ -568,7 +627,10 @@
         }
     };
 
-   /* A private logger for use in the framework only */
+   /** 
+    * A private logger for use in the framework only 
+    * @private
+    */
    var logger = Augmented.Logger.LoggerFactory.getLogger(loggerType.console, Augmented.Configuration.LoggerLevel);
 
     /**
@@ -597,8 +659,6 @@
     var augmentedMap = Augmented.Utility.AugmentedMap = function(myData) {
     	this.keys = [];
     	this.data = {};
-
-    	// API
 
       /**
        * Set the value by key in the map
@@ -845,8 +905,17 @@
     * @namespace Augmented.Security
     */
     Augmented.Security = {};
+
+    /**
+     * Security client namespace
+     * @namespace Augmented.Security.Client
+     */
     Augmented.Security.Client = {};
 
+    /**
+     * Pricipal object for use in security as part of the abstract implimentation
+     * @namespace Augmented.Security.Principal
+     */
     var principal = Augmented.Security.Principal = {
         fullName: "",
         id: 0,
@@ -858,36 +927,79 @@
     * Augmented.Security.Context
     * Used as a security data storage class
     * @constructor Augmented.Security.Context
+    * @param { Augmented.Security.Principal } principal The principal for this context
+    *
     */
     var securityContext = Augmented.Security.Context = function(principal, permissions) {
-        this.principal = (principal) ? principal : "guest";
+        this.principal = (principal) ? principal : (new principal().login = "guest");
         this.permissions = (permissions) ? permissions : [];
+
+	/**
+	 * getPrincipal - get the principal of this context
+	 * @function getPrincipal
+	 * @memberof Augmented.Security.Context
+	 * @returns {Augmented.Security.Principal} principal The principal of this context
+	 */
         this.getPrincipal = function() {
           return this.principal;
         };
 
-        this.getPermission = function() {
+	/**
+	 * getPermissions - Get all the permissions for a principal
+	 * @function getPermissions
+	 * @memberof Augmented.Security.Context
+	 * @returns {array} permissions All permissions
+	 */
+        this.getPermissions = function() {
           return this.permissions;
         };
 
+	/**
+	 * setPermissions - Set all permissions for a principal
+	 * @function setPermissions
+	 * @param {array} permissions
+	 * @memberof Augmented.Security.Context
+	 */
         this.setPermissions = function(p) {
           this.permissions = p;
         };
 
+	/**
+	 * addPermission - Add a new permission for a principal
+	 * @function addPermission
+	 * @param {string} permission
+	 * @memberof Augmented.Security.Context
+	 */
         this.addPermission = function(p) {
           this.permissions.push(p);
         };
 
+	/**
+	 * removePermission - Remove a permission for a principal
+	 * @function removePermission
+	 * @param {string} permission
+	 * @memberof Augmented.Security.Context
+	 */
         this.removePermission = function(p) {
           var i = this.permissions.indexOf(p);
           this.permissions.splice(i, 1);
         };
 
+	/**
+	 * hasPermission - checks for a permission for this principal
+	 * @function hasPermission
+	 * @param {string} permission
+	 * @memberof Augmented.Security.Context
+	 */ 
         this.hasPermission = function(p) {
           return (this.permissions.indexOf(p) != -1);
         };
     };
 
+    /**
+     * Augmented.Security.ClientType - Security client type
+     * @enum {number}
+     */
     Augmented.Security.ClientType = {
         OAUTH2 : 0,
         ACL: 1

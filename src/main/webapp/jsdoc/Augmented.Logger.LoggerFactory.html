@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Array</title>
+    <title>JSDoc: Namespace: LoggerFactory</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Array</h1>
+    <h1 class="page-title">Namespace: LoggerFactory</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Augmented.Utility.html">.Utility</a>.</span>Array</h2>
+            <span class="ancestors"><a href="Augmented.Logger.html">.Logger</a>.</span>LoggerFactory</h2>
         
     
 </header>
@@ -38,73 +38,10 @@
     <div class="container-overview">
     
         
-
-    
-
-    <h4 class="name" id="Array"><span class="type-signature"></span>new Array<span class="signature">(array)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Augmented Array Utility
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
+            <div class="description">Augmented.Logger.LoggerFactory - A logger factory for creating a logger instance</div>
         
 
         
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>array</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">to work with</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
 
 
 <dl class="details">
@@ -136,7 +73,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line636">line 636</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line607">line 607</a>
     </li></ul></dd>
     
 
@@ -148,20 +85,7 @@
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
     
     </div>
 
@@ -185,14 +109,14 @@
 
     
 
-    <h4 class="name" id=".has"><span class="type-signature">(static) </span>has<span class="signature">(key)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".getLogger"><span class="type-signature">(static) </span>getLogger<span class="signature">(type, level)</span><span class="type-signature"> &rarr; {Augmented.Logger.abstractLogger}</span></h4>
 
     
 
 
 
 <div class="description">
-    Has returns whether a key exists in the Array
+    getLogger - get an instance of a logger
 </div>
 
 
@@ -228,13 +152,13 @@
 
         <tr>
             
-                <td class="name"><code>key</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Augmented.Logger.Type</span>
 
 
             
@@ -244,7 +168,30 @@
 
             
 
-            <td class="description last">name of the key</td>
+            <td class="description last">Type of logger instance</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>level</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Augmented.Logger.html#.Level">Augmented.Logger.Level</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Level to set the logger to</td>
         </tr>
 
     
@@ -285,7 +232,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line642">line 642</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line612">line 612</a>
     </li></ul></dd>
     
 
@@ -312,12 +259,29 @@
 
         
 <div class="param-desc">
-    true if the key exists in the Array
+    logger Instance of a logger by istance type
 </div>
 
 
 
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Augmented.Logger.abstractLogger</span>
+
+
+    </dd>
+</dl>
+
     
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.Type.console, Augmented.Logger.Level.debug);</code></pre>
 
 
 
