@@ -55,7 +55,7 @@
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'
      * variable to its previous owner. Returns a reference to 'this' Augmented
      * object.
-     * @function Augmented.noConflict
+     * @function noConflict
      */
     Augmented.noConflict = function() {
   		root.Augmented = previousAugmented;
@@ -72,8 +72,17 @@
 
 
     /**
+<<<<<<< HEAD
      * Augmented.Configuration - a set of configuration properties for the framework
      * @enum Configuration
+=======
+     * Configuration - a set of configuration properties for the framework
+     * @namespace Configuration
+     * @property {string} LoggerLevel The level of the framework internal logger
+     * @property {string} MessageBundle - the base name for messages in the framework (default: Messages)
+     * @property {number} AsynchronousQueueTimeout the default milisecond timeout (default: 2000)
+     * @property {number} ApplicationInitProcessTimeout the application init even timeout (default: 1000)
+>>>>>>> 60ebbfadab8913249f769eab7833b0640fcbe334
      */
     Augmented.Configuration = {
         LoggerLevel: "debug",
@@ -99,7 +108,7 @@
 
     /**
      * Augmented.sync - Base sync method that can pass special augmented features
-     * @function Augmented.sync
+     * @function sync
      */
     Augmented.sync = Backbone.sync;
 
@@ -117,7 +126,7 @@
     /**
      * Augmented.result - returns named property in an object
      * simular to underscore .result method
-     * @function Augmented.result
+     * @function result
      * @returns named property in an object
      */
     var result = Augmented.result = function(object, property) {
@@ -202,15 +211,26 @@
 
     /**
      * Augmented.Utility.Transformer <br/>
+<<<<<<< HEAD
      * Transform an object, primitive, or array to another object, primitive, or array
+=======
+     * Transform an object, type, or array to another type, object, or array
+>>>>>>> 60ebbfadab8913249f769eab7833b0640fcbe334
      * @namespace Augmented.Utility.Transformer
      */
     var transformer = Augmented.Utility.Transformer = {
         /**
+<<<<<<< HEAD
          * The transformer type enum
          * @method type The transformer type enum
          * @type {Augmented.Utility.TransformerType}
          * @memberof Augmented.Utility.Transformer
+=======
+         * The transformer primitive types enum
+         * @property {Augmented.Utility.TransformerType} type
+         * @memberof Augmented.Utility.Transformer
+         * @private
+>>>>>>> 60ebbfadab8913249f769eab7833b0640fcbe334
          */
         type: transformerType,
         /**
@@ -263,7 +283,11 @@
          * Returns a Augmented.Utility.TransformerType of a passed object
          * @method isType
          * @memberof Augmented.Utility.Transformer
+<<<<<<< HEAD
          * @param {object} source The source primitive
+=======
+         * @param source
+>>>>>>> 60ebbfadab8913249f769eab7833b0640fcbe334
          * @returns {Augmented.Utility.TransformerType} type of source as Augmented.Utility.TransformerType
          */
         isType: function(source) {
@@ -345,6 +369,26 @@
      };
 
     /**
+     * Ajax namespace for use with Ajax related configuration and methods
+     * @namespace Ajax
+     */
+    Augmented.Ajax = {};
+
+    /**
+     * Object of configuration properties and callbacks.
+     * @namespace Augmented.Ajax.Configuration
+     * @name Augmented.Ajax.Configuration
+     */
+    Augmented.Ajax.Configuration = {
+        defaults: {
+            url: 'localhost',
+            contentType: 'text/plain',
+            dataType: 'text',
+            async: true
+        }
+    };
+
+    /**
      * AJAX capability using simple jQuery-like API<br/>
      * Supports the following object properties and features:
      * <ul>
@@ -364,8 +408,13 @@
      * <li>timeout</li>
      * <li>mock - special flag for mocking response</li>
      * </ul>
+<<<<<<< HEAD
      * @function Augmented.ajax
      * @param {object} ajaxObject object of configuration properties and callbacks.
+=======
+     * @function Augmented.Ajax.ajax
+     * @param {Augmented.Ajax.Configuration} ajaxObject object of configuration properties and callbacks.
+>>>>>>> 60ebbfadab8913249f769eab7833b0640fcbe334
      * @returns success or failure callback
      * @example Augmented.ajax({
      *         url: uri,
@@ -376,7 +425,7 @@
      *         failure: function (data, status) { ... }
      *     });
      */
-    var ajax = Augmented.ajax = function(ajaxObject) {
+    var ajax = Augmented.ajax = Augmented.Ajax.ajax = function(ajaxObject) {
         logger.debug("Ajax object: " + JSON.stringify(ajaxObject));
         var xhr = null;
   		if (ajaxObject && ajaxObject.url) {
@@ -450,7 +499,11 @@
 
     /**
      * Augmented.Logger.Type
+<<<<<<< HEAD
      * @name Augmented.Logger.Type
+=======
+     * @namespace Augmented.Logger.Type
+>>>>>>> 60ebbfadab8913249f769eab7833b0640fcbe334
      * @enum {string}
      * @memberof Augmented.Logger
      * @property {string} console The console logger (HTML5 console)
@@ -461,10 +514,17 @@
         rest: "rest"
     };
 
+<<<<<<< HEAD
     /** Augmented.Logger.Level
      * @enum {string}
      * @name Augmented.Logger.Level
      * @memberof Augmented.Logger
+=======
+    /**
+     * Augmented.Logger.Level
+     * @namespace Augmented.Logger.Level
+     * @enum {string}
+>>>>>>> 60ebbfadab8913249f769eab7833b0640fcbe334
      * @property {string} info The Info level
      * @property {string} debug The debug level
      * @property {string} error The error level
@@ -480,7 +540,7 @@
     /**
      * Augmented Logger - abstractLogger
      * @constructor abstractLogger
-     * @param {Augmented.Logger.Level} level The level to initialize the logger with
+     * @param {Augmented.Logger.Level} l The level to initialize the logger with
      * @abstract
      */
     var abstractLogger = function(l) {
@@ -501,11 +561,10 @@
 
         /**
          * log a message
-         * @member log
-	 * @memberof abstractLogger
+         * @function log
+	     * @memberof abstractLogger
          * @param {string} message The message to log
          * @param {Augmented.Logger.Level} level The level of the log message
-	 *
          */
         this.log = function(message, level) {
             if (message) {
