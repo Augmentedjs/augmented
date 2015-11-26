@@ -91,13 +91,17 @@
   		return this;
     };
 
+/*
+* @property {string} LoggerLevel The level of the framework internal logger
+* @property {string} MessageBundle - the base name for messages in the framework (default: Messages)
+* @property {number} AsynchronousQueueTimeout the default milisecond timeout (default: 2000)
+* @property {number} ApplicationInitProcessTimeout the application init even timeout (default: 1000)
+*/
+
+
     /**
-     * Configuration - a set of configuration properties for the framework
-     * @namespace Augmented.Configuration
-     * @property {string} LoggerLevel The level of the framework internal logger
-     * @property {string} MessageBundle - the base name for messages in the framework (default: Messages)
-     * @property {number} AsynchronousQueueTimeout the default milisecond timeout (default: 2000)
-     * @property {number} ApplicationInitProcessTimeout the application init even timeout (default: 1000)
+     * Augmented.Configuration - a set of configuration properties for the framework
+     * @enum Configuration
      */
     Augmented.Configuration = {
         LoggerLevel: "debug",
@@ -210,6 +214,9 @@
      * Augmented.Utility.TransformerType &lt;br/>
      * Transformer type for use in the transformer
      * @enum {number} Augmented.Utility.TransformerType
+     * @name Augmented.Utility.TransformerType
+     * @memberof Augmented.Utility
+     *
      */
     var transformerType = Augmented.Utility.TransformerType = {
         "string": 0,
@@ -222,18 +229,25 @@
     };
 
     /**
-     * Augmented.Utility.Transformer &lt;br/> 
-     * Transform an object, type, or array to another type, object, or array
+     * Augmented.Utility.Transformer &lt;br/>
+     * Transform an object, primitive, or array to another object, primitive, or array
      * @namespace Augmented.Utility.Transformer
-     * @returns returns a transformed object or primitive
      */
     var transformer = Augmented.Utility.Transformer = {
+        /**
+         * The transformer type enum
+         * @method type The transformer type enum
+         * @type {Augmented.Utility.TransformerType}
+         * @memberof Augmented.Utility.Transformer
+         */
         type: transformerType,
         /**
-         * @function transform
+         * Transform an object, primitive, or array to another object, primitive, or array
+         * @method transform
+         * @param {object} source Source primitive to transform
+         * @param {Augmented.Utility.TransformerType} type Type to transform to
          * @memberof Augmented.Utility.Transformer
-         * @param source
-         * @param type
+         * @returns {object} returns a transformed object or primitive
          */
         transform: function(source, type) {
             var out = null;
@@ -274,10 +288,11 @@
             return out;
         },
         /**
-         * @function isType
+         * Returns a Augmented.Utility.TransformerType of a passed object
+         * @method isType
          * @memberof Augmented.Utility.Transformer
-         * @param source
-         * @returns type of source as Augmented.Utility.TransformerType
+         * @param {object} source The source primitive
+         * @returns {Augmented.Utility.TransformerType} type of source as Augmented.Utility.TransformerType
          */
         isType: function(source) {
             if (source === null) {
@@ -301,7 +316,7 @@
      * checks is a value is a String
      * @function Augmented.Utility.isString
      * @param {string} variable to check
-     * @returns true if value is a string
+     * @returns {boolean} true if value is a string
      */
     var isString = Augmented.Utility.isString = function(val) {
         return typeof val === 'string' ||
@@ -310,9 +325,9 @@
     };
 
     /**
-     * Augmented.Utility.extend
+     * Augmented.Utility.extend -
      * Object Extend ability simular to jQuery.extend()
-     * @function extend
+     * @function Augmented.Utility.extend
      */
     Augmented.Utility.extend = function() {
     	for(var i=1; i&lt;arguments.length; i++)
@@ -322,7 +337,7 @@
     	return arguments[0];
     };
 
-    /**
+    /*
      * Setup the rest of jQuery-like eventing and handlers for native xhr
      */
     var aXHR = XMLHttpRequest;
@@ -377,7 +392,7 @@
      * &lt;li>timeout&lt;/li>
      * &lt;li>mock - special flag for mocking response&lt;/li>
      * &lt;/ul>
-     * @function ajax
+     * @function Augmented.ajax
      * @param {object} ajaxObject object of configuration properties and callbacks.
      * @returns success or failure callback
      * @example Augmented.ajax({
@@ -461,11 +476,13 @@
     /** @namespace Augmented.Logger */
     Augmented.Logger = {};
 
-    /** 
+    /**
      * Augmented.Logger.Type
+     * @name Augmented.Logger.Type
      * @enum {string}
+     * @memberof Augmented.Logger
      * @property {string} console The console logger (HTML5 console)
-     * @property {string} rest A REST-based logger 
+     * @property {string} rest A REST-based logger
      */
     var loggerType = Augmented.Logger.Type = {
         console: "console",
@@ -473,21 +490,18 @@
     };
 
     /** Augmented.Logger.Level
-     * @namespace Augmented.Logger.Level
-     * @enum { string }
+     * @enum {string}
+     * @name Augmented.Logger.Level
+     * @memberof Augmented.Logger
      * @property {string} info The Info level
      * @property {string} debug The debug level
      * @property {string} error The error level
      * @property {string} warn The warning level
      */
     var loggerLevelTypes = Augmented.Logger.Level = {
-        /** info */
         info: "info",
-        /** debug */
         debug: "debug",
-        /** error */
         error: "error",
-        /** warn */
         warn: "warn"
     };
 
@@ -535,8 +549,8 @@
                     this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.warn + this.CLOSE_GROUP + message, level);
                 } else if (this.loggerLevel === loggerLevelTypes.debug || this.loggerLevel === loggerLevelTypes.info) {
                     this.logMe(this.getLogTime() + this.OPEN_GROUP + loggerLevelTypes.info + this.CLOSE_GROUP + message, level);
-                } 
-            } 
+                }
+            }
         };
 
 	/**
@@ -655,8 +669,8 @@
         }
     };
 
-   /** 
-    * A private logger for use in the framework only 
+   /**
+    * A private logger for use in the framework only
     * @private
     */
    var logger = Augmented.Logger.LoggerFactory.getLogger(loggerType.console, Augmented.Configuration.LoggerLevel);
@@ -1018,7 +1032,7 @@
 	 * @function hasPermission
 	 * @param {string} permission
 	 * @memberof Augmented.Security.Context
-	 */ 
+	 */
         this.hasPermission = function(p) {
           return (this.permissions.indexOf(p) != -1);
         };
@@ -3838,13 +3852,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Augmented.html">Augmented</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="module-Augmented-abstractLogger.html">abstractLogger</a></li><li><a href="module-Augmented-i18nBase.html">i18nBase</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Configuration.html">Configuration</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Augmented.html">Augmented</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="module-Augmented-abstractLogger.html">abstractLogger</a></li><li><a href="module-Augmented-i18nBase.html">i18nBase</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Nov 23 2015 15:51:06 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Nov 25 2015 14:29:45 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>
