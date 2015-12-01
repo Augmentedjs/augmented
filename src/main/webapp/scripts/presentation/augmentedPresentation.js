@@ -426,7 +426,6 @@
      * Augmented.Presentation.AutomaticTable
      * Creates a table automatically via a schema for defintion and a uri/json for data
      * @class
-     * @constructor
      */
     var autoTable = Augmented.Presentation.AutomaticTable = abstractColleague.extend({
         columns: {},
