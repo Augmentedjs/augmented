@@ -6,6 +6,7 @@
  * @requires Backbone.js
  * @module Augmented
  * @version 0.1.0
+ * @license Apache-2.0
  */
 (function(root, factory) {
 
@@ -56,6 +57,7 @@
      * variable to its previous owner. Returns a reference to 'this' Augmented
      * object.
      * @function noConflict
+     * @memberof Augmented
      */
     Augmented.noConflict = function() {
   		root.Augmented = previousAugmented;
@@ -63,17 +65,10 @@
   		return this;
     };
 
-/*
-* @property {string} LoggerLevel The level of the framework internal logger
-* @property {string} MessageBundle - the base name for messages in the framework (default: Messages)
-* @property {number} AsynchronousQueueTimeout the default milisecond timeout (default: 2000)
-* @property {number} ApplicationInitProcessTimeout the application init even timeout (default: 1000)
-*/
-
-
     /**
      * Augmented.Configuration - a set of configuration properties for the framework
      * @enum Configuration
+     * @memberof Augmented
      * @property {string} LoggerLevel The level of the framework internal logger
      * @property {string} MessageBundle - the base name for messages in the framework (default: Messages)
      * @property {number} AsynchronousQueueTimeout the default milisecond timeout (default: 2000)
@@ -98,12 +93,14 @@
      /**
       * Augmented.extend - Can extend base classes via .extend simular to Backbone.js
       * @function Augmented.extend
+      * @memberof Augmented
       */
     Augmented.extend = Backbone.Model.extend;
 
     /**
      * Augmented.sync - Base sync method that can pass special augmented features
      * @function sync
+     * @memberof Augmented
      */
     Augmented.sync = Backbone.sync;
 
@@ -112,6 +109,8 @@
      * returns true if called name is a function
      * simular to jQuery .isFunction method
      * @function Augmented.isFunction
+     * @param {function} name The name of the function to test
+     * @memberof Augmented
      * @returns true if called name is a function
      */
     var isFunction = Augmented.isFunction = function(name) {
@@ -122,6 +121,7 @@
      * Augmented.result - returns named property in an object
      * simular to underscore .result method
      * @function result
+     * @memberof Augmented
      * @returns named property in an object
      */
     var result = Augmented.result = function(object, property) {
@@ -134,8 +134,9 @@
      * Array.includes - returns is a property is included in the array (can pass an start index)
      * <em>ES7 Polyfill</em>
      * @function Array.includes
-     * @param searchElement
-     * @param fromIndex
+     * @memberof Array
+     * @param {object} searchElement Element to search for
+     * @param {number} fromIndex Optional index to start from
      * @returns true if property is included in an array
      */
     if (!Array.prototype.includes) {
@@ -172,7 +173,8 @@
     /**
      * Array.has - returns is a property is in the array (very fast return)
      * @function Array.has
-     * @param key
+     * @memberof Array
+     * @param {object} key Key to test for
      * @returns true if property is included in an array
      */
     Array.prototype.has = function(key) {
@@ -207,6 +209,7 @@
      * Augmented.Utility.Transformer <br/>
      * Transform an object, type, or array to another type, object, or array
      * @namespace Augmented.Utility.Transformer
+     * @memberof Augmented.Utility
      */
     var transformer = Augmented.Utility.Transformer = {
         /**
@@ -290,6 +293,7 @@
      * Augmented.Utility.isString -
      * checks is a value is a String
      * @function Augmented.Utility.isString
+     * @memberof Augmented.Utility
      * @param {string} variable to check
      * @returns {boolean} true if value is a string
      */
@@ -303,6 +307,7 @@
      * Augmented.Utility.extend -
      * Object Extend ability simular to jQuery.extend()
      * @function Augmented.Utility.extend
+     * @memberof Augmented.Utility
      */
     Augmented.Utility.extend = function() {
     	for(var i=1; i<arguments.length; i++)
@@ -349,7 +354,8 @@
 
     /**
      * Ajax namespace for use with Ajax related configuration and methods
-     * @namespace Ajax
+     * @namespace Augmented.Ajax
+     * @memberof Augmented
      */
     Augmented.Ajax = {};
 
@@ -357,6 +363,7 @@
      * Object of configuration properties and callbacks.
      * @namespace Augmented.Ajax.Configuration
      * @name Augmented.Ajax.Configuration
+     * @memberof Augmented.Ajax
      */
     Augmented.Ajax.Configuration = {
         defaults: {
@@ -387,9 +394,11 @@
      * <li>timeout</li>
      * <li>mock - special flag for mocking response</li>
      * </ul>
-     * @function Augmented.Ajax.ajax
+     * @method Augmented.Ajax.ajax
+     * @static
      * @param {Augmented.Ajax.Configuration} ajaxObject object of configuration properties and callbacks.
      * @returns success or failure callback
+     * @memberof Augmented.Ajax
      * @example Augmented.ajax({
      *         url: uri,
      *         contentType: 'text/plain',
@@ -478,6 +487,7 @@
      * @memberof Augmented.Logger
      * @property {string} console The console logger (HTML5 console)
      * @property {string} rest A REST-based logger
+     * @memberof Augmented.Logger
      */
     var loggerType = Augmented.Logger.Type = {
         console: "console",
@@ -486,12 +496,13 @@
 
     /**
      * Augmented.Logger.Level
-     * @namespace Augmented.Logger.Level
+     * @name Augmented.Logger.Level
      * @enum {string}
      * @property {string} info The Info level
      * @property {string} debug The debug level
      * @property {string} error The error level
      * @property {string} warn The warning level
+     * @memberof Augmented.Logger
      */
     var loggerLevelTypes = Augmented.Logger.Level = {
         info: "info",
@@ -505,6 +516,7 @@
      * @constructor abstractLogger
      * @param {Augmented.Logger.Level} l The level to initialize the logger with
      * @abstract
+     * @memberof Augmented.Logger
      */
     var abstractLogger = function(l) {
         this.TIME_SEPERATOR = ":";
@@ -524,7 +536,7 @@
 
         /**
          * log a message
-         * @function log
+         * @ethod log
 	     * @memberof abstractLogger
          * @param {string} message The message to log
          * @param {Augmented.Logger.Level} level The level of the log message
@@ -549,7 +561,7 @@
 
 	/**
 	 * Logs a message in info level
-	 * @function info
+	 * @method info
 	 * @param {string} message
 	 * @memberof abstractLogger
 	 */
@@ -559,7 +571,7 @@
 
 	/**
 	 * Log a message in error level
-	 * @function error
+	 * @method error
 	 * @param {string} message
 	 * @memberof abstractLogger
 	 */
@@ -569,7 +581,7 @@
 
 	/**
 	 * Log a message in debug level
-	 * @function debug
+	 * @method debug
 	 * @param {string} message
 	 * @memberof abstractLogger
 	 */
@@ -579,7 +591,7 @@
 
 	/**
 	 * Log a message in warn level
-	 * @function warn
+	 * @method warn
 	 * @param {string} message
 	 * @memberof abstractLogger
 	 */
@@ -591,7 +603,7 @@
        * logMe method - the actual logger method that logs.  Each instance will have it's own<br/>
        * override this in an instance
        * @example this.logMe = function(message, level) { ... };
-       * @function logMe
+       * @method logMe
        * @memberof abstractLogger
        * @param {string} message The message to log
        * @param {string} level The level to log to
@@ -643,11 +655,12 @@
     /**
      * Augmented.Logger.LoggerFactory - A logger factory for creating a logger instance
      * @namespace Augmented.Logger.LoggerFactory
+     * @memberof Augmented.Logger
      */
     Augmented.Logger.LoggerFactory = {
 	/**
 	 * getLogger - get an instance of a logger
-	 * @function getLogger
+	 * @method getLogger
 	 * @param {Augmented.Logger.Type} type Type of logger instance
 	 * @param {Augmented.Logger.Level} level Level to set the logger to
 	 * @memberof Augmented.Logger.LoggerFactory
@@ -672,12 +685,14 @@
     /**
      * Augmented Array Utility
      * @constructor Augmented.Utility.Array
+     * @memberof Augmented.Utility
      * @param array to work with
+     * @memberof Augmented.Utility
      */
     Augmented.Utility.Array = function(arr) {
         /**
          * Has returns whether a key exists in the Array
-         * @function has
+         * @method has
          * @param key {string} name of the key
          * @returns true if the key exists in the Array
          * @memberof Augmented.Utility.Array
@@ -691,6 +706,7 @@
      * ES6-like Map
      * @constructor Augmented.Utility.AugmentedMap
      * @param myData {object} Map data to fill map
+     * @memberof Augmented.Utility
      */
     var augmentedMap = Augmented.Utility.AugmentedMap = function(myData) {
     	this.keys = [];
@@ -698,6 +714,7 @@
 
       /**
        * Set the value by key in the map
+       * @method set
        * @memberof Augmented.Utility.AugmentedMap
        * @param key {string} name of the key
        * @param value {any} value for the key
@@ -713,7 +730,7 @@
 
       /**
        * Get the value by key in the map
-       * @function get
+       * @method get
        * @memberof Augmented.Utility.AugmentedMap
        * @param key {string} name of the key
        * @returns The value for the key
@@ -724,7 +741,7 @@
 
       /**
        * Index of the key in the map
-       * @function indexOf
+       * @method indexOf
        * @memberof Augmented.Utility.AugmentedMap
        * @param key {string} name of the key
        * @returns index of the key
@@ -735,7 +752,7 @@
 
       /**
        * Remove the value by key in the map
-       * @function remove
+       * @method remove
        * @memberof Augmented.Utility.AugmentedMap
        * @param key {string} name of the key
        */
@@ -747,7 +764,7 @@
 
       /**
        * Has returns whether a key exists in the map
-       * @function has
+       * @method has
        * @memberof Augmented.Utility.AugmentedMap
        * @param key {string} name of the key
        * @returns true if the key exists in the map
@@ -758,7 +775,7 @@
 
       /**
        * Iterator forEach key to value in the map
-       * @function forEach
+       * @method forEach
        * @memberof Augmented.Utility.AugmentedMap
        * @param fn {function} callback for the iterator
        */
@@ -777,7 +794,7 @@
 
       /**
        * Get the key for the index in the map
-       * @function key
+       * @method key
        * @memberof Augmented.Utility.AugmentedMap
        * @param i {number} index of the key
        * @returns the key at index
@@ -788,7 +805,7 @@
 
       /**
        * The entries value object in the map
-       * @function entries
+       * @method entries
        * @memberof Augmented.Utility.AugmentedMap
        * @returns Array of entries value objects
        */
@@ -806,7 +823,7 @@
 
       /**
        * The values in the map as an Array
-       * @function values
+       * @method values
        * @memberof Augmented.Utility.AugmentedMap
        * @returns values as an Array
        */
@@ -821,7 +838,7 @@
 
       /**
        * Clear the map
-       * @function clear
+       * @method clear
        * @memberof Augmented.Utility.AugmentedMap
        */
     	this.clear = function() {
@@ -831,7 +848,7 @@
 
       /**
        * The size of the map in keys
-       * @function size
+       * @method size
        * @memberof Augmented.Utility.AugmentedMap
        * @returns size of map by keys
        */
@@ -841,7 +858,7 @@
 
       /**
        * Represent the map in JSON
-       * @function toJSON
+       * @method toJSON
        * @memberof Augmented.Utility.AugmentedMap
        * @returns JSON of the map
        */
@@ -851,7 +868,7 @@
 
       /**
        * Represent the map in a String of JSON
-       * @function toString
+       * @method toString
        * @memberof Augmented.Utility.AugmentedMap
        * @returns Stringified JSON of the map
        */
@@ -863,7 +880,7 @@
 
       /**
        * Checks of the map is empty (not ES6)
-       * @function isEmpty
+       * @method isEmpty
        * @memberof Augmented.Utility.AugmentedMap
        * @returns true if the map is empty
        */
@@ -873,7 +890,8 @@
 
         /**
          * Mashalls a map
-         * @function marshall
+         * @method marshall
+         * @param {Augmented.Utility.AugmentedMap} data Data to marsh as a map
          * @memberof Augmented.Utility.AugmentedMap
          */
         this.marshall = function(dataToMarshall) {
@@ -907,7 +925,7 @@
     	}
     };
 
-    /**
+    /*
      * Base Classes
      */
 
@@ -916,6 +934,8 @@
 	 * Base class for other classes to extend from
 	 * triggers events with Backbone.Events
      * @constructor Augmented.Object
+     * @param {object} options Object options
+     * @memberof Augmented
      */
 	Augmented.Object = function(options) {
     	this.options = Augmented.Utility.extend({}, Augmented.result(this, 'options'), options);
@@ -945,12 +965,14 @@
     /**
      * Security client namespace
      * @namespace Augmented.Security.Client
+     * @memberof Augmented.Security
      */
     Augmented.Security.Client = {};
 
     /**
      * Pricipal object for use in security as part of the abstract implimentation
      * @namespace Augmented.Security.Principal
+     * @memberof Augmented.Security
      */
     var principal = Augmented.Security.Principal = {
         fullName: "",
@@ -964,69 +986,70 @@
     * Used as a security data storage class
     * @constructor Augmented.Security.Context
     * @param { Augmented.Security.Principal } principal The principal for this context
-    *
+    * @param {array} permissions Permissions to add to the context
+    * @memberof Augmented.Security
     */
     var securityContext = Augmented.Security.Context = function(principal, permissions) {
         this.principal = (principal) ? principal : (new principal().login = "guest");
         this.permissions = (permissions) ? permissions : [];
 
-	/**
-	 * getPrincipal - get the principal of this context
-	 * @function getPrincipal
-	 * @memberof Augmented.Security.Context
-	 * @returns {Augmented.Security.Principal} principal The principal of this context
-	 */
+    	/**
+    	 * getPrincipal - get the principal of this context
+    	 * @method getPrincipal
+    	 * @memberof Augmented.Security.Context
+    	 * @returns {Augmented.Security.Principal} principal The principal of this context
+    	 */
         this.getPrincipal = function() {
           return this.principal;
         };
 
-	/**
-	 * getPermissions - Get all the permissions for a principal
-	 * @function getPermissions
-	 * @memberof Augmented.Security.Context
-	 * @returns {array} permissions All permissions
-	 */
+    	/**
+    	 * getPermissions - Get all the permissions for a principal
+    	 * @method getPermissions
+    	 * @memberof Augmented.Security.Context
+    	 * @returns {array} permissions All permissions
+    	 */
         this.getPermissions = function() {
           return this.permissions;
         };
 
-	/**
-	 * setPermissions - Set all permissions for a principal
-	 * @function setPermissions
-	 * @param {array} permissions
-	 * @memberof Augmented.Security.Context
-	 */
+    	/**
+    	 * setPermissions - Set all permissions for a principal
+    	 * @method setPermissions
+    	 * @param {array} permissions
+    	 * @memberof Augmented.Security.Context
+    	 */
         this.setPermissions = function(p) {
           this.permissions = p;
         };
 
-	/**
-	 * addPermission - Add a new permission for a principal
-	 * @function addPermission
-	 * @param {string} permission
-	 * @memberof Augmented.Security.Context
-	 */
+    	/**
+    	 * addPermission - Add a new permission for a principal
+    	 * @method addPermission
+    	 * @param {string} permission
+    	 * @memberof Augmented.Security.Context
+    	 */
         this.addPermission = function(p) {
           this.permissions.push(p);
         };
 
-	/**
-	 * removePermission - Remove a permission for a principal
-	 * @function removePermission
-	 * @param {string} permission
-	 * @memberof Augmented.Security.Context
-	 */
+    	/**
+    	 * removePermission - Remove a permission for a principal
+    	 * @method removePermission
+    	 * @param {string} permission
+    	 * @memberof Augmented.Security.Context
+    	 */
         this.removePermission = function(p) {
           var i = this.permissions.indexOf(p);
           this.permissions.splice(i, 1);
         };
 
-	/**
-	 * hasPermission - checks for a permission for this principal
-	 * @function hasPermission
-	 * @param {string} permission
-	 * @memberof Augmented.Security.Context
-	 */
+    	/**
+    	 * hasPermission - checks for a permission for this principal
+    	 * @method hasPermission
+    	 * @param {string} permission
+    	 * @memberof Augmented.Security.Context
+    	 */
         this.hasPermission = function(p) {
           return (this.permissions.indexOf(p) != -1);
         };
@@ -1035,6 +1058,8 @@
     /**
      * Augmented.Security.ClientType - Security client type
      * @enum {number}
+     * @memberof Augmented.Security
+     * @name Augmented.Security.ClientType
      */
     Augmented.Security.ClientType = {
         OAUTH2 : 0,
@@ -1046,26 +1071,55 @@
         uri: ""
     });
 
+    /**
+     * The OAUTH2 Client
+     * @name Augmented.Security.Client.OAUTH2Client
+     * @constructor Augmented.Security.Client.OAUTH2Client
+     * @memberof Augmented.Security.Client
+     */
     Augmented.Security.Client.OAUTH2Client = abstractSecurityClient.extend({
         type: Augmented.Security.ClientType.OAUTH2,
         accessToken: "",
         authorizationToken: "",
-        authorize: function(applicationName) {
+        /**
+         * Authorize the application/service/module via OAUTH
+         * @method authorize
+         * @param {string} name The name of the application/service/module
+         * @memberof Augmented.Security.Client.OAUTH2Client
+         */
+        authorize: function(name) {
           // TODO: Go authorize the app and get a token
           this.authorizationToken = "";
         },
-        // TODO: Refresh the token and store it
+        /**
+         * access the application/service/module via OAUTH
+         * @method access
+         * @param {string} principal The principal
+         * @memberof Augmented.Security.Client.OAUTH2Client
+         * TODO: Refresh the token and store it
+         */
         access: function(principal) {
           this.accessToken = "";
         }
     });
 
-  /** Role/Privilege (ACL) Security
-   * assuming data to be the following from an ajax call:
-   * login, u
-  */
+    /**
+     * Role/Privilege (ACL) Security
+     * @name Augmented.Security.Client.ACLClient
+     * @constructor Augmented.Security.Client.ACLClient
+     * @memberof Augmented.Security.Client
+     */
   Augmented.Security.Client.ACLClient = abstractSecurityClient.extend({
     type: Augmented.Security.ClientType.ACL,
+    /**
+     * authenticate the user
+     * @method authenticate
+     * @param {string} username The name of the user (login)
+     * @param {string} password The password for the user (not stored)
+     * @returns {Augmented.Security.Context} Returns a security context or null is case of failure
+     * @memberof Augmented.Security.Client.ACL
+     * @throws Error Failed to authenticate
+     */
     authenticate: function(username, password) {
         var c = null;
         ajax({
@@ -1091,58 +1145,122 @@
     }
   });
 
-  /**
-   * AuthenticationFactory Class
-   * Returns a client of given type for use with security
-   */
-  var authenticationFactory = Augmented.Security.AuthenticationFactory = {
-    getSecurityClient: function(clientType) {
-          if (clientType === Augmented.Security.ClientType.OAUTH2) {
-            return new Augmented.Security.Client.OAUTH2Client();
-          } else if (clientType === Augmented.Security.ClientType.ACL) {
-            return new Augmented.Security.Client.ACLClient();
-          }
-        return null;
-    }
-  };
+    /**
+     * AuthenticationFactory Class
+     * Returns a client of given type for use with security
+     * @namespace Augmented.Security.AuthenticationFactory
+     * @memberof Augmented.Security
+     */
+    var authenticationFactory = Augmented.Security.AuthenticationFactory = {
+        /**
+        * Get an instance of a security client
+        * @method getSecurityClient
+        * @param {Augmented.Security.ClientType} clientType The Client Type to return
+        * @returns {Augmented.Security.Client} Returns a security client instance
+        * @memberof Augmented.Security.AuthenticationFactory
+        */
+        getSecurityClient: function(clientType) {
+            if (clientType === Augmented.Security.ClientType.OAUTH2) {
+                return new Augmented.Security.Client.OAUTH2Client();
+            } else if (clientType === Augmented.Security.ClientType.ACL) {
+                return new Augmented.Security.Client.ACLClient();
+            }
+            return null;
+        }
+    };
 
     /**
-     * Augmented.Security.Entry
-     * Used to secure a resource
-     * @class
+     * Augmented.Security.Entry -
+     * Used to secure a resource via permissions
+     * @class Augmented.Security.Entry
+     * @memberof Augmented.Security
+     * @param {array} permissions Permissions to add to the entry (optional)
+     * @param {boolean} negaive Sets negative permissions (optional)
      */
-  var securityEntry = Augmented.Security.Entry = function(p, neg) {
-      this.permissions = (p) ? p : [];
-      this.isNegative = (neg) ? neg : false;
+    var securityEntry = Augmented.Security.Entry = function(p, neg) {
+        /**
+         * Gets the permissions
+         * @property {array} permissions
+         * @memberof Augmented.Security.Entry
+         * @private
+         */
+        this.permissions = (p) ? p : [];
 
-      this.getPermissions = function() {
+        /**
+         * Negative flag
+         * @property {boolean} isNegative
+         * @memberof Augmented.Security.Entry
+         */
+        this.isNegative = (neg) ? neg : false;
+
+        /**
+         * Gets the permissions
+         * @method getPermissions
+         * @memberof Augmented.Security.Entry
+         * @returns {array} Permissions
+         */
+        this.getPermissions = function() {
           return this.permissions;
-      };
-      this.setPermissions = function(p) {
+        };
+        /**
+         * Sets the permissions
+         * @method setPermissions
+         * @memberof Augmented.Security.Entry
+         * @param {array} permissions Permissions Array to set
+         */
+        this.setPermissions = function(p) {
           this.permissions = p;
-      };
-      this.addPermission = function(p) {
+        };
+        /**
+         * Add a permission
+         * @method addPermission
+         * @memberof Augmented.Security.Entry
+         * @param {string} permission Permission to add
+         */
+        this.addPermission = function(p) {
           this.permissions.push(p);
-      };
-      this.removePermission = function(p) {
+        };
+        /**
+         * Remove a permission
+         * @method removePermission
+         * @memberof Augmented.Security.Entry
+         * @param {string} permission Permission to remove
+         */
+        this.removePermission = function(p) {
           var i = this.permissions.indexOf(p);
           this.permissions.splice(i, 1);
-      };
-      this.hasPermission = function(p) {
+        };
+        /**
+         * Returns if this entry has a permission
+         * @method hasPermission
+         * @memberof Augmented.Security.Entry
+         * @param {string} permission Permission to test for
+         * @returns {boolean} Returns true if this entry has this permission
+         */
+        this.hasPermission = function(p) {
           return (this.permissions.indexOf(p) != -1);
-      };
-      this.setNegative = function(n) {
+        };
+        /**
+         * Sets this entry negaive or positive
+         * @method setNegative
+         * @memberof Augmented.Security.Entry
+         * @param {boolean} negative flag True or False
+         */
+        this.setNegative = function(n) {
           this.isNegative = n;
-      };
-  };
+        };
+    };
 
     /** Validation framework - forked from TV4 and extended
-     * @see https://github.com/geraintluff/uri-templates
-     * but with all the de-substitution stuff removed
-     * @constructor
+     *
+     * @constructor Validator
+     * @private
     */
     var Validator = function() {
 
+    /**@see https://github.com/geraintluff/uri-templates
+    * but with all the de-substitution stuff removed
+    */
 	var uriTemplateGlobalModifiers = {
 		"+": true,
 		"#": true,
@@ -2625,25 +2743,26 @@
 
 
     /**
-     * Fork of Jquery i18n plugin turned component
+     * <p>Fork of Jquery i18n plugin turned component<br/>
      * Load and parse message bundle files (.properties), making bundles
-	 * keys available as javascript variables.
+	 * keys available as javascript variables.</p>
 	 *
-	 * i18n files are named <name>.js, or <name>_<language>.js or <name>_<language>_<country>.js
+	 * <p>i18n files are named <name>.js, or <name>_<language>.js or <name>_<language>_<country>.js
 	 * Where: The <language> argument is a valid ISO Language Code. These
 	 * codes are the lower-case, two-letter codes as defined by ISO-639. You
 	 * can find a full list of these codes at a number of sites, such as:
-	 * http://www.loc.gov/standards/iso639-2/englangn.html The <country>
+	 * <em>http://www.loc.gov/standards/iso639-2/englangn.html</em> The <country>
 	 * argument is a valid ISO Country Code. These codes are the upper-case,
 	 * two-letter codes as defined by ISO-3166. You can find a full list of
 	 * these codes at a number of sites, such as:
-	 * http://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html
+	 * <em>http://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html</em></p>
 	 *
-	 * Sample usage for a bundles/Messages.properties bundle:
+	 * <p>Sample usage for a bundles/Messages.properties bundle:
 	 * i18n.properties({ name: 'Messages', language: 'en_US', path:
-	 * 'bundles' });
+	 * 'bundles' });</p>
      *
      * @constructor i18nBase
+     * @private
      */
     var i18nBase = function() {
 	var i18n = {};
@@ -2653,7 +2772,7 @@
 
 	/**
 	 *
-     * @function properties
+     * @method properties
      * @memberof i18nBase
 	 *
 	 * @param name
@@ -2727,7 +2846,7 @@
 	/**
 	 * When configured with mode: 'map', allows access to bundle values by
 	 * specifying its key. Eg, prop('com.company.bundles.menu_add')
-   * @function prop
+   * @method prop
    * @memberof i18nBase
 	 */
 	this.prop = function(key /*
@@ -2890,7 +3009,7 @@
 	}
 
 	/** Load and parse .properties files
-   * @function loadAndParseFile
+   * @method loadAndParseFile
    * @memberof i18nBase
    * @param filename
    * @param settings
@@ -3045,23 +3164,39 @@
     /* Assign an object if null */
     var resourceBundle = (!resourceBundle) ? new i18nBase() : resourceBundle;
 
-/**
- * Augmented.Utility.ResourceBundle
- * @function Augmented.Utility.ResourceBundle
- */
+    /**
+     * ResourceBundle Object used for configuration of a bundle
+     * @namespace Augmented.Utility.BundleObject
+     * @memberof Augmented.Utility
+     * @name Augmented.Utility.BundleObject
+     */
+    var bundleObject = Augmented.Utility.BundleObject = {
+        name: '',
+        mode: 'both',
+        cache: true
+    };
+
+    /**
+     * Augmented.Utility.ResourceBundle
+     * @namespace Augmented.Utility.ResourceBundle
+     * @memberof Augmented.Utility
+     * @name Augmented.Utility.ResourceBundle
+     */
     Augmented.Utility.ResourceBundle = {
         /**
-         * getBundle
-         * @function getBundle
+         * Gets the bundle(s) and registers to Augmented.Utility.ResourceBundle
+         * @method getBundle
+         * @param {Augmented.Utility.BundleObject} Bundle to get
          * @memberof Augmented.Utility.ResourceBundle
+         * @returns {object} returns a bundle
          */
 	    getBundle: function() {
 		    return resourceBundle.properties.apply(this, arguments);
 	    },
 
         /**
-         * getString
-         * @function getString
+         * Gets a string from the registered bundle
+         * @method getString
          * @memberof Augmented.Utility.ResourceBundle
          */
 	    getString: function() {
@@ -3070,83 +3205,90 @@
     };
 
     /**
-     * Augmented.Utility.MessageReader
-     * @function Augmented.Utility.MessageReader
+     * Reads a message out of the bundle
+     * @namespace Augmented.Utility.MessageReader
+     * @memberof Augmented.Utility
+     * @name Augmented.Utility.MessageReader
      */
     Augmented.Utility.MessageReader = {
         /**
-         * getMessage
-         * @function getMessage
-         * @memberof Augmented.Utility.MessageReader
-         * get the message out of the bundle.
-         * if message is not found, then ResourceBundle returns the key
+         * getMessage - get the message out of the bundle.<br/>
+         * If message is not found, then ResourceBundle returns the key
  		 * wrapped in square brackets
  		 * loop through the fallback path of the key by removing the
  		 * last attribute and searching the bundle again
  		 * stop when you get back a real message (not just the [key])
+         * @method getMessage
+         * @memberof Augmented.Utility.MessageReader
+         * @param {string} key The key to return from the bundle
          */
 	    getMessage: function(key) {
-		// try getting the message out of the bundle
-		var msg = Augmented.Utility.ResourceBundle.getString.apply(this,arguments),
-		delimiter = ".",
-		last = key.length,
-		originalKey = key;
-		// if message is not found, then ResourceBundle returns the key
-		// wrapped in square brackets
-		// loop through the fallback path of the key by removing the
-		// last attribute and searching the bundle again
-		// stop when you get back a real message (not just the [key])
-		while ( last > 0 && msg == '[' + key + ']') {
-		    last = key.lastIndexOf(delimiter);
-		    key = key.substring(0,last);
-		    msg = Augmented.Utility.ResourceBundle.getString.apply(this,arguments);
-		}
-		// if the original key or a fallback was found, return the
-		// message
-		// otherwise return the original key with square brackets
-		// (default jquery.i18n.properties plugin result)
-		return key ? msg : "[" + originalKey + "]";
+    		// try getting the message out of the bundle
+    		var msg = Augmented.Utility.ResourceBundle.getString.apply(this,arguments),
+    		delimiter = ".",
+    		last = key.length,
+    		originalKey = key;
+    		// if message is not found, then ResourceBundle returns the key
+    		// wrapped in square brackets
+    		// loop through the fallback path of the key by removing the
+    		// last attribute and searching the bundle again
+    		// stop when you get back a real message (not just the [key])
+    		while ( last > 0 && msg == '[' + key + ']') {
+    		    last = key.lastIndexOf(delimiter);
+    		    key = key.substring(0,last);
+    		    msg = Augmented.Utility.ResourceBundle.getString.apply(this,arguments);
+    		}
+    		// if the original key or a fallback was found, return the
+    		// message
+    		// otherwise return the original key with square brackets
+    		// (default jquery.i18n.properties plugin result)
+    		return key ? msg : "[" + originalKey + "]";
 	    }
     };
 
     /**
-     * Augmented.Utility.MessageKeyFormatter
+     * <p>Augmented.Utility.MessageKeyFormatter<br/>
      *
-     * Concatenate the pieces of the error together if a portion of the key is
-     * missing, the rest of the key is ignored. ex. if the "rule" attribute is
-     * missing, then the key will return with the error.level + error.kind only
-     * @function Augmented.Utility.MessageKeyFormatter
+     * Concatenate the pieces of the message together if a portion of the key is
+     * missing, the rest of the key is ignored. <em>ex. if the "rule" attribute is
+     * missing, then the key will return with the message.level + message.kind only</em></p>
+     * @namespace Augmented.Utility.MessageKeyFormatter
+     * @memberof Augmented.Utility
+     * @name Augmented.Utility.MessageKeyFormatter
      */
     Augmented.Utility.MessageKeyFormatter = {
         /**
-         * delimiter
-         * @property delimiter
+         * Key Delimiter
+         * @property {srting} delimiter The delimter used to seperate each key
          * @memberof Augmented.Utility.MessageKeyFormatter
          */
 	    delimiter: ".",
         /**
-         * format
+         * Format a key for a message
          * @function format
+         * @param {message} message The message to format
          * @memberof Augmented.Utility.MessageKeyFormatter
+         * @returns The key to lookup in a bundle
          */
-	    format: function(error) {
+	    format: function(message) {
     		var key = "";
-            if (error) {
-                var x = error.level &&
-                (key += error.level, error.kind &&
-                (key += this.delimiter + error.kind, error.rule &&
-                (key += this.delimiter + error.rule, error.values.title &&
-                (key += this.delimiter + error.values.title))));
+            if (message) {
+                var x = message.level &&
+                (key += message.level, message.kind &&
+                (key += this.delimiter + message.kind, message.rule &&
+                (key += this.delimiter + message.rule, message.values.title &&
+                (key += this.delimiter + message.values.title))));
             }
     		return (key) ? key : "";
 	    }
     };
 
     /**
-     * Augmented.ValidationFramework
-     * The Validation Framework Base Wrapper Class
+     * Augmented.ValidationFramework -
+     * The Validation Framework Base Wrapper Class.
      * Provides abstraction for base validation build-in library
      * @constructor Augmented.ValidationFramework
+     * @memberof Augmented
      */
     var validationFramework = function() {
     	var myValidator;
@@ -3472,7 +3614,7 @@
     // Extend View with Object base functions
     Augmented.Utility.extend(augmentedView, Augmented.Object);
 
-    /** Augmented Backbone - Extend Backbone with awesome */
+    /* Augmented Backbone - Extend Backbone with awesome */
     Augmented.Model = augmentedModel;
     Augmented.Collection = augmentedCollection;
     Augmented.View = augmentedView;
@@ -3481,9 +3623,9 @@
     Augmented.Router = Backbone.Router;
     Augmented.$ = Backbone.$; // Does jQuery exist?
 
-    /** Core Package */
+    /* Core Package */
 
-    /** local Storage */
+    /* local Storage */
 
     var augmentedLocalStorage = function(persist) {
     	this.isPersisted = persist;
@@ -3609,9 +3751,18 @@
     /**
      * Augmented.LocalStorageFactory
      * Retrieve a local storage Object
-     * @function
+     * @namespace Augmented.LocalStorageFactory
+     * @name Augmented.LocalStorageFactory
+     * @memberof Augmented
      */
     var localStorageFactory = Augmented.LocalStorageFactory = {
+        /**
+         * @method getStorage Get the storage inastance
+         * @param {boolean} persist Persistance or not
+         * @param {string} namespace The namespace of the storage if needed (optional)
+         * @returns Returns an instance of local storage
+         * @memberof Augmented.LocalStorageFactory
+         */
 	    getStorage: function(persist, namespace) {
     		var ls = null;
     		if (namespace) {
@@ -3627,9 +3778,10 @@
     };
 
     /**
-     * Augmented.Utility.Stack
+     * Augmented.Utility.Stack -
      * Standard Stack data structure
      * @class Augmented.Utility.Stack
+     * @memberof Augmented.Utility
      */
     var stack = Augmented.Utility.Stack = function() {
         this.stack = [];
@@ -3660,14 +3812,20 @@
     };
 
     /**
-     * Augmented.Utility.AsynchronousQueue
+     * Augmented.Utility.AsynchronousQueue -
      * An Async queue for handling async chained functions
      * @constructor Augmented.Utility.AsynchronousQueue
+     * @param {number} timeout The timout period for each process in the queue (optional)
+     * @memberof Augmented.Utility
      */
     var asyncQueue = Augmented.Utility.AsynchronousQueue = function(timeout) {
         var to = (timeout) ? timeout : Augmented.Configuration.AsynchronousQueueTimeout;
         this.queue = {};
 
+        /**
+         * @method add The Add method for adding processes to the queue
+         * @memberof Augmented.Utility.AsynchronousQueue
+         */
         this.add = function() {
             var args = arguments;
             if (args.length <= 0) {
@@ -3677,12 +3835,20 @@
             Augmented.Utility.extend(this.queue, args);
         };
 
+        /**
+         * @method clear Clear all processes in the queue
+         * @memberof Augmented.Utility.AsynchronousQueue
+         */
         this.clear = function() {
             if (this.queue.length > 0) {
                 this.queue.splice(0, this.queue.length);
             }
         };
 
+        /**
+         * @method process Process the queue
+         * @memberof Augmented.Utility.AsynchronousQueue
+         */
         this.process = function() {
             if (arguments) {
                 Augmented.Utility.extend(this.queue, arguments);
@@ -3702,9 +3868,17 @@
             })(0);
             return true;
         };
+        /**
+         * @method getTimeout Get the timeout for the queue
+         * @memberof Augmented.Utility.AsynchronousQueue
+         */
         this.getTimeout = function() {
             return to;
         };
+        /**
+         * @method getQueue get the full queue
+         * @memberof Augmented.Utility.AsynchronousQueue
+         */
         this.getQueue = function() {
             return this.queue;
         };
@@ -3714,12 +3888,14 @@
      * <p>Application Class for use to define an application.<br/>
      * An application contains metadata and initializers for the application.<br/>
      * <em>Applications track history, and normally would contain the entire single page App startup.</em></p>
+     * @constructor Augmented.Application
+     * @param {string} name Name of the application
+     * @memberof Augmented
      * @example var app = new Augmented.Application();
      * app.setName("My Super Application!");
      * app.setMetadataItem("description", "something very awesome");
      * app.beforeInitialize() = function() { do some stuff... };
      * app.start();
-     * @constructor Augmented.Application
      */
     var application = Augmented.Application = function(name) {
 		var metadata;

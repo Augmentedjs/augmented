@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Context</title>
+    <title>JSDoc: Class: Entry</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Context</h1>
+    <h1 class="page-title">Class: Entry</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Augmented.Security.html">.Security</a>.</span>Context</h2>
+            <span class="ancestors"><a href="Augmented.Security.html">.Security</a>.</span>Entry</h2>
         
     
 </header>
@@ -41,15 +41,15 @@
 
     
 
-    <h4 class="name" id="Context"><span class="type-signature"></span>new Context<span class="signature">(principal, permissions)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Entry"><span class="type-signature"></span>new Entry<span class="signature">(permissions, negaive)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Augmented.Security.Context
-Used as a security data storage class
+    Augmented.Security.Entry -
+Used to secure a resource via permissions
 </div>
 
 
@@ -85,29 +85,6 @@ Used as a security data storage class
 
         <tr>
             
-                <td class="name"><code>principal</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The principal for this context</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>permissions</code></td>
             
 
@@ -124,7 +101,30 @@ Used as a security data storage class
 
             
 
-            <td class="description last">Permissions to add to the context</td>
+            <td class="description last">Permissions to add to the entry (optional)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>negaive</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Sets negative permissions (optional)</td>
         </tr>
 
     
@@ -165,7 +165,7 @@ Used as a security data storage class
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line984">line 984</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1172">line 1172</a>
     </li></ul></dd>
     
 
@@ -205,6 +205,124 @@ Used as a security data storage class
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".this.isNegative"><span class="type-signature">(static) </span>this.isNegative<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Negative flag
+</div>
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>isNegative</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1194">line 1194</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -221,7 +339,7 @@ Used as a security data storage class
 
 
 <div class="description">
-    addPermission - Add a new permission for a principal
+    Add a permission
 </div>
 
 
@@ -273,7 +391,7 @@ Used as a security data storage class
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Permission to add</td>
         </tr>
 
     
@@ -314,7 +432,7 @@ Used as a security data storage class
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1026">line 1026</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1214">line 1214</a>
     </li></ul></dd>
     
 
@@ -352,7 +470,7 @@ Used as a security data storage class
 
 
 <div class="description">
-    getPermissions - Get all the permissions for a principal
+    Gets the permissions
 </div>
 
 
@@ -396,7 +514,7 @@ Used as a security data storage class
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1006">line 1006</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1196">line 1196</a>
     </li></ul></dd>
     
 
@@ -423,7 +541,7 @@ Used as a security data storage class
 
         
 <div class="param-desc">
-    permissions All permissions
+    Permissions
 </div>
 
 
@@ -449,14 +567,14 @@ Used as a security data storage class
 
     
 
-    <h4 class="name" id=".getPrincipal"><span class="type-signature">(static) </span>getPrincipal<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a>}</span></h4>
+    <h4 class="name" id=".hasPermission"><span class="type-signature">(static) </span>hasPermission<span class="signature">(permission)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
 
     
 
 
 
 <div class="description">
-    getPrincipal - get the principal of this context
+    Returns if this entry has a permission
 </div>
 
 
@@ -465,6 +583,55 @@ Used as a security data storage class
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>permission</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Permission to test for</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -500,7 +667,7 @@ Used as a security data storage class
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line996">line 996</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1233">line 1233</a>
     </li></ul></dd>
     
 
@@ -527,7 +694,7 @@ Used as a security data storage class
 
         
 <div class="param-desc">
-    principal The principal of this context
+    Returns true if this entry has this permission
 </div>
 
 
@@ -538,7 +705,7 @@ Used as a security data storage class
     </dt>
     <dd>
         
-<span class="param-type"><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></span>
+<span class="param-type">boolean</span>
 
 
     </dd>
@@ -553,14 +720,14 @@ Used as a security data storage class
 
     
 
-    <h4 class="name" id=".hasPermission"><span class="type-signature">(static) </span>hasPermission<span class="signature">(permission)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".removePermission"><span class="type-signature">(static) </span>removePermission<span class="signature">(permission)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    hasPermission - checks for a permission for this principal
+    Remove a permission
 </div>
 
 
@@ -612,7 +779,7 @@ Used as a security data storage class
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Permission to remove</td>
         </tr>
 
     
@@ -653,7 +820,7 @@ Used as a security data storage class
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1047">line 1047</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1223">line 1223</a>
     </li></ul></dd>
     
 
@@ -684,14 +851,14 @@ Used as a security data storage class
 
     
 
-    <h4 class="name" id=".removePermission"><span class="type-signature">(static) </span>removePermission<span class="signature">(permission)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".setNegative"><span class="type-signature">(static) </span>setNegative<span class="signature">(negative)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    removePermission - Remove a permission for a principal
+    Sets this entry negaive or positive
 </div>
 
 
@@ -727,13 +894,13 @@ Used as a security data storage class
 
         <tr>
             
-                <td class="name"><code>permission</code></td>
+                <td class="name"><code>negative</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">boolean</span>
 
 
             
@@ -743,7 +910,7 @@ Used as a security data storage class
 
             
 
-            <td class="description last"></td>
+            <td class="description last">flag True or False</td>
         </tr>
 
     
@@ -784,7 +951,7 @@ Used as a security data storage class
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1036">line 1036</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1243">line 1243</a>
     </li></ul></dd>
     
 
@@ -822,7 +989,7 @@ Used as a security data storage class
 
 
 <div class="description">
-    setPermissions - Set all permissions for a principal
+    Sets the permissions
 </div>
 
 
@@ -874,7 +1041,7 @@ Used as a security data storage class
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Permissions Array to set</td>
         </tr>
 
     
@@ -915,7 +1082,7 @@ Used as a security data storage class
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1016">line 1016</a>
+        <a href="augmented.js.html">augmented.js</a>, <a href="augmented.js.html#line1205">line 1205</a>
     </li></ul></dd>
     
 
