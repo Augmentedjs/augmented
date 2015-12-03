@@ -18,7 +18,7 @@
 }(function(_, Augmented) {
     Augmented.Presentation = {};
 
-    Augmented.Presentation.VERSION = '0.1.0 Pre';
+    Augmented.Presentation.VERSION = Augmented.VERSION;
 
     /**
      * Augmented Presentation View extension

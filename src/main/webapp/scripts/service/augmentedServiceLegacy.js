@@ -19,7 +19,7 @@
 }(function($, mockjax, _, Augmented) {
     Augmented.Service = {};
 
-    Augmented.Service.VERSION = '1.0.0';
+    Augmented.Service.VERSION = '0.1.0';
 
     /** MockService
 	 *

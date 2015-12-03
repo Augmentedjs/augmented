@@ -16,7 +16,7 @@
 }(function(Augmented) {
     Augmented.Service = {};
 
-    Augmented.Service.VERSION = '0.1.0 Pre';
+    Augmented.Service.VERSION = Augmented.VERSION;
 
     /** MockService
 	 *

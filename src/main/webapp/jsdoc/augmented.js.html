@@ -94,6 +94,23 @@
     };
 
     /**
+     * Augmented underscore (if it exists from Bakcbone.js)
+     * @module _
+     * @name _
+     * @private
+     * @memberof Augmented
+     */
+    var _ = Augmented._ = Backbone._;
+    /**
+     * Augmented jQuery (if it exists from Bakcbone.js)
+     * @module $
+     * @name $
+     * @private
+     * @memberof Augmented
+     */
+    var $ = Augmented.$ = Backbone.$; // Does $ exist?
+
+    /**
      * Augmented.Configuration - a set of configuration properties for the framework
      * @enum Configuration
      * @memberof Augmented
@@ -213,6 +230,7 @@
      * Utility Package -
      * Small Utilities
      * @namespace Augmented.Utility
+     * @memberof Augmented
      */
     Augmented.Utility = {};
 
@@ -222,6 +240,13 @@
      * @enum {number} Augmented.Utility.TransformerType
      * @name Augmented.Utility.TransformerType
      * @memberof Augmented.Utility
+     * @property {number} string Standard String
+     * @property {number} integer Integer
+     * @property {number} number Any number
+     * @property {number} boolean True/False
+     * @property {number} array Stanrdard Array
+     * @property {number} object Any Object
+     * @property {number} null Null
      */
     var transformerType = Augmented.Utility.TransformerType = {
         "string": 0,
@@ -394,12 +419,10 @@
      * @memberof Augmented.Ajax
      */
     Augmented.Ajax.Configuration = {
-        defaults: {
-            url: 'localhost',
-            contentType: 'text/plain',
-            dataType: 'text',
-            async: true
-        }
+        url: 'localhost',
+        contentType: 'text/plain',
+        dataType: 'text',
+        async: true
     };
 
     /**
@@ -505,7 +528,10 @@
     /* Overide Backbone.ajax so models and collections use Augmented Ajax instead */
     Backbone.ajax = ajax;
 
-    /** @namespace Augmented.Logger */
+    /**
+     * @namespace Augmented.Logger
+     * @memberof Augmented
+     */
     Augmented.Logger = {};
 
     /**
@@ -711,11 +737,23 @@
    var logger = Augmented.Logger.LoggerFactory.getLogger(loggerType.console, Augmented.Configuration.LoggerLevel);
 
     /**
+    * Wrap method to handle wrapping functions (simular to _.wrap)
+    * @method wrap
+    * @memberof Augmented.Utility
+    */
+    var wrap = Augmented.Utility.wrap = function(fn, wrap) {
+        return function () {
+            return wrap.apply(this, [fn].concat(Array.prototype.slice.call(arguments)));
+        };
+    };
+
+    /**
      * Augmented Array Utility
      * @constructor Augmented.Utility.Array
      * @memberof Augmented.Utility
      * @param array to work with
      * @memberof Augmented.Utility
+     * @deprecated
      */
     Augmented.Utility.Array = function(arr) {
         /**
@@ -726,7 +764,7 @@
          * @memberof Augmented.Utility.Array
          */
     	this.has = function(key) {
-    	    return (arr.indexOf(key) !== -1);
+    	    return arr.has(key);
     	};
     };
 
@@ -917,7 +955,7 @@
     	};
 
         /**
-         * Mashalls a map
+         * Marshalls a map
          * @method marshall
          * @param {Augmented.Utility.AugmentedMap} data Data to marsh as a map
          * @memberof Augmented.Utility.AugmentedMap
@@ -987,6 +1025,7 @@
     /**
     * Security Package and API
     * @namespace Augmented.Security
+    * @memberof Augmented
     */
     Augmented.Security = {};
 
@@ -1001,6 +1040,10 @@
      * Pricipal object for use in security as part of the abstract implimentation
      * @namespace Augmented.Security.Principal
      * @memberof Augmented.Security
+     * @property {string} fullName The full name of the principal
+     * @property {number} id The id of the principal
+     * @property {string} login The login of the principal
+     * @property {string} email The email of the principal
      */
     var principal = Augmented.Security.Principal = {
         fullName: "",
@@ -1013,7 +1056,7 @@
     * Augmented.Security.Context
     * Used as a security data storage class
     * @constructor Augmented.Security.Context
-    * @param { Augmented.Security.Principal } principal The principal for this context
+    * @param {Augmented.Security.Principal} principal The principal for this context
     * @param {array} permissions Permissions to add to the context
     * @memberof Augmented.Security
     */
@@ -1088,12 +1131,22 @@
      * @enum {number}
      * @memberof Augmented.Security
      * @name Augmented.Security.ClientType
+     * @property {number} OAuth2 The OAuth2 type
+     * @property {number} ACL The ACL type
      */
     Augmented.Security.ClientType = {
         OAUTH2 : 0,
         ACL: 1
     };
 
+    /**
+     * The abstract Security Client
+     * @name abstractSecurityClient
+     * @constructor abstractSecurityClient
+     * @property {Augmented.Security.ClientType} type The client type
+     * @property {string} uri The base uri
+     * @private
+     */
     var abstractSecurityClient = Augmented.Object.extend({
         type: null,
         uri: ""
@@ -1107,7 +1160,17 @@
      */
     Augmented.Security.Client.OAUTH2Client = abstractSecurityClient.extend({
         type: Augmented.Security.ClientType.OAUTH2,
+        /**
+         * Access Token
+         * @property accessToken
+         * @memberof Augmented.Security.Client.OAUTH2Client
+         */
         accessToken: "",
+        /**
+         * Authorization Token
+         * @property authorizationToken
+         * @memberof Augmented.Security.Client.OAUTH2Client
+         */
         authorizationToken: "",
         /**
          * Authorize the application/service/module via OAUTH
@@ -1174,10 +1237,11 @@
   });
 
     /**
-     * AuthenticationFactory Class
+     * AuthenticationFactory Class -
      * Returns a client of given type for use with security
      * @namespace Augmented.Security.AuthenticationFactory
      * @memberof Augmented.Security
+     * @static
      */
     var authenticationFactory = Augmented.Security.AuthenticationFactory = {
         /**
@@ -3197,6 +3261,9 @@
      * @namespace Augmented.Utility.BundleObject
      * @memberof Augmented.Utility
      * @name Augmented.Utility.BundleObject
+     * @property {string} name Name/uri/file of the bundle
+     * @property {string} mode Bundlefile type (default: both)
+     * @property {boolean} cache Cache reading from bundle (default: true)
      */
     var bundleObject = Augmented.Utility.BundleObject = {
         name: '',
@@ -3323,25 +3390,69 @@
     	if (myValidator === undefined) {
     	    myValidator = new Validator();
     	}
-
+        /**
+         * Returns if the framework supports validation
+         * @method supportsValidation
+         * @returns {boolean} Returns true if the framework supports validation
+         * @memberof Augmented.ValidationFramework
+         */
     	this.supportsValidation = function() {
     	    return (myValidator !== null);
     	};
+        /**
+         * Registers a schema to the Framework
+         * @method registerSchema
+         * @param {string} identity The identity of the schema
+         * @param {object} schema The JSON schema
+         * @memberof Augmented.ValidationFramework
+         */
     	this.registerSchema = function(identity, schema) {
     	    myValidator.addSchema(identity, schema);
     	};
+        /**
+         * Gets a schema
+         * @method getSchema
+         * @param {string} identity The identity of the schema
+         * @returns {object} The JSON schema
+         * @memberof Augmented.ValidationFramework
+         */
     	this.getSchema = function(identity) {
     	    return myValidator.getSchema(identity);
     	};
+        /**
+         * Gets all schemas
+         * @method getSchemas
+         * @returns {array} all JSON schemas
+         * @memberof Augmented.ValidationFramework
+         */
     	this.getSchemas = function() {
     	    return myValidator.getSchemaMap();
     	};
+        /**
+         * Clears all schemas
+         * @method clearSchemas
+         * @memberof Augmented.ValidationFramework
+         */
     	this.clearSchemas = function() {
     	    myValidator.dropSchemas();
     	};
+        /**
+         * Validates data via a schema
+         * @method validate
+         * @param {object} data The data to validate
+         * @param {object} The JSON schema
+         * @returns {object} Returns the validation object
+         * @memberof Augmented.ValidationFramework
+         */
     	this.validate = function(data, schema) {
     	    return myValidator.validateMultiple(data, schema);
     	};
+        /**
+         * Validates data via a schema
+         * @method getValidationMessages
+         * @returns {array} Returns the validation messages
+         * @memberof Augmented.ValidationFramework
+         */
     	this.getValidationMessages = function() {
     	    return myValidator.error;
     	};
@@ -3350,26 +3461,69 @@
     Augmented.ValidationFramework = (!Augmented.ValidationFramework) ? new validationFramework() : Augmented.ValidationFramework;
 
     /**
-     * Abstract Augmented Model Supports: CORS Schemas Security
+     * Augmented Model &lt;br/>
+     * Supports: &lt;ul>
+     * &lt;li>REST&lt;/li>
+     * &lt;li>Validation and Schemas&lt;/li>
+     * &lt;li>CORS&lt;/li>
+     * &lt;li>Security&lt;/li>
+     * &lt;/ul>
      * TODO: implement OAUTH 2
      * @constructor Augmented.Model
+     * @memberof Augmented
+     * @borrows Backbone.Model
+     * @see http://backbonejs.org/#Model
+     * @extends Augmented.Object
      */
     var augmentedModel = Backbone.Model.extend({
+        /**
+         * Schema property
+         * @property {object} schema The JSON schema from this model
+         * @memberof Augmented.Model
+         */
     	schema: null,
+        /**
+         * mock property
+         * @property {boolean} mock Sets mock mode in the model
+         * @memberof Augmented.Model
+         */
         mock: false,
+        /**
+         * Validation Message property
+         * @property {object} validationMessages The property holding validation message data
+         * @memberof Augmented.Model
+         */
     	validationMessages: {
     	    valid: true
     	},
+        /**
+         * supportsValidation - Returns True if this model supports validation
+         * @method supportsValidation
+         * @memberof Augmented.Model
+         * @returns {boolean} Returns True if this model supports validation
+         */
     	supportsValidation: function() {
     	    if (this.schema !== null) {
     		    return true;
     	    }
     	    return false;
     	},
+        /**
+         * isValid - Returns True if this model is valid
+         * @method isValid
+         * @memberof Augmented.Model
+         * @returns {boolean} Returns True if this model is valid
+         */
     	isValid: function() {
     	    this.validate();
     	    return this.validationMessages.valid;
     	},
+        /**
+         * Validates the model
+         * @method validate
+         * @memberof Augmented.Model
+         * @returns {array} Returns array of message from validation
+         */
     	validate: function() {
     	    if (this.supportsValidation() &amp;&amp; Augmented.ValidationFramework.supportsValidation()) {
     		    // validate from Validator
@@ -3379,7 +3533,18 @@
     	    }
     	    return this.validationMessages;
     	},
+        /**
+         * Cross Origin property
+         * @property {boolean} crossOrigin Cross Origin property
+         * @memberof Augmented.Model
+         */
     	crossOrigin: false,
+        /**
+         * Model.sync - rewritten sync method from Backbone.Model.sync
+         * @method sync
+         * @memberof Augmented.Model
+         * @borrows Model.sync
+         */
     	sync: function(method, model, options) {
     	    if (!options) {
     		    options = {};
@@ -3397,8 +3562,7 @@
                 options.mock = this.mock;
             }
 
-            ret = Augmented.sync(method, model, options);
-
+            var ret = Augmented.sync(method, model, options);
     	    return ret;
     	}
     });
@@ -3407,38 +3571,91 @@
     Augmented.Utility.extend(augmentedModel, Augmented.Object);
 
     /**
-     * Abstract Augmented Collection Supports: CORS Schemas Security * TODO:
-     * implement OAUTH 2
+     * Abstract Augmented Collection &lt;br/>
+     * Supports: &lt;ul>
+     * &lt;li>REST&lt;/li>
+     * &lt;li>Validation and Schemas&lt;/li>
+     * &lt;li>CORS&lt;/li>
+     * &lt;li>Security&lt;/li>
+     * &lt;/ul>
+     * TODO: implement OAUTH 2
+     * @constructor Augmented.Collection
+     * @memberof Augmented
+     * @borrows Backbone.Collection
+     * @see http://backbonejs.org/#Collection
+     * @extends Augmented.Object
      */
     var augmentedCollection = Backbone.Collection.extend({
+        /**
+         * Schema property
+         * @property {object} schema The JSON schema from this collection
+         * @memberof Augmented.Collection
+         */
     	schema: null,
+        /**
+         * mock property
+         * @property {boolean} mock Sets mock mode in the model
+         * @memberof Augmented.Collection
+         */
         mock: false,
+        /**
+         * Validation Message property
+         * @property {object} validationMessages The property holding validation message data
+         * @memberof Augmented.Collection
+         */
     	validationMessages: {
     	    valid: true
     	},
+        /**
+         * supportsValidation - Returns True if this collection supports validation
+         * @method supportsValidation
+         * @memberof Augmented.Collection
+         * @returns {boolean} Returns True if this collection supports validation
+         */
     	supportsValidation: function() {
     	    if (this.schema !== null) {
     		    return true;
     	    }
     	    return false;
     	},
+        /**
+         * isValid - Returns True if this collection is valid
+         * @method isValid
+         * @memberof Augmented.Collection
+         * @returns {boolean} Returns True if this collection is valid
+         */
     	isValid: function() {
     	    this.validate();
     	    return this.validationMessages.valid;
     	},
+        /**
+         * Validates the collection
+         * @method validate
+         * @memberof Augmented.Collection
+         * @returns {array} Returns array of message from validation
+         * TODO: Should we validate every model to call this valid or is this be a 'instance' validation?
+         */
     	validate: function() {
     	    if (this.supportsValidation() &amp;&amp; Augmented.ValidationFramework.supportsValidation()) {
     		// validate from Validator
-
-    		// TODO: Should we validate every model to call this valid or is
-    		// this be a 'instance' validation?
-    		this.validationMessages = Augmented.ValidationFramework.validate(this.toJSON(), this.schema);
+    		    this.validationMessages = Augmented.ValidationFramework.validate(this.toJSON(), this.schema);
     	    } else {
-    		this.validationMessages.valid = true;
+    		    this.validationMessages.valid = true;
     	    }
     	    return this.validationMessages;
     	},
+        /**
+         * Cross Origin property
+         * @property {boolean} crossOrigin Cross Origin property
+         * @memberof Augmented.Collection
+         */
     	crossOrigin: false,
+        /**
+         * Model.sync - rewritten sync method from Backbone.Collection.sync
+         * @method sync
+         * @memberof Augmented.Collection
+         * @borrows Collection.sync
+         */
     	sync: function(method, model, options) {
     	    if (!options) {
     		    options = {};
@@ -3456,7 +3673,7 @@
                 options.mock = this.mock;
             }
 
-            ret = Backbone.sync(method, model, options);
+            var ret = Augmented.sync(method, model, options);
     	    return ret;
     	}
     });
@@ -3464,20 +3681,60 @@
 	// Extend Collection with Object base functions
     Augmented.Utility.extend(augmentedCollection, Augmented.Object);
 
+    /**
+     * Paginated Collection Class - A Collection that handles pagination from client or server-side
+     * @constructor Augmented.PaginatedCollection
+     * @memberof Augmented
+     * @extends Augmented.Collection
+     */
     var paginatedCollection = Augmented.PaginatedCollection = augmentedCollection.extend({
+        /**
+         * Configuration for the pagination
+         * @property paginationConfiguration
+         * @memberof Augmented.PaginatedCollection
+         * @private
+         */
         paginationConfiguration: {
             currentPageParam: "page",
             pageSizeParam: "per_page"
         },
+        /**
+         * Page Size for the collection
+         * @property pageSize
+         * @memberof Augmented.PaginatedCollection
+         * @private
+         */
         pageSize: 20,
+        /**
+         * Current page for the collection
+         * @property currentPage
+         * @memberof Augmented.PaginatedCollection
+         */
         currentPage: 1,
+        /**
+         * Total pages for the collection
+         * @property totalPages
+         * @memberof Augmented.PaginatedCollection
+         */
         totalPages: 1,
+        /**
+         * Sets the number of items in a page
+         * @method setPageSize
+         * @memberof Augmented.PaginatedCollection
+         * @param {number} size Number of items in each page
+         */
         setPageSize: function(size) {
             if (size) {
                 this.pageSize = size;
             }
             this.refresh();
         },
+        /**
+         * Sets the current page
+         * @method setCurrentPage
+         * @memberof Augmented.PaginatedCollection
+         * @param {number} page Current page in collection
+         */
         setCurrentPage: function(page) {
             if (!page) {
                 page = 1;
@@ -3485,9 +3742,22 @@
             this.currentPage = page;
             this.refresh();
         },
+        /**
+         * Sets pagination configuration
+         * @method setPaginationConfiguration
+         * @memberof Augmented.PaginatedCollection
+         * @param {object} config pagination configuration
+         * @private
+         */
         setPaginationConfiguration: function(config) {
             this.paginationConfiguration = config;
         },
+        /**
+         * Collection.fetch - rewritten fetch method from Backbone.Collection.fetch
+         * @method fetch
+         * @memberof Augmented.PaginatedCollection
+         * @borrows Collection.fetch
+         */
         fetch: function(options) {
             options = (options) ? options : {};
             var data = (options.data || {});
@@ -3504,48 +3774,100 @@
 
             return xhr;
         },
+        /**
+         * Moves to the next page
+         * @method nextPage
+         * @memberof Augmented.PaginatedCollection
+         */
         nextPage: function() {
             if (this.currentPage &lt; this.totalPages) {
                 this.currentPage = this.currentPage + 1;
                 this.refresh();
             }
         },
+        /**
+         * Moves to the previous page
+         * @method previousPage
+         * @memberof Augmented.PaginatedCollection
+         */
         previousPage: function() {
             if (this.currentPage > 0) {
                 this.currentPage = this.currentPage - 1;
                 this.refresh();
             }
         },
+        /**
+         * Goes to page
+         * @method goToPage
+         * @memberof Augmented.PaginatedCollection
+         * @param {number} page Page to go to
+         */
         goToPage: function(page) {
             if ((page) &amp;&amp; (page &lt; this.totalPages) &amp;&amp; (page > 0)) {
                 this.currentPage = page;
                 this.refresh();
             }
         },
+        /**
+         * Moves to the first page
+         * @method firstPage
+         * @memberof Augmented.PaginatedCollection
+         */
         firstPage: function() {
             this.currentPage = 1;
             this.refresh();
         },
+        /**
+         * Moves to the last page
+         * @method lastPage
+         * @memberof Augmented.PaginatedCollection
+         */
         lastPage: function() {
             this.currentPage = this.totalPages;
             this.refresh();
         },
+        /**
+         * Refreshes the collection
+         * @method refresh
+         * @memberof Augmented.PaginatedCollection
+         */
         refresh: function() {
             this.fetch();
         }
     });
 
+    /**
+     * Types of pagination API
+     * @enum
+     * @name Augmented.PaginationFactory.type
+     * @memberof Augmented.PaginationFactory
+     * @property {string} github GitHub API
+     * @property {string} solr SOLR API
+     * @property {string} database Database-like API
+     */
     var paginationAPIType = {
         github: "github",
         solr: "solr",
         database: "database"
     };
 
+    /**
+     * Pagination factory for returning pagination collections of an API type
+     * @namespace Augmented.PaginationFactory
+     * @memberof Augmented
+     */
     var paginationFactory = Augmented.PaginationFactory = {
         type: paginationAPIType,
+        /**
+         * Get a pagination collection of type
+         * @method getPaginatedCollection
+         * @memberof Augmented.PaginationFactory
+         * @param {Augmented.PaginationFactory.type} apiType The API type to return an instance of
+         * @param {object} args Collection arguments
+         */
         getPaginatedCollection: function(apiType, data) {
             var arg = (data) ? data : {};
-            var collection= null;
+            var collection = null;
 
             if (!apiType) {
                 apiType = paginationAPIType.github;
@@ -3573,46 +3895,131 @@
         }
     };
 
+    /**
+     * Augmented View - the base view for handlng display in the MV* Concept
+     * @constructor
+     * @name Augmented.View
+     * @memberof Augmented
+     * @borrows Backbone.View
+     * @see http://backbonejs.org/#View
+     * @extends Augmented.Object
+     */
     var augmentedView = Backbone.View.extend({
+        /**
+         * Initializes the view
+         * @method initialize
+         * @param {object} options Optional options to pass to the view
+         * @memberof Augmented.View
+         * @returns {Augmented.View} Returns 'this,' as in, this view context
+         */
         initialize: function(options) {
-            this.render = _.wrap(this.render, function(render) {
+            this.render = Augmented.Utility.wrap(this.render, function(render) {
                 this.beforeRender();
                 render();
                 this.afterRender();
                 return this;
             });
         },
+        /**
+         * Before Render callback for the view
+         * @method beforeRender
+         * @memberof Augmented.View
+         */
         beforeRender: function() {
         },
+        /**
+         * Render callback for the view
+         * @method render
+         * @memberof Augmented.View
+         */
         render: function() {
             return this;
         },
+        /**
+         * After Render callback for the view
+         * @method afterRender
+         * @memberof Augmented.View
+         */
         afterRender: function() {
         },
+        /**
+         * The name property of the view
+         * @property {string} name The Name of the view
+         * @memberof Augmented.View
+         * @private
+         */
         name: "",
+        /**
+         * Sets the name of the view
+         * @method setName
+         * @param {string} name The name of the view
+         * @memberof Augmented.View
+         */
         setName: function(name) {
             this.name = name;
         },
+        /**
+         * Gets the name of the view
+         * @method getName
+         * @returns {string} Returns the name of the view
+         * @memberof Augmented.View
+         */
         getName: function() {
             return this.name;
         },
+        /**
+         * Permissions in the view
+         * @property permissions
+         * @memberof Augmented.View
+         * @private
+         */
         permissions: {
             include: [],
             exclude: []
         },
+        /**
+         * Adds a permission to the view
+         * @method addPermission
+         * @param {string} permission The permission to add
+         * @param {boolean} negative Flag to set a nagative permission (optional)
+         * @memberof Augmented.View
+         */
         addPermission: function(permission, negative) {
+            if (!negative) {
+                negative = false;
+            }
             if (permission !== null &amp;&amp; !Array.isArray(permission)) {
                 var p = (negative) ? this.permissions.exclude : this.permissions.include;
                 p.push(permission);
             }
         },
+        /**
+         * Removes a permission to the view
+         * @method removePermission
+         * @param {string} permission The permission to remove
+         * @param {boolean} negative Flag to set a nagative permission (optional)
+         * @memberof Augmented.View
+         */
         removePermission: function(permission, negative) {
+            if (!negative) {
+                negative = false;
+            }
             if (permission !== null &amp;&amp; !Array.isArray(permission)) {
                 var p = (negative) ? this.permissions.exclude : this.permissions.include;
                 p.splice((p.indexOf(permission)), 1);
             }
         },
+        /**
+         * Sets the permissions to the view
+         * @method setPermissions
+         * @param {array} permissions The permissions to set
+         * @param {boolean} negative Flag to set a nagative permission (optional)
+         * @memberof Augmented.View
+         */
         setPermissions: function(permissions, negative) {
+            if (!negative) {
+                negative = false;
+            }
             if (permissions !== null &amp;&amp; Array.isArray(permissions)) {
                 if (negative) {
                     this.permissions.exclude = permissions;
@@ -3621,19 +4028,53 @@
                 }
             }
         },
+        /**
+         * Gets the permissions to the view&lt;br/>
+         * Return format:&lt;br/>
+         * &lt;pre>{
+         *     include: [],
+         *     exclude: []
+         * }&lt;/pre>
+         *
+         * @method getPermissions
+         * @returns {object} The permissions in the view
+         * @memberof Augmented.View
+         */
         getPermissions: function() {
             return this.permissions;
         },
+        /**
+         * Clears the permissions in the view
+         * @method clearPermissions
+         * @memberof Augmented.View
+         */
         clearPermissions: function() {
             this.permissions = {
                 include: [],
                 exclude: []
             };
         },
+        /**
+         * Matches a permission in the view
+         * @method matchesPermission
+         * @param {string} match The permissions to match
+         * @param {boolean} negative Flag to set a nagative permission (optional)
+         * @returns {boolean} Returns true if the match exists
+         * @memberof Augmented.View
+         */
         matchesPermission: function(match, negative) {
+            if (!negative) {
+                negative = false;
+            }
             var p = (negative) ? this.permissions.exclude : this.permissions.include;
             return (p.indexOf(match) !== -1);
         },
+        /**
+         * Callback to return if this view can display
+         * @method canDisplay
+         * @returns {boolean} Returns true if this view can display
+         * @memberof Augmented.View
+         */
         canDisplay: function() {
             return true;
         }
@@ -3646,18 +4087,51 @@
     Augmented.Model = augmentedModel;
     Augmented.Collection = augmentedCollection;
     Augmented.View = augmentedView;
+    /**
+     * @function history
+     * @extends Backbone.history
+     * @memberof Augmented
+     */
     Augmented.history = Backbone.history;
+    /**
+     * @class History
+     * @extends Backbone.History
+     * @memberof Augmented
+     */
     Augmented.History = Backbone.History;
+    /**
+     * @class Router
+     * @extends Backbone.Router
+     * @memberof Augmented
+     */
     Augmented.Router = Backbone.Router;
-    Augmented.$ = Backbone.$; // Does jQuery exist?
 
     /* Core Package */
 
     /* local Storage */
 
+    /**
+     * Local Storage API
+     * @constructor augmentedLocalStorage
+     * @name augmentedLocalStorage
+     * @memberof Augmented
+     * @param {boolean} persist Persistant storage or not
+     */
     var augmentedLocalStorage = function(persist) {
+        /**
+         * is Persistant or not
+         * @property {boolean} isPersisted Persiatnt property
+         * @memberof augmentedLocalStorage
+         */
     	this.isPersisted = persist;
+
     	this.myStore = null;
+        /**
+         * Is storage supported
+         * @method isSupported
+         * @memberof augmentedLocalStorage
+         * @returns {boolean} Returns true if supported
+         */
     	this.isSupported = function() {
     	    return (typeof (Storage) !== "undefined");
     	};
@@ -3675,6 +4149,13 @@
     	    logger.debug("No localStorage.");
     	}
 
+        /**
+         * Gets an item from storage
+         * @method getItem
+         * @memberof augmentedLocalStorage
+         * @param {string} key The key in storage
+         * @returns {object} Returns object from storage
+         */
     	this.getItem = function(itemKey) {
     	    var item = this.myStore.getItem(itemKey);
     	    if (item) {
@@ -3683,22 +4164,53 @@
     	    return null;
     	};
 
+        /**
+         * Sets an item to storage
+         * @method setItem
+         * @memberof augmentedLocalStorage
+         * @param {string} key The key in storage
+         * @param {object} object The data to set
+         */
     	this.setItem = function(itemKey, object) {
     	    this.myStore.setItem(itemKey, JSON.stringify(object));
     	};
 
+        /**
+         * Removes an item from storage
+         * @method removeItem
+         * @memberof augmentedLocalStorage
+         * @param {string} key The key in storage
+         */
     	this.removeItem = function(itemKey) {
     	    this.myStore.removeItem(itemKey);
     	};
 
+        /**
+         * Clears storage - &lt;b>Warning: Destructive in non-namespaced instances!&lt;/b>
+         * @method clear
+         * @memberof augmentedLocalStorage
+         */
     	this.clear = function() {
     	    this.myStore.clear();
     	};
 
+        /**
+         * Gets the key from storage for index
+         * @method key
+         * @memberof augmentedLocalStorage
+         * @param {number} i The index in storage
+         * @returns {string} Returns the key from storage
+         */
     	this.key = function(i) {
     	    return this.myStore.key(i);
     	};
 
+        /**
+         * The length of storage by keys
+         * @method length
+         * @memberof augmentedLocalStorage
+         * @returns {number} Returns the length of storage by keys
+         */
     	this.length = function() {
     	    return this.myStore.length;
     	};
@@ -3808,32 +4320,78 @@
     /**
      * Augmented.Utility.Stack -
      * Standard Stack data structure
-     * @class Augmented.Utility.Stack
+     * @constructor Augmented.Utility.Stack
      * @memberof Augmented.Utility
      */
     var stack = Augmented.Utility.Stack = function() {
         this.stack = [];
+        /**
+         * The empty method clears the stack
+         * @method empty
+         * @memberof Augmented.Utility.Stack
+         */
         this.empty = function() {
             return (this.stack.length === 0);
         };
+        /**
+         * The peek method returns the first in the stack
+         * @method peek
+         * @memberof Augmented.Utility.Stack
+         * @returns {object} Returns the first object in the stack
+         */
         this.peek = function() {
             return this.stack[0];
         };
+        /**
+         * The pop method returns and removes the first in the stack
+         * @method pop
+         * @memberof Augmented.Utility.Stack
+         * @returns {object} Returns the first object in the stack
+         */
         this.pop = function() {
             return this.stack.pop();
         };
+        /**
+         * The push method adds to the stack
+         * @method push
+         * @memberof Augmented.Utility.Stack
+         * @param {object} item The item to push to the stack
+         */
         this.push = function(item) {
             this.stack.push(item);
         };
+        /**
+         * The search method returns where in the stack an item exists
+         * @method search
+         * @memberof Augmented.Utility.Stack
+         * @returns {number} Returns the index of the item
+         */
         this.search = function(item) {
             return this.stack.indexOf(item);
         };
+        /**
+         * The size method returns the size of the stack
+         * @method size
+         * @memberof Augmented.Utility.Stack
+         * @returns {number} Returns the size of the stack
+         */
         this.size = function() {
             return this.stack.length;
         };
+        /**
+         * The clear method clears the stack
+         * @method clear
+         * @memberof Augmented.Utility.Stack
+         */
         this.clear = function() {
             this.stack.splice(0, this.stack.length);
         };
+        /**
+         * The toArray method returns the stack as an array
+         * @method toArray
+         * @memberof Augmented.Utility.Stack
+         * @returns {array} Returns the stack as an array
+         */
         this.toArray = function() {
             return this.stack;
         };
@@ -3927,6 +4485,12 @@
      */
     var application = Augmented.Application = function(name) {
 		var metadata;
+        /**
+         * The started property of the view
+         * @property started
+         * @memberof Augmented.Application
+         * @returns {boolean} Returns the property of the started Event
+         */
         this.started = false;
 
         if (!metadata) {
@@ -3942,21 +4506,21 @@
         }
 
         /** Event for after during startup of the application
-         * @function initialize
+         * @method initialize
          * @memberof Augmented.Application
          */
         this.initialize = function() {
 
         };
         /** Event for before the startup of the application
-         * @function beforeInitialize
+         * @method beforeInitialize
          * @memberof Augmented.Application
          */
         this.beforeInitialize = function() {
 
         };
         /** Event for after the startup of the application
-         * @function afterInitialize
+         * @method afterInitialize
          * @memberof Augmented.Application
          */
         this.afterInitialize = function() {
@@ -3964,7 +4528,7 @@
         };
 
         /** Get the application name
-         * @function getName
+         * @method getName
          * @memberof Augmented.Application
          */
         this.getName = function() {
@@ -3972,7 +4536,7 @@
         };
 
         /** Set the application name
-         * @function setName
+         * @method setName
          * @memberof Augmented.Application
          */
         this.setName = function(n) {
@@ -3980,7 +4544,7 @@
         };
 
         /** Get the metadata map
-         * @function getMetadata
+         * @method getMetadata
          * @memberof Augmented.Application
          * @returns Map of metadata in an Augmented.Utility.AugmentedMap
          */
@@ -3989,7 +4553,7 @@
 		};
 
         /** Set a specific item in metadata
-         * @function setMetadataItem
+         * @method setMetadataItem
          * @memberof Augmented.Application
          */
 		this.setMetadataItem = function(key, value) {
@@ -3997,7 +4561,7 @@
 		};
 
         /** Get a specific item in metadata
-         * @function getMetadataItem
+         * @method getMetadataItem
          * @memberof Augmented.Application
          */
 		this.getMetadataItem = function(key) {
@@ -4005,7 +4569,7 @@
 		};
 
         /** Event to start the application and history
-         * @function start
+         * @method start
          * @memberof Augmented.Application
          */
 		this.start = function() {
@@ -4026,7 +4590,7 @@
 		};
 
         /** Event to stop the application and history
-         * @function stop
+         * @method stop
          * @memberof Augmented.Application
          */
         this.stop = function() {
@@ -4050,13 +4614,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Augmented.html">Augmented</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Augmented.html">Augmented</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Dec 01 2015 22:42:03 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Dec 02 2015 22:30:23 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

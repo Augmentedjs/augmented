@@ -45,19 +45,19 @@ And much more!
 
 ## Presentation
 
-An extension module for **Presentation** is also available and adds extensive abilities to the presentation layer.
+The **Presentation** extension adds extensive abilities to the presentation layer.
 
 This extension adds:
 * Mediator patterned PubSub Views
 * Enhanced Application Object
-    - PubSub mediation and boot-straping for Application objects
+    - PubSub mediation and bootstrapping for Application objects
     - CSS Stylesheet registration and injection
     - breadcrumb management
 * Automatic Tables generated from a JSON schema and data
 
 ## Service
 
-A **Service** extension adds additional features based around backend and Ajax.
+The **Service** extension adds additional features based around backend and Ajax.
 
 *This extension module in currently a work in progress.*
 
