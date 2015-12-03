@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Model</title>
+    <title>JSDoc: Class: Colleague</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Model</h1>
+    <h1 class="page-title">Class: Colleague</h1>
 
     
 
@@ -28,7 +28,8 @@
 
 <header>
     
-        <h2>Model</h2>
+        <h2>
+            <span class="ancestors"><a href="Augmented.Presentation.html">.Presentation</a>.</span>Colleague</h2>
         
     
 </header>
@@ -40,21 +41,16 @@
 
     
 
-    <h4 class="name" id="Model"><span class="type-signature"></span>new Model<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Colleague"><span class="type-signature"></span>new Colleague<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Augmented Model <br/>
-Supports: <ul>
-<li>REST</li>
-<li>Validation and Schemas</li>
-<li>CORS</li>
-<li>Security</li>
-</ul>
-TODO: implement OAUTH 2
+    Allow to define convention-based subscriptions
+as an 'subscriptions' hash on a view. Subscriptions
+can then be easily setup and cleaned.
 </div>
 
 
@@ -98,19 +94,12 @@ TODO: implement OAUTH 2
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3435">line 3435</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line293">line 293</a>
     </li></ul></dd>
     
 
     
 
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="http://backbonejs.org/#Model">http://backbonejs.org/#Model</a></li>
-        </ul>
-    </dd>
     
 
     
@@ -141,7 +130,7 @@ TODO: implement OAUTH 2
 
 
     <ul>
-        <li><a href="Augmented.Object.html">Augmented.Object</a></li>
+        <li><a href="Augmented.View.html">Augmented.View</a></li>
     </ul>
 
 
@@ -160,14 +149,10 @@ TODO: implement OAUTH 2
 
         
             
-<h4 class="name" id=".crossOrigin"><span class="type-signature">(static) </span>crossOrigin<span class="type-signature"></span></h4>
+<h4 class="name" id=".subscriptions"><span class="type-signature">(static) </span>subscriptions<span class="type-signature"></span></h4>
 
 
 
-
-<div class="description">
-    Cross Origin property
-</div>
 
 
 
@@ -201,13 +186,13 @@ TODO: implement OAUTH 2
 
         <tr>
             
-                <td class="name"><code>crossOrigin</code></td>
+                <td class="name"><code>List</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type"><a href="Object.html">Object</a></span>
 
 
             
@@ -217,7 +202,7 @@ TODO: implement OAUTH 2
 
             
 
-            <td class="description last">Cross Origin property</td>
+            <td class="description last">of subscriptions, to be defined</td>
         </tr>
 
     
@@ -256,349 +241,7 @@ TODO: implement OAUTH 2
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3513">line 3513</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".mock"><span class="type-signature">(static) </span>mock<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    mock property
-</div>
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>mock</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Sets mock mode in the model</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3462">line 3462</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".schema"><span class="type-signature">(static) </span>schema<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Schema property
-</div>
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>schema</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The JSON schema from this model</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3456">line 3456</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".validationMessages"><span class="type-signature">(static) </span>validationMessages<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Validation Message property
-</div>
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>validationMessages</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The property holding validation message data</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3468">line 3468</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line326">line 326</a>
     </li></ul></dd>
     
 
@@ -625,14 +268,14 @@ TODO: implement OAUTH 2
 
     
 
-    <h4 class="name" id=".isValid"><span class="type-signature">(static) </span>isValid<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id=".delegateEvents"><span class="type-signature">(static) </span>delegateEvents<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    isValid - Returns True if this model is valid
+    Extend delegateEvents() to set subscriptions
 </div>
 
 
@@ -676,215 +319,7 @@ TODO: implement OAUTH 2
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3483">line 3483</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Returns True if this model is valid
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".supportsValidation"><span class="type-signature">(static) </span>supportsValidation<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    supportsValidation - Returns True if this model supports validation
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3471">line 3471</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Returns True if this model supports validation
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".sync"><span class="type-signature">(static) </span>sync<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Model.sync - rewritten sync method from Backbone.Model.sync
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3514">line 3514</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line308">line 308</a>
     </li></ul></dd>
     
 
@@ -915,14 +350,157 @@ TODO: implement OAUTH 2
 
     
 
-    <h4 class="name" id=".validate"><span class="type-signature">(static) </span>validate<span class="signature">()</span><span class="type-signature"> &rarr; {array}</span></h4>
+    <h4 class="name" id=".setSubscriptions"><span class="type-signature">(static) </span>setSubscriptions<span class="signature">(subscriptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Validates the model
+    Subscribe to each subscription
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>subscriptions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Object.html">Object</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">An optional hash of subscription to add</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line333">line 333</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".undelegateEvents"><span class="type-signature">(static) </span>undelegateEvents<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Extend undelegateEvents() to unset subscriptions
 </div>
 
 
@@ -966,7 +544,7 @@ TODO: implement OAUTH 2
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3493">line 3493</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line317">line 317</a>
     </li></ul></dd>
     
 
@@ -989,28 +567,149 @@ TODO: implement OAUTH 2
 
 
 
-<h5>Returns:</h5>
+
+
 
         
-<div class="param-desc">
-    Returns array of message from validation
+            
+
+    
+
+    <h4 class="name" id=".unsetSubscriptions"><span class="type-signature">(static) </span>unsetSubscriptions<span class="signature">(subscriptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Unsubscribe to each subscription
 </div>
 
 
 
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
         
-<span class="param-type">array</span>
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>subscriptions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Object.html">Object</a></span>
 
 
-    </dd>
-</dl>
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">An optional hash of subscription to remove</td>
+        </tr>
 
     
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line364">line 364</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

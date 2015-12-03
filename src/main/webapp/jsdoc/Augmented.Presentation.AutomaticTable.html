@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Model</title>
+    <title>JSDoc: Class: AutomaticTable</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Model</h1>
+    <h1 class="page-title">Class: AutomaticTable</h1>
 
     
 
@@ -28,7 +28,8 @@
 
 <header>
     
-        <h2>Model</h2>
+        <h2>
+            <span class="ancestors"><a href="Augmented.Presentation.html">.Presentation</a>.</span>AutomaticTable</h2>
         
     
 </header>
@@ -40,21 +41,15 @@
 
     
 
-    <h4 class="name" id="Model"><span class="type-signature"></span>new Model<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="AutomaticTable"><span class="type-signature"></span>new AutomaticTable<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Augmented Model <br/>
-Supports: <ul>
-<li>REST</li>
-<li>Validation and Schemas</li>
-<li>CORS</li>
-<li>Security</li>
-</ul>
-TODO: implement OAUTH 2
+    Augmented.Presentation.AutomaticTable<br/>
+Creates a table automatically via a schema for defintion and a uri/json for data
 </div>
 
 
@@ -98,19 +93,12 @@ TODO: implement OAUTH 2
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3435">line 3435</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line537">line 537</a>
     </li></ul></dd>
     
 
     
 
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="http://backbonejs.org/#Model">http://backbonejs.org/#Model</a></li>
-        </ul>
-    </dd>
     
 
     
@@ -141,7 +129,7 @@ TODO: implement OAUTH 2
 
 
     <ul>
-        <li><a href="Augmented.Object.html">Augmented.Object</a></li>
+        <li><a href="Augmented.Presentation.Colleague.html">Augmented.Presentation.Colleague</a></li>
     </ul>
 
 
@@ -160,14 +148,10 @@ TODO: implement OAUTH 2
 
         
             
-<h4 class="name" id=".crossOrigin"><span class="type-signature">(static) </span>crossOrigin<span class="type-signature"></span></h4>
+<h4 class="name" id=".isInitalized"><span class="type-signature">(static) </span>isInitalized<span class="type-signature"></span></h4>
 
 
 
-
-<div class="description">
-    Cross Origin property
-</div>
 
 
 
@@ -201,7 +185,7 @@ TODO: implement OAUTH 2
 
         <tr>
             
-                <td class="name"><code>crossOrigin</code></td>
+                <td class="name"><code>isInitalized</code></td>
             
 
             <td class="type">
@@ -217,7 +201,7 @@ TODO: implement OAUTH 2
 
             
 
-            <td class="description last">Cross Origin property</td>
+            <td class="description last">The initialized property</td>
         </tr>
 
     
@@ -256,7 +240,7 @@ TODO: implement OAUTH 2
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3513">line 3513</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line557">line 557</a>
     </li></ul></dd>
     
 
@@ -274,14 +258,10 @@ TODO: implement OAUTH 2
 
         
             
-<h4 class="name" id=".mock"><span class="type-signature">(static) </span>mock<span class="type-signature"></span></h4>
+<h4 class="name" id=".uri"><span class="type-signature">(static) </span>uri<span class="type-signature"></span></h4>
 
 
 
-
-<div class="description">
-    mock property
-</div>
 
 
 
@@ -315,13 +295,13 @@ TODO: implement OAUTH 2
 
         <tr>
             
-                <td class="name"><code>mock</code></td>
+                <td class="name"><code>uri</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
 
 
             
@@ -331,7 +311,7 @@ TODO: implement OAUTH 2
 
             
 
-            <td class="description last">Sets mock mode in the model</td>
+            <td class="description last">The URI property</td>
         </tr>
 
     
@@ -370,235 +350,7 @@ TODO: implement OAUTH 2
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3462">line 3462</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".schema"><span class="type-signature">(static) </span>schema<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Schema property
-</div>
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>schema</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The JSON schema from this model</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3456">line 3456</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".validationMessages"><span class="type-signature">(static) </span>validationMessages<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Validation Message property
-</div>
-
-
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>validationMessages</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The property holding validation message data</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3468">line 3468</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line550">line 550</a>
     </li></ul></dd>
     
 
@@ -625,15 +377,11 @@ TODO: implement OAUTH 2
 
     
 
-    <h4 class="name" id=".isValid"><span class="type-signature">(static) </span>isValid<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id=".compileTemplate"><span class="type-signature">(static) </span>compileTemplate<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
-
-<div class="description">
-    isValid - Returns True if this model is valid
-</div>
 
 
 
@@ -676,215 +424,7 @@ TODO: implement OAUTH 2
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3483">line 3483</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Returns True if this model is valid
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".supportsValidation"><span class="type-signature">(static) </span>supportsValidation<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    supportsValidation - Returns True if this model supports validation
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3471">line 3471</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Returns True if this model supports validation
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".sync"><span class="type-signature">(static) </span>sync<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Model.sync - rewritten sync method from Backbone.Model.sync
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3514">line 3514</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line632">line 632</a>
     </li></ul></dd>
     
 
@@ -915,15 +455,11 @@ TODO: implement OAUTH 2
 
     
 
-    <h4 class="name" id=".validate"><span class="type-signature">(static) </span>validate<span class="signature">()</span><span class="type-signature"> &rarr; {array}</span></h4>
+    <h4 class="name" id=".fetch"><span class="type-signature">(static) </span>fetch<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
-
-<div class="description">
-    Validates the model
-</div>
 
 
 
@@ -966,7 +502,7 @@ TODO: implement OAUTH 2
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line3493">line 3493</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line603">line 603</a>
     </li></ul></dd>
     
 
@@ -989,28 +525,396 @@ TODO: implement OAUTH 2
 
 
 
-<h5>Returns:</h5>
+
+
 
         
-<div class="param-desc">
-    Returns array of message from validation
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">array</span>
-
-
-    </dd>
-</dl>
+            
 
     
+
+    <h4 class="name" id=".initialize"><span class="type-signature">(static) </span>initialize<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line562">line 562</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".populate"><span class="type-signature">(static) </span>populate<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line610">line 610</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".render"><span class="type-signature">(static) </span>render<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line618">line 618</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".setSchema"><span class="type-signature">(static) </span>setSchema<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line646">line 646</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".setURI"><span class="type-signature">(static) </span>setURI<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line639">line 639</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
