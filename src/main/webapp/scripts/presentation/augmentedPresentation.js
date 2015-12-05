@@ -1,5 +1,13 @@
 /**
- * AugmentedPresentation.js - The Presentation Core UI Component and package
+ * AugmentedPresentation.js - The Presentation Core UI Component and package<br/>
+ * The <b>Presentation</b> extension adds extensive abilities to the presentation layer.<br/>
+ * This extension adds:<br/>
+ * Mediator patterned PubSub Views
+ * Enhanced Application Object
+     - PubSub mediation and bootstrapping for Application objects
+     - CSS Stylesheet registration and injection
+     - breadcrumb management
+ * Automatic Tables generated from a JSON schema and data
  *
  * @author Bob Warren
  *
@@ -19,6 +27,7 @@
     }
 }(function(_, Augmented) {
     /**
+     * The base namespece for all of the Presentation module.
      * @namespace Presentation
      * @memberof Augmented
      */
@@ -35,10 +44,10 @@
          * Augmented Presentation View extension - getFormData<br/>
          * Two-way binding to models<br/>
          * <em>uses _.reduce</em>
+         * TODO: maybe deprecate this and use something better
          * @method getFormData
          * @param {string} region The region (element) to parse
          * @memberof Augmented.View
-         * TODO: maybe deprecate this and use something better
          * @mixin
          */
     	getFormData: function(region) {
@@ -115,7 +124,10 @@
      * The mediator defines the interface for communication between colleague views.
      * Loose coupling between colleague objects is achieved by having colleagues communicate
      * with the Mediator, rather than with each other.
-     * <img src="" />
+     * <pre>
+     * [Mediator]<-----[Colleague]
+     *     ^-----------[Colleague]
+     * </pre>
      * @constructor Mediator
      * @name Augmented.Presentation.Mediator
      * @memberof Augmented.Presentation
@@ -137,11 +149,11 @@
          */
         channels: {},
     	/**
-    	 * Observe a Colleague View
+    	 * Observe a Colleague View - observe a Colleague and add to a channel
     	 * @method observeColleague
-    	 * @param colleague
-    	 * @param callback
-    	 * @param channel
+    	 * @param {Augmented.Presentation.Colleague} colleague The Colleague to observe
+    	 * @param {function} callback The callback to call for this colleague
+    	 * @param {string} channel The Channel to add the pubished events to
          * @memberof Augmented.Presentation.Mediator
     	 */
     	observeColleague: function(colleague, callback, channel) {
@@ -155,10 +167,10 @@
     	},
 
     	/**
-    	 * Dismiss a Colleague View
-    	 *
-    	 * @param colleague
-    	 * @param channel
+    	 * Dismiss a Colleague View - Remove a Colleague from the channel
+         * @method dismissColleague
+         * @param {Augmented.Presentation.Colleague} colleague The Colleague to observe
+    	 * @param {string} channel The Channel events are pubished to
          * @memberof Augmented.Presentation.Mediator
     	 */
     	dismissColleague: function(colleague, channel) {
@@ -173,11 +185,11 @@
 
     	/**
     	 * Subscribe to a channel
-    	 *
-    	 * @param channel
-    	 * @param subscription
-    	 * @param context
-    	 * @param once
+    	 * @method subscribe
+    	 * @param {string} channel The Channel events are pubished to
+    	 * @param {string} subscription The subscription to subscribe to
+    	 * @param {object} context The context (or 'this')
+    	 * @param {boolean} once Toggle to set subscribe only once
          * @memberof Augmented.Presentation.Mediator
     	 */
     	subscribe: function(channel, subscription, context, once) {
@@ -192,9 +204,9 @@
 
     	/**
     	 * Trigger all callbacks for a channel
-    	 *
-    	 * @param channel
-    	 * @param N Extra parameter to pass to handler
+    	 * @method publish
+    	 * @param {string} channel The Channel events are pubished to
+    	 * @param {object} N Extra parameter to pass to handler
          * @memberof Augmented.Presentation.Mediator
     	 */
     	publish: function(channel) {
@@ -215,13 +227,13 @@
 
     	/**
     	 * Cancel subscription
-    	 *
-    	 * @param channel
-    	 * @param fn
-    	 * @param context
+    	 * @method unsubscribe
+    	 * @param {string} channel The Channel events are pubished to
+    	 * @param {fuction} callback The function callback regestered
+    	 * @param {object} context The context (or 'this')
          * @memberof Augmented.Presentation.Mediator
     	 */
-    	unsubscribe: function(channel, fn, context) {
+    	unsubscribe: function(channel, callback, context) {
     	    if (!this.channels[channel]) {
     		    return;
     	    }
@@ -238,10 +250,10 @@
 
     	/**
     	 * Subscribing to one event only
-    	 *
-    	 * @param channel
-    	 * @param subscription
-    	 * @param context
+    	 * @method subscribeOnce
+    	 * @param {string} channel The Channel events are pubished to
+    	 * @param {string} subscription The subscription to subscribe to
+    	 * @param {object} context The context (or 'this')
          * @memberof Augmented.Presentation.Mediator
     	 */
     	subscribeOnce: function(channel, subscription, context) {
@@ -250,9 +262,10 @@
 
     	/**
     	 * Get All the Colleagues for a channel
-    	 *
-    	 * @param channel
+    	 * @method getColleagues
+    	 * @param {string} channel The Channel events are pubished to
          * @memberof Augmented.Presentation.Mediator
+         * @returns {array} The colleagues for a channel
     	 */
     	getColleagues: function(channel) {
     	    var c = this.getChannel(channel);
@@ -261,7 +274,9 @@
 
     	/**
     	 * Get Channels
+         * @method getChannels
          * @memberof Augmented.Presentation.Mediator
+         * @returns {object} Returns all the channels
     	 */
     	getChannels: function() {
     	    return this.channels;
@@ -269,9 +284,10 @@
 
     	/**
     	 * Get a specific channel
-    	 *
-    	 * @param channel
+    	 * @method getChannel
+    	 * @param {string} channel The Channel events are pubished to
          * @memberof Augmented.Presentation.Mediator
+         * @returns {array} Returns the requested channel
     	 */
     	getChannel: function(channel) {
     	    if (!channel) {
@@ -283,7 +299,9 @@
     	/**
     	 * Get the default channel
     	 * Convenience method for getChannel(null)
+         * @method getDefaultChannel
          * @memberof Augmented.Presentation.Mediator
+         * @returns {array} Returns the default channel
     	 */
     	getDefaultChannel: function() {
     	    return this.channels[this.defaultChannel];
@@ -291,6 +309,7 @@
         });
 
         /**
+         * Colleague View - The 'child' view.<br/>
          * Allow to define convention-based subscriptions
          * as an 'subscriptions' hash on a view. Subscriptions
          * can then be easily setup and cleaned.
@@ -303,6 +322,7 @@
         var abstractColleague = Augmented.Presentation.Colleague = Augmented.View.extend({
     	/**
     	 * Extend delegateEvents() to set subscriptions
+         * @method delegateEvents
          * @memberof Augmented.Presentation.Colleague
     	 */
     	delegateEvents: function() {
@@ -312,6 +332,7 @@
 
     	/**
     	 * Extend undelegateEvents() to unset subscriptions
+         * @method undelegateEvents
          * @memberof Augmented.Presentation.Colleague
     	 */
     	undelegateEvents: function() {
@@ -322,11 +343,23 @@
     	/**
         * @property {Object} List of subscriptions, to be defined
         * @memberof Augmented.Presentation.Colleague
+        * @private
         */
     	subscriptions: {},
 
+        /**
+    	 * Gets all subscriptions
+         * @method getSubscriptions
+         * @memberof Augmented.Presentation.Colleague
+         * @returns {object} Returns all subscriptions
+    	 */
+        getSubscriptions: function() {
+            return this.subscriptions;
+        },
+
     	/**
     	 * Subscribe to each subscription
+         * @method setSubscriptions
     	 * @param {Object} [subscriptions] An optional hash of subscription to add
          * @memberof Augmented.Presentation.Colleague
     	 */
@@ -358,6 +391,7 @@
 
     	/**
     	 * Unsubscribe to each subscription
+         * @method unsetSubscriptions
     	 * @param {Object} [subscriptions] An optional hash of subscription to remove
          * @memberof Augmented.Presentation.Colleague
     	 */
@@ -384,7 +418,8 @@
     });
 
     /**
-     * Add registration of mediators to the application
+     * Presentation Application - extension of Augmented.Application</br/>
+     * Add registration of mediators to the application, breadcrumbs, and stylesheet registration
      * @constructor Augmented.Presentation.Application
      * @memberof Augmented.Presentation
      * @extends Augmented.Application
@@ -396,17 +431,21 @@
         this.breadcrumb = new Augmented.Utility.Stack();
 
         /**
-         * @method
+         * Initialize Event - adds any stylesheets registered
+         * @method initialize
          * @memberof Augmented.Presentation.Application
          */
         this.initialize = function() {
             if (this.Stylesheets && this.Stylesheets.length > 0) {
                 this.attachStylesheets();
             }
+            Augmented.Application.prototype.initialize.apply(this, arguments);
         };
         /**
-         * @method
+         * Register a Mediator
+         * @method registerMediator
          * @memberof Augmented.Presentation.Application
+         * @param {Augmented.Presentation.Mediator} mediator The mediator to register
          */
         this.registerMediator = function(mediator) {
             if (mediator) {
@@ -414,8 +453,10 @@
             }
         };
         /**
-         * @method
+         * Deregister a Mediator
+         * @method deregisterMediator
          * @memberof Augmented.Presentation.Application
+         * @param {Augmented.Presentation.Mediator} mediator The mediator to deregister
          */
         this.deregisterMediator = function(mediator) {
             if (mediator) {
@@ -426,15 +467,19 @@
             }
         };
         /**
-         * @method
+         * Get all Mediators
+         * @method getMediators
          * @memberof Augmented.Presentation.Application
+         * @returns {array} Returns all Mediators
          */
         this.getMediators = function() {
             return this.Mediators;
         };
         /**
-         * @method
+         * Register a stylesheet
+         * @method registerStylesheet
          * @memberof Augmented.Presentation.Application
+         * @param {string} stylesheet URI of the stylesheet
          */
         this.registerStylesheet = function(s) {
             if (s) {
@@ -442,8 +487,10 @@
             }
         };
         /**
-         * @method
+         * Deregister a stylesheet
+         * @method deregisterStylesheet
          * @memberof Augmented.Presentation.Application
+         * @param {string} stylesheet URI of the stylesheet
          */
         this.deregisterStylesheet = function(s) {
             if (s) {
@@ -451,7 +498,8 @@
             }
         };
         /**
-         * @method
+         * Attach registered stylesheets to the DOM
+         * @method attachStylesheets
          * @memberof Augmented.Presentation.Application
          */
         this.attachStylesheets = function() {
@@ -466,8 +514,11 @@
             }
         };
         /**
-         * @method
+         * Sets the current breadcrumb
+         * @method setCurrentBreadcrumb
          * @memberof Augmented.Presentation.Application
+         * @param {string} uri The URI of the breadcrumb
+         * @param {string} name The name of the breadcrumb
          */
         this.setCurrentBreadcrumb = function(uri, name) {
             if (this.breadcrumb.size() > 1) {
@@ -476,16 +527,21 @@
             this.breadcrumb.push({ "uri": uri, "name": name });
         };
         /**
-         * @method
+         * Gets the current breadcrumb
+         * @method getCurrentBreadcrumb
          * @memberof Augmented.Presentation.Application
+         * @returns {object} Returns the current breadcrumb
          */
         this.getCurrentBreadcrumb = function() {
             return this.breadcrumb.peek();
         };
 
         /**
-         * @method
+         * Get all the breadcrumbs
+         * @method getBreadcrumbs
          * @memberof Augmented.Presentation.Application
+         * @returns {array} Returns alls the breadcrumbs
+
          */
         this.getBreadcrumbs = function() {
             return this.breadcrumb.toArray();

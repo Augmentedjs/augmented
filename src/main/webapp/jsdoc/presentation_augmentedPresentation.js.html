@@ -27,7 +27,15 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * AugmentedPresentation.js - The Presentation Core UI Component and package
+ * AugmentedPresentation.js - The Presentation Core UI Component and package&lt;br/>
+ * The &lt;b>Presentation&lt;/b> extension adds extensive abilities to the presentation layer.&lt;br/>
+ * This extension adds:&lt;br/>
+ * Mediator patterned PubSub Views
+ * Enhanced Application Object
+     - PubSub mediation and bootstrapping for Application objects
+     - CSS Stylesheet registration and injection
+     - breadcrumb management
+ * Automatic Tables generated from a JSON schema and data
  *
  * @author Bob Warren
  *
@@ -47,6 +55,7 @@
     }
 }(function(_, Augmented) {
     /**
+     * The base namespece for all of the Presentation module.
      * @namespace Presentation
      * @memberof Augmented
      */
@@ -63,10 +72,10 @@
          * Augmented Presentation View extension - getFormData&lt;br/>
          * Two-way binding to models&lt;br/>
          * &lt;em>uses _.reduce&lt;/em>
+         * TODO: maybe deprecate this and use something better
          * @method getFormData
          * @param {string} region The region (element) to parse
          * @memberof Augmented.View
-         * TODO: maybe deprecate this and use something better
          * @mixin
          */
     	getFormData: function(region) {
@@ -143,7 +152,10 @@
      * The mediator defines the interface for communication between colleague views.
      * Loose coupling between colleague objects is achieved by having colleagues communicate
      * with the Mediator, rather than with each other.
-     * &lt;img src="" />
+     * &lt;pre>
+     * [Mediator]&lt;-----[Colleague]
+     *     ^-----------[Colleague]
+     * &lt;/pre>
      * @constructor Mediator
      * @name Augmented.Presentation.Mediator
      * @memberof Augmented.Presentation
@@ -165,11 +177,11 @@
          */
         channels: {},
     	/**
-    	 * Observe a Colleague View
+    	 * Observe a Colleague View - observe a Colleague and add to a channel
     	 * @method observeColleague
-    	 * @param colleague
-    	 * @param callback
-    	 * @param channel
+    	 * @param {Augmented.Presentation.Colleague} colleague The Colleague to observe
+    	 * @param {function} callback The callback to call for this colleague
+    	 * @param {string} channel The Channel to add the pubished events to
          * @memberof Augmented.Presentation.Mediator
     	 */
     	observeColleague: function(colleague, callback, channel) {
@@ -183,10 +195,10 @@
     	},
 
     	/**
-    	 * Dismiss a Colleague View
-    	 *
-    	 * @param colleague
-    	 * @param channel
+    	 * Dismiss a Colleague View - Remove a Colleague from the channel
+         * @method dismissColleague
+         * @param {Augmented.Presentation.Colleague} colleague The Colleague to observe
+    	 * @param {string} channel The Channel events are pubished to
          * @memberof Augmented.Presentation.Mediator
     	 */
     	dismissColleague: function(colleague, channel) {
@@ -201,11 +213,11 @@
 
     	/**
     	 * Subscribe to a channel
-    	 *
-    	 * @param channel
-    	 * @param subscription
-    	 * @param context
-    	 * @param once
+    	 * @method subscribe
+    	 * @param {string} channel The Channel events are pubished to
+    	 * @param {string} subscription The subscription to subscribe to
+    	 * @param {object} context The context (or 'this')
+    	 * @param {boolean} once Toggle to set subscribe only once
          * @memberof Augmented.Presentation.Mediator
     	 */
     	subscribe: function(channel, subscription, context, once) {
@@ -220,9 +232,9 @@
 
     	/**
     	 * Trigger all callbacks for a channel
-    	 *
-    	 * @param channel
-    	 * @param N Extra parameter to pass to handler
+    	 * @method publish
+    	 * @param {string} channel The Channel events are pubished to
+    	 * @param {object} N Extra parameter to pass to handler
          * @memberof Augmented.Presentation.Mediator
     	 */
     	publish: function(channel) {
@@ -243,13 +255,13 @@
 
     	/**
     	 * Cancel subscription
-    	 *
-    	 * @param channel
-    	 * @param fn
-    	 * @param context
+    	 * @method unsubscribe
+    	 * @param {string} channel The Channel events are pubished to
+    	 * @param {fuction} callback The function callback regestered
+    	 * @param {object} context The context (or 'this')
          * @memberof Augmented.Presentation.Mediator
     	 */
-    	unsubscribe: function(channel, fn, context) {
+    	unsubscribe: function(channel, callback, context) {
     	    if (!this.channels[channel]) {
     		    return;
     	    }
@@ -266,10 +278,10 @@
 
     	/**
     	 * Subscribing to one event only
-    	 *
-    	 * @param channel
-    	 * @param subscription
-    	 * @param context
+    	 * @method subscribeOnce
+    	 * @param {string} channel The Channel events are pubished to
+    	 * @param {string} subscription The subscription to subscribe to
+    	 * @param {object} context The context (or 'this')
          * @memberof Augmented.Presentation.Mediator
     	 */
     	subscribeOnce: function(channel, subscription, context) {
@@ -278,9 +290,10 @@
 
     	/**
     	 * Get All the Colleagues for a channel
-    	 *
-    	 * @param channel
+    	 * @method getColleagues
+    	 * @param {string} channel The Channel events are pubished to
          * @memberof Augmented.Presentation.Mediator
+         * @returns {array} The colleagues for a channel
     	 */
     	getColleagues: function(channel) {
     	    var c = this.getChannel(channel);
@@ -289,7 +302,9 @@
 
     	/**
     	 * Get Channels
+         * @method getChannels
          * @memberof Augmented.Presentation.Mediator
+         * @returns {object} Returns all the channels
     	 */
     	getChannels: function() {
     	    return this.channels;
@@ -297,9 +312,10 @@
 
     	/**
     	 * Get a specific channel
-    	 *
-    	 * @param channel
+    	 * @method getChannel
+    	 * @param {string} channel The Channel events are pubished to
          * @memberof Augmented.Presentation.Mediator
+         * @returns {array} Returns the requested channel
     	 */
     	getChannel: function(channel) {
     	    if (!channel) {
@@ -311,7 +327,9 @@
     	/**
     	 * Get the default channel
     	 * Convenience method for getChannel(null)
+         * @method getDefaultChannel
          * @memberof Augmented.Presentation.Mediator
+         * @returns {array} Returns the default channel
     	 */
     	getDefaultChannel: function() {
     	    return this.channels[this.defaultChannel];
@@ -319,6 +337,7 @@
         });
 
         /**
+         * Colleague View - The 'child' view.&lt;br/>
          * Allow to define convention-based subscriptions
          * as an 'subscriptions' hash on a view. Subscriptions
          * can then be easily setup and cleaned.
@@ -331,6 +350,7 @@
         var abstractColleague = Augmented.Presentation.Colleague = Augmented.View.extend({
     	/**
     	 * Extend delegateEvents() to set subscriptions
+         * @method delegateEvents
          * @memberof Augmented.Presentation.Colleague
     	 */
     	delegateEvents: function() {
@@ -340,6 +360,7 @@
 
     	/**
     	 * Extend undelegateEvents() to unset subscriptions
+         * @method undelegateEvents
          * @memberof Augmented.Presentation.Colleague
     	 */
     	undelegateEvents: function() {
@@ -350,11 +371,23 @@
     	/**
         * @property {Object} List of subscriptions, to be defined
         * @memberof Augmented.Presentation.Colleague
+        * @private
         */
     	subscriptions: {},
 
+        /**
+    	 * Gets all subscriptions
+         * @method getSubscriptions
+         * @memberof Augmented.Presentation.Colleague
+         * @returns {object} Returns all subscriptions
+    	 */
+        getSubscriptions: function() {
+            return this.subscriptions;
+        },
+
     	/**
     	 * Subscribe to each subscription
+         * @method setSubscriptions
     	 * @param {Object} [subscriptions] An optional hash of subscription to add
          * @memberof Augmented.Presentation.Colleague
     	 */
@@ -386,6 +419,7 @@
 
     	/**
     	 * Unsubscribe to each subscription
+         * @method unsetSubscriptions
     	 * @param {Object} [subscriptions] An optional hash of subscription to remove
          * @memberof Augmented.Presentation.Colleague
     	 */
@@ -412,7 +446,8 @@
     });
 
     /**
-     * Add registration of mediators to the application
+     * Presentation Application - extension of Augmented.Application&lt;/br/>
+     * Add registration of mediators to the application, breadcrumbs, and stylesheet registration
      * @constructor Augmented.Presentation.Application
      * @memberof Augmented.Presentation
      * @extends Augmented.Application
@@ -424,17 +459,21 @@
         this.breadcrumb = new Augmented.Utility.Stack();
 
         /**
-         * @method
+         * Initialize Event - adds any stylesheets registered
+         * @method initialize
          * @memberof Augmented.Presentation.Application
          */
         this.initialize = function() {
             if (this.Stylesheets &amp;&amp; this.Stylesheets.length > 0) {
                 this.attachStylesheets();
             }
+            Augmented.Application.prototype.initialize.apply(this, arguments);
         };
         /**
-         * @method
+         * Register a Mediator
+         * @method registerMediator
          * @memberof Augmented.Presentation.Application
+         * @param {Augmented.Presentation.Mediator} mediator The mediator to register
          */
         this.registerMediator = function(mediator) {
             if (mediator) {
@@ -442,8 +481,10 @@
             }
         };
         /**
-         * @method
+         * Deregister a Mediator
+         * @method deregisterMediator
          * @memberof Augmented.Presentation.Application
+         * @param {Augmented.Presentation.Mediator} mediator The mediator to deregister
          */
         this.deregisterMediator = function(mediator) {
             if (mediator) {
@@ -454,15 +495,19 @@
             }
         };
         /**
-         * @method
+         * Get all Mediators
+         * @method getMediators
          * @memberof Augmented.Presentation.Application
+         * @returns {array} Returns all Mediators
          */
         this.getMediators = function() {
             return this.Mediators;
         };
         /**
-         * @method
+         * Register a stylesheet
+         * @method registerStylesheet
          * @memberof Augmented.Presentation.Application
+         * @param {string} stylesheet URI of the stylesheet
          */
         this.registerStylesheet = function(s) {
             if (s) {
@@ -470,8 +515,10 @@
             }
         };
         /**
-         * @method
+         * Deregister a stylesheet
+         * @method deregisterStylesheet
          * @memberof Augmented.Presentation.Application
+         * @param {string} stylesheet URI of the stylesheet
          */
         this.deregisterStylesheet = function(s) {
             if (s) {
@@ -479,7 +526,8 @@
             }
         };
         /**
-         * @method
+         * Attach registered stylesheets to the DOM
+         * @method attachStylesheets
          * @memberof Augmented.Presentation.Application
          */
         this.attachStylesheets = function() {
@@ -494,8 +542,11 @@
             }
         };
         /**
-         * @method
+         * Sets the current breadcrumb
+         * @method setCurrentBreadcrumb
          * @memberof Augmented.Presentation.Application
+         * @param {string} uri The URI of the breadcrumb
+         * @param {string} name The name of the breadcrumb
          */
         this.setCurrentBreadcrumb = function(uri, name) {
             if (this.breadcrumb.size() > 1) {
@@ -504,16 +555,21 @@
             this.breadcrumb.push({ "uri": uri, "name": name });
         };
         /**
-         * @method
+         * Gets the current breadcrumb
+         * @method getCurrentBreadcrumb
          * @memberof Augmented.Presentation.Application
+         * @returns {object} Returns the current breadcrumb
          */
         this.getCurrentBreadcrumb = function() {
             return this.breadcrumb.peek();
         };
 
         /**
-         * @method
+         * Get all the breadcrumbs
+         * @method getBreadcrumbs
          * @memberof Augmented.Presentation.Application
+         * @returns {array} Returns alls the breadcrumbs
+
          */
         this.getBreadcrumbs = function() {
             return this.breadcrumb.toArray();
@@ -703,13 +759,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View%250ATODO_%2520maybe%2520deprecate%2520this%2520and%2520use%2520something%2520better.getFormData.html">getFormData</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Dec 03 2015 15:42:52 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sat Dec 05 2015 00:37:59 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

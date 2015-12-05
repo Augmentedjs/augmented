@@ -3877,14 +3877,24 @@
      * @extends Augmented.Object
      */
     var augmentedView = Backbone.View.extend({
+
         /**
-         * Initializes the view
+         * Custom initialize - Override for custom code
+         * @method init
+         * @param {object} options Optional options to pass to the view
+         * @memberof Augmented.View
+         */
+        init: function(options) {
+        },
+        /**
+         * Initializes the view - <em>Note: Do not override, use init instead!</em>
          * @method initialize
          * @param {object} options Optional options to pass to the view
          * @memberof Augmented.View
          * @returns {Augmented.View} Returns 'this,' as in, this view context
          */
         initialize: function(options) {
+            this.init(options);
             this.render = Augmented.Utility.wrap(this.render, function(render) {
                 this.beforeRender();
                 render();
