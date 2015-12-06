@@ -439,7 +439,6 @@
             if (this.Stylesheets && this.Stylesheets.length > 0) {
                 this.attachStylesheets();
             }
-            Augmented.Application.prototype.initialize.apply(this, arguments);
         };
         /**
          * Register a Mediator
@@ -598,22 +597,37 @@
      * @memberof Augmented.Presentation
      */
     var autoTable = Augmented.Presentation.AutomaticTable = abstractColleague.extend({
+        /**
+         * The columns property
+         * @property {object} columns The columns property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         columns: {},
         /**
+         * The URI property
          * @property {string} uri The URI property
          * @memberof Augmented.Presentation.AutomaticTable
          */
         uri: null,
+        /**
+         * The data property
+         * @property {object} data The data property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         data: [],
         collection: null,
         /**
+        * The initialized property
          * @property {boolean} isInitalized The initialized property
          * @memberof Augmented.Presentation.AutomaticTable
          */
         isInitalized : false,
         /**
-         * @method
+        * Initialize the table view
+         * @method initialize
          * @memberof Augmented.Presentation.AutomaticTable
+         * @param {object} options The view options
+         * @returns {boolean} Returns true on success of initalization
          */
         initialize: function(options) {
             if (this.collection) {
@@ -653,23 +667,28 @@
             return this.isInitalized;
         },
         /**
-         * @method
+         * Fetch the data from the source URI
+         * @method fetch
          * @memberof Augmented.Presentation.AutomaticTable
          */
         fetch: function() {
             this.collection.fetch();
         },
         /**
-         * @method
+         * Populate the data in the table
+         * @method populate
          * @memberof Augmented.Presentation.AutomaticTable
+         * @param {array} source The source data array
          */
         populate: function(source) {
             this.data = source;
             this.collection.reset(this.data);
         },
         /**
-         * @method
+        * Render the table
+         * @method render
          * @memberof Augmented.Presentation.AutomaticTable
+         * @returns {object} Returns the view context ('this')
          */
         render: function() {
             if (this.el) {
@@ -682,22 +701,28 @@
             return this;
         },
         /**
-         * @method
+         * An overridable template compile
+         * @method compileTemplate
          * @memberof Augmented.Presentation.AutomaticTable
+         * @returns {string} Returns the template
          */
         compileTemplate: function() {
             return defaultTableCompile(this.columns, this.data);
         },
         /**
-         * @method
+         * Sets the URI
+         * @method setURI
          * @memberof Augmented.Presentation.AutomaticTable
+         * @param {string} uri The URI
          */
         setURI: function(uri) {
             this.uri = uri;
         },
         /**
-         * @method
+         * Sets the schema
+         * @method setSchema
          * @memberof Augmented.Presentation.AutomaticTable
+         * @param {object} schema The JSON schema of the dataset
          */
         setSchema: function(schema) {
             this.schema = schema;
