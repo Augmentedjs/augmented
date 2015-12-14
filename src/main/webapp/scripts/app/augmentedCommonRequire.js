@@ -8,8 +8,8 @@ require.config({
 		'json': augmented.base + 'scripts/lib/json',
 		'mockjax': augmented.base + 'scripts/lib/jquery.mockjax.js',
 
-		'augmented': augmented.base + 'scripts/core/augmented',
-		'augmentedPresentation':  augmented.base + 'scripts/presentation/augmentedPresentation',
+		'augmented': augmented.base + 'scripts/core/augmented-min',
+		'augmentedPresentation':  augmented.base + 'scripts/presentation/augmentedPresentation-min',
 		'augmentedService':  augmented.base + 'scripts/service/augmentedService',
 	},
 	'shim': {

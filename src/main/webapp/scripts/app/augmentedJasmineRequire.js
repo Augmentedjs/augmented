@@ -10,8 +10,8 @@ require.config({
 		'json': 'lib/json',
 		'mockjax': 'lib/jquery.mockjax',
 
-		'augmented': 'core/augmented',
-		'augmentedPresentation': 'presentation/augmentedPresentation',
+		'augmented': 'core/augmented-min',
+		'augmentedPresentation': 'presentation/augmentedPresentation-min',
 		'augmentedService': 'service/augmentedService',
 		'augmentedLegacy': 'legacy/legacy',
 
