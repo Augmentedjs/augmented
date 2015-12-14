@@ -40,7 +40,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = '0.1.0 RC1';
+    Augmented.VERSION = '0.1.0';
     /**
      * A codename for internal use
      * @constant codename
