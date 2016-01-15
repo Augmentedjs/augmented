@@ -9,8 +9,8 @@ require.config({
 		'text': 'lib/text',
 		'json': 'lib/json',
 
-		'augmented': 'core/augmented-min',
-		'augmentedPresentation': 'presentation/augmentedPresentation-min'
+		'augmented': 'core/augmented',
+		'augmentedPresentation': 'presentation/augmentedPresentation'
 	},
 	'shim': {
 		jquery: {
