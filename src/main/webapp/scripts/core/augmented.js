@@ -3905,6 +3905,7 @@
             this.init(options);
             this.render = Augmented.Utility.wrap(this.render, function(render) {
                 this.beforeRender();
+                render.apply(this);
                 render();
                 this.afterRender();
                 return this;
@@ -3913,13 +3914,16 @@
         /**
          * Before Render callback for the view
          * @method beforeRender
+         * @returns this Context of the view
          * @memberof Augmented.View
          */
         beforeRender: function() {
+            return this;
         },
         /**
          * Render callback for the view
          * @method render
+         * @returns this Context of the view
          * @memberof Augmented.View
          */
         render: function() {
@@ -3928,9 +3932,11 @@
         /**
          * After Render callback for the view
          * @method afterRender
+         * @returns this Context of the view
          * @memberof Augmented.View
          */
         afterRender: function() {
+            return this;
         },
         /**
          * The name property of the view
