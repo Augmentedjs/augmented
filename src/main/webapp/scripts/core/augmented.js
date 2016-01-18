@@ -44,7 +44,7 @@
     	return arguments[0];
     };
 
-    //extend(Augmented, Backbone);
+    extend(Augmented, Backbone);
 
     /*
      * Save the previous value of the `Augmented` variable, so that it can be
