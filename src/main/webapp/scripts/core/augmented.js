@@ -478,15 +478,27 @@
     	    xhr.onload = function() {
     		    if (xhr.status > 199 && xhr.status < 300) {
                     if (ajaxObject.success) {
-                        ajaxObject.success(xhr.responseText, xhr.status);
+                        if ((xhr.responseType === "" || xhr.responseType === "text")) {
+                            ajaxObject.success(xhr.responseText, xhr.status);
+                        } else {
+                            ajaxObject.success(xhr.response, xhr.status);
+                        }
                     }
     		    } else if (xhr.status > 399 && xhr.status < 600) {
                     if (ajaxObject.failure) {
-                        ajaxObject.failure(xhr.responseText, xhr.status);
+                        if ((xhr.responseType === "" || xhr.responseType === "text")) {
+                            ajaxObject.failure(xhr.responseText, xhr.status);
+                        } else {
+                            ajaxObject.failure(xhr.response, xhr.status);
+                        }
                     }
     		    }
                 if (ajaxObject.complete) {
-                    ajaxObject.complete(xhr.responseText, xhr.status);
+                    if ((xhr.responseType === "" || xhr.responseType === "text")) {
+                        ajaxObject.complete(xhr.responseText, xhr.status);
+                    } else {
+                        ajaxObject.complete(xhr.response, xhr.status);
+                    }
                 }
                 return xhr;
     	    };
