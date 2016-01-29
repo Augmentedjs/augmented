@@ -14,7 +14,7 @@
  * @requires underscore.js
  * @requires augmented.js
  * @module Augmented.Presentation
- * @version 0.2.0
+ * @version 0.2.0α
  * @license Apache-2.0
  */
 (function(moduleFactory) {
