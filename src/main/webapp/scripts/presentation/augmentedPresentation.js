@@ -14,7 +14,7 @@
  * @requires underscore.js
  * @requires augmented.js
  * @module Augmented.Presentation
- * @version 0.1.0
+ * @version 0.2.0
  * @license Apache-2.0
  */
 (function(moduleFactory) {
@@ -540,7 +540,6 @@
          * @method getBreadcrumbs
          * @memberof Augmented.Presentation.Application
          * @returns {array} Returns alls the breadcrumbs
-
          */
         this.getBreadcrumbs = function() {
             return this.breadcrumb.toArray();
@@ -630,6 +629,7 @@
          * @returns {boolean} Returns true on success of initalization
          */
         initialize: function(options) {
+            this.init();
             if (this.collection) {
                 this.collection.reset();
             } else {
@@ -646,6 +646,7 @@
 
                 if (options.url) {
                     this.url = options.url;
+                    this.collection.url = options.url;
                 }
 
                 if (options.data) {
@@ -684,6 +685,12 @@
             this.data = source;
             this.collection.reset(this.data);
         },
+        clear: function() {
+            this.populate(null);
+        },
+        refresh: function() {
+            this.render();
+        },
         /**
         * Render the table
          * @method render
@@ -707,7 +714,7 @@
          * @returns {string} Returns the template
          */
         compileTemplate: function() {
-            return defaultTableCompile(this.columns, this.data);
+            return defaultTableCompile(this.columns, this.collection.toJSON());
         },
         /**
          * Sets the URI
