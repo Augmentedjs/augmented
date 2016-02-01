@@ -120,6 +120,126 @@
     var undelegateEvents = Augmented.View.prototype.undelegateEvents;
 
     /**
+     * Colleague View - The 'child' view.<br/>
+     * Allow to define convention-based subscriptions
+     * as an 'subscriptions' hash on a view. Subscriptions
+     * can then be easily setup and cleaned.
+     *
+     * @constructor Augmented.Presentation.Colleague
+     * @name Augmented.Presentation.Colleague
+     * @memberof Augmented.Presentation
+     * @extends Augmented.View
+     */
+    var abstractColleague = Augmented.Presentation.Colleague = Augmented.View.extend({
+        mediator: null,
+    	/**
+    	 * Extend delegateEvents() to set subscriptions
+         * @method delegateEvents
+         * @memberof Augmented.Presentation.Colleague
+    	 */
+    	delegateEvents: function() {
+    	    delegateEvents.apply(this, arguments);
+    	    this.setSubscriptions();
+    	},
+
+    	/**
+    	 * Extend undelegateEvents() to unset subscriptions
+         * @method undelegateEvents
+         * @memberof Augmented.Presentation.Colleague
+    	 */
+    	undelegateEvents: function() {
+    	    undelegateEvents.apply(this, arguments);
+    	    this.unsetSubscriptions();
+    	},
+
+    	/**
+        * @property {Object} List of subscriptions, to be defined
+        * @memberof Augmented.Presentation.Colleague
+        * @private
+        */
+    	subscriptions: {},
+
+        /**
+    	 * Gets all subscriptions
+         * @method getSubscriptions
+         * @memberof Augmented.Presentation.Colleague
+         * @returns {object} Returns all subscriptions
+    	 */
+        getSubscriptions: function() {
+            return this.subscriptions;
+        },
+
+    	/**
+    	 * Subscribe to each subscription
+         * @method setSubscriptions
+    	 * @param {Object} [subscriptions] An optional hash of subscription to add
+         * @memberof Augmented.Presentation.Colleague
+    	 */
+    	setSubscriptions: function(subscriptions) {
+    	    if (subscriptions) {
+    		    Augmented.Utility.extend(this.subscriptions || {}, subscriptions);
+    	    }
+    	    subscriptions = subscriptions || this.subscriptions;
+    	    if (!subscriptions || (subscriptions.length === 0)) {
+    		    return;
+    	    }
+    	    // Just to be sure we don't set duplicate
+    	    this.unsetSubscriptions(subscriptions);
+
+            var i = 0;
+            for (i; i < subscriptions.length; i++) {
+                var subscription = subscriptions[i];
+                var once = false;
+                if (subscription.$once) {
+                    subscription = subscription.$once;
+                    once = true;
+                }
+                if (typeof subscription === 'string') {
+                    subscription = this[subscription];
+                }
+                this.subscribe(subscription.channel, subscription, this, once);
+            }
+    	},
+
+    	/**
+    	 * Unsubscribe to each subscription
+         * @method unsetSubscriptions
+    	 * @param {Object} [subscriptions] An optional hash of subscription to remove
+         * @memberof Augmented.Presentation.Colleague
+    	 */
+    	unsetSubscriptions: function(subscriptions) {
+    	    subscriptions = subscriptions || this.subscriptions;
+    	    if (!subscriptions || (subscriptions.length === 0)) {
+    		    return;
+    	    }
+
+            var i = 0;
+            for (i; i < subscriptions.length; i++) {
+                var subscription = subscriptions[i];
+                var once = false;
+                if (subscription.$once) {
+                    subscription = subscription.$once;
+                    once = true;
+                }
+                if (typeof subscription == 'string') {
+                    subscription = this[subscription];
+                }
+                this.unsubscribe(subscription.channel, subscription.$once || subscription, this);
+            }
+    	},
+
+        sendMessage: function(message, data) {
+            this.mediator.trigger(message, data);
+        },
+        setMediatorMessageQueue: function(e) {
+            this.mediator = e;
+        },
+        removeMediatorMessageQueue: function() {
+            this.mediator = null;
+        }
+    });
+
+    /**
      * Mediator View - The mediator in the Mediator Pattern<br/>
      * The mediator defines the interface for communication between colleague views.
      * Loose coupling between colleague objects is achieved by having colleagues communicate
@@ -131,9 +251,9 @@
      * @constructor Mediator
      * @name Augmented.Presentation.Mediator
      * @memberof Augmented.Presentation
-     * @extends Augmented.View
+     * @extends Augmented.Presentation.Colleague
      */
-    var abstractMediator = Augmented.Presentation.Mediator = Augmented.View.extend({
+    var abstractMediator = Augmented.Presentation.Mediator = Augmented.Presentation.Colleague.extend({
         /**
          * Default Channel Property
          * @property {string} defaultChannel The default channel for the view
@@ -161,6 +281,7 @@
         		if (!channel) {
         		    channel = this.defaultChannel;
         		}
+                colleague.setMediatorMessageQueue(this);
 
         		this.subscribe(channel, callback, colleague, false);
     	    }
@@ -178,6 +299,7 @@
         		if (!channel) {
         		    channel = this.defaultChannel;
         		}
+                colleague.removeMediatorMessageQueue();
 
         		this.unsubscribe(channel, callback, colleague);
     	    }
@@ -187,19 +309,22 @@
     	 * Subscribe to a channel
     	 * @method subscribe
     	 * @param {string} channel The Channel events are pubished to
-    	 * @param {string} subscription The subscription to subscribe to
+    	 * @param {function} callback The callback to call on channel event
     	 * @param {object} context The context (or 'this')
     	 * @param {boolean} once Toggle to set subscribe only once
          * @memberof Augmented.Presentation.Mediator
     	 */
-    	subscribe: function(channel, subscription, context, once) {
-    	    if (!this.channels[channel])
+    	subscribe: function(channel, callback, context, once) {
+    	    if (!this.channels[channel]) {
         		this.channels[channel] = [];
-        	    this.channels[channel].push({
-        		fn : subscription,
+            }
+        	this.channels[channel].push({
+        		fn : callback,
         		context : context || this,
         		once : once
     	    });
+
+            this.on(channel, this.publish, context);
     	},
 
     	/**
@@ -306,116 +431,9 @@
     	getDefaultChannel: function() {
     	    return this.channels[this.defaultChannel];
     	}
-        });
-
-        /**
-         * Colleague View - The 'child' view.<br/>
-         * Allow to define convention-based subscriptions
-         * as an 'subscriptions' hash on a view. Subscriptions
-         * can then be easily setup and cleaned.
-         *
-         * @constructor Augmented.Presentation.Colleague
-         * @name Augmented.Presentation.Colleague
-         * @memberof Augmented.Presentation
-         * @extends Augmented.View
-         */
-        var abstractColleague = Augmented.Presentation.Colleague = Augmented.View.extend({
-    	/**
-    	 * Extend delegateEvents() to set subscriptions
-         * @method delegateEvents
-         * @memberof Augmented.Presentation.Colleague
-    	 */
-    	delegateEvents: function() {
-    	    delegateEvents.apply(this, arguments);
-    	    this.setSubscriptions();
-    	},
-
-    	/**
-    	 * Extend undelegateEvents() to unset subscriptions
-         * @method undelegateEvents
-         * @memberof Augmented.Presentation.Colleague
-    	 */
-    	undelegateEvents: function() {
-    	    undelegateEvents.apply(this, arguments);
-    	    this.unsetSubscriptions();
-    	},
-
-    	/**
-        * @property {Object} List of subscriptions, to be defined
-        * @memberof Augmented.Presentation.Colleague
-        * @private
-        */
-    	subscriptions: {},
-
-        /**
-    	 * Gets all subscriptions
-         * @method getSubscriptions
-         * @memberof Augmented.Presentation.Colleague
-         * @returns {object} Returns all subscriptions
-    	 */
-        getSubscriptions: function() {
-            return this.subscriptions;
-        },
-
-    	/**
-    	 * Subscribe to each subscription
-         * @method setSubscriptions
-    	 * @param {Object} [subscriptions] An optional hash of subscription to add
-         * @memberof Augmented.Presentation.Colleague
-    	 */
-    	setSubscriptions: function(subscriptions) {
-    	    if (subscriptions) {
-    		    Augmented.Utility.extend(this.subscriptions || {}, subscriptions);
-    	    }
-    	    subscriptions = subscriptions || this.subscriptions;
-    	    if (!subscriptions || (subscriptions.length === 0)) {
-    		    return;
-    	    }
-    	    // Just to be sure we don't set duplicate
-    	    this.unsetSubscriptions(subscriptions);
-
-            var i = 0;
-            for (i; i < subscriptions.length; i++) {
-                var subscription = subscriptions[i];
-                var once = false;
-                if (subscription.$once) {
-                    subscription = subscription.$once;
-                    once = true;
-                }
-                if (typeof subscription === 'string') {
-                    subscription = this[subscription];
-                }
-                this.subscribe(subscription.channel, subscription, this, once);
-            }
-    	},
-
-    	/**
-    	 * Unsubscribe to each subscription
-         * @method unsetSubscriptions
-    	 * @param {Object} [subscriptions] An optional hash of subscription to remove
-         * @memberof Augmented.Presentation.Colleague
-    	 */
-    	unsetSubscriptions: function(subscriptions) {
-    	    subscriptions = subscriptions || this.subscriptions;
-    	    if (!subscriptions || (subscriptions.length === 0)) {
-    		    return;
-    	    }
-
-            var i = 0;
-            for (i; i < subscriptions.length; i++) {
-                var subscription = subscriptions[i];
-                var once = false;
-                if (subscription.$once) {
-                    subscription = subscription.$once;
-                    once = true;
-                }
-                if (typeof subscription == 'string') {
-                    subscription = this[subscription];
-                }
-                this.unsubscribe(subscription.channel, subscription.$once || subscription, this);
-            }
-    	}
     });
+
+
 
     /**
      * Presentation Application - extension of Augmented.Application</br/>
@@ -553,16 +571,21 @@
 
     });
 
-    var defaultTableCompile = function(columns, data) {
+    var defaultTableCompile = function(name, desc, columns, data, sortable) {
         var html = "<table>";
-
+        if (name) {
+            if (desc) {
+                html = html + "<caption title=\"" + desc + "\">";
+            }
+            html = html + name + "</caption>";
+        }
         if (columns) {
             html = html + "<thead><tr>";
             var key, obj;
             for (key in columns) {
                 if (columns.hasOwnProperty(key)) {
                     obj = columns[key];
-                    html = html + "<th>" + key + "</th>";
+                    html = html + "<th data-name=\"" + key + "\">" + key + "</th>";
                 }
             }
             html = html + "</tr></thead>";
@@ -584,6 +607,7 @@
             }
             html = html + "</tbody>";
         }
+
         html = html + "</table>";
         return html;
     };
@@ -665,6 +689,12 @@
                 this.collection.schema = this.schema;
                 this.isInitalized = true;
             }
+            if (this.schema.title) {
+                this.name = this.schema.title;
+            }
+            if (this.schema.description) {
+                this.description = this.schema.description;
+            }
             return this.isInitalized;
         },
         /**
@@ -698,12 +728,16 @@
          * @returns {object} Returns the view context ('this')
          */
         render: function() {
+            this.template = this.compileTemplate();
             if (this.el) {
                 var e = Augmented.Utility.isString(this.el) ? document.querySelector(this.el) : this.el;
                 if (e) {
-                    this.template = this.compileTemplate();
                     e.innerHTML = this.template;
                 }
+            } else if (this.$el) {
+                this.$el.html(this.template);
+            } else {
+                logger.warn("no element anchor");
             }
             return this;
         },
@@ -714,7 +748,7 @@
          * @returns {string} Returns the template
          */
         compileTemplate: function() {
-            return defaultTableCompile(this.columns, this.collection.toJSON());
+            return defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON());
         },
         /**
          * Sets the URI
@@ -750,6 +784,41 @@
      * @extends Augmented.Presentation.AutomaticTable
      */
     Augmented.Presentation.AutoTable = Augmented.Presentation.AutomaticTable;
+
+    var sortTable = {
+        events: {
+            "click th": function(event) {
+                var column = event.eventTarget;
+                if (column) {
+                    var columnName = column.getAttribute("data-name");
+                    this.sortBy(columnName);
+                }
+            }
+        },
+        sortBy: function(name) {
+
+        }
+    };
+
+    var paginatedTable = {
+        renderPaginationControl: true
+    };
+
+    var tableFactory = Augmented.Presentation.AutomaticTableFactory = Augmented.Presentation.AutoTableFactory = {
+            getTable: function(config) {
+                var table = new Augmented.Presentation.AutomaticTable(config);
+
+                if (config.sortable) {
+                    Augmented.Utility.extend(table, sortTable);
+                }
+
+                if (config.paginated) {
+                    Augmented.Utility.extend(table, paginatedTable);
+                }
+                return table;
+            }
+    };
+
 
     return Augmented.Presentation;
 }));
