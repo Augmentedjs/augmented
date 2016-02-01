@@ -571,7 +571,7 @@
 
     });
 
-    var defaultTableCompile = function(name, desc, columns, data, sortable) {
+    var defaultTableCompile = function(name, desc, columns, data, lineNumbers) {
         var html = "<table>";
         if (name) {
             if (desc) {
@@ -581,6 +581,9 @@
         }
         if (columns) {
             html = html + "<thead><tr>";
+            if (lineNumbers) {
+                html = html + "<th data-name=\"number\">#</th>";
+            }
             var key, obj;
             for (key in columns) {
                 if (columns.hasOwnProperty(key)) {
@@ -597,6 +600,9 @@
             for (i=0; i< data.length; i++) {
                 d = data[i];
                 html = html + "<tr>";
+                if (lineNumbers) {
+                    html = html + "<td class=\"number\">" + (i+1) + "</td>";
+                }
                 for (dkey in d) {
                     if (d.hasOwnProperty(dkey)) {
                         dobj = d[dkey];
@@ -612,6 +618,20 @@
         return html;
     };
 
+    /*
+     * << First | < Previous | # | Next > | Last >>
+    */
+    var defaultPaginationControl = function(currentPage, totalPages) {
+            var html = "<div class=\"paginationControl\">";
+            html = html + "<span class=\"first\"><< First</span>" +
+                            "<span class=\"previous\">< Previous</span>" +
+                            "<span class=\"current\">" + currentPage + "</span>" +
+                            "<span class=\"next\">Next ></span>" +
+                            "<span class=\"last\">Last >></span>";
+            html = html + "</div>";
+            return html;
+    };
+
     /**
      * Augmented.Presentation.AutomaticTable<br/>
      * Creates a table automatically via a schema for defintion and a uri/json for data
@@ -620,6 +640,30 @@
      * @memberof Augmented.Presentation
      */
     var autoTable = Augmented.Presentation.AutomaticTable = abstractColleague.extend({
+        // sorting
+        sortable: true,
+        events: {
+            "click th": function(event) {
+                if (this.sortable) {
+                    if (event.eventTarget) {
+                        var columnName = event.eventTarget.getAttribute("data-name");
+                        this.sortBy(columnName);
+                    }
+                }
+            }
+        },
+        sortBy: function(name) {
+
+        },
+
+        // pagination
+        renderPaginationControl: true,
+        currentPage: 1,
+        totalPages: 1,
+
+        // standard functionality
+
+        lineNumbers: true,
         /**
          * The columns property
          * @property {object} columns The columns property
@@ -748,7 +792,12 @@
          * @returns {string} Returns the template
          */
         compileTemplate: function() {
-            return defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON());
+            var h = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers);
+            if (this.renderPaginationControl) {
+                h = h + defaultPaginationControl(this.currentPage, this.totalPages);
+            }
+
+            return h;
         },
         /**
          * Sets the URI
@@ -784,41 +833,6 @@
      * @extends Augmented.Presentation.AutomaticTable
      */
     Augmented.Presentation.AutoTable = Augmented.Presentation.AutomaticTable;
-
-    var sortTable = {
-        events: {
-            "click th": function(event) {
-                var column = event.eventTarget;
-                if (column) {
-                    var columnName = column.getAttribute("data-name");
-                    this.sortBy(columnName);
-                }
-            }
-        },
-        sortBy: function(name) {
-
-        }
-    };
-
-    var paginatedTable = {
-        renderPaginationControl: true
-    };
-
-    var tableFactory = Augmented.Presentation.AutomaticTableFactory = Augmented.Presentation.AutoTableFactory = {
-            getTable: function(config) {
-                var table = new Augmented.Presentation.AutomaticTable(config);
-
-                if (config.sortable) {
-                    Augmented.Utility.extend(table, sortTable);
-                }
-
-                if (config.paginated) {
-                    Augmented.Utility.extend(table, paginatedTable);
-                }
-                return table;
-            }
-    };
-
 
     return Augmented.Presentation;
 }));
