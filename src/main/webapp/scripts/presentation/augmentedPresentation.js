@@ -722,9 +722,18 @@
             if (this.collection) {
                 this.collection.reset();
             } else {
+                if (options) {
+                    if (options.paginationAPI) {
+                        this.paginationAPI = options.paginationAPI;
+                    }
+                }
                 this.collection = Augmented.PaginationFactory.getPaginatedCollection(this.paginationAPI);
             }
             if (options) {
+                if (options.paginationAPI) {
+                    this.paginationAPI = options.paginationAPI;
+                }
+                
                 if (options.schema) {
                     this.schema = options.schema;
                 }
