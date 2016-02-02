@@ -658,8 +658,28 @@
 
         // pagination
         renderPaginationControl: true,
-        currentPage: 1,
-        totalPages: 1,
+        paginationAPI: null,
+        currentPage: function() {
+            return this.collection.currentPage;
+        },
+        totalPages: function() {
+            return this.collection.totalPages;
+        },
+        nextPage: function() {
+            this.collection.nextPage();
+        },
+        previousPage: function() {
+            this.collection.previousPage();
+        },
+        goToPage: function(page) {
+            this.collection.goToPage(page);
+        },
+        firstPage: function() {
+            this.collection.firstPage();
+        },
+        lastPage: function() {
+            this.collection.lastPage();
+        },
 
         // standard functionality
 
@@ -698,10 +718,11 @@
          */
         initialize: function(options) {
             this.init();
+
             if (this.collection) {
                 this.collection.reset();
             } else {
-                this.collection = new autoTableCollection();
+                this.collection = Augmented.PaginationFactory.getPaginatedCollection(this.paginationAPI);
             }
             if (options) {
                 if (options.schema) {
@@ -794,9 +815,8 @@
         compileTemplate: function() {
             var h = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers);
             if (this.renderPaginationControl) {
-                h = h + defaultPaginationControl(this.currentPage, this.totalPages);
+                h = h + defaultPaginationControl(this.currentPage(), this.totalPages());
             }
-
             return h;
         },
         /**
