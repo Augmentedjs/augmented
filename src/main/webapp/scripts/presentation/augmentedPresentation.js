@@ -628,7 +628,6 @@
                             "<span class=\"current\">" + currentPage + "</span>" +
                             "<span class=\"next\">Next ></span>" +
                             "<span class=\"last\">Last >></span>";
-            html = html + "</div>";
             return html;
     };
 
@@ -642,16 +641,6 @@
     var autoTable = Augmented.Presentation.AutomaticTable = abstractColleague.extend({
         // sorting
         sortable: true,
-        events: {
-            "click th": function(event) {
-                if (this.sortable) {
-                    if (event.eventTarget) {
-                        var columnName = event.eventTarget.getAttribute("data-name");
-                        this.sortBy(columnName);
-                    }
-                }
-            }
-        },
         sortBy: function(name) {
 
         },
@@ -721,19 +710,14 @@
 
             if (this.collection) {
                 this.collection.reset();
-            } else {
-                if (options) {
-                    if (options.paginationAPI) {
-                        this.paginationAPI = options.paginationAPI;
-                    }
-                }
-                this.collection = Augmented.PaginationFactory.getPaginatedCollection(this.paginationAPI);
             }
             if (options) {
                 if (options.paginationAPI) {
                     this.paginationAPI = options.paginationAPI;
                 }
-                
+                if (!this.collection) {
+                    this.collection = Augmented.PaginationFactory.getPaginatedCollection(this.paginationAPI);
+                }
                 if (options.schema) {
                     this.schema = options.schema;
                 }
@@ -769,6 +753,7 @@
             if (this.schema.description) {
                 this.description = this.schema.description;
             }
+
             return this.isInitalized;
         },
         /**
