@@ -34,7 +34,8 @@
 
     /* Extend function for use throughout the framework */
     var extend = function() {
-    	for (var i=1; i<arguments.length; i++) {
+        var i =0, l = arguments.length;
+    	for (i=1; i<l; i++) {
     	    for(var key in arguments[i]) {
         		if(arguments[i].hasOwnProperty(key)) {
         		    arguments[0][key] = arguments[i][key];
@@ -970,7 +971,9 @@
             //logger.debug("data to parse: " + JSON.stringify(dataToParse));
 
             var props = Object.keys(dataToParse);
-            for (var i = 0; i < props.length; i++) {
+            var l = props.length;
+            var i = 0;
+            for (i = 0; i < l; i++) {
                 var p = props[i];
                 var v = dataToParse[p];
                 logger.debug("setting " + p + ", " + v);
@@ -1406,7 +1409,8 @@
     	    var varList = spec.split(",");
     	    var varSpecs = [];
     	    var varSpecMap = {};
-    	    for (var i = 0; i < varList.length; i++) {
+            var i = 0, l = varList.length;
+    	    for (i = 0; i < l; i++) {
     		var varName = varList[i];
     		var truncate = null;
     		if (varName.indexOf(":") !== -1) {
@@ -1431,7 +1435,8 @@
     	    var subFunction = function (valueFunction) {
     		var result = "";
     		var startIndex = 0;
-    		for (var i = 0; i < varSpecs.length; i++) {
+            var i = 0, l = varSpecs.length;
+    		for (i = 0; i < l; i++) {
     		    var varSpec = varSpecs[i];
     		    var value = valueFunction(varSpec.name);
     		    if (value === null || value === undefined || (Array.isArray(value) && value.length === 0) || (typeof value === 'object' && Object.keys(value).length === 0)) {
@@ -1447,7 +1452,8 @@
     			if (showVariables) {
     			    result += varSpec.name + "=";
     			}
-    			for (var j = 0; j < value.length; j++) {
+                var j=0, l = value.length;
+    			for (var j = 0; j < l; j++) {
     			    if (j > 0) {
     				result += varSpec.suffices['*'] ? (separator || ",") : ",";
     				if (varSpec.suffices['*'] && showVariables) {
@@ -1513,7 +1519,8 @@
     	    }
     	    this.fill = function (valueFunction) {
     		var result = textParts[0];
-    		for (var i = 0; i < substitutions.length; i++) {
+            var i=0, l = substitutions.length;
+    		for (i = 0; i < l; i++) {
     		    var substitution = substitutions[i];
     		    result += substitution(valueFunction);
     		    result += textParts[i + 1];
@@ -1589,7 +1596,8 @@
     	    return null;
     	};
     	ValidatorContext.prototype.prefixErrors = function (startIndex, dataPath, schemaPath) {
-    	    for (var i = startIndex; i < this.errors.length; i++) {
+            var i = 0, l = this.errors.length;
+    	    for (i = startIndex; i < l; i++) {
     		this.errors[i] = this.errors[i].prefixWith(dataPath, schemaPath);
     	    }
     	    return this;
@@ -1646,7 +1654,8 @@
     		    return undefined;
     		}
     		var parts = pointerPath.split("/").slice(1);
-    		for (var i = 0; i < parts.length; i++) {
+            var i = 0, l = parts.length;
+    		for (i = 0; i < l; i++) {
     		    var component = parts[i].replace(/~1/g, "/").replace(/~0/g, "~");
     		    if (schema[component] === undefined) {
     			schema = undefined;
@@ -1666,7 +1675,8 @@
     	};
     	ValidatorContext.prototype.searchSchemas = function (schema, url) {
     	    if (Array.isArray(schema)) {
-    		for (var i = 0; i < schema.length; i++) {
+                var i = 0, l = schema.length;
+    		for (i = 0; i < l; i++) {
     		    this.searchSchemas(schema[i], url);
     		}
     	    } else if (schema && typeof schema === "object") {
@@ -1863,7 +1873,8 @@
     		    continue;
     		}
     		var validationFunctions = this.definedKeywords[key];
-    		for (var i = 0; i < validationFunctions.length; i++) {
+            var i = 0, l = validationFunctions.length;
+    		for (i = 0; i < l; i++) {
     		    var func = validationFunctions[i];
     		    var result = func(data, schema[key], schema, dataPointerPath);
     		    if (typeof result === 'string' || typeof result === 'number') {
@@ -1898,7 +1909,8 @@
     		    if (A.length !== B.length) {
     			return false;
     		    }
-    		    for (var i = 0; i < A.length; i++) {
+                var i = 0, l = A.length;
+    		    for (i = 0; i < l; i++) {
     			if (!recursiveCompare(A[i], B[i])) {
     			    return false;
     			}
@@ -1952,7 +1964,8 @@
     		allowedTypes = [allowedTypes];
     	    }
 
-    	    for (var i = 0; i < allowedTypes.length; i++) {
+            var i = 0, l = allowedTypes.length;
+    	    for (i = 0; i < l; i++) {
     		var type = allowedTypes[i];
     		if (type === dataType || (type === "integer" && dataType === "number" && (data % 1 === 0))) {
     		    return null;
@@ -1965,7 +1978,8 @@
     	    if (schema["enum"] === undefined) {
     		return null;
     	    }
-    	    for (var i = 0; i < schema["enum"].length; i++) {
+            var i = 0, l = schema["enum"].length;
+    	    for (i = 0; i < l; i++) {
     		var enumVal = schema["enum"][i];
     		if (recursiveCompare(data, enumVal)) {
     		    return null;
@@ -2088,8 +2102,10 @@
 
     	ValidatorContext.prototype.validateArrayUniqueItems = function validateArrayUniqueItems(data, schema) {
     	    if (schema.uniqueItems) {
-    		for (var i = 0; i < data.length; i++) {
-    		    for (var j = i + 1; j < data.length; j++) {
+            var i = 0, l = data.length;
+    		for (i = 0; i < l; i++) {
+                var j = 0;
+    		    for (j = i + 1; j < l; j++) {
     			if (recursiveCompare(data[i], data[j])) {
     			    var error = (this.createError(ErrorCodes.ARRAY_UNIQUE, {match1: i, match2: j})).prefixWith(null, "uniqueItems");
     			    if (this.handleError(error)) {
@@ -2108,7 +2124,8 @@
     	    }
     	    var error, i;
     	    if (Array.isArray(schema.items)) {
-    		for (i = 0; i < data.length; i++) {
+            var l = data.length;
+    		for (i = 0; i < l; i++) {
     		    if (i < schema.items.length) {
     			if (error = this.validateAll(data[i], schema.items[i], [i], ["items", i], dataPointerPath + "/" + i)) {
     			    return error;
@@ -2127,7 +2144,8 @@
     		    }
     		}
     	    } else {
-    		for (i = 0; i < data.length; i++) {
+            var l = data.length;
+    		for (i = 0; i < l; i++) {
     		    if (error = this.validateAll(data[i], schema.items, [i], ["items"], dataPointerPath + "/" + i)) {
     			return error;
     		    }
@@ -2167,7 +2185,8 @@
 
     	ValidatorContext.prototype.validateObjectRequiredProperties = function validateObjectRequiredProperties(data, schema) {
     	    if (schema.required !== undefined) {
-    		for (var i = 0; i < schema.required.length; i++) {
+                var i = 0, l = schema.required.length;
+    		for (i = 0; i < l; i++) {
     		    var key = schema.required[i];
     		    if (data[key] === undefined) {
     			var error = this.createError(ErrorCodes.OBJECT_REQUIRED, {key: key}).prefixWith(null, "" + i).prefixWith(null, "required");
@@ -2245,7 +2264,8 @@
     				}
     			    }
     			} else if (Array.isArray(dep)) {
-    			    for (var i = 0; i < dep.length; i++) {
+                    var i = 0, l = dep.lenth;
+    			    for (i = 0; i < l; i++) {
     				var requiredKey = dep[i];
     				if (data[requiredKey] === undefined) {
     				    error = this.createError(ErrorCodes.OBJECT_DEPENDENCY_KEY, {key: depKey, missing: requiredKey}).prefixWith(null, "" + i).prefixWith(null, depKey).prefixWith(null, "dependencies");
@@ -2274,7 +2294,8 @@
     		return null;
     	    }
     	    var error;
-    	    for (var i = 0; i < schema.allOf.length; i++) {
+            var i = 0, l = schema.allOf.length;
+    	    for (i = 0; i < l; i++) {
     		var subSchema = schema.allOf[i];
     		if (error = this.validateAll(data, subSchema, [], ["allOf", i], dataPointerPath)) {
     		    return error;
@@ -2295,7 +2316,8 @@
     		oldKnownPropertyPaths = this.knownPropertyPaths;
     	    }
     	    var errorAtEnd = true;
-    	    for (var i = 0; i < schema.anyOf.length; i++) {
+            var i = 0, l = schema.anyOf.length;
+    	    for (i = 0; i < l; i++) {
     		if (this.trackUnknownProperties) {
     		    this.unknownPropertyPaths = {};
     		    this.knownPropertyPaths = {};
@@ -2354,7 +2376,8 @@
     		oldUnknownPropertyPaths = this.unknownPropertyPaths;
     		oldKnownPropertyPaths = this.knownPropertyPaths;
     	    }
-    	    for (var i = 0; i < schema.oneOf.length; i++) {
+            var i = 0, l = schema.oneOf.length;
+    	    for (i = 0; i < l; i++) {
     		if (this.trackUnknownProperties) {
     		    this.unknownPropertyPaths = {};
     		    this.knownPropertyPaths = {};
@@ -2430,12 +2453,14 @@
     		return null;
     	    }
     	    var error;
-    	    for (var i = 0; i < schema.links.length; i++) {
+            var i = 0, l = schema.links.length;
+    	    for (i = 0; i < l; i++) {
     		var ldo = schema.links[i];
     		if (ldo.rel === "describedby") {
     		    var template = new UriTemplate(ldo.href);
     		    var allPresent = true;
-    		    for (var j = 0; j < template.varNames.length; j++) {
+                var j = 0, ll = template.varNames.length;
+    		    for (j = 0; j < ll; j++) {
     			if (!(template.varNames[j] in data)) {
     			    allPresent = false;
     			    break;
@@ -2511,7 +2536,8 @@
     		    schema.id = baseUri;
     		}
     		if (Array.isArray(schema)) {
-    		    for (var i = 0; i < schema.length; i++) {
+                var i = 0, l = schema.length;
+    		    for (i = 0; i < l; i++) {
     			normSchema(schema[i], baseUri);
     		    }
     		} else {
@@ -2644,7 +2670,8 @@
     		this.schemaPath = "/" + schemaPrefix + this.schemaPath;
     	    }
     	    if (this.subErrors !== null) {
-    		for (var i = 0; i < this.subErrors.length; i++) {
+                var i = 0, l = this.subErrors.length;
+    		for (i = 0; i < l; i++) {
     		    this.subErrors[i].prefixWith(dataPrefix, schemaPrefix);
     		}
     	    }
@@ -2908,7 +2935,8 @@
 
     	    // load and parse bundle files
     	    var files = getFiles(settings.name);
-    	    for (var i = 0; i < files.length; i++) {
+            var i = 0, l = files.length;
+    	    for (i = 0; i < l; i++) {
     		// 1. load base (eg, Messages.properties)
     		loadAndParseFile(settings.path + files[i] + '.properties', settings);
     		// 2. with language code (eg, Messages_pt.properties)
@@ -3071,7 +3099,8 @@
     		return value[0];
 
     	    var s = "";
-    	    for (i = 0; i < value.length; i++) {
+            var l = value.length;
+    	    for (i = 0; i < l; i++) {
     		if (typeof(value[i]) == "string")
     		    s += value[i];
     		// Must be a number
@@ -3121,7 +3150,8 @@
     	    var regPlaceHolder = /(\{\d+\})/g;
     	    var regRepPlaceHolder = /\{(\d+)\}/g;
     	    var unicodeRE = /(\\u.{4})/ig;
-    	    for (var i = 0; i < parameters.length; i++) {
+            var i = 0, l = parameters.length;
+    	    for (i = 0; i < l; i++) {
     		parameters[i] = parameters[i].replace(/^\s\s*/, '').replace(/\s\s*$/, ''); // trim
     		if (parameters[i].length > 0 && parameters[i].match("^#") != "#") { // skip
     										    // comments
@@ -4451,11 +4481,12 @@
                 Augmented.Utility.extend(this.queue, arguments);
             }
             var args = this.queue;
-            if (args.length <= 0) {
+            var l = args.length;
+            if (l <= 0) {
                 return false;
             }
             (function chain(i) {
-                if (i >= args.length || typeof args[i] !== 'function') {
+                if (i >= l || typeof args[i] !== 'function') {
                     return false;
                 }
                 window.setTimeout(function() {

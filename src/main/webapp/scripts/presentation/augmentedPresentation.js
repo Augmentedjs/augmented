@@ -798,6 +798,7 @@
             } else {
                 logger.warn("no element anchor");
             }
+            this.delegateEvents();
             return this;
         },
         /**
