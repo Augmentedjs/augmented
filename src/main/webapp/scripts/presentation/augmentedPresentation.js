@@ -11,7 +11,6 @@
  *
  * @author Bob Warren
  *
- * @requires underscore.js
  * @requires augmented.js
  * @module Augmented.Presentation
  * @version 0.2.0α
@@ -19,13 +18,13 @@
  */
 (function(moduleFactory) {
     if (typeof exports === 'object') {
-	    module.exports = moduleFactory(require('underscore', 'augmented'));
+	    module.exports = moduleFactory(require('augmented'));
     } else if (typeof define === 'function' && define.amd) {
-	    define([ 'underscore', 'augmented' ], moduleFactory);
+	    define(['augmented' ], moduleFactory);
     } else {
-	    window.Augmented.Presentation = moduleFactory(window._, window.Augmented);
+	    window.Augmented.Presentation = moduleFactory(window.Augmented);
     }
-}(function(_, Augmented) {
+}(function(Augmented) {
     /**
      * The base namespece for all of the Presentation module.
      * @namespace Presentation
@@ -39,15 +38,21 @@
      */
     Augmented.Presentation.VERSION = Augmented.VERSION;
 
+    /**
+     * A private logger for use in the framework only
+     * @private
+     */
+    var logger = Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.console, Augmented.Configuration.LoggerLevel);
+
     Augmented.Utility.extend(Augmented.View, {
         /**
          * Augmented Presentation View extension - getFormData<br/>
          * Two-way binding to models<br/>
-         * <em>uses _.reduce</em>
          * TODO: maybe deprecate this and use something better
          * @method getFormData
          * @param {string} region The region (element) to parse
          * @memberof Augmented.View
+         * @deprecated
          * @mixin
          */
     	getFormData: function(region) {
@@ -72,7 +77,7 @@
 
     	    var n = serializeFormField(document.querySelectorAll(region + " > input"));
 
-    	    var data = _(n).reduce(function(obj, field) {
+    	    var data = (n).reduce(function(obj, field) {
         		switch (field.type) {
         		case 'number':
         		    if (field.value !== "") {
@@ -572,12 +577,13 @@
     });
 
     var defaultTableCompile = function(name, desc, columns, data, lineNumbers) {
-        var html = "<table>";
+        var html = "<table data-name=\"" + name + "\" data-description=\"" + desc + "\">";
         if (name) {
+            html = html + "<caption";
             if (desc) {
-                html = html + "<caption title=\"" + desc + "\">";
+                html = html + " title=\"" + desc + "\"";
             }
-            html = html + name + "</caption>";
+            html = html + ">" + name + "</caption>";
         }
         if (columns) {
             html = html + "<thead><tr>";
@@ -588,33 +594,36 @@
             for (key in columns) {
                 if (columns.hasOwnProperty(key)) {
                     obj = columns[key];
-                    html = html + "<th data-name=\"" + key + "\">" + key + "</th>";
+                    html = html + "<th data-name=\"" + key + "\" data-description=\"" + obj.description + "\" data-type=\"" + obj.type + "\">" + key + "</th>";
                 }
             }
             html = html + "</tr></thead>";
         }
-
+        html = html + "<tbody>";
         if (data) {
-            html = html + "<tbody>";
-            var i, d, dkey, dobj;
-            for (i=0; i< data.length; i++) {
-                d = data[i];
-                html = html + "<tr>";
-                if (lineNumbers) {
-                    html = html + "<td class=\"number\">" + (i+1) + "</td>";
-                }
-                for (dkey in d) {
-                    if (d.hasOwnProperty(dkey)) {
-                        dobj = d[dkey];
-                        html = html + "<td>" + dobj + "</td>";
-                    }
-                }
-                html = html + "</tr>";
-            }
-            html = html + "</tbody>";
+            html = html + defaultTableBody(data, lineNumbers);
         }
+        html = html + "</tbody></table>";
+        return html;
+    };
 
-        html = html + "</table>";
+    var defaultTableBody = function(data, lineNumbers) {
+        var i, d, dkey, dobj, html = "", l = data.length, t;
+        for (i = 0; i < l; i++) {
+            d = data[i];
+            html = html + "<tr>";
+            if (lineNumbers) {
+                html = html + "<td class=\"number\">" + (i+1) + "</td>";
+            }
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    dobj = d[dkey];
+                    t = (typeof dobj);
+                    html = html + "<td data-type=\"" + t + "\" class=\"" + t + "\">" + dobj + "</td>";
+                }
+            }
+            html = html + "</tr>";
+        }
         return html;
     };
 
@@ -641,8 +650,11 @@
     var autoTable = Augmented.Presentation.AutomaticTable = abstractColleague.extend({
         // sorting
         sortable: true,
-        sortBy: function(name) {
-
+        sortBy: function(event) {
+            if (event) {
+                var key = event.target.getAttribute("data-name");
+                this.collection.sortBy(key);
+            }
         },
 
         // pagination
@@ -656,18 +668,23 @@
         },
         nextPage: function() {
             this.collection.nextPage();
+            this.refresh();
         },
         previousPage: function() {
             this.collection.previousPage();
+            this.refresh();
         },
         goToPage: function(page) {
             this.collection.goToPage(page);
+            this.refresh();
         },
         firstPage: function() {
             this.collection.firstPage();
+            this.refresh();
         },
         lastPage: function() {
             this.collection.lastPage();
+            this.refresh();
         },
 
         // standard functionality
@@ -787,20 +804,105 @@
          * @returns {object} Returns the view context ('this')
          */
         render: function() {
-            this.template = this.compileTemplate();
-            if (this.el) {
-                var e = Augmented.Utility.isString(this.el) ? document.querySelector(this.el) : this.el;
-                if (e) {
-                    e.innerHTML = this.template;
+            var e;
+            if (this.template) {
+                // refresh the table body only
+                if (this.el) {
+                    e = Augmented.Utility.isString(this.el) ? document.querySelector(this.el) : this.el;
+                    if (e) {
+                        var tbody = e.querySelector("tbody"), h;
+                        if (this.collection && (this.collection.length > 0)){
+                            h = defaultTableBody(this.collection.toJSON(), this.lineNumbers);
+                        } else {
+                            h = "";
+                        }
+                        tbody.innerHTML = h;
+                    }
+                } else if (this.$el) {
+                    this.$el("tbody").html(defaultTableBody(this.collection.toJSON(), this.lineNumbers));
+                } else {
+                    logger.warn("no element anchor");
                 }
-            } else if (this.$el) {
-                this.$el.html(this.template);
             } else {
-                logger.warn("no element anchor");
+                this.template = this.compileTemplate();
+
+                if (this.el) {
+                    e = Augmented.Utility.isString(this.el) ? document.querySelector(this.el) : this.el;
+                    if (e) {
+                        e.innerHTML = this.template;
+                    }
+                } else if (this.$el) {
+                    this.$el.html(this.template);
+                } else {
+                    logger.warn("no element anchor");
+                }
             }
             this.delegateEvents();
+
+            if (this.renderPaginationControl) {
+                this.bindPaginationControlEvents();
+            }
+
+            if (this.sortable) {
+                this.bindSortableColumnEvents();
+            }
             return this;
         },
+
+        unbindPaginationControlEvents: function() {
+            var first = document.querySelector(this.el + " div.paginationControl span.first");
+            var previous = document.querySelector(this.el + " div.paginationControl span.previous");
+            var next = document.querySelector(this.el + " div.paginationControl span.next");
+            var last = document.querySelector(this.el + " div.paginationControl span.last");
+            if (first) {
+                first.removeEventListener("click", this.firstPage, false);
+            }
+            if (previous) {
+                previous.removeEventListener("click", this.previousPage, false);
+            }
+            if (next) {
+                next.removeEventListener("click", this.nextPage, false);
+            }
+            if (last) {
+                last.removeEventListener("click", this.lastPage, false);
+            }
+        },
+
+        bindPaginationControlEvents: function() {
+            var first = document.querySelector(this.el + " div.paginationControl span.first");
+            var previous = document.querySelector(this.el + " div.paginationControl span.previous");
+            var next = document.querySelector(this.el + " div.paginationControl span.next");
+            var last = document.querySelector(this.el + " div.paginationControl span.last");
+            if (first) {
+                first.addEventListener("click", this.firstPage.bind(this), false);
+            }
+            if (previous) {
+                previous.addEventListener("click", this.previousPage.bind(this), false);
+            }
+            if (next) {
+                next.addEventListener("click", this.nextPage.bind(this), false);
+            }
+            if (last) {
+                last.addEventListener("click", this.lastPage.bind(this), false);
+            }
+        },
+
+        unbindSortableColumnEvents: function()  {
+            var list = document.querySelectorAll(this.el + " table tr th");
+            var i = 0, l = list.length;
+            for (i=0; i < l; i++) {
+                list[i].removeEventListener("click", this.sortBy, false);
+            }
+        },
+
+        bindSortableColumnEvents: function()  {
+            var list = document.querySelectorAll(this.el + " table tr th");
+            var i = 0, l = list.length;
+            for (i=0; i < l; i++) {
+                list[i].addEventListener("click", this.sortBy.bind(this), false);
+            }
+        },
+
         /**
          * An overridable template compile
          * @method compileTemplate
