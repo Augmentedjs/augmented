@@ -191,8 +191,8 @@
     	    // Just to be sure we don't set duplicate
     	    this.unsetSubscriptions(subscriptions);
 
-            var i = 0;
-            for (i; i < subscriptions.length; i++) {
+            var i = 0, l = subscriptions.length;
+            for (i; i < l; i++) {
                 var subscription = subscriptions[i];
                 var once = false;
                 if (subscription.$once) {
@@ -218,8 +218,8 @@
     		    return;
     	    }
 
-            var i = 0;
-            for (i; i < subscriptions.length; i++) {
+            var i = 0, l = subscriptions.length;
+            for (i; i < l; i++) {
                 var subscription = subscriptions[i];
                 var once = false;
                 if (subscription.$once) {
@@ -344,8 +344,9 @@
     		return;
 
     	    var args = [].slice.call(arguments, 1), subscription;
+            var i = 0, l = this.channels[channel].length;
 
-    	    for (var i = 0; i < this.channels[channel].length; i++) {
+    	    for (i = 0; i < l; i++) {
         		subscription = this.channels[channel][i];
         		subscription.fn.apply(subscription.context, args);
         		if (subscription.once) {
@@ -368,8 +369,8 @@
     		    return;
     	    }
 
-    	    var subscription;
-    	    for (var i = 0; i < this.channels[channel].length; i++) {
+    	    var subscription, i = 0, l = this.channels[channel].length;
+    	    for (i = 0; i < l; i++) {
         		subscription = this.channels[channel][i];
         		if (subscription.fn === fn && subscription.context === context) {
         		    this.channels[channel].splice(i, 1);
@@ -526,8 +527,8 @@
          */
         this.attachStylesheets = function() {
             var headElement = document.getElementsByTagName("head")[0];
-            var i = 0;
-            for (i; i<this.Stylesheets.length; i++) {
+            var i = 0, l = this.Stylesheets.length;
+            for (i; i < l; i++) {
                 var link = document.createElement("link");
                 link.type = "text/css";
                 link.rel = "stylesheet";
@@ -850,47 +851,55 @@
         },
 
         unbindPaginationControlEvents: function() {
-            var first = document.querySelector(this.el + " div.paginationControl span.first");
-            var previous = document.querySelector(this.el + " div.paginationControl span.previous");
-            var next = document.querySelector(this.el + " div.paginationControl span.next");
-            var last = document.querySelector(this.el + " div.paginationControl span.last");
-            if (first) {
-                first.removeEventListener("click", this.firstPage, false);
-            }
-            if (previous) {
-                previous.removeEventListener("click", this.previousPage, false);
-            }
-            if (next) {
-                next.removeEventListener("click", this.nextPage, false);
-            }
-            if (last) {
-                last.removeEventListener("click", this.lastPage, false);
+            if (this.pageControlBound) {
+                var first = document.querySelector(this.el + " div.paginationControl span.first");
+                var previous = document.querySelector(this.el + " div.paginationControl span.previous");
+                var next = document.querySelector(this.el + " div.paginationControl span.next");
+                var last = document.querySelector(this.el + " div.paginationControl span.last");
+                if (first) {
+                    first.removeEventListener("click", this.firstPage, false);
+                }
+                if (previous) {
+                    previous.removeEventListener("click", this.previousPage, false);
+                }
+                if (next) {
+                    next.removeEventListener("click", this.nextPage, false);
+                }
+                if (last) {
+                    last.removeEventListener("click", this.lastPage, false);
+                }
+                this.pageControlBound = false;
             }
         },
 
+        pageControlBound: false,
+
         bindPaginationControlEvents: function() {
-            var first = document.querySelector(this.el + " div.paginationControl span.first");
-            var previous = document.querySelector(this.el + " div.paginationControl span.previous");
-            var next = document.querySelector(this.el + " div.paginationControl span.next");
-            var last = document.querySelector(this.el + " div.paginationControl span.last");
-            if (first) {
-                first.addEventListener("click", this.firstPage.bind(this), false);
-            }
-            if (previous) {
-                previous.addEventListener("click", this.previousPage.bind(this), false);
-            }
-            if (next) {
-                next.addEventListener("click", this.nextPage.bind(this), false);
-            }
-            if (last) {
-                last.addEventListener("click", this.lastPage.bind(this), false);
+            if (!this.pageControlBound) {
+                var first = document.querySelector(this.el + " div.paginationControl span.first");
+                var previous = document.querySelector(this.el + " div.paginationControl span.previous");
+                var next = document.querySelector(this.el + " div.paginationControl span.next");
+                var last = document.querySelector(this.el + " div.paginationControl span.last");
+                if (first) {
+                    first.addEventListener("click", this.firstPage.bind(this), false);
+                }
+                if (previous) {
+                    previous.addEventListener("click", this.previousPage.bind(this), false);
+                }
+                if (next) {
+                    next.addEventListener("click", this.nextPage.bind(this), false);
+                }
+                if (last) {
+                    last.addEventListener("click", this.lastPage.bind(this), false);
+                }
+                this.pageControlBound = true;
             }
         },
 
         unbindSortableColumnEvents: function()  {
             var list = document.querySelectorAll(this.el + " table tr th");
             var i = 0, l = list.length;
-            for (i=0; i < l; i++) {
+            for (i = 0; i < l; i++) {
                 list[i].removeEventListener("click", this.sortBy, false);
             }
         },
@@ -898,7 +907,7 @@
         bindSortableColumnEvents: function()  {
             var list = document.querySelectorAll(this.el + " table tr th");
             var i = 0, l = list.length;
-            for (i=0; i < l; i++) {
+            for (i = 0; i < l; i++) {
                 list[i].addEventListener("click", this.sortBy.bind(this), false);
             }
         },
