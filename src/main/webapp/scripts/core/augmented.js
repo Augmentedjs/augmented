@@ -223,6 +223,21 @@
     Augmented.Utility = {};
 
     /**
+     * Sorts an array by key
+     * @function Sort
+     * @namespace Augmented.Utility
+     * @param {array} array The array to sort
+     * @param {object} key The key to sort by
+     * @returns {array} The sorted array
+     */
+    Augmented.Utility.Sort = function(array, key) {
+        return array.sort(function(a, b) {
+            var x = a[key]; var y = b[key];
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        });
+    };
+
+    /**
      * Augmented.Utility.TransformerType <br/>
      * Transformer type for use in the transformer
      * @enum {number} Augmented.Utility.TransformerType
@@ -442,7 +457,7 @@
      *     });
      */
     var ajax = Augmented.ajax = Augmented.Ajax.ajax = function(ajaxObject) {
-        logger.debug("Ajax object: " + JSON.stringify(ajaxObject));
+        logger.debug("AUGMENTED: Ajax object: " + JSON.stringify(ajaxObject));
         var xhr = null;
   		if (ajaxObject && ajaxObject.url) {
     	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
@@ -456,10 +471,10 @@
     	    var async = (ajaxObject.async !== undefined) ? ajaxObject.async : true;
 
     	    // CORS
-    	    if (ajaxObject.withCredentials) {
-        		xhr.withCredentials = ajaxObject.withCredentials;
+    	    if (ajaxObject.xhrFields && ajaxObject.xhrFields.withCredentials) {
+        		xhr.withCredentials = ajaxObject.xhrFields.withCredentials;
         		// Sync Not supported for all browsers in CORS mode
-                logger.warn("Augmented.ajax: Sync Not supported for all browsers in CORS mode!");
+                logger.warn("AUGMENTED: Augmented.ajax: Sync Not supported for all browsers in CORS mode!");
         		async = true;
     	    }
 
@@ -476,27 +491,50 @@
                 xhr.setRequestHeader('Cache-Control', 'no-cache');
     	    }
 
+            if (xhr.withCredentials) {
+                var allowOrigins = '*', allowMethods = 'GET';
+                if (ajaxObject.allowOrigins) {
+                    allowOrigins = ajaxObject.allowOrigins;
+                }
+                if (ajaxObject.allowMethods) {
+                    allowMethods = ajaxObject.allowMethods;
+                }
+
+                xhr.setRequestHeader('Access-Control-Allow-Origin', allowOrigins);
+                xhr.setRequestHeader('Access-Control-Allow-Methods', allowMethods);
+            }
+
+            if (xhr.withCredentials && ajaxObject.user && ajaxObject.password) {
+                xhr.setRequestHeader('Authorization', 'Basic ' + window.btoa(ajaxObject.user + ':' + ajaxObject.password));
+            }
+
     	    xhr.onload = function() {
     		    if (xhr.status > 199 && xhr.status < 300) {
                     if (ajaxObject.success) {
-                        if ((xhr.responseType === "" || xhr.responseType === "text")) {
+                        if ((xhr.responseType === "" || xhr.responseType === "text" || (xhr.responseType === "json" && !xhr.response))) {
                             ajaxObject.success(xhr.responseText, xhr.status);
+                        } else if (xhr.responseType === "json") {
+                            ajaxObject.success(xhr.responseJson, xhr.status);
                         } else {
                             ajaxObject.success(xhr.response, xhr.status);
                         }
                     }
     		    } else if (xhr.status > 399 && xhr.status < 600) {
                     if (ajaxObject.failure) {
-                        if ((xhr.responseType === "" || xhr.responseType === "text")) {
+                        if ((xhr.responseType === "" || xhr.responseType === "text") || (xhr.responseType === "json" && !xhr.response)) {
                             ajaxObject.failure(xhr.responseText, xhr.status);
+                        } else if (xhr.responseType === "json") {
+                            ajaxObject.failure(xhr.responseJson, xhr.status);
                         } else {
                             ajaxObject.failure(xhr.response, xhr.status);
                         }
                     }
     		    }
                 if (ajaxObject.complete) {
-                    if ((xhr.responseType === "" || xhr.responseType === "text")) {
+                    if ((xhr.responseType === "" || xhr.responseType === "text") || (xhr.responseType === "json" && !xhr.response)) {
                         ajaxObject.complete(xhr.responseText, xhr.status);
+                    } else if (xhr.responseType === "json") {
+                        ajaxObject.complete(xhr.responseJson, xhr.status);
                     } else {
                         ajaxObject.complete(xhr.response, xhr.status);
                     }
@@ -965,7 +1003,7 @@
             } else if(dataToMarshall && dataToMarshall instanceof Object && (Object.keys(dataToMarshall).length > 0)) {
                 dataToParse = dataToMarshall;
             } else {
-                logger.warn("Could not marshall data: " + JSON.stringify(dataToMarshall));
+                logger.warn("AUGMENTED: AugmentedMap: Could not marshall data: " + JSON.stringify(dataToMarshall));
                 return false;
             }
             //logger.debug("data to parse: " + JSON.stringify(dataToParse));
@@ -976,7 +1014,7 @@
             for (i = 0; i < l; i++) {
                 var p = props[i];
                 var v = dataToParse[p];
-                logger.debug("setting " + p + ", " + v);
+                //logger.debug("setting " + p + ", " + v);
                 this.set(p, v);
             }
             return true;
@@ -3698,7 +3736,22 @@
 
             var ret = Augmented.sync(method, model, options);
     	    return ret;
-    	}
+    	},
+        /**
+         * sortBy - Sorts the collection by a property key
+         * @method sortBy
+         * @param {object} key The key to sort by
+         * @memberof Augmented.Collection
+         */
+        sortBy: function(key) {
+            if (key) {
+                var data = this.toJSON();
+                if (data) {
+                    var sorted = Augmented.Utility.Sort(data, key);
+                    this.reset(sorted);
+                }
+            }
+        }
     });
 
 	// Extend Collection with Object base functions
@@ -4179,7 +4232,7 @@
 
     	// true = localStorage, false = sessionStorage
     	if (this.isSupported()) {
-    	    logger.debug("localStorage exists");
+    	    logger.debug("AUGMENTED: localStorage exists");
 
     	    if (this.isPersisted) {
     		this.myStore = localStorage;
@@ -4187,7 +4240,7 @@
     		this.myStore = sessionStorage;
     	    }
     	} else {
-    	    logger.debug("No localStorage.");
+    	    logger.warn("AUGMENTED: No localStorage.");
     	}
 
         /**
@@ -4278,7 +4331,7 @@
     	        map = JSON.parse(ls.getItem(this.namespace));
             } catch(e) {
                 // TODO: bundle this
-                logger.error("Could not parse item map from storage!");
+                logger.error("AUGMENTED: Augmented Local Strorage could not parse item map from storage!");
                 return null;
             }
             this.myNameSpacedStore.clear();

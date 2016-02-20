@@ -9,6 +9,25 @@ define([
         it('has an augmented Collection', function() {
             expect(Augmented.Collection).toBeDefined();
         });
+        var data = [ { "Name": "Bob", "ID": 123, "Email": "bob@augmentedjs.org" },
+                     { "Name": "Jonathan", "ID": 234, "Email": "jonathon@augmentedjs.org" },
+                     { "Name": "Corey", "ID": 345, "Email": "corey@augmentedjs.org" },
+                     { "Name": "Seema", "ID": 456, "Email": "seema@augmentedjs.org" },
+                     { "Name": "Jasmine", "ID": 567, "Email": "jasmine@augmentedjs.org" }
+                    ];
+        it('can populate data', function() {
+            var c = new Augmented.Collection();
+            c.add(data);
+            expect(c.size()).toEqual(5);
+        });
+        it('can sort data', function() {
+            var c = new Augmented.Collection();
+            c.add(data);
+            c.sortBy("Name");
+            var first = c.at(1);
+            expect(first.get("Name")).toEqual("Corey");
+        });
+
     });
 
     describe('Given an Augmented Collection needing pagination', function() {

@@ -577,7 +577,7 @@
 
     });
 
-    var defaultTableCompile = function(name, desc, columns, data, lineNumbers) {
+    var defaultTableCompile = function(name, desc, columns, data, lineNumbers, sortKey) {
         var html = "<table data-name=\"" + name + "\" data-description=\"" + desc + "\">";
         if (name) {
             html = html + "<caption";
@@ -586,6 +586,10 @@
             }
             html = html + ">" + name + "</caption>";
         }
+        html = html + "<thead>";
+        html = html + defaultTableHeader(columns, lineNumbers, sortKey);
+        html = html + "</thead>";
+        /*
         if (columns) {
             html = html + "<thead><tr>";
             if (lineNumbers) {
@@ -600,11 +604,35 @@
             }
             html = html + "</tr></thead>";
         }
+        */
         html = html + "<tbody>";
         if (data) {
             html = html + defaultTableBody(data, lineNumbers);
         }
         html = html + "</tbody></table>";
+        return html;
+    };
+
+    var defaultTableHeader = function(columns, lineNumbers, sortKey) {
+        var html = "";
+        if (columns) {
+            html = html + "<tr>";
+            if (lineNumbers) {
+                html = html + "<th data-name=\"number\">#</th>";
+            }
+            var key, obj;
+            for (key in columns) {
+                if (columns.hasOwnProperty(key)) {
+                    obj = columns[key];
+                    html = html + "<th data-name=\"" + key + "\" data-description=\"" + obj.description + "\" data-type=\"" + obj.type + "\"";
+                    if (sortKey === key) {
+                        html = html + " class=\"sorted\"";
+                    }
+                    html = html + ">" + key + "</th>";
+                }
+            }
+            html = html + "</tr>";
+        }
         return html;
     };
 
@@ -632,13 +660,12 @@
      * << First | < Previous | # | Next > | Last >>
     */
     var defaultPaginationControl = function(currentPage, totalPages) {
-            var html = "<div class=\"paginationControl\">";
-            html = html + "<span class=\"first\"><< First</span>" +
-                            "<span class=\"previous\">< Previous</span>" +
-                            "<span class=\"current\">" + currentPage + "</span>" +
-                            "<span class=\"next\">Next ></span>" +
-                            "<span class=\"last\">Last >></span>";
-            return html;
+            return "<div class=\"paginationControl\">" +
+                    "<span class=\"first\"><< First</span>" +
+                    "<span class=\"previous\">< Previous</span>" +
+                    "<span class=\"current\">" + currentPage + " of " + totalPages + "</span>" +
+                    "<span class=\"next\">Next ></span>" +
+                    "<span class=\"last\">Last >></span></div>";
     };
 
     /**
@@ -650,16 +677,21 @@
      */
     var autoTable = Augmented.Presentation.AutomaticTable = abstractColleague.extend({
         // sorting
-        sortable: true,
+        sortable: false,
+        sortKey: null,
         sortBy: function(event) {
             if (event) {
                 var key = event.target.getAttribute("data-name");
-                this.collection.sortBy(key);
+                if (key) {
+                    this.sortKey = key;
+                    this.collection.sortBy(key);
+                    this.refresh();
+                }
             }
         },
 
         // pagination
-        renderPaginationControl: true,
+        renderPaginationControl: false,
         paginationAPI: null,
         currentPage: function() {
             return this.collection.currentPage;
@@ -689,8 +721,8 @@
         },
 
         // standard functionality
-
-        lineNumbers: true,
+        crossOrigin: false,
+        lineNumbers: false,
         /**
          * The columns property
          * @property {object} columns The columns property
@@ -752,6 +784,18 @@
                 if (options.data) {
                     this.populate(options.data);
                 }
+
+                if (options.renderPaginationControl) {
+                    this.renderPaginationControl = options.renderPaginationControl;
+                }
+
+                if (options.sortable) {
+                    this.sortable = options.sortable;
+                }
+
+                if (options.lineNumbers) {
+                    this.lineNumbers = options.lineNumbers;
+                }
             }
             if (this.uri) {
                 this.collection.url = this.uri;
@@ -771,6 +815,7 @@
             if (this.schema.description) {
                 this.description = this.schema.description;
             }
+            this.collection.crossOrigin = this.crossOrigin;
 
             return this.isInitalized;
         },
@@ -780,6 +825,7 @@
          * @memberof Augmented.Presentation.AutomaticTable
          */
         fetch: function() {
+            this.sortKey = null;
             this.collection.fetch();
         },
         /**
@@ -789,10 +835,12 @@
          * @param {array} source The source data array
          */
         populate: function(source) {
+            this.sortKey = null;
             this.data = source;
             this.collection.reset(this.data);
         },
         clear: function() {
+            this.sortKey = null;
             this.populate(null);
         },
         refresh: function() {
@@ -809,17 +857,32 @@
             if (this.template) {
                 // refresh the table body only
                 if (this.el) {
-                    e = Augmented.Utility.isString(this.el) ? document.querySelector(this.el) : this.el;
+                    e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                    var tbody = e.querySelector("tbody"), thead = e.querySelector("thead"), h;
                     if (e) {
-                        var tbody = e.querySelector("tbody"), h;
+                        if (this.columns && (Object.keys(this.columns).length > 0)){
+                            if (this.sortable) {
+                                this.unbindSortableColumnEvents();
+                            }
+                            h = defaultTableHeader(this.columns, this.lineNumbers, this.sortKey);
+                        } else {
+                            h = "";
+                        }
+                        thead.innerHTML = h;
+
                         if (this.collection && (this.collection.length > 0)){
                             h = defaultTableBody(this.collection.toJSON(), this.lineNumbers);
                         } else {
                             h = "";
                         }
                         tbody.innerHTML = h;
+
                     }
                 } else if (this.$el) {
+                    if (this.sortable) {
+                        this.unbindSortableColumnEvents();
+                    }
+                    this.$el("thead").html(defaultTableHeader(this.columns, this.lineNumbers, this.sortKey));
                     this.$el("tbody").html(defaultTableBody(this.collection.toJSON(), this.lineNumbers));
                 } else {
                     logger.warn("no element anchor");
@@ -828,7 +891,7 @@
                 this.template = this.compileTemplate();
 
                 if (this.el) {
-                    e = Augmented.Utility.isString(this.el) ? document.querySelector(this.el) : this.el;
+                    e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
                     if (e) {
                         e.innerHTML = this.template;
                     }
@@ -837,12 +900,12 @@
                 } else {
                     logger.warn("no element anchor");
                 }
+
+                if (this.renderPaginationControl) {
+                    this.bindPaginationControlEvents();
+                }
             }
             this.delegateEvents();
-
-            if (this.renderPaginationControl) {
-                this.bindPaginationControlEvents();
-            }
 
             if (this.sortable) {
                 this.bindSortableColumnEvents();
@@ -852,10 +915,11 @@
 
         unbindPaginationControlEvents: function() {
             if (this.pageControlBound) {
-                var first = document.querySelector(this.el + " div.paginationControl span.first");
-                var previous = document.querySelector(this.el + " div.paginationControl span.previous");
-                var next = document.querySelector(this.el + " div.paginationControl span.next");
-                var last = document.querySelector(this.el + " div.paginationControl span.last");
+                var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
+                var first = document.querySelector(myEl + " div.paginationControl span.first");
+                var previous = document.querySelector(myEl + " div.paginationControl span.previous");
+                var next = document.querySelector(myEl + " div.paginationControl span.next");
+                var last = document.querySelector(myEl + " div.paginationControl span.last");
                 if (first) {
                     first.removeEventListener("click", this.firstPage, false);
                 }
@@ -876,10 +940,11 @@
 
         bindPaginationControlEvents: function() {
             if (!this.pageControlBound) {
-                var first = document.querySelector(this.el + " div.paginationControl span.first");
-                var previous = document.querySelector(this.el + " div.paginationControl span.previous");
-                var next = document.querySelector(this.el + " div.paginationControl span.next");
-                var last = document.querySelector(this.el + " div.paginationControl span.last");
+                var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
+                var first = document.querySelector(myEl + " div.paginationControl span.first");
+                var previous = document.querySelector(myEl + " div.paginationControl span.previous");
+                var next = document.querySelector(myEl + " div.paginationControl span.next");
+                var last = document.querySelector(myEl + " div.paginationControl span.last");
                 if (first) {
                     first.addEventListener("click", this.firstPage.bind(this), false);
                 }
@@ -897,18 +962,32 @@
         },
 
         unbindSortableColumnEvents: function()  {
-            var list = document.querySelectorAll(this.el + " table tr th");
-            var i = 0, l = list.length;
-            for (i = 0; i < l; i++) {
-                list[i].removeEventListener("click", this.sortBy, false);
+            if (this.el && this.sortable) {
+                var list;
+                if (typeof this.el === 'string') {
+                    list = document.querySelectorAll(this.el + " table tr th");
+                } else {
+                    list = document.querySelectorAll(this.el.localName + " table tr th");
+                }
+                var i = 0, l = list.length;
+                for (i = 0; i < l; i++) {
+                    list[i].removeEventListener("click", this.sortBy, false);
+                }
             }
         },
 
         bindSortableColumnEvents: function()  {
-            var list = document.querySelectorAll(this.el + " table tr th");
-            var i = 0, l = list.length;
-            for (i = 0; i < l; i++) {
-                list[i].addEventListener("click", this.sortBy.bind(this), false);
+            if (this.el && this.sortable) {
+                var list;
+                if (typeof this.el === 'string') {
+                    list = document.querySelectorAll(this.el + " table tr th");
+                } else {
+                    list = document.querySelectorAll(this.el.localName + " table tr th");
+                }
+                var i = 0, l = list.length;
+                for (i = 0; i < l; i++) {
+                    list[i].addEventListener("click", this.sortBy.bind(this), false);
+                }
             }
         },
 
@@ -919,7 +998,7 @@
          * @returns {string} Returns the template
          */
         compileTemplate: function() {
-            var h = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers);
+            var h = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers, this.sortKey);
             if (this.renderPaginationControl) {
                 h = h + defaultPaginationControl(this.currentPage(), this.totalPages());
             }
