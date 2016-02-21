@@ -577,8 +577,16 @@
 
     });
 
+    var tableDataAttributes = {
+        name:           "data-name",
+        type:           "data-type",
+        description:    "data-description",
+        label:          "data-label",
+        sortClass:      "sorted"
+    };
+
     var defaultTableCompile = function(name, desc, columns, data, lineNumbers, sortKey) {
-        var html = "<table data-name=\"" + name + "\" data-description=\"" + desc + "\">";
+        var html = "<progress>Please wait.</progress><table " + tableDataAttributes.name + "=\"" + name + "\" " + tableDataAttributes.description + "=\"" + desc + "\">";
         if (name) {
             html = html + "<caption";
             if (desc) {
@@ -588,24 +596,7 @@
         }
         html = html + "<thead>";
         html = html + defaultTableHeader(columns, lineNumbers, sortKey);
-        html = html + "</thead>";
-        /*
-        if (columns) {
-            html = html + "<thead><tr>";
-            if (lineNumbers) {
-                html = html + "<th data-name=\"number\">#</th>";
-            }
-            var key, obj;
-            for (key in columns) {
-                if (columns.hasOwnProperty(key)) {
-                    obj = columns[key];
-                    html = html + "<th data-name=\"" + key + "\" data-description=\"" + obj.description + "\" data-type=\"" + obj.type + "\">" + key + "</th>";
-                }
-            }
-            html = html + "</tr></thead>";
-        }
-        */
-        html = html + "<tbody>";
+        html = html + "</thead><tbody>";
         if (data) {
             html = html + defaultTableBody(data, lineNumbers);
         }
@@ -618,15 +609,15 @@
         if (columns) {
             html = html + "<tr>";
             if (lineNumbers) {
-                html = html + "<th data-name=\"number\">#</th>";
+                html = html + "<th " + tableDataAttributes.name + "=\"lineNumber\">#</th>";
             }
             var key, obj;
             for (key in columns) {
                 if (columns.hasOwnProperty(key)) {
                     obj = columns[key];
-                    html = html + "<th data-name=\"" + key + "\" data-description=\"" + obj.description + "\" data-type=\"" + obj.type + "\"";
+                    html = html + "<th " + tableDataAttributes.name + "=\"" + key + "\" " + tableDataAttributes.description + "=\"" + obj.description + "\" " + tableDataAttributes.type + "=\"" + obj.type + "\"";
                     if (sortKey === key) {
-                        html = html + " class=\"sorted\"";
+                        html = html + " class=\"" + tableDataAttributes.sortClass + "\"";
                     }
                     html = html + ">" + key + "</th>";
                 }
@@ -642,13 +633,13 @@
             d = data[i];
             html = html + "<tr>";
             if (lineNumbers) {
-                html = html + "<td class=\"number\">" + (i+1) + "</td>";
+                html = html + "<td class=\"label number\">" + (i+1) + "</td>";
             }
             for (dkey in d) {
                 if (d.hasOwnProperty(dkey)) {
                     dobj = d[dkey];
                     t = (typeof dobj);
-                    html = html + "<td data-type=\"" + t + "\" class=\"" + t + "\">" + dobj + "</td>";
+                    html = html + "<td " + tableDataAttributes.type + "=\"" + t + "\" class=\"" + t + "\">" + dobj + "</td>";
                 }
             }
             html = html + "</tr>";
@@ -677,11 +668,29 @@
      */
     var autoTable = Augmented.Presentation.AutomaticTable = abstractColleague.extend({
         // sorting
+        /**
+         * The sortable property - enable sorting in table
+         * @property {boolean} sortable enable sorting in the table
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         sortable: false,
+        /**
+         * The sortStyle property - setup the sort API
+         * @property {string} sortStyle setup the sort API
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        sortStyle: "client",
         sortKey: null,
+        /**
+         * Sort the tabe by a key (sent via a UI Event)
+         * @method sortBy
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {Augmented.Event} event The event passed
+         * @private
+         */
         sortBy: function(event) {
             if (event) {
-                var key = event.target.getAttribute("data-name");
+                var key = event.target.getAttribute(tableDataAttributes.name);
                 if (key) {
                     this.sortKey = key;
                     this.collection.sortBy(key);
@@ -691,37 +700,96 @@
         },
 
         // pagination
+        /**
+         * The renderPaginationControl property - render the pagination control
+         * @property {boolean} renderPaginationControl render the pagination control
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         renderPaginationControl: false,
+        /**
+         * The paginationAPI property - setup the paginatin API to use
+         * @property {Augmented.PaginationFactory.type} paginationAPI the pagination API to use
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         paginationAPI: null,
+        /**
+         * Return the current page number
+         * @method currentPage
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @returns {number} The current page number
+         */
         currentPage: function() {
             return this.collection.currentPage;
         },
+        /**
+         * Return the total pages
+         * @method totalPages
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @returns {number} The total pages
+         */
         totalPages: function() {
             return this.collection.totalPages;
         },
+        /**
+         * Advance to the next page
+         * @method nextPage
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         nextPage: function() {
             this.collection.nextPage();
             this.refresh();
         },
+        /**
+         * Return to the previous page
+         * @method previousPage
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         previousPage: function() {
             this.collection.previousPage();
             this.refresh();
         },
+        /**
+         * Go to a specific page
+         * @method goToPage
+         * @param {number} page The page to go to
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         goToPage: function(page) {
             this.collection.goToPage(page);
             this.refresh();
         },
+        /**
+         * Return to the first page
+         * @method firstPage
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         firstPage: function() {
             this.collection.firstPage();
             this.refresh();
         },
+        /**
+         * Advance to the last page
+         * @method lastPage
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         lastPage: function() {
             this.collection.lastPage();
             this.refresh();
         },
 
         // standard functionality
+
+        /**
+         * The crossOrigin property - enables cross origin fetch
+         * @property {boolean} crossOrigin The crossOrigin property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         crossOrigin: false,
+        /**
+         * The lineNumber property - turns on line numbers
+         * @property {boolean} lineNumbers The lineNumbers property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         lineNumbers: false,
         /**
          * The columns property
@@ -737,10 +805,17 @@
         uri: null,
         /**
          * The data property
-         * @property {object} data The data property
+         * @property {array} data The data property
          * @memberof Augmented.Presentation.AutomaticTable
+         * @private
          */
         data: [],
+        /**
+         * The collection property
+         * @property {Augmented.PaginatedCollection} collection The collection property
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @private
+         */
         collection: null,
         /**
         * The initialized property
@@ -781,7 +856,7 @@
                     this.collection.url = options.url;
                 }
 
-                if (options.data) {
+                if (options.data && (Array.isArray(options.data))) {
                     this.populate(options.data);
                 }
 
@@ -825,8 +900,26 @@
          * @memberof Augmented.Presentation.AutomaticTable
          */
         fetch: function() {
+            this.showProgressBar(true);
             this.sortKey = null;
-            this.collection.fetch();
+            var successHandler = function() {
+                this.showProgressBar(false);
+            };
+            var errorHandler = function() {
+                this.showProgressBar(false);
+                // show an error
+                logger.console.error("AUGMENTED: AutomaticTable fetch failed!");
+            };
+
+            this.collection.fetch({
+                reset: true,
+                success: function(){
+                    successHandler();
+                },
+                error: function(){
+                    errorHandler();
+                }
+            });
         },
         /**
          * Populate the data in the table
@@ -835,20 +928,33 @@
          * @param {array} source The source data array
          */
         populate: function(source) {
-            this.sortKey = null;
-            this.data = source;
-            this.collection.reset(this.data);
+            if (source && Array.isArray(source)) {
+                this.sortKey = null;
+                this.data = source;
+                this.collection.reset(this.data);
+            }
         },
+        /**
+         * Clear all the data in the table
+         * @method clear
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         clear: function() {
             this.sortKey = null;
-            this.populate(null);
+            this.data = [];
+            this.collection.reset(null);
         },
+        /**
+         * Refresh the table
+         * @method refresh Refresh the table
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         refresh: function() {
             this.render();
         },
         /**
         * Render the table
-         * @method render
+         * @method render Renders the table
          * @memberof Augmented.Presentation.AutomaticTable
          * @returns {object} Returns the view context ('this')
          */
@@ -856,6 +962,7 @@
             var e;
             if (this.template) {
                 // refresh the table body only
+                this.showProgressBar(true);
                 if (this.el) {
                     e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
                     var tbody = e.querySelector("tbody"), thead = e.querySelector("thead"), h;
@@ -889,6 +996,7 @@
                 }
             } else {
                 this.template = this.compileTemplate();
+                this.showProgressBar(true);
 
                 if (this.el) {
                     e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
@@ -910,6 +1018,7 @@
             if (this.sortable) {
                 this.bindSortableColumnEvents();
             }
+            this.showProgressBar(false);
             return this;
         },
 
@@ -986,7 +1095,11 @@
                 }
                 var i = 0, l = list.length;
                 for (i = 0; i < l; i++) {
-                    list[i].addEventListener("click", this.sortBy.bind(this), false);
+                    if (list[i].getAttribute(tableDataAttributes.name) === "lineNumber") {
+                        // Do I need to do something?
+                    } else {
+                        list[i].addEventListener("click", this.sortBy.bind(this), false);
+                    }
                 }
             }
         },
@@ -1027,6 +1140,17 @@
 
             if (this.uri) {
                 col.url = this.uri;
+            }
+        },
+
+        showProgressBar: function(show) {
+            if (this.el) {
+                var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                var p = e.querySelector("progress");
+                if (p) {
+                    p.style.display = (show) ? "block" : "none";
+                    p.style.visibility = (show) ? "visible" : "hidden";
+                }
             }
         }
     });

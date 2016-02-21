@@ -64,6 +64,21 @@ define([
                 expect(at.data).toEqual(data);
     		});
 
+            it('won\'t populate a string', function() {
+    			at.populate("data");
+                expect(at.data).toEqual([]);
+    		});
+
+            it('won\'t populate a number', function() {
+    			at.populate(123);
+                expect(at.data).toEqual([]);
+    		});
+
+            it('won\'t populate an object', function() {
+    			at.populate({ 123: 123 });
+                expect(at.data).toEqual([]);
+    		});
+
             it('can compile data to a template', function() {
     			at.populate(data);
                 var html = at.compileTemplate();
