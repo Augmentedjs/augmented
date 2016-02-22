@@ -4667,29 +4667,30 @@
          * @method start
          * @memberof Augmented.Application
          */
-		this.start = function() {
+        this.start = function() {
             var asyncQueue = new Augmented.Utility.AsynchronousQueue(Augmented.Configuration.ApplicationInitProcessTimeout);
+            var startCheck = function() {
+                if (!Augmented.History.started) {
+                    Augmented.history.start();
+                }
+            };
             this.started = asyncQueue.process(
                 this.beforeInitialize(),
                 this.initialize(),
                 this.afterInitialize(),
-                function() {
-                    if (!Augmented.history.started) {
-        				Augmented.history.start();
-        		    }
-                }
+                startCheck()
             );
             if (!this.started) {
                 this.stop();
             }
-		};
+ 		};
 
         /** Event to stop the application and history
          * @method stop
          * @memberof Augmented.Application
          */
         this.stop = function() {
-		    if (Augmented.history.started) {
+		    if (Augmented.History.started) {
 				Augmented.history.stop();
 		    }
 		    this.started = false;

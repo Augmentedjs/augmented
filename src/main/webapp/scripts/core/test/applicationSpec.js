@@ -28,15 +28,16 @@ define([
     			expect(app.getMetadataItem("name")).toEqual("test");
     		});
 
-    		it('can start', function() {
+            it('can start and History is present', function() {
     		    app.start();
-    		    expect(app.started).toBeTruthy();
+                expect(app.started).toBeTruthy();
+    		    expect(Augmented.History.started).toBeTruthy();
     		});
 
-			it('can stop', function() {
-    		    app.stop();
-    		    expect(app.started).toBeFalsy();
-    		});
+            it('can stop', function() {
+                app.stop();
+                expect(app.started).toBeFalsy();
+            });
 		});
 	});
 });
