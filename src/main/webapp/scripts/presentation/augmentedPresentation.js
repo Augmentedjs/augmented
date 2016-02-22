@@ -685,17 +685,13 @@
          * Sort the tabe by a key (sent via a UI Event)
          * @method sortBy
          * @memberof Augmented.Presentation.AutomaticTable
-         * @param {Augmented.Event} event The event passed
-         * @private
+         * @param {string} key The key to sort by
          */
-        sortBy: function(event) {
-            if (event) {
-                var key = event.target.getAttribute(tableDataAttributes.name);
-                if (key) {
-                    this.sortKey = key;
-                    this.collection.sortBy(key);
-                    this.refresh();
-                }
+        sortBy: function(key) {
+            if (key) {
+                this.sortKey = key;
+                this.collection.sortBy(key);
+                this.refresh();
             }
         },
 
@@ -1070,6 +1066,17 @@
             }
         },
 
+        deriveEventTarget: function(event) {
+            var key = null;
+            if (event) {
+                key = event.target.getAttribute(tableDataAttributes.name);
+            }
+            return key;
+        },
+        sortByHeaderEvent: function(event) {
+            var key = this.deriveEventTarget(event);
+            this.sortBy(key);
+        },
         unbindSortableColumnEvents: function()  {
             if (this.el && this.sortable) {
                 var list;
@@ -1080,7 +1087,7 @@
                 }
                 var i = 0, l = list.length;
                 for (i = 0; i < l; i++) {
-                    list[i].removeEventListener("click", this.sortBy, false);
+                    list[i].removeEventListener("click", this.sortByHeaderEvent, false);
                 }
             }
         },
@@ -1098,7 +1105,7 @@
                     if (list[i].getAttribute(tableDataAttributes.name) === "lineNumber") {
                         // Do I need to do something?
                     } else {
-                        list[i].addEventListener("click", this.sortBy.bind(this), false);
+                        list[i].addEventListener("click", this.sortByHeaderEvent.bind(this), false);
                     }
                 }
             }
