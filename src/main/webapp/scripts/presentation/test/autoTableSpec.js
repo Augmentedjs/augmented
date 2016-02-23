@@ -91,6 +91,18 @@ define([
                 expect(t).toBeDefined();
     		});
 
+            it('can export the table to csv', function() {
+    			at.populate(data);
+                var t = at.export('csv');
+                expect(t).toBeDefined();
+    		});
+
+            it('can export the table to html', function() {
+    			at.populate(data);
+                var t = at.export('html');
+                expect(t).toBeDefined();
+    		});
+
             xit('can paginate the table', function() {
 
     		});

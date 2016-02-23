@@ -439,8 +439,6 @@
     	}
     });
 
-
-
     /**
      * Presentation Application - extension of Augmented.Application</br/>
      * Add registration of mediators to the application, breadcrumbs, and stylesheet registration
@@ -537,6 +535,19 @@
             }
         };
         /**
+         * Replace stylesheets then attach registered stylesheets to the DOM
+         * @method replaceStylesheets
+         * @memberof Augmented.Presentation.Application
+         */
+        this.replaceStylesheets = function() {
+            var links = document.getElementsByTagName("link");
+            var i = 0, l = links.length - 1;
+            for (i = l; i >= 0; i--) {
+                element[i].parentNode.removeChild(element[i]);
+            }
+            this.attachStylesheets();
+        };
+        /**
          * Sets the current breadcrumb
          * @method setCurrentBreadcrumb
          * @memberof Augmented.Presentation.Application
@@ -585,8 +596,38 @@
         sortClass:      "sorted"
     };
 
+    var csvTableCompile = function(name, desc, columns, data){
+        var csv = "";
+        if (columns) {
+            var key, obj;
+            for (key in columns) {
+                if (columns.hasOwnProperty(key)) {
+                    obj = columns[key];
+                    csv = csv + key + ",";
+                }
+            }
+            csv = csv.slice(0, -1);
+            csv = csv + "\n";
+        }
+
+        var i, d, dkey, dobj, html = "", l = data.length, t;
+        for (i = 0; i < l; i++) {
+            d = data[i];
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    dobj = d[dkey];
+                    t = (typeof dobj);
+                    csv = csv + dobj + ",";
+                }
+            }
+            csv = csv.slice(0, -1);
+            csv = csv + "\n";
+        }
+        return csv;
+    };
+
     var defaultTableCompile = function(name, desc, columns, data, lineNumbers, sortKey) {
-        var html = "<progress>Please wait.</progress><table " + tableDataAttributes.name + "=\"" + name + "\" " + tableDataAttributes.description + "=\"" + desc + "\">";
+        var html = "<table " + tableDataAttributes.name + "=\"" + name + "\" " + tableDataAttributes.description + "=\"" + desc + "\">";
         if (name) {
             html = html + "<caption";
             if (desc) {
@@ -904,7 +945,7 @@
             var errorHandler = function() {
                 this.showProgressBar(false);
                 // show an error
-                logger.console.error("AUGMENTED: AutomaticTable fetch failed!");
+                logger.error("AUGMENTED: AutomaticTable fetch failed!");
             };
 
             this.collection.fetch({
@@ -991,7 +1032,7 @@
                     logger.warn("no element anchor");
                 }
             } else {
-                this.template = this.compileTemplate();
+                this.template = "<progress>Please wait.</progress>" + this.compileTemplate();
                 this.showProgressBar(true);
 
                 if (this.el) {
@@ -1016,6 +1057,24 @@
             }
             this.showProgressBar(false);
             return this;
+        },
+
+        /**
+         * Exports the table data in requested format
+         * @method export Exports the table
+         * @param {string} type The type requested (csv or html-default)
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @returns {string} The table data in requested format
+         */
+        export: function(type) {
+            var e = "";
+            if (type === "csv") {
+                e = csvTableCompile(this.name, this.description, this.columns, this.collection.toJSON());
+            } else {
+                // html
+                e = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), false, null);
+            }
+            return e;
         },
 
         unbindPaginationControlEvents: function() {
