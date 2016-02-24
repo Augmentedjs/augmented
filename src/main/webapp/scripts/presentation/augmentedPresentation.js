@@ -1228,7 +1228,9 @@
             if (this.el) {
                 var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
                 var p = e.querySelector("p[class=message]");
-                p.textContent = message;
+                if (p) {
+                    p.textContent = message;
+                }
             }
         }
     });

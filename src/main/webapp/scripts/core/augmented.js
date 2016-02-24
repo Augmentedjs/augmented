@@ -518,7 +518,14 @@
                         if ((xhr.responseType === "" || xhr.responseType === "text" || (xhr.responseType === "json" && !xhr.response))) {
                             ajaxObject.success(xhr.responseText, xhr.status, xhr);
                         } else if (xhr.responseType === "json") {
-                            ajaxObject.success(xhr.responseJson, xhr.status, xhr);
+                            // should this have any special behavior?
+                            if (!xhr.response) {
+                                logger.debug("AUGMENTED: Ajax (JSON responseType) parsed JSON from string.");
+                                ajaxObject.success(JSON.parse(xhr.responseText), xhr.status, xhr);
+                            } else {
+                                logger.debug("AUGMENTED: Ajax (JSON responseType) native JSON.");
+                                ajaxObject.success(xhr.response, xhr.status, xhr);
+                            }
                         } else {
                             ajaxObject.success(xhr.response, xhr.status, xhr);
                         }
@@ -527,36 +534,12 @@
     		    } else if (xhr.status > 399 && xhr.status < 600) {
                     if (ajaxObject.failure) {
                         ajaxObject.failure(xhr, xhr.status, xhr.statusText);
-                        /*
-                        if ((xhr.responseType === "" || xhr.responseType === "text") || (xhr.responseType === "json" && !xhr.response)) {
-                            ajaxObject.failure(xhr.responseText, xhr.status);
-                        } else if (xhr.responseType === "json") {
-                            ajaxObject.failure(xhr.responseJson, xhr.status);
-                        } else {
-                            ajaxObject.failure(xhr.response, xhr.status);
-                        }*/
                     } else if (ajaxObject.error) {
                         ajaxObject.error(xhr, xhr.status, xhr.statusText);
-                        /*
-                        if ((xhr.responseType === "" || xhr.responseType === "text") || (xhr.responseType === "json" && !xhr.response)) {
-                            ajaxObject.error(xhr, xhr.status, xhr.statusText);
-                        } else if (xhr.responseType === "json") {
-                            ajaxObject.error(xhr.responseJson, xhr.status);
-                        } else {
-                            ajaxObject.error(xhr.response, xhr.status);
-                        }*/
                     }
     		    }
                 if (ajaxObject.complete) {
                     ajaxObject.complete(xhr, xhr.status);
-                    /*
-                    if ((xhr.responseType === "" || xhr.responseType === "text") || (xhr.responseType === "json" && !xhr.response)) {
-                        ajaxObject.complete(xhr, xhr.status);
-                    } else if (xhr.responseType === "json") {
-                        ajaxObject.complete(xhr, xhr.status);
-                    } else {
-                        ajaxObject.complete(xhr, xhr.status);
-                    }*/
                 }
                 return xhr;
     	    };
