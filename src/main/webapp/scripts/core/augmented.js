@@ -470,11 +470,13 @@
             }
     	    var async = (ajaxObject.async !== undefined) ? ajaxObject.async : true;
 
-    	    // CORS
-    	    if (ajaxObject.xhrFields && ajaxObject.xhrFields.withCredentials) {
+    	    // CORS & Async
+    	    if (ajaxObject.crossDomain && ajaxObject.xhrFields && ajaxObject.xhrFields.withCredentials) {
         		xhr.withCredentials = ajaxObject.xhrFields.withCredentials;
         		// Sync Not supported for all browsers in CORS mode
-                logger.warn("AUGMENTED: Augmented.ajax: Sync Not supported for all browsers in CORS mode!");
+                if (!async) {
+                    logger.warn("AUGMENTED: Augmented.ajax: Sync Not supported for all browsers in CORS mode!");
+                }
         		async = true;
     	    }
 
@@ -491,6 +493,7 @@
                 xhr.setRequestHeader('Cache-Control', 'no-cache');
     	    }
 
+            // CORS
             if (xhr.withCredentials) {
                 var allowOrigins = '*', allowMethods = 'GET';
                 if (ajaxObject.allowOrigins) {
@@ -504,6 +507,7 @@
                 xhr.setRequestHeader('Access-Control-Allow-Methods', allowMethods);
             }
 
+            // Authorization
             if (xhr.withCredentials && ajaxObject.user && ajaxObject.password) {
                 xhr.setRequestHeader('Authorization', 'Basic ' + window.btoa(ajaxObject.user + ':' + ajaxObject.password));
             }
@@ -512,32 +516,47 @@
     		    if (xhr.status > 199 && xhr.status < 300) {
                     if (ajaxObject.success) {
                         if ((xhr.responseType === "" || xhr.responseType === "text" || (xhr.responseType === "json" && !xhr.response))) {
-                            ajaxObject.success(xhr.responseText, xhr.status);
+                            ajaxObject.success(xhr.responseText, xhr.status, xhr);
                         } else if (xhr.responseType === "json") {
-                            ajaxObject.success(xhr.responseJson, xhr.status);
+                            ajaxObject.success(xhr.responseJson, xhr.status, xhr);
                         } else {
-                            ajaxObject.success(xhr.response, xhr.status);
+                            ajaxObject.success(xhr.response, xhr.status, xhr);
                         }
                     }
+
     		    } else if (xhr.status > 399 && xhr.status < 600) {
                     if (ajaxObject.failure) {
+                        ajaxObject.failure(xhr, xhr.status, xhr.statusText);
+                        /*
                         if ((xhr.responseType === "" || xhr.responseType === "text") || (xhr.responseType === "json" && !xhr.response)) {
                             ajaxObject.failure(xhr.responseText, xhr.status);
                         } else if (xhr.responseType === "json") {
                             ajaxObject.failure(xhr.responseJson, xhr.status);
                         } else {
                             ajaxObject.failure(xhr.response, xhr.status);
-                        }
+                        }*/
+                    } else if (ajaxObject.error) {
+                        ajaxObject.error(xhr, xhr.status, xhr.statusText);
+                        /*
+                        if ((xhr.responseType === "" || xhr.responseType === "text") || (xhr.responseType === "json" && !xhr.response)) {
+                            ajaxObject.error(xhr, xhr.status, xhr.statusText);
+                        } else if (xhr.responseType === "json") {
+                            ajaxObject.error(xhr.responseJson, xhr.status);
+                        } else {
+                            ajaxObject.error(xhr.response, xhr.status);
+                        }*/
                     }
     		    }
                 if (ajaxObject.complete) {
+                    ajaxObject.complete(xhr, xhr.status);
+                    /*
                     if ((xhr.responseType === "" || xhr.responseType === "text") || (xhr.responseType === "json" && !xhr.response)) {
-                        ajaxObject.complete(xhr.responseText, xhr.status);
+                        ajaxObject.complete(xhr, xhr.status);
                     } else if (xhr.responseType === "json") {
-                        ajaxObject.complete(xhr.responseJson, xhr.status);
+                        ajaxObject.complete(xhr, xhr.status);
                     } else {
-                        ajaxObject.complete(xhr.response, xhr.status);
-                    }
+                        ajaxObject.complete(xhr, xhr.status);
+                    }*/
                 }
                 return xhr;
     	    };

@@ -938,14 +938,19 @@
          */
         fetch: function() {
             this.showProgressBar(true);
-            this.sortKey = null;
+
+            var view = this;
+
             var successHandler = function() {
-                this.showProgressBar(false);
+                view.showProgressBar(false);
+                view.sortKey = null;
+                view.populate(view.collection.toJSON());
+                view.refresh();
             };
-            var errorHandler = function() {
-                this.showProgressBar(false);
-                // show an error
-                logger.error("AUGMENTED: AutomaticTable fetch failed!");
+
+            var failHandler = function() {
+                view.showProgressBar(false);
+                view.showMessage("AutomaticTable fetch failed!");
             };
 
             this.collection.fetch({
@@ -954,7 +959,7 @@
                     successHandler();
                 },
                 error: function(){
-                    errorHandler();
+                    failHandler();
                 }
             });
         },
@@ -1032,7 +1037,7 @@
                     logger.warn("no element anchor");
                 }
             } else {
-                this.template = "<progress>Please wait.</progress>" + this.compileTemplate();
+                this.template = "<progress>Please wait.</progress>" + this.compileTemplate() + "<p class=\"message\"></p>";
                 this.showProgressBar(true);
 
                 if (this.el) {
@@ -1217,6 +1222,13 @@
                     p.style.display = (show) ? "block" : "none";
                     p.style.visibility = (show) ? "visible" : "hidden";
                 }
+            }
+        },
+        showMessage: function(message) {
+            if (this.el) {
+                var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                var p = e.querySelector("p[class=message]");
+                p.textContent = message;
             }
         }
     });
