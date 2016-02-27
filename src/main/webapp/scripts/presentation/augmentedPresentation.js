@@ -592,6 +592,7 @@
         name:           "data-name",
         type:           "data-type",
         description:    "data-description",
+        index:          "data-index",
         label:          "data-label",
         sortClass:      "sorted"
     };
@@ -626,7 +627,7 @@
         return csv;
     };
 
-    var defaultTableCompile = function(name, desc, columns, data, lineNumbers, sortKey) {
+    var defaultTableCompile = function(name, desc, columns, data, lineNumbers, sortKey, editable) {
         var html = "<table " + tableDataAttributes.name + "=\"" + name + "\" " + tableDataAttributes.description + "=\"" + desc + "\">";
         if (name) {
             html = html + "<caption";
@@ -639,7 +640,11 @@
         html = html + defaultTableHeader(columns, lineNumbers, sortKey);
         html = html + "</thead><tbody>";
         if (data) {
-            html = html + defaultTableBody(data, lineNumbers);
+            if (editable) {
+                html = html + editableTableBody(data, lineNumbers);
+            } else {
+                html = html + defaultTableBody(data, lineNumbers);
+            }
         }
         html = html + "</tbody></table>";
         return html;
@@ -681,6 +686,27 @@
                     dobj = d[dkey];
                     t = (typeof dobj);
                     html = html + "<td " + tableDataAttributes.type + "=\"" + t + "\" class=\"" + t + "\">" + dobj + "</td>";
+                }
+            }
+            html = html + "</tr>";
+        }
+        return html;
+    };
+
+    var editableTableBody = function(data, lineNumbers) {
+        var i, d, dkey, dobj, html = "", l = data.length, t;
+        for (i = 0; i < l; i++) {
+            d = data[i];
+            html = html + "<tr>";
+            if (lineNumbers) {
+                html = html + "<td class=\"label number\">" + (i+1) + "</td>";
+            }
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    dobj = d[dkey];
+                    t = (typeof dobj);
+                    html = html + "<td " + tableDataAttributes.type + "=\"" + t + "\" class=\"" + t + "\">";
+                    html = html + "<input type=\"" + (t==="number" ? "number" : "text") + "\" value=\"" + dobj + "\"" + tableDataAttributes.name + "=\"" + dkey + "\" " + tableDataAttributes.index + "=\"" + i + "\"/></td>";
                 }
             }
             html = html + "</tr>";
@@ -817,6 +843,13 @@
         // standard functionality
 
         /**
+         * The editable property - enables editing of cells
+         * @property {boolean} editable The editable property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        editable: false,
+
+        /**
          * The crossOrigin property - enables cross origin fetch
          * @property {boolean} crossOrigin The crossOrigin property
          * @memberof Augmented.Presentation.AutomaticTable
@@ -908,6 +941,10 @@
                 if (options.lineNumbers) {
                     this.lineNumbers = options.lineNumbers;
                 }
+
+                if (options.editable) {
+                    this.editable = options.editable;
+                }
             }
             if (this.uri) {
                 this.collection.url = this.uri;
@@ -963,6 +1000,40 @@
                 }
             });
         },
+
+        /**
+         * Save the data to the source URI
+         * This only functions if the table is editable
+         * @method save
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        save: function() {
+            if (this.editable) {
+                this.showProgressBar(true);
+
+                var view = this;
+
+                var successHandler = function() {
+                    view.showProgressBar(false);
+                };
+
+                var failHandler = function() {
+                    view.showProgressBar(false);
+                    view.showMessage("AutomaticTable save failed!");
+                };
+
+                this.collection.save({
+                    reset: true,
+                    success: function(){
+                        successHandler();
+                    },
+                    error: function(){
+                        failHandler();
+                    }
+                });
+            }
+        },
+
         /**
          * Populate the data in the table
          * @method populate
@@ -1020,7 +1091,11 @@
                         thead.innerHTML = h;
 
                         if (this.collection && (this.collection.length > 0)){
-                            h = defaultTableBody(this.collection.toJSON(), this.lineNumbers);
+                            if (this.editable) {
+                                h = editableTableBody(this.collection.toJSON(), this.lineNumbers);
+                            } else {
+                                h = defaultTableBody(this.collection.toJSON(), this.lineNumbers);
+                            }
                         } else {
                             h = "";
                         }
@@ -1028,13 +1103,20 @@
 
                     }
                 } else if (this.$el) {
+                    logger.debug("AUGMENTED: AutoTable using jQuery to render.");
                     if (this.sortable) {
                         this.unbindSortableColumnEvents();
                     }
                     this.$el("thead").html(defaultTableHeader(this.columns, this.lineNumbers, this.sortKey));
-                    this.$el("tbody").html(defaultTableBody(this.collection.toJSON(), this.lineNumbers));
+                    var jh = "";
+                    if (this.editable) {
+                        jh = editableTableBody(this.collection.toJSON(), this.lineNumbers);
+                    } else {
+                        jh = defaultTableBody(this.collection.toJSON(), this.lineNumbers);
+                    }
+                    this.$el("tbody").html(jh);
                 } else {
-                    logger.warn("no element anchor");
+                    logger.warn("AUGMENTED: AutoTable no element anchor, not rendering.");
                 }
             } else {
                 this.template = "<progress>Please wait.</progress>" + this.compileTemplate() + "<p class=\"message\"></p>";
@@ -1048,7 +1130,7 @@
                 } else if (this.$el) {
                     this.$el.html(this.template);
                 } else {
-                    logger.warn("no element anchor");
+                    logger.warn("AUGMENTED: AutoTable no element anchor, not rendering.");
                 }
 
                 if (this.renderPaginationControl) {
@@ -1060,8 +1142,38 @@
             if (this.sortable) {
                 this.bindSortableColumnEvents();
             }
+
+            if (this.editable) {
+                this.unbindCellChangeEvents();
+                this.bindCellChangeEvents();
+            }
+
             this.showProgressBar(false);
             return this;
+        },
+
+        saveCell: function(event) {
+            var key = event.target;
+            var model = this.collection.at(key.getAttribute(tableDataAttributes.index));
+            model.set(key.getAttribute(tableDataAttributes.name), key.value);
+        },
+
+        bindCellChangeEvents: function() {
+            var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
+            var cells = [].slice.call(document.querySelectorAll(myEl + " table tr td input"));
+            var i=0, l=cells.length;
+            for(i=0; i < l; i++) {
+                cells[i].addEventListener("change", this.saveCell.bind(this), false);
+            }
+        },
+
+        unbindCellChangeEvents: function() {
+            var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
+            var cells = [].slice.call(document.querySelectorAll(myEl + " table tr td input"));
+            var i=0, l=cells.length;
+            for(i=0; i < l; i++) {
+                cells[i].removeEventListener("change", this.saveCell, false);
+            }
         },
 
         /**
@@ -1182,7 +1294,7 @@
          * @returns {string} Returns the template
          */
         compileTemplate: function() {
-            var h = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers, this.sortKey);
+            var h = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers, this.sortKey, this.editable);
             if (this.renderPaginationControl) {
                 h = h + defaultPaginationControl(this.currentPage(), this.totalPages());
             }
@@ -1242,6 +1354,43 @@
      * @extends Augmented.Presentation.AutomaticTable
      */
     Augmented.Presentation.AutoTable = Augmented.Presentation.AutomaticTable;
+
+    /**
+     * Augmented.Presentation.BigDataTable
+     * Instance class preconfigured for sorting and pagination
+     * @constructor Augmented.Presentation.BigDataTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.BigDataTable = Augmented.Presentation.AutomaticTable.extend({
+        renderPaginationControl: true,
+        lineNumbers: true,
+        sortable: true
+    });
+
+    /**
+     * Augmented.Presentation.EditableTable
+     * Instance class preconfigured for editing
+     * @constructor Augmented.Presentation.EditableTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.EditableTable = Augmented.Presentation.AutomaticTable.extend({
+        editable: true,
+        lineNumbers: true
+    });
+
+    /**
+     * Augmented.Presentation.EditableBigDataTable
+     * Instance class preconfigured for editing, sorting, and pagination
+     * @constructor Augmented.Presentation.EditableBigDataTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.EditableBigDataTable = Augmented.Presentation.AutomaticTable.extend({
+        renderPaginationControl: true,
+        lineNumbers: true,
+        sortable: true,
+        editable: true
+    });
+
 
     return Augmented.Presentation;
 }));
