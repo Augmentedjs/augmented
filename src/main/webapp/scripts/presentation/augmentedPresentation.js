@@ -641,9 +641,9 @@
         html = html + "</thead><tbody>";
         if (data) {
             if (editable) {
-                html = html + editableTableBody(data, lineNumbers);
+                html = html + editableTableBody(data, lineNumbers, sortKey);
             } else {
-                html = html + defaultTableBody(data, lineNumbers);
+                html = html + defaultTableBody(data, lineNumbers, sortKey);
             }
         }
         html = html + "</tbody></table>";
@@ -673,7 +673,7 @@
         return html;
     };
 
-    var defaultTableBody = function(data, lineNumbers) {
+    var defaultTableBody = function(data, lineNumbers, sortKey) {
         var i, d, dkey, dobj, html = "", l = data.length, t;
         for (i = 0; i < l; i++) {
             d = data[i];
@@ -685,7 +685,11 @@
                 if (d.hasOwnProperty(dkey)) {
                     dobj = d[dkey];
                     t = (typeof dobj);
-                    html = html + "<td " + tableDataAttributes.type + "=\"" + t + "\" class=\"" + t + "\">" + dobj + "</td>";
+                    html = html + "<td " + tableDataAttributes.type + "=\"" + t + "\" class=\"" + t;
+                    if (sortKey === dkey) {
+                        html = html + " " + tableDataAttributes.sortClass;
+                    }
+                    html = html + "\">" + dobj + "</td>";
                 }
             }
             html = html + "</tr>";
@@ -693,7 +697,7 @@
         return html;
     };
 
-    var editableTableBody = function(data, lineNumbers) {
+    var editableTableBody = function(data, lineNumbers, sortKey) {
         var i, d, dkey, dobj, html = "", l = data.length, t;
         for (i = 0; i < l; i++) {
             d = data[i];
@@ -705,7 +709,11 @@
                 if (d.hasOwnProperty(dkey)) {
                     dobj = d[dkey];
                     t = (typeof dobj);
-                    html = html + "<td " + tableDataAttributes.type + "=\"" + t + "\" class=\"" + t + "\">";
+                    html = html + "<td " + tableDataAttributes.type + "=\"" + t + "\" class=\"" + t;
+                    if (sortKey === dkey) {
+                        html = html + " " + tableDataAttributes.sortClass;
+                    }
+                    html = html + "\">";
                     html = html + "<input type=\"" + (t==="number" ? "number" : "text") + "\" value=\"" + dobj + "\"" + tableDataAttributes.name + "=\"" + dkey + "\" " + tableDataAttributes.index + "=\"" + i + "\"/></td>";
                 }
             }
@@ -755,7 +763,7 @@
          * @param {string} key The key to sort by
          */
         sortBy: function(key) {
-            if (key) {
+            if (key && this.sortKey !== key) {
                 this.sortKey = key;
                 this.collection.sortBy(key);
                 this.refresh();
@@ -1020,6 +1028,7 @@
                 var failHandler = function() {
                     view.showProgressBar(false);
                     view.showMessage("AutomaticTable save failed!");
+                    logger.warn("AUGMENTED: AutomaticTable save failed!");
                 };
 
                 this.collection.save({
@@ -1092,9 +1101,9 @@
 
                         if (this.collection && (this.collection.length > 0)){
                             if (this.editable) {
-                                h = editableTableBody(this.collection.toJSON(), this.lineNumbers);
+                                h = editableTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
                             } else {
-                                h = defaultTableBody(this.collection.toJSON(), this.lineNumbers);
+                                h = defaultTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
                             }
                         } else {
                             h = "";
@@ -1110,9 +1119,9 @@
                     this.$el("thead").html(defaultTableHeader(this.columns, this.lineNumbers, this.sortKey));
                     var jh = "";
                     if (this.editable) {
-                        jh = editableTableBody(this.collection.toJSON(), this.lineNumbers);
+                        jh = editableTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
                     } else {
-                        jh = defaultTableBody(this.collection.toJSON(), this.lineNumbers);
+                        jh = defaultTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
                     }
                     this.$el("tbody").html(jh);
                 } else {
