@@ -39,21 +39,20 @@
  *
  * @author Bob Warren
  *
- * @requires underscore.js
  * @requires augmented.js
  * @module Augmented.Presentation
- * @version 0.1.0
+ * @version 0.2.0α
  * @license Apache-2.0
  */
 (function(moduleFactory) {
     if (typeof exports === 'object') {
-	    module.exports = moduleFactory(require('underscore', 'augmented'));
+	    module.exports = moduleFactory(require('augmented'));
     } else if (typeof define === 'function' &amp;&amp; define.amd) {
-	    define([ 'underscore', 'augmented' ], moduleFactory);
+	    define(['augmented' ], moduleFactory);
     } else {
-	    window.Augmented.Presentation = moduleFactory(window._, window.Augmented);
+	    window.Augmented.Presentation = moduleFactory(window.Augmented);
     }
-}(function(_, Augmented) {
+}(function(Augmented) {
     /**
      * The base namespece for all of the Presentation module.
      * @namespace Presentation
@@ -67,15 +66,21 @@
      */
     Augmented.Presentation.VERSION = Augmented.VERSION;
 
+    /**
+     * A private logger for use in the framework only
+     * @private
+     */
+    var logger = Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.console, Augmented.Configuration.LoggerLevel);
+
     Augmented.Utility.extend(Augmented.View, {
         /**
          * Augmented Presentation View extension - getFormData&lt;br/>
          * Two-way binding to models&lt;br/>
-         * &lt;em>uses _.reduce&lt;/em>
          * TODO: maybe deprecate this and use something better
          * @method getFormData
          * @param {string} region The region (element) to parse
          * @memberof Augmented.View
+         * @deprecated
          * @mixin
          */
     	getFormData: function(region) {
@@ -100,7 +105,7 @@
 
     	    var n = serializeFormField(document.querySelectorAll(region + " > input"));
 
-    	    var data = _(n).reduce(function(obj, field) {
+    	    var data = (n).reduce(function(obj, field) {
         		switch (field.type) {
         		case 'number':
         		    if (field.value !== "") {
@@ -148,6 +153,126 @@
     var undelegateEvents = Augmented.View.prototype.undelegateEvents;
 
     /**
+     * Colleague View - The 'child' view.&lt;br/>
+     * Allow to define convention-based subscriptions
+     * as an 'subscriptions' hash on a view. Subscriptions
+     * can then be easily setup and cleaned.
+     *
+     * @constructor Augmented.Presentation.Colleague
+     * @name Augmented.Presentation.Colleague
+     * @memberof Augmented.Presentation
+     * @extends Augmented.View
+     */
+    var abstractColleague = Augmented.Presentation.Colleague = Augmented.View.extend({
+        mediator: null,
+    	/**
+    	 * Extend delegateEvents() to set subscriptions
+         * @method delegateEvents
+         * @memberof Augmented.Presentation.Colleague
+    	 */
+    	delegateEvents: function() {
+    	    delegateEvents.apply(this, arguments);
+    	    this.setSubscriptions();
+    	},
+
+    	/**
+    	 * Extend undelegateEvents() to unset subscriptions
+         * @method undelegateEvents
+         * @memberof Augmented.Presentation.Colleague
+    	 */
+    	undelegateEvents: function() {
+    	    undelegateEvents.apply(this, arguments);
+    	    this.unsetSubscriptions();
+    	},
+
+    	/**
+        * @property {Object} List of subscriptions, to be defined
+        * @memberof Augmented.Presentation.Colleague
+        * @private
+        */
+    	subscriptions: {},
+
+        /**
+    	 * Gets all subscriptions
+         * @method getSubscriptions
+         * @memberof Augmented.Presentation.Colleague
+         * @returns {object} Returns all subscriptions
+    	 */
+        getSubscriptions: function() {
+            return this.subscriptions;
+        },
+
+    	/**
+    	 * Subscribe to each subscription
+         * @method setSubscriptions
+    	 * @param {Object} [subscriptions] An optional hash of subscription to add
+         * @memberof Augmented.Presentation.Colleague
+    	 */
+    	setSubscriptions: function(subscriptions) {
+    	    if (subscriptions) {
+    		    Augmented.Utility.extend(this.subscriptions || {}, subscriptions);
+    	    }
+    	    subscriptions = subscriptions || this.subscriptions;
+    	    if (!subscriptions || (subscriptions.length === 0)) {
+    		    return;
+    	    }
+    	    // Just to be sure we don't set duplicate
+    	    this.unsetSubscriptions(subscriptions);
+
+            var i = 0, l = subscriptions.length;
+            for (i; i &lt; l; i++) {
+                var subscription = subscriptions[i];
+                var once = false;
+                if (subscription.$once) {
+                    subscription = subscription.$once;
+                    once = true;
+                }
+                if (typeof subscription === 'string') {
+                    subscription = this[subscription];
+                }
+                this.subscribe(subscription.channel, subscription, this, once);
+            }
+    	},
+
+    	/**
+    	 * Unsubscribe to each subscription
+         * @method unsetSubscriptions
+    	 * @param {Object} [subscriptions] An optional hash of subscription to remove
+         * @memberof Augmented.Presentation.Colleague
+    	 */
+    	unsetSubscriptions: function(subscriptions) {
+    	    subscriptions = subscriptions || this.subscriptions;
+    	    if (!subscriptions || (subscriptions.length === 0)) {
+    		    return;
+    	    }
+
+            var i = 0, l = subscriptions.length;
+            for (i; i &lt; l; i++) {
+                var subscription = subscriptions[i];
+                var once = false;
+                if (subscription.$once) {
+                    subscription = subscription.$once;
+                    once = true;
+                }
+                if (typeof subscription == 'string') {
+                    subscription = this[subscription];
+                }
+                this.unsubscribe(subscription.channel, subscription.$once || subscription, this);
+            }
+    	},
+
+        sendMessage: function(message, data) {
+            this.mediator.trigger(message, data);
+        },
+        setMediatorMessageQueue: function(e) {
+            this.mediator = e;
+        },
+        removeMediatorMessageQueue: function() {
+            this.mediator = null;
+        }
+    });
+
+    /**
      * Mediator View - The mediator in the Mediator Pattern&lt;br/>
      * The mediator defines the interface for communication between colleague views.
      * Loose coupling between colleague objects is achieved by having colleagues communicate
@@ -159,9 +284,9 @@
      * @constructor Mediator
      * @name Augmented.Presentation.Mediator
      * @memberof Augmented.Presentation
-     * @extends Augmented.View
+     * @extends Augmented.Presentation.Colleague
      */
-    var abstractMediator = Augmented.Presentation.Mediator = Augmented.View.extend({
+    var abstractMediator = Augmented.Presentation.Mediator = Augmented.Presentation.Colleague.extend({
         /**
          * Default Channel Property
          * @property {string} defaultChannel The default channel for the view
@@ -189,6 +314,7 @@
         		if (!channel) {
         		    channel = this.defaultChannel;
         		}
+                colleague.setMediatorMessageQueue(this);
 
         		this.subscribe(channel, callback, colleague, false);
     	    }
@@ -206,6 +332,7 @@
         		if (!channel) {
         		    channel = this.defaultChannel;
         		}
+                colleague.removeMediatorMessageQueue();
 
         		this.unsubscribe(channel, callback, colleague);
     	    }
@@ -215,19 +342,22 @@
     	 * Subscribe to a channel
     	 * @method subscribe
     	 * @param {string} channel The Channel events are pubished to
-    	 * @param {string} subscription The subscription to subscribe to
+    	 * @param {function} callback The callback to call on channel event
     	 * @param {object} context The context (or 'this')
     	 * @param {boolean} once Toggle to set subscribe only once
          * @memberof Augmented.Presentation.Mediator
     	 */
-    	subscribe: function(channel, subscription, context, once) {
-    	    if (!this.channels[channel])
+    	subscribe: function(channel, callback, context, once) {
+    	    if (!this.channels[channel]) {
         		this.channels[channel] = [];
-        	    this.channels[channel].push({
-        		fn : subscription,
+            }
+        	this.channels[channel].push({
+        		fn : callback,
         		context : context || this,
         		once : once
     	    });
+
+            this.on(channel, this.publish, context);
     	},
 
     	/**
@@ -242,8 +372,9 @@
     		return;
 
     	    var args = [].slice.call(arguments, 1), subscription;
+            var i = 0, l = this.channels[channel].length;
 
-    	    for (var i = 0; i &lt; this.channels[channel].length; i++) {
+    	    for (i = 0; i &lt; l; i++) {
         		subscription = this.channels[channel][i];
         		subscription.fn.apply(subscription.context, args);
         		if (subscription.once) {
@@ -266,8 +397,8 @@
     		    return;
     	    }
 
-    	    var subscription;
-    	    for (var i = 0; i &lt; this.channels[channel].length; i++) {
+    	    var subscription, i = 0, l = this.channels[channel].length;
+    	    for (i = 0; i &lt; l; i++) {
         		subscription = this.channels[channel][i];
         		if (subscription.fn === fn &amp;&amp; subscription.context === context) {
         		    this.channels[channel].splice(i, 1);
@@ -333,115 +464,6 @@
     	 */
     	getDefaultChannel: function() {
     	    return this.channels[this.defaultChannel];
-    	}
-        });
-
-        /**
-         * Colleague View - The 'child' view.&lt;br/>
-         * Allow to define convention-based subscriptions
-         * as an 'subscriptions' hash on a view. Subscriptions
-         * can then be easily setup and cleaned.
-         *
-         * @constructor Augmented.Presentation.Colleague
-         * @name Augmented.Presentation.Colleague
-         * @memberof Augmented.Presentation
-         * @extends Augmented.View
-         */
-        var abstractColleague = Augmented.Presentation.Colleague = Augmented.View.extend({
-    	/**
-    	 * Extend delegateEvents() to set subscriptions
-         * @method delegateEvents
-         * @memberof Augmented.Presentation.Colleague
-    	 */
-    	delegateEvents: function() {
-    	    delegateEvents.apply(this, arguments);
-    	    this.setSubscriptions();
-    	},
-
-    	/**
-    	 * Extend undelegateEvents() to unset subscriptions
-         * @method undelegateEvents
-         * @memberof Augmented.Presentation.Colleague
-    	 */
-    	undelegateEvents: function() {
-    	    undelegateEvents.apply(this, arguments);
-    	    this.unsetSubscriptions();
-    	},
-
-    	/**
-        * @property {Object} List of subscriptions, to be defined
-        * @memberof Augmented.Presentation.Colleague
-        * @private
-        */
-    	subscriptions: {},
-
-        /**
-    	 * Gets all subscriptions
-         * @method getSubscriptions
-         * @memberof Augmented.Presentation.Colleague
-         * @returns {object} Returns all subscriptions
-    	 */
-        getSubscriptions: function() {
-            return this.subscriptions;
-        },
-
-    	/**
-    	 * Subscribe to each subscription
-         * @method setSubscriptions
-    	 * @param {Object} [subscriptions] An optional hash of subscription to add
-         * @memberof Augmented.Presentation.Colleague
-    	 */
-    	setSubscriptions: function(subscriptions) {
-    	    if (subscriptions) {
-    		    Augmented.Utility.extend(this.subscriptions || {}, subscriptions);
-    	    }
-    	    subscriptions = subscriptions || this.subscriptions;
-    	    if (!subscriptions || (subscriptions.length === 0)) {
-    		    return;
-    	    }
-    	    // Just to be sure we don't set duplicate
-    	    this.unsetSubscriptions(subscriptions);
-
-            var i = 0;
-            for (i; i &lt; subscriptions.length; i++) {
-                var subscription = subscriptions[i];
-                var once = false;
-                if (subscription.$once) {
-                    subscription = subscription.$once;
-                    once = true;
-                }
-                if (typeof subscription === 'string') {
-                    subscription = this[subscription];
-                }
-                this.subscribe(subscription.channel, subscription, this, once);
-            }
-    	},
-
-    	/**
-    	 * Unsubscribe to each subscription
-         * @method unsetSubscriptions
-    	 * @param {Object} [subscriptions] An optional hash of subscription to remove
-         * @memberof Augmented.Presentation.Colleague
-    	 */
-    	unsetSubscriptions: function(subscriptions) {
-    	    subscriptions = subscriptions || this.subscriptions;
-    	    if (!subscriptions || (subscriptions.length === 0)) {
-    		    return;
-    	    }
-
-            var i = 0;
-            for (i; i &lt; subscriptions.length; i++) {
-                var subscription = subscriptions[i];
-                var once = false;
-                if (subscription.$once) {
-                    subscription = subscription.$once;
-                    once = true;
-                }
-                if (typeof subscription == 'string') {
-                    subscription = this[subscription];
-                }
-                this.unsubscribe(subscription.channel, subscription.$once || subscription, this);
-            }
     	}
     });
 
@@ -531,14 +553,27 @@
          */
         this.attachStylesheets = function() {
             var headElement = document.getElementsByTagName("head")[0];
-            var i = 0;
-            for (i; i&lt;this.Stylesheets.length; i++) {
+            var i = 0, l = this.Stylesheets.length;
+            for (i; i &lt; l; i++) {
                 var link = document.createElement("link");
                 link.type = "text/css";
                 link.rel = "stylesheet";
                 link.href = this.Stylesheets[i];
                 headElement.appendChild(link);
             }
+        };
+        /**
+         * Replace stylesheets then attach registered stylesheets to the DOM
+         * @method replaceStylesheets
+         * @memberof Augmented.Presentation.Application
+         */
+        this.replaceStylesheets = function() {
+            var links = document.getElementsByTagName("link");
+            var i = 0, l = links.length - 1;
+            for (i = l; i >= 0; i--) {
+                element[i].parentNode.removeChild(element[i]);
+            }
+            this.attachStylesheets();
         };
         /**
          * Sets the current breadcrumb
@@ -568,7 +603,6 @@
          * @method getBreadcrumbs
          * @memberof Augmented.Presentation.Application
          * @returns {array} Returns alls the breadcrumbs
-
          */
         this.getBreadcrumbs = function() {
             return this.breadcrumb.toArray();
@@ -582,39 +616,150 @@
 
     });
 
-    var defaultTableCompile = function(columns, data) {
-        var html = "&lt;table>";
+    var tableDataAttributes = {
+        name:           "data-name",
+        type:           "data-type",
+        description:    "data-description",
+        index:          "data-index",
+        label:          "data-label",
+        sortClass:      "sorted"
+    };
 
+    var csvTableCompile = function(name, desc, columns, data){
+        var csv = "";
         if (columns) {
-            html = html + "&lt;thead>&lt;tr>";
             var key, obj;
             for (key in columns) {
                 if (columns.hasOwnProperty(key)) {
                     obj = columns[key];
-                    html = html + "&lt;th>" + key + "&lt;/th>";
+                    csv = csv + key + ",";
                 }
             }
-            html = html + "&lt;/tr>&lt;/thead>";
+            csv = csv.slice(0, -1);
+            csv = csv + "\n";
         }
 
-        if (data) {
-            html = html + "&lt;tbody>";
-            var i, d, dkey, dobj;
-            for (i=0; i&lt; data.length; i++) {
-                d = data[i];
-                html = html + "&lt;tr>";
-                for (dkey in d) {
-                    if (d.hasOwnProperty(dkey)) {
-                        dobj = d[dkey];
-                        html = html + "&lt;td>" + dobj + "&lt;/td>";
-                    }
+        var i, d, dkey, dobj, html = "", l = data.length, t;
+        for (i = 0; i &lt; l; i++) {
+            d = data[i];
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    dobj = d[dkey];
+                    t = (typeof dobj);
+                    csv = csv + dobj + ",";
                 }
-                html = html + "&lt;/tr>";
             }
-            html = html + "&lt;/tbody>";
+            csv = csv.slice(0, -1);
+            csv = csv + "\n";
         }
-        html = html + "&lt;/table>";
+        return csv;
+    };
+
+    var defaultTableCompile = function(name, desc, columns, data, lineNumbers, sortKey, editable) {
+        var html = "&lt;table " + tableDataAttributes.name + "=\"" + name + "\" " + tableDataAttributes.description + "=\"" + desc + "\">";
+        if (name) {
+            html = html + "&lt;caption";
+            if (desc) {
+                html = html + " title=\"" + desc + "\"";
+            }
+            html = html + ">" + name + "&lt;/caption>";
+        }
+        html = html + "&lt;thead>";
+        html = html + defaultTableHeader(columns, lineNumbers, sortKey);
+        html = html + "&lt;/thead>&lt;tbody>";
+        if (data) {
+            if (editable) {
+                html = html + editableTableBody(data, lineNumbers, sortKey);
+            } else {
+                html = html + defaultTableBody(data, lineNumbers, sortKey);
+            }
+        }
+        html = html + "&lt;/tbody>&lt;/table>";
         return html;
+    };
+
+    var defaultTableHeader = function(columns, lineNumbers, sortKey) {
+        var html = "";
+        if (columns) {
+            html = html + "&lt;tr>";
+            if (lineNumbers) {
+                html = html + "&lt;th " + tableDataAttributes.name + "=\"lineNumber\">#&lt;/th>";
+            }
+            var key, obj;
+            for (key in columns) {
+                if (columns.hasOwnProperty(key)) {
+                    obj = columns[key];
+                    html = html + "&lt;th " + tableDataAttributes.name + "=\"" + key + "\" " + tableDataAttributes.description + "=\"" + obj.description + "\" " + tableDataAttributes.type + "=\"" + obj.type + "\"";
+                    if (sortKey === key) {
+                        html = html + " class=\"" + tableDataAttributes.sortClass + "\"";
+                    }
+                    html = html + ">" + key + "&lt;/th>";
+                }
+            }
+            html = html + "&lt;/tr>";
+        }
+        return html;
+    };
+
+    var defaultTableBody = function(data, lineNumbers, sortKey) {
+        var i, d, dkey, dobj, html = "", l = data.length, t;
+        for (i = 0; i &lt; l; i++) {
+            d = data[i];
+            html = html + "&lt;tr>";
+            if (lineNumbers) {
+                html = html + "&lt;td class=\"label number\">" + (i+1) + "&lt;/td>";
+            }
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    dobj = d[dkey];
+                    t = (typeof dobj);
+                    html = html + "&lt;td " + tableDataAttributes.type + "=\"" + t + "\" class=\"" + t;
+                    if (sortKey === dkey) {
+                        html = html + " " + tableDataAttributes.sortClass;
+                    }
+                    html = html + "\">" + dobj + "&lt;/td>";
+                }
+            }
+            html = html + "&lt;/tr>";
+        }
+        return html;
+    };
+
+    var editableTableBody = function(data, lineNumbers, sortKey) {
+        var i, d, dkey, dobj, html = "", l = data.length, t;
+        for (i = 0; i &lt; l; i++) {
+            d = data[i];
+            html = html + "&lt;tr>";
+            if (lineNumbers) {
+                html = html + "&lt;td class=\"label number\">" + (i+1) + "&lt;/td>";
+            }
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    dobj = d[dkey];
+                    t = (typeof dobj);
+                    html = html + "&lt;td " + tableDataAttributes.type + "=\"" + t + "\" class=\"" + t;
+                    if (sortKey === dkey) {
+                        html = html + " " + tableDataAttributes.sortClass;
+                    }
+                    html = html + "\">";
+                    html = html + "&lt;input type=\"" + (t==="number" ? "number" : "text") + "\" value=\"" + dobj + "\"" + tableDataAttributes.name + "=\"" + dkey + "\" " + tableDataAttributes.index + "=\"" + i + "\"/>&lt;/td>";
+                }
+            }
+            html = html + "&lt;/tr>";
+        }
+        return html;
+    };
+
+    /*
+     * &lt;&lt; First | &lt; Previous | # | Next > | Last >>
+    */
+    var defaultPaginationControl = function(currentPage, totalPages) {
+            return "&lt;div class=\"paginationControl\">" +
+                    "&lt;span class=\"first\">&lt;&lt; First&lt;/span>" +
+                    "&lt;span class=\"previous\">&lt; Previous&lt;/span>" +
+                    "&lt;span class=\"current\">" + currentPage + " of " + totalPages + "&lt;/span>" +
+                    "&lt;span class=\"next\">Next >&lt;/span>" +
+                    "&lt;span class=\"last\">Last >>&lt;/span>&lt;/div>";
     };
 
     /**
@@ -625,6 +770,133 @@
      * @memberof Augmented.Presentation
      */
     var autoTable = Augmented.Presentation.AutomaticTable = abstractColleague.extend({
+        // sorting
+        /**
+         * The sortable property - enable sorting in table
+         * @property {boolean} sortable enable sorting in the table
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        sortable: false,
+        /**
+         * The sortStyle property - setup the sort API
+         * @property {string} sortStyle setup the sort API
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        sortStyle: "client",
+        sortKey: null,
+        /**
+         * Sort the tabe by a key (sent via a UI Event)
+         * @method sortBy
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {string} key The key to sort by
+         */
+        sortBy: function(key) {
+            if (key &amp;&amp; this.sortKey !== key) {
+                this.sortKey = key;
+                this.collection.sortBy(key);
+                this.refresh();
+            }
+        },
+
+        // pagination
+        /**
+         * The renderPaginationControl property - render the pagination control
+         * @property {boolean} renderPaginationControl render the pagination control
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        renderPaginationControl: false,
+        /**
+         * The paginationAPI property - setup the paginatin API to use
+         * @property {Augmented.PaginationFactory.type} paginationAPI the pagination API to use
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        paginationAPI: null,
+        /**
+         * Return the current page number
+         * @method currentPage
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @returns {number} The current page number
+         */
+        currentPage: function() {
+            return this.collection.currentPage;
+        },
+        /**
+         * Return the total pages
+         * @method totalPages
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @returns {number} The total pages
+         */
+        totalPages: function() {
+            return this.collection.totalPages;
+        },
+        /**
+         * Advance to the next page
+         * @method nextPage
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        nextPage: function() {
+            this.collection.nextPage();
+            this.refresh();
+        },
+        /**
+         * Return to the previous page
+         * @method previousPage
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        previousPage: function() {
+            this.collection.previousPage();
+            this.refresh();
+        },
+        /**
+         * Go to a specific page
+         * @method goToPage
+         * @param {number} page The page to go to
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        goToPage: function(page) {
+            this.collection.goToPage(page);
+            this.refresh();
+        },
+        /**
+         * Return to the first page
+         * @method firstPage
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        firstPage: function() {
+            this.collection.firstPage();
+            this.refresh();
+        },
+        /**
+         * Advance to the last page
+         * @method lastPage
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        lastPage: function() {
+            this.collection.lastPage();
+            this.refresh();
+        },
+
+        // standard functionality
+
+        /**
+         * The editable property - enables editing of cells
+         * @property {boolean} editable The editable property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        editable: false,
+
+        /**
+         * The crossOrigin property - enables cross origin fetch
+         * @property {boolean} crossOrigin The crossOrigin property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        crossOrigin: false,
+        /**
+         * The lineNumber property - turns on line numbers
+         * @property {boolean} lineNumbers The lineNumbers property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        lineNumbers: false,
         /**
          * The columns property
          * @property {object} columns The columns property
@@ -639,10 +911,17 @@
         uri: null,
         /**
          * The data property
-         * @property {object} data The data property
+         * @property {array} data The data property
          * @memberof Augmented.Presentation.AutomaticTable
+         * @private
          */
         data: [],
+        /**
+         * The collection property
+         * @property {Augmented.PaginatedCollection} collection The collection property
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @private
+         */
         collection: null,
         /**
         * The initialized property
@@ -658,12 +937,18 @@
          * @returns {boolean} Returns true on success of initalization
          */
         initialize: function(options) {
+            this.init();
+
             if (this.collection) {
                 this.collection.reset();
-            } else {
-                this.collection = new autoTableCollection();
             }
             if (options) {
+                if (options.paginationAPI) {
+                    this.paginationAPI = options.paginationAPI;
+                }
+                if (!this.collection) {
+                    this.collection = Augmented.PaginationFactory.getPaginatedCollection(this.paginationAPI);
+                }
                 if (options.schema) {
                     this.schema = options.schema;
                 }
@@ -674,10 +959,27 @@
 
                 if (options.url) {
                     this.url = options.url;
+                    this.collection.url = options.url;
                 }
 
-                if (options.data) {
+                if (options.data &amp;&amp; (Array.isArray(options.data))) {
                     this.populate(options.data);
+                }
+
+                if (options.renderPaginationControl) {
+                    this.renderPaginationControl = options.renderPaginationControl;
+                }
+
+                if (options.sortable) {
+                    this.sortable = options.sortable;
+                }
+
+                if (options.lineNumbers) {
+                    this.lineNumbers = options.lineNumbers;
+                }
+
+                if (options.editable) {
+                    this.editable = options.editable;
                 }
             }
             if (this.uri) {
@@ -692,6 +994,14 @@
                 this.collection.schema = this.schema;
                 this.isInitalized = true;
             }
+            if (this.schema.title) {
+                this.name = this.schema.title;
+            }
+            if (this.schema.description) {
+                this.description = this.schema.description;
+            }
+            this.collection.crossOrigin = this.crossOrigin;
+
             return this.isInitalized;
         },
         /**
@@ -700,8 +1010,67 @@
          * @memberof Augmented.Presentation.AutomaticTable
          */
         fetch: function() {
-            this.collection.fetch();
+            this.showProgressBar(true);
+
+            var view = this;
+
+            var successHandler = function() {
+                view.showProgressBar(false);
+                view.sortKey = null;
+                view.populate(view.collection.toJSON());
+                view.refresh();
+            };
+
+            var failHandler = function() {
+                view.showProgressBar(false);
+                view.showMessage("AutomaticTable fetch failed!");
+            };
+
+            this.collection.fetch({
+                reset: true,
+                success: function(){
+                    successHandler();
+                },
+                error: function(){
+                    failHandler();
+                }
+            });
         },
+
+        /**
+         * Save the data to the source URI
+         * This only functions if the table is editable
+         * @method save
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        save: function() {
+            if (this.editable) {
+                this.showProgressBar(true);
+
+                var view = this;
+
+                var successHandler = function() {
+                    view.showProgressBar(false);
+                };
+
+                var failHandler = function() {
+                    view.showProgressBar(false);
+                    view.showMessage("AutomaticTable save failed!");
+                    logger.warn("AUGMENTED: AutomaticTable save failed!");
+                };
+
+                this.collection.save({
+                    reset: true,
+                    success: function(){
+                        successHandler();
+                    },
+                    error: function(){
+                        failHandler();
+                    }
+                });
+            }
+        },
+
         /**
          * Populate the data in the table
          * @method populate
@@ -709,25 +1078,252 @@
          * @param {array} source The source data array
          */
         populate: function(source) {
-            this.data = source;
-            this.collection.reset(this.data);
+            if (source &amp;&amp; Array.isArray(source)) {
+                this.sortKey = null;
+                this.data = source;
+                this.collection.reset(this.data);
+            }
+        },
+        /**
+         * Clear all the data in the table
+         * @method clear
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        clear: function() {
+            this.sortKey = null;
+            this.data = [];
+            this.collection.reset(null);
+        },
+        /**
+         * Refresh the table
+         * @method refresh Refresh the table
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        refresh: function() {
+            this.render();
         },
         /**
         * Render the table
-         * @method render
+         * @method render Renders the table
          * @memberof Augmented.Presentation.AutomaticTable
          * @returns {object} Returns the view context ('this')
          */
         render: function() {
-            if (this.el) {
-                var e = Augmented.Utility.isString(this.el) ? document.querySelector(this.el) : this.el;
-                if (e) {
-                    this.template = this.compileTemplate();
-                    e.innerHTML = this.template;
+            var e;
+            if (this.template) {
+                // refresh the table body only
+                this.showProgressBar(true);
+                if (this.el) {
+                    e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                    var tbody = e.querySelector("tbody"), thead = e.querySelector("thead"), h;
+                    if (e) {
+                        if (this.columns &amp;&amp; (Object.keys(this.columns).length > 0)){
+                            if (this.sortable) {
+                                this.unbindSortableColumnEvents();
+                            }
+                            h = defaultTableHeader(this.columns, this.lineNumbers, this.sortKey);
+                        } else {
+                            h = "";
+                        }
+                        thead.innerHTML = h;
+
+                        if (this.collection &amp;&amp; (this.collection.length > 0)){
+                            if (this.editable) {
+                                h = editableTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                            } else {
+                                h = defaultTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                            }
+                        } else {
+                            h = "";
+                        }
+                        tbody.innerHTML = h;
+
+                    }
+                } else if (this.$el) {
+                    logger.debug("AUGMENTED: AutoTable using jQuery to render.");
+                    if (this.sortable) {
+                        this.unbindSortableColumnEvents();
+                    }
+                    this.$el("thead").html(defaultTableHeader(this.columns, this.lineNumbers, this.sortKey));
+                    var jh = "";
+                    if (this.editable) {
+                        jh = editableTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                    } else {
+                        jh = defaultTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                    }
+                    this.$el("tbody").html(jh);
+                } else {
+                    logger.warn("AUGMENTED: AutoTable no element anchor, not rendering.");
+                }
+            } else {
+                this.template = "&lt;progress>Please wait.&lt;/progress>" + this.compileTemplate() + "&lt;p class=\"message\">&lt;/p>";
+                this.showProgressBar(true);
+
+                if (this.el) {
+                    e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                    if (e) {
+                        e.innerHTML = this.template;
+                    }
+                } else if (this.$el) {
+                    this.$el.html(this.template);
+                } else {
+                    logger.warn("AUGMENTED: AutoTable no element anchor, not rendering.");
+                }
+
+                if (this.renderPaginationControl) {
+                    this.bindPaginationControlEvents();
                 }
             }
+            this.delegateEvents();
+
+            if (this.sortable) {
+                this.bindSortableColumnEvents();
+            }
+
+            if (this.editable) {
+                this.unbindCellChangeEvents();
+                this.bindCellChangeEvents();
+            }
+
+            this.showProgressBar(false);
             return this;
         },
+
+        saveCell: function(event) {
+            var key = event.target;
+            var model = this.collection.at(key.getAttribute(tableDataAttributes.index));
+            model.set(key.getAttribute(tableDataAttributes.name), key.value);
+        },
+
+        bindCellChangeEvents: function() {
+            var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
+            var cells = [].slice.call(document.querySelectorAll(myEl + " table tr td input"));
+            var i=0, l=cells.length;
+            for(i=0; i &lt; l; i++) {
+                cells[i].addEventListener("change", this.saveCell.bind(this), false);
+            }
+        },
+
+        unbindCellChangeEvents: function() {
+            var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
+            var cells = [].slice.call(document.querySelectorAll(myEl + " table tr td input"));
+            var i=0, l=cells.length;
+            for(i=0; i &lt; l; i++) {
+                cells[i].removeEventListener("change", this.saveCell, false);
+            }
+        },
+
+        /**
+         * Exports the table data in requested format
+         * @method export Exports the table
+         * @param {string} type The type requested (csv or html-default)
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @returns {string} The table data in requested format
+         */
+        export: function(type) {
+            var e = "";
+            if (type === "csv") {
+                e = csvTableCompile(this.name, this.description, this.columns, this.collection.toJSON());
+            } else {
+                // html
+                e = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), false, null);
+            }
+            return e;
+        },
+
+        unbindPaginationControlEvents: function() {
+            if (this.pageControlBound) {
+                var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
+                var first = document.querySelector(myEl + " div.paginationControl span.first");
+                var previous = document.querySelector(myEl + " div.paginationControl span.previous");
+                var next = document.querySelector(myEl + " div.paginationControl span.next");
+                var last = document.querySelector(myEl + " div.paginationControl span.last");
+                if (first) {
+                    first.removeEventListener("click", this.firstPage, false);
+                }
+                if (previous) {
+                    previous.removeEventListener("click", this.previousPage, false);
+                }
+                if (next) {
+                    next.removeEventListener("click", this.nextPage, false);
+                }
+                if (last) {
+                    last.removeEventListener("click", this.lastPage, false);
+                }
+                this.pageControlBound = false;
+            }
+        },
+
+        pageControlBound: false,
+
+        bindPaginationControlEvents: function() {
+            if (!this.pageControlBound) {
+                var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
+                var first = document.querySelector(myEl + " div.paginationControl span.first");
+                var previous = document.querySelector(myEl + " div.paginationControl span.previous");
+                var next = document.querySelector(myEl + " div.paginationControl span.next");
+                var last = document.querySelector(myEl + " div.paginationControl span.last");
+                if (first) {
+                    first.addEventListener("click", this.firstPage.bind(this), false);
+                }
+                if (previous) {
+                    previous.addEventListener("click", this.previousPage.bind(this), false);
+                }
+                if (next) {
+                    next.addEventListener("click", this.nextPage.bind(this), false);
+                }
+                if (last) {
+                    last.addEventListener("click", this.lastPage.bind(this), false);
+                }
+                this.pageControlBound = true;
+            }
+        },
+
+        deriveEventTarget: function(event) {
+            var key = null;
+            if (event) {
+                key = event.target.getAttribute(tableDataAttributes.name);
+            }
+            return key;
+        },
+        sortByHeaderEvent: function(event) {
+            var key = this.deriveEventTarget(event);
+            this.sortBy(key);
+        },
+        unbindSortableColumnEvents: function()  {
+            if (this.el &amp;&amp; this.sortable) {
+                var list;
+                if (typeof this.el === 'string') {
+                    list = document.querySelectorAll(this.el + " table tr th");
+                } else {
+                    list = document.querySelectorAll(this.el.localName + " table tr th");
+                }
+                var i = 0, l = list.length;
+                for (i = 0; i &lt; l; i++) {
+                    list[i].removeEventListener("click", this.sortByHeaderEvent, false);
+                }
+            }
+        },
+
+        bindSortableColumnEvents: function()  {
+            if (this.el &amp;&amp; this.sortable) {
+                var list;
+                if (typeof this.el === 'string') {
+                    list = document.querySelectorAll(this.el + " table tr th");
+                } else {
+                    list = document.querySelectorAll(this.el.localName + " table tr th");
+                }
+                var i = 0, l = list.length;
+                for (i = 0; i &lt; l; i++) {
+                    if (list[i].getAttribute(tableDataAttributes.name) === "lineNumber") {
+                        // Do I need to do something?
+                    } else {
+                        list[i].addEventListener("click", this.sortByHeaderEvent.bind(this), false);
+                    }
+                }
+            }
+        },
+
         /**
          * An overridable template compile
          * @method compileTemplate
@@ -735,7 +1331,11 @@
          * @returns {string} Returns the template
          */
         compileTemplate: function() {
-            return defaultTableCompile(this.columns, this.data);
+            var h = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers, this.sortKey, this.editable);
+            if (this.renderPaginationControl) {
+                h = h + defaultPaginationControl(this.currentPage(), this.totalPages());
+            }
+            return h;
         },
         /**
          * Sets the URI
@@ -761,6 +1361,26 @@
             if (this.uri) {
                 col.url = this.uri;
             }
+        },
+
+        showProgressBar: function(show) {
+            if (this.el) {
+                var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                var p = e.querySelector("progress");
+                if (p) {
+                    p.style.display = (show) ? "block" : "none";
+                    p.style.visibility = (show) ? "visible" : "hidden";
+                }
+            }
+        },
+        showMessage: function(message) {
+            if (this.el) {
+                var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                var p = e.querySelector("p[class=message]");
+                if (p) {
+                    p.textContent = message;
+                }
+            }
         }
     });
 
@@ -771,6 +1391,43 @@
      * @extends Augmented.Presentation.AutomaticTable
      */
     Augmented.Presentation.AutoTable = Augmented.Presentation.AutomaticTable;
+
+    /**
+     * Augmented.Presentation.BigDataTable
+     * Instance class preconfigured for sorting and pagination
+     * @constructor Augmented.Presentation.BigDataTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.BigDataTable = Augmented.Presentation.AutomaticTable.extend({
+        renderPaginationControl: true,
+        lineNumbers: true,
+        sortable: true
+    });
+
+    /**
+     * Augmented.Presentation.EditableTable
+     * Instance class preconfigured for editing
+     * @constructor Augmented.Presentation.EditableTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.EditableTable = Augmented.Presentation.AutomaticTable.extend({
+        editable: true,
+        lineNumbers: true
+    });
+
+    /**
+     * Augmented.Presentation.EditableBigDataTable
+     * Instance class preconfigured for editing, sorting, and pagination
+     * @constructor Augmented.Presentation.EditableBigDataTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.EditableBigDataTable = Augmented.Presentation.AutomaticTable.extend({
+        renderPaginationControl: true,
+        lineNumbers: true,
+        sortable: true,
+        editable: true
+    });
+
 
     return Augmented.Presentation;
 }));
@@ -784,13 +1441,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">EditableTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sat Dec 05 2015 22:12:51 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Feb 29 2016 15:30:17 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

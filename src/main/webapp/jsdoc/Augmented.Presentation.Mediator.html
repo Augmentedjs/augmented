@@ -99,7 +99,7 @@ with the Mediator, rather than with each other.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line122">line 122</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line247">line 247</a>
     </li></ul></dd>
     
 
@@ -135,7 +135,7 @@ with the Mediator, rather than with each other.
 
 
     <ul>
-        <li><a href="Augmented.View.html">Augmented.View</a></li>
+        <li><a href="Augmented.Presentation.Colleague.html">Augmented.Presentation.Colleague</a></li>
     </ul>
 
 
@@ -282,7 +282,7 @@ with the Mediator, rather than with each other.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line169">line 169</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line295">line 295</a>
     </li></ul></dd>
     
 
@@ -413,7 +413,7 @@ with the Mediator, rather than with each other.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line285">line 285</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line416">line 416</a>
     </li></ul></dd>
     
 
@@ -517,7 +517,7 @@ with the Mediator, rather than with each other.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line275">line 275</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line406">line 406</a>
     </li></ul></dd>
     
 
@@ -670,7 +670,7 @@ with the Mediator, rather than with each other.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line263">line 263</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line394">line 394</a>
     </li></ul></dd>
     
 
@@ -775,7 +775,7 @@ Convenience method for getChannel(null)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line299">line 299</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line430">line 430</a>
     </li></ul></dd>
     
 
@@ -974,7 +974,7 @@ Convenience method for getChannel(null)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line151">line 151</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line276">line 276</a>
     </li></ul></dd>
     
 
@@ -1128,7 +1128,7 @@ Convenience method for getChannel(null)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line205">line 205</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line335">line 335</a>
     </li></ul></dd>
     
 
@@ -1159,7 +1159,7 @@ Convenience method for getChannel(null)
 
     
 
-    <h4 class="name" id=".subscribe"><span class="type-signature">(static) </span>subscribe<span class="signature">(channel, subscription, context, once)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".subscribe"><span class="type-signature">(static) </span>subscribe<span class="signature">(channel, callback, context, once)</span><span class="type-signature"></span></h4>
 
     
 
@@ -1225,13 +1225,13 @@ Convenience method for getChannel(null)
 
         <tr>
             
-                <td class="name"><code>subscription</code></td>
+                <td class="name"><code>callback</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">function</span>
 
 
             
@@ -1241,7 +1241,7 @@ Convenience method for getChannel(null)
 
             
 
-            <td class="description last">The subscription to subscribe to</td>
+            <td class="description last">The callback to call on channel event</td>
         </tr>
 
     
@@ -1328,7 +1328,7 @@ Convenience method for getChannel(null)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line186">line 186</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line313">line 313</a>
     </li></ul></dd>
     
 
@@ -1505,7 +1505,7 @@ Convenience method for getChannel(null)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line251">line 251</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line382">line 382</a>
     </li></ul></dd>
     
 
@@ -1682,7 +1682,7 @@ Convenience method for getChannel(null)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line228">line 228</a>
+        <a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>, <a href="presentation_augmentedPresentation.js.html#line359">line 359</a>
     </li></ul></dd>
     
 
@@ -1724,13 +1724,13 @@ Convenience method for getChannel(null)
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">EditableTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sat Dec 05 2015 22:12:52 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Feb 29 2016 15:30:17 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

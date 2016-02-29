@@ -33,7 +33,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 0.1.0
+ * @version 0.2.0α
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -59,6 +59,22 @@
     }
 
 }(this, function(root, Augmented, Backbone) {
+
+    /* Extend function for use throughout the framework */
+    var extend = function() {
+        var i =0, l = arguments.length;
+    	for (i=1; i&lt;l; i++) {
+    	    for(var key in arguments[i]) {
+        		if(arguments[i].hasOwnProperty(key)) {
+        		    arguments[0][key] = arguments[i][key];
+                }
+            }
+        }
+    	return arguments[0];
+    };
+
+    extend(Augmented, Backbone);
+
     /*
      * Save the previous value of the `Augmented` variable, so that it can be
      * restored later on, if `noConflict` is used (just like Backbone)
@@ -68,7 +84,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = '0.1.0 RC1';
+    Augmented.VERSION = '0.2.0α';
     /**
      * A codename for internal use
      * @constant codename
@@ -78,7 +94,7 @@
      * A release name to help with identification of minor releases
      * @constant releasename
      */
-    Augmented.releasename = "Tai Yong";
+    Augmented.releasename = "Hengsha";
 
     /**
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'
@@ -235,6 +251,21 @@
     Augmented.Utility = {};
 
     /**
+     * Sorts an array by key
+     * @function Sort
+     * @namespace Augmented.Utility
+     * @param {array} array The array to sort
+     * @param {object} key The key to sort by
+     * @returns {array} The sorted array
+     */
+    Augmented.Utility.Sort = function(array, key) {
+        return array.sort(function(a, b) {
+            var x = a[key]; var y = b[key];
+            return ((x &lt; y) ? -1 : ((x > y) ? 1 : 0));
+        });
+    };
+
+    /**
      * Augmented.Utility.TransformerType &lt;br/>
      * Transformer type for use in the transformer
      * @enum {number} Augmented.Utility.TransformerType
@@ -362,13 +393,7 @@
      * @function Augmented.Utility.extend
      * @memberof Augmented.Utility
      */
-    Augmented.Utility.extend = function() {
-    	for(var i=1; i&lt;arguments.length; i++)
-    	    for(var key in arguments[i])
-    		if(arguments[i].hasOwnProperty(key))
-    		    arguments[0][key] = arguments[i][key];
-    	return arguments[0];
-    };
+    Augmented.Utility.extend = extend;
 
     /*
      * Setup the rest of jQuery-like eventing and handlers for native xhr
@@ -460,7 +485,7 @@
      *     });
      */
     var ajax = Augmented.ajax = Augmented.Ajax.ajax = function(ajaxObject) {
-        logger.debug("Ajax object: " + JSON.stringify(ajaxObject));
+        logger.debug("AUGMENTED: Ajax object: " + JSON.stringify(ajaxObject));
         var xhr = null;
   		if (ajaxObject &amp;&amp; ajaxObject.url) {
     	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
@@ -473,11 +498,13 @@
             }
     	    var async = (ajaxObject.async !== undefined) ? ajaxObject.async : true;
 
-    	    // CORS
-    	    if (ajaxObject.withCredentials) {
-        		xhr.withCredentials = ajaxObject.withCredentials;
+    	    // CORS &amp; Async
+    	    if (ajaxObject.crossDomain &amp;&amp; ajaxObject.xhrFields &amp;&amp; ajaxObject.xhrFields.withCredentials) {
+        		xhr.withCredentials = ajaxObject.xhrFields.withCredentials;
         		// Sync Not supported for all browsers in CORS mode
-                logger.warn("Augmented.ajax: Sync Not supported for all browsers in CORS mode!");
+                if (!async) {
+                    logger.warn("AUGMENTED: Augmented.ajax: Sync Not supported for all browsers in CORS mode!");
+                }
         		async = true;
     	    }
 
@@ -494,18 +521,53 @@
                 xhr.setRequestHeader('Cache-Control', 'no-cache');
     	    }
 
+            // CORS
+            if (xhr.withCredentials) {
+                var allowOrigins = '*', allowMethods = 'GET';
+                if (ajaxObject.allowOrigins) {
+                    allowOrigins = ajaxObject.allowOrigins;
+                }
+                if (ajaxObject.allowMethods) {
+                    allowMethods = ajaxObject.allowMethods;
+                }
+
+                xhr.setRequestHeader('Access-Control-Allow-Origin', allowOrigins);
+                xhr.setRequestHeader('Access-Control-Allow-Methods', allowMethods);
+            }
+
+            // Authorization
+            if (xhr.withCredentials &amp;&amp; ajaxObject.user &amp;&amp; ajaxObject.password) {
+                xhr.setRequestHeader('Authorization', 'Basic ' + window.btoa(ajaxObject.user + ':' + ajaxObject.password));
+            }
+
     	    xhr.onload = function() {
     		    if (xhr.status > 199 &amp;&amp; xhr.status &lt; 300) {
                     if (ajaxObject.success) {
-                        ajaxObject.success(xhr.responseText, xhr.status);
+                        if ((xhr.responseType === "" || xhr.responseType === "text" || (xhr.responseType === "json" &amp;&amp; !xhr.response))) {
+                            ajaxObject.success(xhr.responseText, xhr.status, xhr);
+                        } else if (xhr.responseType === "json") {
+                            // should this have any special behavior?
+                            if (!xhr.response) {
+                                logger.debug("AUGMENTED: Ajax (JSON responseType) parsed JSON from string.");
+                                ajaxObject.success(JSON.parse(xhr.responseText), xhr.status, xhr);
+                            } else {
+                                logger.debug("AUGMENTED: Ajax (JSON responseType) native JSON.");
+                                ajaxObject.success(xhr.response, xhr.status, xhr);
+                            }
+                        } else {
+                            ajaxObject.success(xhr.response, xhr.status, xhr);
+                        }
                     }
+
     		    } else if (xhr.status > 399 &amp;&amp; xhr.status &lt; 600) {
                     if (ajaxObject.failure) {
-                        ajaxObject.failure(xhr.responseText, xhr.status);
+                        ajaxObject.failure(xhr, xhr.status, xhr.statusText);
+                    } else if (ajaxObject.error) {
+                        ajaxObject.error(xhr, xhr.status, xhr.statusText);
                     }
     		    }
                 if (ajaxObject.complete) {
-                    ajaxObject.complete(xhr.responseText, xhr.status);
+                    ajaxObject.complete(xhr, xhr.status);
                 }
                 return xhr;
     	    };
@@ -613,42 +675,42 @@
             }
         };
 
-	/**
-	 * Logs a message in info level
-	 * @method info
-	 * @param {string} message
-	 * @memberof abstractLogger
-	 */
+    	/**
+    	 * Logs a message in info level
+    	 * @method info
+    	 * @param {string} message
+    	 * @memberof abstractLogger
+    	 */
         this.info = function(message) {
             this.log(message, loggerLevelTypes.info);
         };
 
-	/**
-	 * Log a message in error level
-	 * @method error
-	 * @param {string} message
-	 * @memberof abstractLogger
-	 */
+    	/**
+    	 * Log a message in error level
+    	 * @method error
+    	 * @param {string} message
+    	 * @memberof abstractLogger
+    	 */
         this.error = function(message) {
             this.log(message, loggerLevelTypes.error);
         };
 
-	/**
-	 * Log a message in debug level
-	 * @method debug
-	 * @param {string} message
-	 * @memberof abstractLogger
-	 */
+    	/**
+    	 * Log a message in debug level
+    	 * @method debug
+    	 * @param {string} message
+    	 * @memberof abstractLogger
+    	 */
         this.debug = function(message) {
             this.log(message, loggerLevelTypes.debug);
         };
 
-	/**
-	 * Log a message in warn level
-	 * @method warn
-	 * @param {string} message
-	 * @memberof abstractLogger
-	 */
+    	/**
+    	 * Log a message in warn level
+    	 * @method warn
+    	 * @param {string} message
+    	 * @memberof abstractLogger
+    	 */
         this.warn = function(message) {
             this.log(message, loggerLevelTypes.warn);
         };
@@ -712,15 +774,15 @@
      * @memberof Augmented.Logger
      */
     Augmented.Logger.LoggerFactory = {
-	/**
-	 * getLogger - get an instance of a logger
-	 * @method getLogger
-	 * @param {Augmented.Logger.Type} type Type of logger instance
-	 * @param {Augmented.Logger.Level} level Level to set the logger to
-	 * @memberof Augmented.Logger.LoggerFactory
-	 * @returns {Augmented.Logger.abstractLogger} logger Instance of a logger by istance type
-	 * @example Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.Type.console, Augmented.Logger.Level.debug);
-	 */
+    	/**
+    	 * getLogger - get an instance of a logger
+    	 * @method getLogger
+    	 * @param {Augmented.Logger.Type} type Type of logger instance
+    	 * @param {Augmented.Logger.Level} level Level to set the logger to
+    	 * @memberof Augmented.Logger.LoggerFactory
+    	 * @returns {Augmented.Logger.abstractLogger} logger Instance of a logger by istance type
+    	 * @example Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.Type.console, Augmented.Logger.Level.debug);
+    	 */
         getLogger: function(type, level) {
             if (type === loggerType.console) {
                return new consoleLogger(level);
@@ -971,16 +1033,18 @@
             } else if(dataToMarshall &amp;&amp; dataToMarshall instanceof Object &amp;&amp; (Object.keys(dataToMarshall).length > 0)) {
                 dataToParse = dataToMarshall;
             } else {
-                logger.warn("Could not marshall data: " + JSON.stringify(dataToMarshall));
+                logger.warn("AUGMENTED: AugmentedMap: Could not marshall data: " + JSON.stringify(dataToMarshall));
                 return false;
             }
             //logger.debug("data to parse: " + JSON.stringify(dataToParse));
 
             var props = Object.keys(dataToParse);
-            for (var i = 0; i &lt; props.length; i++) {
+            var l = props.length;
+            var i = 0;
+            for (i = 0; i &lt; l; i++) {
                 var p = props[i];
                 var v = dataToParse[p];
-                logger.debug("setting " + p + ", " + v);
+                //logger.debug("setting " + p + ", " + v);
                 this.set(p, v);
             }
             return true;
@@ -1350,1484 +1414,1508 @@
     */
     var Validator = function() {
 
-    /**@see https://github.com/geraintluff/uri-templates
-    * but with all the de-substitution stuff removed
-    */
-	var uriTemplateGlobalModifiers = {
-		"+": true,
-		"#": true,
-		".": true,
-		"/": true,
-		";": true,
-		"?": true,
-		"&amp;": true
-	};
-	var uriTemplateSuffices = {
-		"*": true
-	};
+        /**@see https://github.com/geraintluff/uri-templates
+        * but with all the de-substitution stuff removed
+        */
+    	var uriTemplateGlobalModifiers = {
+    		"+": true,
+    		"#": true,
+    		".": true,
+    		"/": true,
+    		";": true,
+    		"?": true,
+    		"&amp;": true
+    	};
+    	var uriTemplateSuffices = {
+    		"*": true
+    	};
 
-	function notReallyPercentEncode(string) {
-	    return encodeURI(string).replace(/%25[0-9][0-9]/g, function (doubleEncoded) {
-		return "%" + doubleEncoded.substring(3);
-	    });
-	}
+    	function notReallyPercentEncode(string) {
+    	    return encodeURI(string).replace(/%25[0-9][0-9]/g, function (doubleEncoded) {
+    		return "%" + doubleEncoded.substring(3);
+    	    });
+    	}
 
-	function uriTemplateSubstitution(spec) {
-	    var modifier = "";
-	    if (uriTemplateGlobalModifiers[spec.charAt(0)]) {
-		modifier = spec.charAt(0);
-		spec = spec.substring(1);
-	    }
-	    var separator = "";
-	    var prefix = "";
-	    var shouldEscape = true;
-	    var showVariables = false;
-	    var trimEmptyString = false;
-	    if (modifier === '+') {
-		shouldEscape = false;
-	    } else if (modifier === ".") {
-		prefix = ".";
-		separator = ".";
-	    } else if (modifier === "/") {
-		prefix = "/";
-		separator = "/";
-	    } else if (modifier === '#') {
-		prefix = "#";
-		shouldEscape = false;
-	    } else if (modifier === ';') {
-		prefix = ";";
-		separator = ";";
-		showVariables = true;
-		trimEmptyString = true;
-	    } else if (modifier === '?') {
-		prefix = "?";
-		separator = "&amp;";
-		showVariables = true;
-	    } else if (modifier === '&amp;') {
-		prefix = "&amp;";
-		separator = "&amp;";
-		showVariables = true;
-	    }
+    	function uriTemplateSubstitution(spec) {
+    	    var modifier = "";
+    	    if (uriTemplateGlobalModifiers[spec.charAt(0)]) {
+    		modifier = spec.charAt(0);
+    		spec = spec.substring(1);
+    	    }
+    	    var separator = "";
+    	    var prefix = "";
+    	    var shouldEscape = true;
+    	    var showVariables = false;
+    	    var trimEmptyString = false;
+    	    if (modifier === '+') {
+    		shouldEscape = false;
+    	    } else if (modifier === ".") {
+    		prefix = ".";
+    		separator = ".";
+    	    } else if (modifier === "/") {
+    		prefix = "/";
+    		separator = "/";
+    	    } else if (modifier === '#') {
+    		prefix = "#";
+    		shouldEscape = false;
+    	    } else if (modifier === ';') {
+    		prefix = ";";
+    		separator = ";";
+    		showVariables = true;
+    		trimEmptyString = true;
+    	    } else if (modifier === '?') {
+    		prefix = "?";
+    		separator = "&amp;";
+    		showVariables = true;
+    	    } else if (modifier === '&amp;') {
+    		prefix = "&amp;";
+    		separator = "&amp;";
+    		showVariables = true;
+    	    }
 
-	    var varNames = [];
-	    var varList = spec.split(",");
-	    var varSpecs = [];
-	    var varSpecMap = {};
-	    for (var i = 0; i &lt; varList.length; i++) {
-		var varName = varList[i];
-		var truncate = null;
-		if (varName.indexOf(":") !== -1) {
-		    var parts = varName.split(":");
-		    varName = parts[0];
-		    truncate = parseInt(parts[1], 10);
-		}
-		var suffices = {};
-		while (uriTemplateSuffices[varName.charAt(varName.length - 1)]) {
-		    suffices[varName.charAt(varName.length - 1)] = true;
-		    varName = varName.substring(0, varName.length - 1);
-		}
-		var varSpec = {
-			truncate: truncate,
-			name: varName,
-			suffices: suffices
-		};
-		varSpecs.push(varSpec);
-		varSpecMap[varName] = varSpec;
-		varNames.push(varName);
-	    }
-	    var subFunction = function (valueFunction) {
-		var result = "";
-		var startIndex = 0;
-		for (var i = 0; i &lt; varSpecs.length; i++) {
-		    var varSpec = varSpecs[i];
-		    var value = valueFunction(varSpec.name);
-		    if (value === null || value === undefined || (Array.isArray(value) &amp;&amp; value.length === 0) || (typeof value === 'object' &amp;&amp; Object.keys(value).length === 0)) {
-			startIndex++;
-			continue;
-		    }
-		    if (i === startIndex) {
-			result += prefix;
-		    } else {
-			result += (separator || ",");
-		    }
-		    if (Array.isArray(value)) {
-			if (showVariables) {
-			    result += varSpec.name + "=";
-			}
-			for (var j = 0; j &lt; value.length; j++) {
-			    if (j > 0) {
-				result += varSpec.suffices['*'] ? (separator || ",") : ",";
-				if (varSpec.suffices['*'] &amp;&amp; showVariables) {
-				    result += varSpec.name + "=";
-				}
-			    }
-			    result += shouldEscape ? encodeURIComponent(value[j]).replace(/!/g, "%21") : notReallyPercentEncode(value[j]);
-			}
-		    } else if (typeof value === "object") {
-			if (showVariables &amp;&amp; !varSpec.suffices['*']) {
-			    result += varSpec.name + "=";
-			}
-			var first = true;
-			for (var key in value) {
-			    if (!first) {
-				result += varSpec.suffices['*'] ? (separator || ",") : ",";
-			    }
-			    first = false;
-			    result += shouldEscape ? encodeURIComponent(key).replace(/!/g, "%21") : notReallyPercentEncode(key);
-			    result += varSpec.suffices['*'] ? '=' : ",";
-			    result += shouldEscape ? encodeURIComponent(value[key]).replace(/!/g, "%21") : notReallyPercentEncode(value[key]);
-			}
-		    } else {
-			if (showVariables) {
-			    result += varSpec.name;
-			    if (!trimEmptyString || value !== "") {
-				result += "=";
-			    }
-			}
-			if (varSpec.truncate !== null) {
-			    value = value.substring(0, varSpec.truncate);
-			}
-			result += shouldEscape ? encodeURIComponent(value).replace(/!/g, "%21"): notReallyPercentEncode(value);
-		    }
-		}
-		return result;
-	    };
-	    subFunction.varNames = varNames;
-	    return {
-		prefix: prefix,
-		substitution: subFunction
-	    };
-	}
-
-	function UriTemplate(template) {
-	    if (!(this instanceof UriTemplate)) {
-		return new UriTemplate(template);
-	    }
-	    var parts = template.split("{");
-	    var textParts = [parts.shift()];
-	    var prefixes = [];
-	    var substitutions = [];
-	    var varNames = [];
-	    while (parts.length > 0) {
-		var part = parts.shift();
-		var spec = part.split("}")[0];
-		var remainder = part.substring(spec.length + 1);
-		var funcs = uriTemplateSubstitution(spec);
-		substitutions.push(funcs.substitution);
-		prefixes.push(funcs.prefix);
-		textParts.push(remainder);
-		varNames = varNames.concat(funcs.substitution.varNames);
-	    }
-	    this.fill = function (valueFunction) {
-		var result = textParts[0];
-		for (var i = 0; i &lt; substitutions.length; i++) {
-		    var substitution = substitutions[i];
-		    result += substitution(valueFunction);
-		    result += textParts[i + 1];
-		}
-		return result;
-	    };
-	    this.varNames = varNames;
-	    this.template = template;
-	}
-	UriTemplate.prototype = {
-		toString: function () {
-		    return this.template;
-		},
-		fillFromObject: function (obj) {
-		    return this.fill(function (varName) {
-			return obj[varName];
-		    });
-		}
-	};
-	var ValidatorContext = function ValidatorContext(parent, collectMultiple, errorMessages, checkRecursive, trackUnknownProperties) {
-	    this.missing = [];
-	    this.missingMap = {};
-	    this.formatValidators = parent ? Object.create(parent.formatValidators) : {};
-	    this.schemas = parent ? Object.create(parent.schemas) : {};
-	    this.collectMultiple = collectMultiple;
-	    this.errors = [];
-	    this.handleError = collectMultiple ? this.collectError : this.returnError;
-	    if (checkRecursive) {
-		this.checkRecursive = true;
-		this.scanned = [];
-		this.scannedFrozen = [];
-		this.scannedFrozenSchemas = [];
-		this.scannedFrozenValidationErrors = [];
-		this.validatedSchemasKey = 'tv4_validation_id';
-		this.validationErrorsKey = 'tv4_validation_errors_id';
-	    }
-	    if (trackUnknownProperties) {
-		this.trackUnknownProperties = true;
-		this.knownPropertyPaths = {};
-		this.unknownPropertyPaths = {};
-	    }
-	    this.errorMessages = errorMessages;
-	    this.definedKeywords = {};
-	    if (parent) {
-		for (var key in parent.definedKeywords) {
-		    this.definedKeywords[key] = parent.definedKeywords[key].slice(0);
-		}
-	    }
-	};
-	ValidatorContext.prototype.defineKeyword = function (keyword, keywordFunction) {
-	    this.definedKeywords[keyword] = this.definedKeywords[keyword] || [];
-	    this.definedKeywords[keyword].push(keywordFunction);
-	};
-	ValidatorContext.prototype.createError = function (code, messageParams, dataPath, schemaPath, subErrors) {
-	    var messageTemplate = this.errorMessages[code] || ErrorMessagesDefault[code];
-	    if (typeof messageTemplate !== 'string') {
-		return new ValidationError(code, "Unknown error code " + code + ": " + JSON.stringify(messageParams), messageParams, dataPath, schemaPath, subErrors);
-	    }
-	    // Adapted from Crockford's supplant()
-	    var message = messageTemplate.replace(/\{([^{}]*)\}/g, function (whole, varName) {
-		var subValue = messageParams[varName];
-		return typeof subValue === 'string' || typeof subValue === 'number' ? subValue : whole;
-	    });
-	    return new ValidationError(code, message, messageParams, dataPath, schemaPath, subErrors);
-	};
-	ValidatorContext.prototype.returnError = function (error) {
-	    return error;
-	};
-	ValidatorContext.prototype.collectError = function (error) {
-	    if (error) {
-		this.errors.push(error);
-	    }
-	    return null;
-	};
-	ValidatorContext.prototype.prefixErrors = function (startIndex, dataPath, schemaPath) {
-	    for (var i = startIndex; i &lt; this.errors.length; i++) {
-		this.errors[i] = this.errors[i].prefixWith(dataPath, schemaPath);
-	    }
-	    return this;
-	};
-	ValidatorContext.prototype.banUnknownProperties = function () {
-	    for (var unknownPath in this.unknownPropertyPaths) {
-		var error = this.createError(ErrorCodes.UNKNOWN_PROPERTY, {path: unknownPath}, unknownPath, "");
-		var result = this.handleError(error);
-		if (result) {
-		    return result;
-		}
-	    }
-	    return null;
-	};
-
-	ValidatorContext.prototype.addFormat = function (format, validator) {
-	    if (typeof format === 'object') {
-		for (var key in format) {
-		    this.addFormat(key, format[key]);
-		}
-		return this;
-	    }
-	    this.formatValidators[format] = validator;
-	};
-	ValidatorContext.prototype.resolveRefs = function (schema, urlHistory) {
-	    if (schema['$ref'] !== undefined) {
-		urlHistory = urlHistory || {};
-		if (urlHistory[schema['$ref']]) {
-		    return this.createError(ErrorCodes.CIRCULAR_REFERENCE, {urls: Object.keys(urlHistory).join(', ')}, '', '');
-		}
-		urlHistory[schema['$ref']] = true;
-		schema = this.getSchema(schema['$ref'], urlHistory);
-	    }
-	    return schema;
-	};
-	ValidatorContext.prototype.getSchema = function (url, urlHistory) {
-	    var schema;
-	    if (this.schemas[url] !== undefined) {
-		schema = this.schemas[url];
-		return this.resolveRefs(schema, urlHistory);
-	    }
-	    var baseUrl = url;
-	    var fragment = "";
-	    if (url.indexOf('#') !== -1) {
-		fragment = url.substring(url.indexOf("#") + 1);
-		baseUrl = url.substring(0, url.indexOf("#"));
-	    }
-	    if (typeof this.schemas[baseUrl] === 'object') {
-		schema = this.schemas[baseUrl];
-		var pointerPath = decodeURIComponent(fragment);
-		if (pointerPath === "") {
-		    return this.resolveRefs(schema, urlHistory);
-		} else if (pointerPath.charAt(0) !== "/") {
-		    return undefined;
-		}
-		var parts = pointerPath.split("/").slice(1);
-		for (var i = 0; i &lt; parts.length; i++) {
-		    var component = parts[i].replace(/~1/g, "/").replace(/~0/g, "~");
-		    if (schema[component] === undefined) {
-			schema = undefined;
-			break;
-		    }
-		    schema = schema[component];
-		}
-		if (schema !== undefined) {
-		    return this.resolveRefs(schema, urlHistory);
-		}
-	    }
-	    if (this.missing[baseUrl] === undefined) {
-		this.missing.push(baseUrl);
-		this.missing[baseUrl] = baseUrl;
-		this.missingMap[baseUrl] = baseUrl;
-	    }
-	};
-	ValidatorContext.prototype.searchSchemas = function (schema, url) {
-	    if (Array.isArray(schema)) {
-		for (var i = 0; i &lt; schema.length; i++) {
-		    this.searchSchemas(schema[i], url);
-		}
-	    } else if (schema &amp;&amp; typeof schema === "object") {
-		if (typeof schema.id === "string") {
-		    if (isTrustedUrl(url, schema.id)) {
-			if (this.schemas[schema.id] === undefined) {
-			    this.schemas[schema.id] = schema;
-			}
-		    }
-		}
-		for (var key in schema) {
-		    if (key !== "enum") {
-			if (typeof schema[key] === "object") {
-			    this.searchSchemas(schema[key], url);
-			} else if (key === "$ref") {
-			    var uri = getDocumentUri(schema[key]);
-			    if (uri &amp;&amp; this.schemas[uri] === undefined &amp;&amp; this.missingMap[uri] === undefined) {
-				this.missingMap[uri] = uri;
-			    }
-			}
-		    }
-		}
-	    }
-	};
-	ValidatorContext.prototype.addSchema = function (url, schema) {
-	    // overload
-	    if (typeof url !== 'string' || typeof schema === 'undefined') {
-		if (typeof url === 'object' &amp;&amp; typeof url.id === 'string') {
-		    schema = url;
-		    url = schema.id;
-		}
-		else {
-		    return;
-		}
-	    }
-	    if (url === getDocumentUri(url) + "#") {
-		// Remove empty fragment
-		url = getDocumentUri(url);
-	    }
-	    this.schemas[url] = schema;
-	    delete this.missingMap[url];
-	    normSchema(schema, url);
-	    this.searchSchemas(schema, url);
-	};
-
-	ValidatorContext.prototype.getSchemaMap = function () {
-	    var map = {};
-	    for (var key in this.schemas) {
-		map[key] = this.schemas[key];
-	    }
-	    return map;
-	};
-
-	ValidatorContext.prototype.getSchemaUris = function (filterRegExp) {
-	    var list = [];
-	    for (var key in this.schemas) {
-		if (!filterRegExp || filterRegExp.test(key)) {
-		    list.push(key);
-		}
-	    }
-	    return list;
-	};
-
-	ValidatorContext.prototype.getMissingUris = function (filterRegExp) {
-	    var list = [];
-	    for (var key in this.missingMap) {
-		if (!filterRegExp || filterRegExp.test(key)) {
-		    list.push(key);
-		}
-	    }
-	    return list;
-	};
-
-	ValidatorContext.prototype.dropSchemas = function () {
-	    this.schemas = {};
-	    this.reset();
-	};
-	ValidatorContext.prototype.reset = function () {
-	    this.missing = [];
-	    this.missingMap = {};
-	    this.errors = [];
-	};
-
-	ValidatorContext.prototype.validateAll = function (data, schema, dataPathParts, schemaPathParts, dataPointerPath) {
-	    var topLevel;
-	    schema = this.resolveRefs(schema);
-	    if (!schema) {
-		return null;
-	    } else if (schema instanceof ValidationError) {
-		this.errors.push(schema);
-		return schema;
-	    }
-
-	    var startErrorCount = this.errors.length;
-	    var frozenIndex, scannedFrozenSchemaIndex = null, scannedSchemasIndex = null;
-	    if (this.checkRecursive &amp;&amp; data &amp;&amp; typeof data === 'object') {
-		topLevel = !this.scanned.length;
-		if (data[this.validatedSchemasKey]) {
-		    var schemaIndex = data[this.validatedSchemasKey].indexOf(schema);
-		    if (schemaIndex !== -1) {
-			this.errors = this.errors.concat(data[this.validationErrorsKey][schemaIndex]);
-			return null;
-		    }
-		}
-		if (Object.isFrozen(data)) {
-		    frozenIndex = this.scannedFrozen.indexOf(data);
-		    if (frozenIndex !== -1) {
-			var frozenSchemaIndex = this.scannedFrozenSchemas[frozenIndex].indexOf(schema);
-			if (frozenSchemaIndex !== -1) {
-			    this.errors = this.errors.concat(this.scannedFrozenValidationErrors[frozenIndex][frozenSchemaIndex]);
-			    return null;
-			}
-		    }
-		}
-		this.scanned.push(data);
-		if (Object.isFrozen(data)) {
-		    if (frozenIndex === -1) {
-			frozenIndex = this.scannedFrozen.length;
-			this.scannedFrozen.push(data);
-			this.scannedFrozenSchemas.push([]);
-		    }
-		    scannedFrozenSchemaIndex = this.scannedFrozenSchemas[frozenIndex].length;
-		    this.scannedFrozenSchemas[frozenIndex][scannedFrozenSchemaIndex] = schema;
-		    this.scannedFrozenValidationErrors[frozenIndex][scannedFrozenSchemaIndex] = [];
-		} else {
-		    if (!data[this.validatedSchemasKey]) {
-			try {
-			    Object.defineProperty(data, this.validatedSchemasKey, {
-				value: [],
-				configurable: true
-			    });
-			    Object.defineProperty(data, this.validationErrorsKey, {
-				value: [],
-				configurable: true
-			    });
-			} catch (e) {
-			    // IE 7/8 workaround
-			    data[this.validatedSchemasKey] = [];
-			    data[this.validationErrorsKey] = [];
-			}
-		    }
-		    scannedSchemasIndex = data[this.validatedSchemasKey].length;
-		    data[this.validatedSchemasKey][scannedSchemasIndex] = schema;
-		    data[this.validationErrorsKey][scannedSchemasIndex] = [];
-		}
-	    }
-
-	    var errorCount = this.errors.length;
-	    var error = this.validateBasic(data, schema, dataPointerPath) || this.validateNumeric(data, schema, dataPointerPath) || this.validateString(data, schema, dataPointerPath) || this.validateArray(data, schema, dataPointerPath) || this.validateObject(data, schema, dataPointerPath) || this.validateCombinations(data, schema, dataPointerPath) || this.validateHypermedia(data, schema, dataPointerPath) || this.validateFormat(data, schema, dataPointerPath) || this.validateDefinedKeywords(data, schema, dataPointerPath) || null;
-
-	    if (topLevel) {
-    		while (this.scanned.length) {
-    		    var item = this.scanned.pop();
-    		    delete item[this.validatedSchemasKey];
+    	    var varNames = [];
+    	    var varList = spec.split(",");
+    	    var varSpecs = [];
+    	    var varSpecMap = {};
+            var i = 0, l = varList.length;
+    	    for (i = 0; i &lt; l; i++) {
+    		var varName = varList[i];
+    		var truncate = null;
+    		if (varName.indexOf(":") !== -1) {
+    		    var parts = varName.split(":");
+    		    varName = parts[0];
+    		    truncate = parseInt(parts[1], 10);
     		}
+    		var suffices = {};
+    		while (uriTemplateSuffices[varName.charAt(varName.length - 1)]) {
+    		    suffices[varName.charAt(varName.length - 1)] = true;
+    		    varName = varName.substring(0, varName.length - 1);
+    		}
+    		var varSpec = {
+    			truncate: truncate,
+    			name: varName,
+    			suffices: suffices
+    		};
+    		varSpecs.push(varSpec);
+    		varSpecMap[varName] = varSpec;
+    		varNames.push(varName);
+    	    }
+    	    var subFunction = function (valueFunction) {
+    		var result = "";
+    		var startIndex = 0;
+            var i = 0, l = varSpecs.length;
+    		for (i = 0; i &lt; l; i++) {
+    		    var varSpec = varSpecs[i];
+    		    var value = valueFunction(varSpec.name);
+    		    if (value === null || value === undefined || (Array.isArray(value) &amp;&amp; value.length === 0) || (typeof value === 'object' &amp;&amp; Object.keys(value).length === 0)) {
+    			startIndex++;
+    			continue;
+    		    }
+    		    if (i === startIndex) {
+    			result += prefix;
+    		    } else {
+    			result += (separator || ",");
+    		    }
+    		    if (Array.isArray(value)) {
+    			if (showVariables) {
+    			    result += varSpec.name + "=";
+    			}
+                var j=0, l = value.length;
+    			for (var j = 0; j &lt; l; j++) {
+    			    if (j > 0) {
+    				result += varSpec.suffices['*'] ? (separator || ",") : ",";
+    				if (varSpec.suffices['*'] &amp;&amp; showVariables) {
+    				    result += varSpec.name + "=";
+    				}
+    			    }
+    			    result += shouldEscape ? encodeURIComponent(value[j]).replace(/!/g, "%21") : notReallyPercentEncode(value[j]);
+    			}
+    		    } else if (typeof value === "object") {
+    			if (showVariables &amp;&amp; !varSpec.suffices['*']) {
+    			    result += varSpec.name + "=";
+    			}
+    			var first = true;
+    			for (var key in value) {
+    			    if (!first) {
+    				result += varSpec.suffices['*'] ? (separator || ",") : ",";
+    			    }
+    			    first = false;
+    			    result += shouldEscape ? encodeURIComponent(key).replace(/!/g, "%21") : notReallyPercentEncode(key);
+    			    result += varSpec.suffices['*'] ? '=' : ",";
+    			    result += shouldEscape ? encodeURIComponent(value[key]).replace(/!/g, "%21") : notReallyPercentEncode(value[key]);
+    			}
+    		    } else {
+    			if (showVariables) {
+    			    result += varSpec.name;
+    			    if (!trimEmptyString || value !== "") {
+    				result += "=";
+    			    }
+    			}
+    			if (varSpec.truncate !== null) {
+    			    value = value.substring(0, varSpec.truncate);
+    			}
+    			result += shouldEscape ? encodeURIComponent(value).replace(/!/g, "%21"): notReallyPercentEncode(value);
+    		    }
+    		}
+    		return result;
+    	    };
+    	    subFunction.varNames = varNames;
+    	    return {
+    		prefix: prefix,
+    		substitution: subFunction
+    	    };
+    	}
+
+    	function UriTemplate(template) {
+    	    if (!(this instanceof UriTemplate)) {
+    		return new UriTemplate(template);
+    	    }
+    	    var parts = template.split("{");
+    	    var textParts = [parts.shift()];
+    	    var prefixes = [];
+    	    var substitutions = [];
+    	    var varNames = [];
+    	    while (parts.length > 0) {
+    		var part = parts.shift();
+    		var spec = part.split("}")[0];
+    		var remainder = part.substring(spec.length + 1);
+    		var funcs = uriTemplateSubstitution(spec);
+    		substitutions.push(funcs.substitution);
+    		prefixes.push(funcs.prefix);
+    		textParts.push(remainder);
+    		varNames = varNames.concat(funcs.substitution.varNames);
+    	    }
+    	    this.fill = function (valueFunction) {
+    		var result = textParts[0];
+            var i=0, l = substitutions.length;
+    		for (i = 0; i &lt; l; i++) {
+    		    var substitution = substitutions[i];
+    		    result += substitution(valueFunction);
+    		    result += textParts[i + 1];
+    		}
+    		return result;
+    	    };
+    	    this.varNames = varNames;
+    	    this.template = template;
+    	}
+    	UriTemplate.prototype = {
+    		toString: function () {
+    		    return this.template;
+    		},
+    		fillFromObject: function (obj) {
+    		    return this.fill(function (varName) {
+    			return obj[varName];
+    		    });
+    		}
+    	};
+    	var ValidatorContext = function ValidatorContext(parent, collectMultiple, errorMessages, checkRecursive, trackUnknownProperties) {
+    	    this.missing = [];
+    	    this.missingMap = {};
+    	    this.formatValidators = parent ? Object.create(parent.formatValidators) : {};
+    	    this.schemas = parent ? Object.create(parent.schemas) : {};
+    	    this.collectMultiple = collectMultiple;
+    	    this.errors = [];
+    	    this.handleError = collectMultiple ? this.collectError : this.returnError;
+    	    if (checkRecursive) {
+    		this.checkRecursive = true;
+    		this.scanned = [];
     		this.scannedFrozen = [];
     		this.scannedFrozenSchemas = [];
-	    }
-
-	    if (error || errorCount !== this.errors.length) {
-    		while ((dataPathParts &amp;&amp; dataPathParts.length) || (schemaPathParts &amp;&amp; schemaPathParts.length)) {
-    		    var dataPart = (dataPathParts &amp;&amp; dataPathParts.length) ? "" + dataPathParts.pop() : null;
-    		    var schemaPart = (schemaPathParts &amp;&amp; schemaPathParts.length) ? "" + schemaPathParts.pop() : null;
-    		    if (error) {
-    			    error = error.prefixWith(dataPart, schemaPart);
-    		    }
-    		    this.prefixErrors(errorCount, dataPart, schemaPart);
+    		this.scannedFrozenValidationErrors = [];
+    		this.validatedSchemasKey = 'tv4_validation_id';
+    		this.validationErrorsKey = 'tv4_validation_errors_id';
+    	    }
+    	    if (trackUnknownProperties) {
+    		this.trackUnknownProperties = true;
+    		this.knownPropertyPaths = {};
+    		this.unknownPropertyPaths = {};
+    	    }
+    	    this.errorMessages = errorMessages;
+    	    this.definedKeywords = {};
+    	    if (parent) {
+    		for (var key in parent.definedKeywords) {
+    		    this.definedKeywords[key] = parent.definedKeywords[key].slice(0);
     		}
-	    }
+    	    }
+    	};
+    	ValidatorContext.prototype.defineKeyword = function (keyword, keywordFunction) {
+    	    this.definedKeywords[keyword] = this.definedKeywords[keyword] || [];
+    	    this.definedKeywords[keyword].push(keywordFunction);
+    	};
+    	ValidatorContext.prototype.createError = function (code, messageParams, dataPath, schemaPath, subErrors) {
+    	    var messageTemplate = this.errorMessages[code] || ErrorMessagesDefault[code];
+    	    if (typeof messageTemplate !== 'string') {
+    		return new ValidationError(code, "Unknown error code " + code + ": " + JSON.stringify(messageParams), messageParams, dataPath, schemaPath, subErrors);
+    	    }
+    	    // Adapted from Crockford's supplant()
+    	    var message = messageTemplate.replace(/\{([^{}]*)\}/g, function (whole, varName) {
+    		var subValue = messageParams[varName];
+    		return typeof subValue === 'string' || typeof subValue === 'number' ? subValue : whole;
+    	    });
+    	    return new ValidationError(code, message, messageParams, dataPath, schemaPath, subErrors);
+    	};
+    	ValidatorContext.prototype.returnError = function (error) {
+    	    return error;
+    	};
+    	ValidatorContext.prototype.collectError = function (error) {
+    	    if (error) {
+    		this.errors.push(error);
+    	    }
+    	    return null;
+    	};
+    	ValidatorContext.prototype.prefixErrors = function (startIndex, dataPath, schemaPath) {
+            var i = 0, l = this.errors.length;
+    	    for (i = startIndex; i &lt; l; i++) {
+    		this.errors[i] = this.errors[i].prefixWith(dataPath, schemaPath);
+    	    }
+    	    return this;
+    	};
+    	ValidatorContext.prototype.banUnknownProperties = function () {
+    	    for (var unknownPath in this.unknownPropertyPaths) {
+    		var error = this.createError(ErrorCodes.UNKNOWN_PROPERTY, {path: unknownPath}, unknownPath, "");
+    		var result = this.handleError(error);
+    		if (result) {
+    		    return result;
+    		}
+    	    }
+    	    return null;
+    	};
 
-	    if (scannedFrozenSchemaIndex !== null) {
-		    this.scannedFrozenValidationErrors[frozenIndex][scannedFrozenSchemaIndex] = this.errors.slice(startErrorCount);
-	    } else if (scannedSchemasIndex !== null) {
-		    data[this.validationErrorsKey][scannedSchemasIndex] = this.errors.slice(startErrorCount);
-	    }
+    	ValidatorContext.prototype.addFormat = function (format, validator) {
+    	    if (typeof format === 'object') {
+    		for (var key in format) {
+    		    this.addFormat(key, format[key]);
+    		}
+    		return this;
+    	    }
+    	    this.formatValidators[format] = validator;
+    	};
+    	ValidatorContext.prototype.resolveRefs = function (schema, urlHistory) {
+    	    if (schema['$ref'] !== undefined) {
+    		urlHistory = urlHistory || {};
+    		if (urlHistory[schema['$ref']]) {
+    		    return this.createError(ErrorCodes.CIRCULAR_REFERENCE, {urls: Object.keys(urlHistory).join(', ')}, '', '');
+    		}
+    		urlHistory[schema['$ref']] = true;
+    		schema = this.getSchema(schema['$ref'], urlHistory);
+    	    }
+    	    return schema;
+    	};
+    	ValidatorContext.prototype.getSchema = function (url, urlHistory) {
+    	    var schema;
+    	    if (this.schemas[url] !== undefined) {
+    		schema = this.schemas[url];
+    		return this.resolveRefs(schema, urlHistory);
+    	    }
+    	    var baseUrl = url;
+    	    var fragment = "";
+    	    if (url.indexOf('#') !== -1) {
+    		fragment = url.substring(url.indexOf("#") + 1);
+    		baseUrl = url.substring(0, url.indexOf("#"));
+    	    }
+    	    if (typeof this.schemas[baseUrl] === 'object') {
+    		schema = this.schemas[baseUrl];
+    		var pointerPath = decodeURIComponent(fragment);
+    		if (pointerPath === "") {
+    		    return this.resolveRefs(schema, urlHistory);
+    		} else if (pointerPath.charAt(0) !== "/") {
+    		    return undefined;
+    		}
+    		var parts = pointerPath.split("/").slice(1);
+            var i = 0, l = parts.length;
+    		for (i = 0; i &lt; l; i++) {
+    		    var component = parts[i].replace(/~1/g, "/").replace(/~0/g, "~");
+    		    if (schema[component] === undefined) {
+    			schema = undefined;
+    			break;
+    		    }
+    		    schema = schema[component];
+    		}
+    		if (schema !== undefined) {
+    		    return this.resolveRefs(schema, urlHistory);
+    		}
+    	    }
+    	    if (this.missing[baseUrl] === undefined) {
+    		this.missing.push(baseUrl);
+    		this.missing[baseUrl] = baseUrl;
+    		this.missingMap[baseUrl] = baseUrl;
+    	    }
+    	};
+    	ValidatorContext.prototype.searchSchemas = function (schema, url) {
+    	    if (Array.isArray(schema)) {
+                var i = 0, l = schema.length;
+    		for (i = 0; i &lt; l; i++) {
+    		    this.searchSchemas(schema[i], url);
+    		}
+    	    } else if (schema &amp;&amp; typeof schema === "object") {
+    		if (typeof schema.id === "string") {
+    		    if (isTrustedUrl(url, schema.id)) {
+    			if (this.schemas[schema.id] === undefined) {
+    			    this.schemas[schema.id] = schema;
+    			}
+    		    }
+    		}
+    		for (var key in schema) {
+    		    if (key !== "enum") {
+    			if (typeof schema[key] === "object") {
+    			    this.searchSchemas(schema[key], url);
+    			} else if (key === "$ref") {
+    			    var uri = getDocumentUri(schema[key]);
+    			    if (uri &amp;&amp; this.schemas[uri] === undefined &amp;&amp; this.missingMap[uri] === undefined) {
+    				this.missingMap[uri] = uri;
+    			    }
+    			}
+    		    }
+    		}
+    	    }
+    	};
+    	ValidatorContext.prototype.addSchema = function (url, schema) {
+    	    // overload
+    	    if (typeof url !== 'string' || typeof schema === 'undefined') {
+    		if (typeof url === 'object' &amp;&amp; typeof url.id === 'string') {
+    		    schema = url;
+    		    url = schema.id;
+    		}
+    		else {
+    		    return;
+    		}
+    	    }
+    	    if (url === getDocumentUri(url) + "#") {
+    		// Remove empty fragment
+    		url = getDocumentUri(url);
+    	    }
+    	    this.schemas[url] = schema;
+    	    delete this.missingMap[url];
+    	    normSchema(schema, url);
+    	    this.searchSchemas(schema, url);
+    	};
 
-	    return this.handleError(error);
-	};
-	ValidatorContext.prototype.validateFormat = function (data, schema) {
-	    if (typeof schema.format !== 'string' || !this.formatValidators[schema.format]) {
-		return null;
-	    }
-	    var errorMessage = this.formatValidators[schema.format].call(null, data, schema);
-	    if (typeof errorMessage === 'string' || typeof errorMessage === 'number') {
-		return this.createError(ErrorCodes.FORMAT_CUSTOM, {message: errorMessage}).prefixWith(null, "format");
-	    } else if (errorMessage &amp;&amp; typeof errorMessage === 'object') {
-		return this.createError(ErrorCodes.FORMAT_CUSTOM, {message: errorMessage.message || "?"}, errorMessage.dataPath || null, errorMessage.schemaPath || "/format");
-	    }
-	    return null;
-	};
-	ValidatorContext.prototype.validateDefinedKeywords = function (data, schema, dataPointerPath) {
-	    for (var key in this.definedKeywords) {
-		if (typeof schema[key] === 'undefined') {
-		    continue;
-		}
-		var validationFunctions = this.definedKeywords[key];
-		for (var i = 0; i &lt; validationFunctions.length; i++) {
-		    var func = validationFunctions[i];
-		    var result = func(data, schema[key], schema, dataPointerPath);
-		    if (typeof result === 'string' || typeof result === 'number') {
-			return this.createError(ErrorCodes.KEYWORD_CUSTOM, {key: key, message: result}).prefixWith(null, "format");
-		    } else if (result &amp;&amp; typeof result === 'object') {
-			var code = result.code;
-			if (typeof code === 'string') {
-			    if (!ErrorCodes[code]) {
-				throw new Error('Undefined error code (use defineError): ' + code);
-			    }
-			    code = ErrorCodes[code];
-			} else if (typeof code !== 'number') {
-			    code = ErrorCodes.KEYWORD_CUSTOM;
-			}
-			var messageParams = (typeof result.message === 'object') ? result.message : {key: key, message: result.message || "?"};
-			var schemaPath = result.schemaPath ||( "/" + key.replace(/~/g, '~0').replace(/\//g, '~1'));
-			return this.createError(code, messageParams, result.dataPath || null, schemaPath);
-		    }
-		}
-	    }
-	    return null;
-	};
+    	ValidatorContext.prototype.getSchemaMap = function () {
+    	    var map = {};
+    	    for (var key in this.schemas) {
+    		map[key] = this.schemas[key];
+    	    }
+    	    return map;
+    	};
 
-	function recursiveCompare(A, B) {
-	    if (A === B) {
-		return true;
-	    }
-	    if (typeof A === "object" &amp;&amp; typeof B === "object") {
-		if (Array.isArray(A) !== Array.isArray(B)) {
-		    return false;
-		} else if (Array.isArray(A)) {
-		    if (A.length !== B.length) {
-			return false;
-		    }
-		    for (var i = 0; i &lt; A.length; i++) {
-			if (!recursiveCompare(A[i], B[i])) {
-			    return false;
-			}
-		    }
-		} else {
-		    var key;
-		    for (key in A) {
-			if (B[key] === undefined &amp;&amp; A[key] !== undefined) {
-			    return false;
-			}
-		    }
-		    for (key in B) {
-			if (A[key] === undefined &amp;&amp; B[key] !== undefined) {
-			    return false;
-			}
-		    }
-		    for (key in A) {
-			if (!recursiveCompare(A[key], B[key])) {
-			    return false;
-			}
-		    }
-		}
-		return true;
-	    }
-	    return false;
-	}
+    	ValidatorContext.prototype.getSchemaUris = function (filterRegExp) {
+    	    var list = [];
+    	    for (var key in this.schemas) {
+    		if (!filterRegExp || filterRegExp.test(key)) {
+    		    list.push(key);
+    		}
+    	    }
+    	    return list;
+    	};
 
-	ValidatorContext.prototype.validateBasic = function validateBasic(data, schema, dataPointerPath) {
-	    var error;
-	    if (error = this.validateType(data, schema, dataPointerPath)) {
-		return error.prefixWith(null, "type");
-	    }
-	    if (error = this.validateEnum(data, schema, dataPointerPath)) {
-		return error.prefixWith(null, "type");
-	    }
-	    return null;
-	};
+    	ValidatorContext.prototype.getMissingUris = function (filterRegExp) {
+    	    var list = [];
+    	    for (var key in this.missingMap) {
+    		if (!filterRegExp || filterRegExp.test(key)) {
+    		    list.push(key);
+    		}
+    	    }
+    	    return list;
+    	};
 
-	ValidatorContext.prototype.validateType = function validateType(data, schema) {
-	    if (schema.type === undefined) {
-		return null;
-	    }
-	    var dataType = typeof data;
-	    if (data === null) {
-		dataType = "null";
-	    } else if (Array.isArray(data)) {
-		dataType = "array";
-	    }
-	    var allowedTypes = schema.type;
-	    if (typeof allowedTypes !== "object") {
-		allowedTypes = [allowedTypes];
-	    }
+    	ValidatorContext.prototype.dropSchemas = function () {
+    	    this.schemas = {};
+    	    this.reset();
+    	};
+    	ValidatorContext.prototype.reset = function () {
+    	    this.missing = [];
+    	    this.missingMap = {};
+    	    this.errors = [];
+    	};
 
-	    for (var i = 0; i &lt; allowedTypes.length; i++) {
-		var type = allowedTypes[i];
-		if (type === dataType || (type === "integer" &amp;&amp; dataType === "number" &amp;&amp; (data % 1 === 0))) {
-		    return null;
-		}
-	    }
-	    return this.createError(ErrorCodes.INVALID_TYPE, {type: dataType, expected: allowedTypes.join("/")});
-	};
+    	ValidatorContext.prototype.validateAll = function (data, schema, dataPathParts, schemaPathParts, dataPointerPath) {
+    	    var topLevel;
+    	    schema = this.resolveRefs(schema);
+    	    if (!schema) {
+    		return null;
+    	    } else if (schema instanceof ValidationError) {
+    		this.errors.push(schema);
+    		return schema;
+    	    }
 
-	ValidatorContext.prototype.validateEnum = function validateEnum(data, schema) {
-	    if (schema["enum"] === undefined) {
-		return null;
-	    }
-	    for (var i = 0; i &lt; schema["enum"].length; i++) {
-		var enumVal = schema["enum"][i];
-		if (recursiveCompare(data, enumVal)) {
-		    return null;
-		}
-	    }
-	    return this.createError(ErrorCodes.ENUM_MISMATCH, {value: (typeof JSON !== 'undefined') ? JSON.stringify(data) : data});
-	};
+    	    var startErrorCount = this.errors.length;
+    	    var frozenIndex, scannedFrozenSchemaIndex = null, scannedSchemasIndex = null;
+    	    if (this.checkRecursive &amp;&amp; data &amp;&amp; typeof data === 'object') {
+    		topLevel = !this.scanned.length;
+    		if (data[this.validatedSchemasKey]) {
+    		    var schemaIndex = data[this.validatedSchemasKey].indexOf(schema);
+    		    if (schemaIndex !== -1) {
+    			this.errors = this.errors.concat(data[this.validationErrorsKey][schemaIndex]);
+    			return null;
+    		    }
+    		}
+    		if (Object.isFrozen(data)) {
+    		    frozenIndex = this.scannedFrozen.indexOf(data);
+    		    if (frozenIndex !== -1) {
+    			var frozenSchemaIndex = this.scannedFrozenSchemas[frozenIndex].indexOf(schema);
+    			if (frozenSchemaIndex !== -1) {
+    			    this.errors = this.errors.concat(this.scannedFrozenValidationErrors[frozenIndex][frozenSchemaIndex]);
+    			    return null;
+    			}
+    		    }
+    		}
+    		this.scanned.push(data);
+    		if (Object.isFrozen(data)) {
+    		    if (frozenIndex === -1) {
+    			frozenIndex = this.scannedFrozen.length;
+    			this.scannedFrozen.push(data);
+    			this.scannedFrozenSchemas.push([]);
+    		    }
+    		    scannedFrozenSchemaIndex = this.scannedFrozenSchemas[frozenIndex].length;
+    		    this.scannedFrozenSchemas[frozenIndex][scannedFrozenSchemaIndex] = schema;
+    		    this.scannedFrozenValidationErrors[frozenIndex][scannedFrozenSchemaIndex] = [];
+    		} else {
+    		    if (!data[this.validatedSchemasKey]) {
+    			try {
+    			    Object.defineProperty(data, this.validatedSchemasKey, {
+    				value: [],
+    				configurable: true
+    			    });
+    			    Object.defineProperty(data, this.validationErrorsKey, {
+    				value: [],
+    				configurable: true
+    			    });
+    			} catch (e) {
+    			    // IE 7/8 workaround
+    			    data[this.validatedSchemasKey] = [];
+    			    data[this.validationErrorsKey] = [];
+    			}
+    		    }
+    		    scannedSchemasIndex = data[this.validatedSchemasKey].length;
+    		    data[this.validatedSchemasKey][scannedSchemasIndex] = schema;
+    		    data[this.validationErrorsKey][scannedSchemasIndex] = [];
+    		}
+    	    }
 
-	ValidatorContext.prototype.validateNumeric = function validateNumeric(data, schema, dataPointerPath) {
-	    return this.validateMultipleOf(data, schema, dataPointerPath) || this.validateMinMax(data, schema, dataPointerPath) || this.validateNaN(data, schema, dataPointerPath) || null;
-	};
+    	    var errorCount = this.errors.length;
+    	    var error = this.validateBasic(data, schema, dataPointerPath) || this.validateNumeric(data, schema, dataPointerPath) || this.validateString(data, schema, dataPointerPath) || this.validateArray(data, schema, dataPointerPath) || this.validateObject(data, schema, dataPointerPath) || this.validateCombinations(data, schema, dataPointerPath) || this.validateHypermedia(data, schema, dataPointerPath) || this.validateFormat(data, schema, dataPointerPath) || this.validateDefinedKeywords(data, schema, dataPointerPath) || null;
 
-	var CLOSE_ENOUGH_LOW = Math.pow(2, -51);
-	var CLOSE_ENOUGH_HIGH = 1 - CLOSE_ENOUGH_LOW;
-	ValidatorContext.prototype.validateMultipleOf = function validateMultipleOf(data, schema) {
-	    var multipleOf = schema.multipleOf || schema.divisibleBy;
-	    if (multipleOf === undefined) {
-		return null;
-	    }
-	    if (typeof data === "number") {
-		var remainder = (data/multipleOf)%1;
-		if (remainder >= CLOSE_ENOUGH_LOW &amp;&amp; remainder &lt; CLOSE_ENOUGH_HIGH) {
-		    return this.createError(ErrorCodes.NUMBER_MULTIPLE_OF, {value: data, multipleOf: multipleOf});
-		}
-	    }
-	    return null;
-	};
+    	    if (topLevel) {
+        		while (this.scanned.length) {
+        		    var item = this.scanned.pop();
+        		    delete item[this.validatedSchemasKey];
+        		}
+        		this.scannedFrozen = [];
+        		this.scannedFrozenSchemas = [];
+    	    }
 
-	ValidatorContext.prototype.validateMinMax = function validateMinMax(data, schema) {
-	    if (typeof data !== "number") {
-		return null;
-	    }
-	    if (schema.minimum !== undefined) {
-		if (data &lt; schema.minimum) {
-		    return this.createError(ErrorCodes.NUMBER_MINIMUM, {value: data, minimum: schema.minimum}).prefixWith(null, "minimum");
-		}
-		if (schema.exclusiveMinimum &amp;&amp; data === schema.minimum) {
-		    return this.createError(ErrorCodes.NUMBER_MINIMUM_EXCLUSIVE, {value: data, minimum: schema.minimum}).prefixWith(null, "exclusiveMinimum");
-		}
-	    }
-	    if (schema.maximum !== undefined) {
-		if (data > schema.maximum) {
-		    return this.createError(ErrorCodes.NUMBER_MAXIMUM, {value: data, maximum: schema.maximum}).prefixWith(null, "maximum");
-		}
-		if (schema.exclusiveMaximum &amp;&amp; data === schema.maximum) {
-		    return this.createError(ErrorCodes.NUMBER_MAXIMUM_EXCLUSIVE, {value: data, maximum: schema.maximum}).prefixWith(null, "exclusiveMaximum");
-		}
-	    }
-	    return null;
-	};
+    	    if (error || errorCount !== this.errors.length) {
+        		while ((dataPathParts &amp;&amp; dataPathParts.length) || (schemaPathParts &amp;&amp; schemaPathParts.length)) {
+        		    var dataPart = (dataPathParts &amp;&amp; dataPathParts.length) ? "" + dataPathParts.pop() : null;
+        		    var schemaPart = (schemaPathParts &amp;&amp; schemaPathParts.length) ? "" + schemaPathParts.pop() : null;
+        		    if (error) {
+        			    error = error.prefixWith(dataPart, schemaPart);
+        		    }
+        		    this.prefixErrors(errorCount, dataPart, schemaPart);
+        		}
+    	    }
 
-	ValidatorContext.prototype.validateNaN = function validateNaN(data) {
-	    if (typeof data !== "number") {
-		return null;
-	    }
-	    if (isNaN(data) === true || data === Infinity || data === -Infinity) {
-		return this.createError(ErrorCodes.NUMBER_NOT_A_NUMBER, {value: data}).prefixWith(null, "type");
-	    }
-	    return null;
-	};
+    	    if (scannedFrozenSchemaIndex !== null) {
+    		    this.scannedFrozenValidationErrors[frozenIndex][scannedFrozenSchemaIndex] = this.errors.slice(startErrorCount);
+    	    } else if (scannedSchemasIndex !== null) {
+    		    data[this.validationErrorsKey][scannedSchemasIndex] = this.errors.slice(startErrorCount);
+    	    }
 
-	ValidatorContext.prototype.validateString = function validateString(data, schema, dataPointerPath) {
-	    return this.validateStringLength(data, schema, dataPointerPath) || this.validateStringPattern(data, schema, dataPointerPath) || null;
-	};
+    	    return this.handleError(error);
+    	};
+    	ValidatorContext.prototype.validateFormat = function (data, schema) {
+    	    if (typeof schema.format !== 'string' || !this.formatValidators[schema.format]) {
+    		return null;
+    	    }
+    	    var errorMessage = this.formatValidators[schema.format].call(null, data, schema);
+    	    if (typeof errorMessage === 'string' || typeof errorMessage === 'number') {
+    		return this.createError(ErrorCodes.FORMAT_CUSTOM, {message: errorMessage}).prefixWith(null, "format");
+    	    } else if (errorMessage &amp;&amp; typeof errorMessage === 'object') {
+    		return this.createError(ErrorCodes.FORMAT_CUSTOM, {message: errorMessage.message || "?"}, errorMessage.dataPath || null, errorMessage.schemaPath || "/format");
+    	    }
+    	    return null;
+    	};
+    	ValidatorContext.prototype.validateDefinedKeywords = function (data, schema, dataPointerPath) {
+    	    for (var key in this.definedKeywords) {
+    		if (typeof schema[key] === 'undefined') {
+    		    continue;
+    		}
+    		var validationFunctions = this.definedKeywords[key];
+            var i = 0, l = validationFunctions.length;
+    		for (i = 0; i &lt; l; i++) {
+    		    var func = validationFunctions[i];
+    		    var result = func(data, schema[key], schema, dataPointerPath);
+    		    if (typeof result === 'string' || typeof result === 'number') {
+    			return this.createError(ErrorCodes.KEYWORD_CUSTOM, {key: key, message: result}).prefixWith(null, "format");
+    		    } else if (result &amp;&amp; typeof result === 'object') {
+    			var code = result.code;
+    			if (typeof code === 'string') {
+    			    if (!ErrorCodes[code]) {
+    				throw new Error('Undefined error code (use defineError): ' + code);
+    			    }
+    			    code = ErrorCodes[code];
+    			} else if (typeof code !== 'number') {
+    			    code = ErrorCodes.KEYWORD_CUSTOM;
+    			}
+    			var messageParams = (typeof result.message === 'object') ? result.message : {key: key, message: result.message || "?"};
+    			var schemaPath = result.schemaPath ||( "/" + key.replace(/~/g, '~0').replace(/\//g, '~1'));
+    			return this.createError(code, messageParams, result.dataPath || null, schemaPath);
+    		    }
+    		}
+    	    }
+    	    return null;
+    	};
 
-	ValidatorContext.prototype.validateStringLength = function validateStringLength(data, schema) {
-	    if (typeof data !== "string") {
-		return null;
-	    }
-	    if (schema.minLength !== undefined) {
-		if (data.length &lt; schema.minLength) {
-		    return this.createError(ErrorCodes.STRING_LENGTH_SHORT, {length: data.length, minimum: schema.minLength}).prefixWith(null, "minLength");
-		}
-	    }
-	    if (schema.maxLength !== undefined) {
-		if (data.length > schema.maxLength) {
-		    return this.createError(ErrorCodes.STRING_LENGTH_LONG, {length: data.length, maximum: schema.maxLength}).prefixWith(null, "maxLength");
-		}
-	    }
-	    return null;
-	};
+    	function recursiveCompare(A, B) {
+    	    if (A === B) {
+    		return true;
+    	    }
+    	    if (typeof A === "object" &amp;&amp; typeof B === "object") {
+    		if (Array.isArray(A) !== Array.isArray(B)) {
+    		    return false;
+    		} else if (Array.isArray(A)) {
+    		    if (A.length !== B.length) {
+    			return false;
+    		    }
+                var i = 0, l = A.length;
+    		    for (i = 0; i &lt; l; i++) {
+    			if (!recursiveCompare(A[i], B[i])) {
+    			    return false;
+    			}
+    		    }
+    		} else {
+    		    var key;
+    		    for (key in A) {
+    			if (B[key] === undefined &amp;&amp; A[key] !== undefined) {
+    			    return false;
+    			}
+    		    }
+    		    for (key in B) {
+    			if (A[key] === undefined &amp;&amp; B[key] !== undefined) {
+    			    return false;
+    			}
+    		    }
+    		    for (key in A) {
+    			if (!recursiveCompare(A[key], B[key])) {
+    			    return false;
+    			}
+    		    }
+    		}
+    		return true;
+    	    }
+    	    return false;
+    	}
 
-	ValidatorContext.prototype.validateStringPattern = function validateStringPattern(data, schema) {
-	    if (typeof data !== "string" || schema.pattern === undefined) {
-		return null;
-	    }
-	    var regexp = new RegExp(schema.pattern);
-	    if (!regexp.test(data)) {
-		return this.createError(ErrorCodes.STRING_PATTERN, {pattern: schema.pattern}).prefixWith(null, "pattern");
-	    }
-	    return null;
-	};
-	ValidatorContext.prototype.validateArray = function validateArray(data, schema, dataPointerPath) {
-	    if (!Array.isArray(data)) {
-		return null;
-	    }
-	    return this.validateArrayLength(data, schema, dataPointerPath) || this.validateArrayUniqueItems(data, schema, dataPointerPath) || this.validateArrayItems(data, schema, dataPointerPath) || null;
-	};
+    	ValidatorContext.prototype.validateBasic = function validateBasic(data, schema, dataPointerPath) {
+    	    var error;
+    	    if (error = this.validateType(data, schema, dataPointerPath)) {
+    		return error.prefixWith(null, "type");
+    	    }
+    	    if (error = this.validateEnum(data, schema, dataPointerPath)) {
+    		return error.prefixWith(null, "type");
+    	    }
+    	    return null;
+    	};
 
-	ValidatorContext.prototype.validateArrayLength = function validateArrayLength(data, schema) {
-	    var error;
-	    if (schema.minItems !== undefined) {
-		if (data.length &lt; schema.minItems) {
-		    error = (this.createError(ErrorCodes.ARRAY_LENGTH_SHORT, {length: data.length, minimum: schema.minItems})).prefixWith(null, "minItems");
-		    if (this.handleError(error)) {
-			return error;
-		    }
-		}
-	    }
-	    if (schema.maxItems !== undefined) {
-		if (data.length > schema.maxItems) {
-		    error = (this.createError(ErrorCodes.ARRAY_LENGTH_LONG, {length: data.length, maximum: schema.maxItems})).prefixWith(null, "maxItems");
-		    if (this.handleError(error)) {
-			return error;
-		    }
-		}
-	    }
-	    return null;
-	};
+    	ValidatorContext.prototype.validateType = function validateType(data, schema) {
+    	    if (schema.type === undefined) {
+    		return null;
+    	    }
+    	    var dataType = typeof data;
+    	    if (data === null) {
+    		dataType = "null";
+    	    } else if (Array.isArray(data)) {
+    		dataType = "array";
+    	    }
+    	    var allowedTypes = schema.type;
+    	    if (typeof allowedTypes !== "object") {
+    		allowedTypes = [allowedTypes];
+    	    }
 
-	ValidatorContext.prototype.validateArrayUniqueItems = function validateArrayUniqueItems(data, schema) {
-	    if (schema.uniqueItems) {
-		for (var i = 0; i &lt; data.length; i++) {
-		    for (var j = i + 1; j &lt; data.length; j++) {
-			if (recursiveCompare(data[i], data[j])) {
-			    var error = (this.createError(ErrorCodes.ARRAY_UNIQUE, {match1: i, match2: j})).prefixWith(null, "uniqueItems");
-			    if (this.handleError(error)) {
-				return error;
-			    }
-			}
-		    }
-		}
-	    }
-	    return null;
-	};
+            var i = 0, l = allowedTypes.length;
+    	    for (i = 0; i &lt; l; i++) {
+    		var type = allowedTypes[i];
+    		if (type === dataType || (type === "integer" &amp;&amp; dataType === "number" &amp;&amp; (data % 1 === 0))) {
+    		    return null;
+    		}
+    	    }
+    	    return this.createError(ErrorCodes.INVALID_TYPE, {type: dataType, expected: allowedTypes.join("/")});
+    	};
 
-	ValidatorContext.prototype.validateArrayItems = function validateArrayItems(data, schema, dataPointerPath) {
-	    if (schema.items === undefined) {
-		return null;
-	    }
-	    var error, i;
-	    if (Array.isArray(schema.items)) {
-		for (i = 0; i &lt; data.length; i++) {
-		    if (i &lt; schema.items.length) {
-			if (error = this.validateAll(data[i], schema.items[i], [i], ["items", i], dataPointerPath + "/" + i)) {
-			    return error;
-			}
-		    } else if (schema.additionalItems !== undefined) {
-			if (typeof schema.additionalItems === "boolean") {
-			    if (!schema.additionalItems) {
-				error = (this.createError(ErrorCodes.ARRAY_ADDITIONAL_ITEMS, {})).prefixWith("" + i, "additionalItems");
-				if (this.handleError(error)) {
-				    return error;
-				}
-			    }
-			} else if (error = this.validateAll(data[i], schema.additionalItems, [i], ["additionalItems"], dataPointerPath + "/" + i)) {
-			    return error;
-			}
-		    }
-		}
-	    } else {
-		for (i = 0; i &lt; data.length; i++) {
-		    if (error = this.validateAll(data[i], schema.items, [i], ["items"], dataPointerPath + "/" + i)) {
-			return error;
-		    }
-		}
-	    }
-	    return null;
-	};
+    	ValidatorContext.prototype.validateEnum = function validateEnum(data, schema) {
+    	    if (schema["enum"] === undefined) {
+    		return null;
+    	    }
+            var i = 0, l = schema["enum"].length;
+    	    for (i = 0; i &lt; l; i++) {
+    		var enumVal = schema["enum"][i];
+    		if (recursiveCompare(data, enumVal)) {
+    		    return null;
+    		}
+    	    }
+    	    return this.createError(ErrorCodes.ENUM_MISMATCH, {value: (typeof JSON !== 'undefined') ? JSON.stringify(data) : data});
+    	};
 
-	ValidatorContext.prototype.validateObject = function validateObject(data, schema, dataPointerPath) {
-	    if (typeof data !== "object" || data === null || Array.isArray(data)) {
-		return null;
-	    }
-	    return this.validateObjectMinMaxProperties(data, schema, dataPointerPath) || this.validateObjectRequiredProperties(data, schema, dataPointerPath) || this.validateObjectProperties(data, schema, dataPointerPath) || this.validateObjectDependencies(data, schema, dataPointerPath) || null;
-	};
+    	ValidatorContext.prototype.validateNumeric = function validateNumeric(data, schema, dataPointerPath) {
+    	    return this.validateMultipleOf(data, schema, dataPointerPath) || this.validateMinMax(data, schema, dataPointerPath) || this.validateNaN(data, schema, dataPointerPath) || null;
+    	};
 
-	ValidatorContext.prototype.validateObjectMinMaxProperties = function validateObjectMinMaxProperties(data, schema) {
-	    var keys = Object.keys(data);
-	    var error;
-	    if (schema.minProperties !== undefined) {
-		if (keys.length &lt; schema.minProperties) {
-		    error = this.createError(ErrorCodes.OBJECT_PROPERTIES_MINIMUM, {propertyCount: keys.length, minimum: schema.minProperties}).prefixWith(null, "minProperties");
-		    if (this.handleError(error)) {
-			return error;
-		    }
-		}
-	    }
-	    if (schema.maxProperties !== undefined) {
-		if (keys.length > schema.maxProperties) {
-		    error = this.createError(ErrorCodes.OBJECT_PROPERTIES_MAXIMUM, {propertyCount: keys.length, maximum: schema.maxProperties}).prefixWith(null, "maxProperties");
-		    if (this.handleError(error)) {
-			return error;
-		    }
-		}
-	    }
-	    return null;
-	};
+    	var CLOSE_ENOUGH_LOW = Math.pow(2, -51);
+    	var CLOSE_ENOUGH_HIGH = 1 - CLOSE_ENOUGH_LOW;
+    	ValidatorContext.prototype.validateMultipleOf = function validateMultipleOf(data, schema) {
+    	    var multipleOf = schema.multipleOf || schema.divisibleBy;
+    	    if (multipleOf === undefined) {
+    		return null;
+    	    }
+    	    if (typeof data === "number") {
+    		var remainder = (data/multipleOf)%1;
+    		if (remainder >= CLOSE_ENOUGH_LOW &amp;&amp; remainder &lt; CLOSE_ENOUGH_HIGH) {
+    		    return this.createError(ErrorCodes.NUMBER_MULTIPLE_OF, {value: data, multipleOf: multipleOf});
+    		}
+    	    }
+    	    return null;
+    	};
 
-	ValidatorContext.prototype.validateObjectRequiredProperties = function validateObjectRequiredProperties(data, schema) {
-	    if (schema.required !== undefined) {
-		for (var i = 0; i &lt; schema.required.length; i++) {
-		    var key = schema.required[i];
-		    if (data[key] === undefined) {
-			var error = this.createError(ErrorCodes.OBJECT_REQUIRED, {key: key}).prefixWith(null, "" + i).prefixWith(null, "required");
-			if (this.handleError(error)) {
-			    return error;
-			}
-		    }
-		}
-	    }
-	    return null;
-	};
+    	ValidatorContext.prototype.validateMinMax = function validateMinMax(data, schema) {
+    	    if (typeof data !== "number") {
+    		return null;
+    	    }
+    	    if (schema.minimum !== undefined) {
+    		if (data &lt; schema.minimum) {
+    		    return this.createError(ErrorCodes.NUMBER_MINIMUM, {value: data, minimum: schema.minimum}).prefixWith(null, "minimum");
+    		}
+    		if (schema.exclusiveMinimum &amp;&amp; data === schema.minimum) {
+    		    return this.createError(ErrorCodes.NUMBER_MINIMUM_EXCLUSIVE, {value: data, minimum: schema.minimum}).prefixWith(null, "exclusiveMinimum");
+    		}
+    	    }
+    	    if (schema.maximum !== undefined) {
+    		if (data > schema.maximum) {
+    		    return this.createError(ErrorCodes.NUMBER_MAXIMUM, {value: data, maximum: schema.maximum}).prefixWith(null, "maximum");
+    		}
+    		if (schema.exclusiveMaximum &amp;&amp; data === schema.maximum) {
+    		    return this.createError(ErrorCodes.NUMBER_MAXIMUM_EXCLUSIVE, {value: data, maximum: schema.maximum}).prefixWith(null, "exclusiveMaximum");
+    		}
+    	    }
+    	    return null;
+    	};
 
-	ValidatorContext.prototype.validateObjectProperties = function validateObjectProperties(data, schema, dataPointerPath) {
-	    var error;
-	    for (var key in data) {
-		var keyPointerPath = dataPointerPath + "/" + key.replace(/~/g, '~0').replace(/\//g, '~1');
-		var foundMatch = false;
-		if (schema.properties !== undefined &amp;&amp; schema.properties[key] !== undefined) {
-		    foundMatch = true;
-		    if (error = this.validateAll(data[key], schema.properties[key], [key], ["properties", key], keyPointerPath)) {
-			return error;
-		    }
-		}
-		if (schema.patternProperties !== undefined) {
-		    for (var patternKey in schema.patternProperties) {
-			var regexp = new RegExp(patternKey);
-			if (regexp.test(key)) {
-			    foundMatch = true;
-			    if (error = this.validateAll(data[key], schema.patternProperties[patternKey], [key], ["patternProperties", patternKey], keyPointerPath)) {
-				return error;
-			    }
-			}
-		    }
-		}
-		if (!foundMatch) {
-		    if (schema.additionalProperties !== undefined) {
-			if (this.trackUnknownProperties) {
-			    this.knownPropertyPaths[keyPointerPath] = true;
-			    delete this.unknownPropertyPaths[keyPointerPath];
-			}
-			if (typeof schema.additionalProperties === "boolean") {
-			    if (!schema.additionalProperties) {
-				error = this.createError(ErrorCodes.OBJECT_ADDITIONAL_PROPERTIES, {}).prefixWith(key, "additionalProperties");
-				if (this.handleError(error)) {
-				    return error;
-				}
-			    }
-			} else {
-			    if (error = this.validateAll(data[key], schema.additionalProperties, [key], ["additionalProperties"], keyPointerPath)) {
-				return error;
-			    }
-			}
-		    } else if (this.trackUnknownProperties &amp;&amp; !this.knownPropertyPaths[keyPointerPath]) {
-			this.unknownPropertyPaths[keyPointerPath] = true;
-		    }
-		} else if (this.trackUnknownProperties) {
-		    this.knownPropertyPaths[keyPointerPath] = true;
-		    delete this.unknownPropertyPaths[keyPointerPath];
-		}
-	    }
-	    return null;
-	};
+    	ValidatorContext.prototype.validateNaN = function validateNaN(data) {
+    	    if (typeof data !== "number") {
+    		return null;
+    	    }
+    	    if (isNaN(data) === true || data === Infinity || data === -Infinity) {
+    		return this.createError(ErrorCodes.NUMBER_NOT_A_NUMBER, {value: data}).prefixWith(null, "type");
+    	    }
+    	    return null;
+    	};
 
-	ValidatorContext.prototype.validateObjectDependencies = function validateObjectDependencies(data, schema, dataPointerPath) {
-	    var error;
-	    if (schema.dependencies !== undefined) {
-		for (var depKey in schema.dependencies) {
-		    if (data[depKey] !== undefined) {
-			var dep = schema.dependencies[depKey];
-			if (typeof dep === "string") {
-			    if (data[dep] === undefined) {
-				error = this.createError(ErrorCodes.OBJECT_DEPENDENCY_KEY, {key: depKey, missing: dep}).prefixWith(null, depKey).prefixWith(null, "dependencies");
-				if (this.handleError(error)) {
-				    return error;
-				}
-			    }
-			} else if (Array.isArray(dep)) {
-			    for (var i = 0; i &lt; dep.length; i++) {
-				var requiredKey = dep[i];
-				if (data[requiredKey] === undefined) {
-				    error = this.createError(ErrorCodes.OBJECT_DEPENDENCY_KEY, {key: depKey, missing: requiredKey}).prefixWith(null, "" + i).prefixWith(null, depKey).prefixWith(null, "dependencies");
-				    if (this.handleError(error)) {
-					return error;
-				    }
-				}
-			    }
-			} else {
-			    if (error = this.validateAll(data, dep, [], ["dependencies", depKey], dataPointerPath)) {
-				return error;
-			    }
-			}
-		    }
-		}
-	    }
-	    return null;
-	};
+    	ValidatorContext.prototype.validateString = function validateString(data, schema, dataPointerPath) {
+    	    return this.validateStringLength(data, schema, dataPointerPath) || this.validateStringPattern(data, schema, dataPointerPath) || null;
+    	};
 
-	ValidatorContext.prototype.validateCombinations = function validateCombinations(data, schema, dataPointerPath) {
-	    return this.validateAllOf(data, schema, dataPointerPath) || this.validateAnyOf(data, schema, dataPointerPath) || this.validateOneOf(data, schema, dataPointerPath) || this.validateNot(data, schema, dataPointerPath) || null;
-	};
+    	ValidatorContext.prototype.validateStringLength = function validateStringLength(data, schema) {
+    	    if (typeof data !== "string") {
+    		return null;
+    	    }
+    	    if (schema.minLength !== undefined) {
+    		if (data.length &lt; schema.minLength) {
+    		    return this.createError(ErrorCodes.STRING_LENGTH_SHORT, {length: data.length, minimum: schema.minLength}).prefixWith(null, "minLength");
+    		}
+    	    }
+    	    if (schema.maxLength !== undefined) {
+    		if (data.length > schema.maxLength) {
+    		    return this.createError(ErrorCodes.STRING_LENGTH_LONG, {length: data.length, maximum: schema.maxLength}).prefixWith(null, "maxLength");
+    		}
+    	    }
+    	    return null;
+    	};
 
-	ValidatorContext.prototype.validateAllOf = function validateAllOf(data, schema, dataPointerPath) {
-	    if (schema.allOf === undefined) {
-		return null;
-	    }
-	    var error;
-	    for (var i = 0; i &lt; schema.allOf.length; i++) {
-		var subSchema = schema.allOf[i];
-		if (error = this.validateAll(data, subSchema, [], ["allOf", i], dataPointerPath)) {
-		    return error;
-		}
-	    }
-	    return null;
-	};
+    	ValidatorContext.prototype.validateStringPattern = function validateStringPattern(data, schema) {
+    	    if (typeof data !== "string" || schema.pattern === undefined) {
+    		return null;
+    	    }
+    	    var regexp = new RegExp(schema.pattern);
+    	    if (!regexp.test(data)) {
+    		return this.createError(ErrorCodes.STRING_PATTERN, {pattern: schema.pattern}).prefixWith(null, "pattern");
+    	    }
+    	    return null;
+    	};
+    	ValidatorContext.prototype.validateArray = function validateArray(data, schema, dataPointerPath) {
+    	    if (!Array.isArray(data)) {
+    		return null;
+    	    }
+    	    return this.validateArrayLength(data, schema, dataPointerPath) || this.validateArrayUniqueItems(data, schema, dataPointerPath) || this.validateArrayItems(data, schema, dataPointerPath) || null;
+    	};
 
-	ValidatorContext.prototype.validateAnyOf = function validateAnyOf(data, schema, dataPointerPath) {
-	    if (schema.anyOf === undefined) {
-		return null;
-	    }
-	    var errors = [];
-	    var startErrorCount = this.errors.length;
-	    var oldUnknownPropertyPaths, oldKnownPropertyPaths;
-	    if (this.trackUnknownProperties) {
-		oldUnknownPropertyPaths = this.unknownPropertyPaths;
-		oldKnownPropertyPaths = this.knownPropertyPaths;
-	    }
-	    var errorAtEnd = true;
-	    for (var i = 0; i &lt; schema.anyOf.length; i++) {
-		if (this.trackUnknownProperties) {
-		    this.unknownPropertyPaths = {};
-		    this.knownPropertyPaths = {};
-		}
-		var subSchema = schema.anyOf[i];
+    	ValidatorContext.prototype.validateArrayLength = function validateArrayLength(data, schema) {
+    	    var error;
+    	    if (schema.minItems !== undefined) {
+    		if (data.length &lt; schema.minItems) {
+    		    error = (this.createError(ErrorCodes.ARRAY_LENGTH_SHORT, {length: data.length, minimum: schema.minItems})).prefixWith(null, "minItems");
+    		    if (this.handleError(error)) {
+    			return error;
+    		    }
+    		}
+    	    }
+    	    if (schema.maxItems !== undefined) {
+    		if (data.length > schema.maxItems) {
+    		    error = (this.createError(ErrorCodes.ARRAY_LENGTH_LONG, {length: data.length, maximum: schema.maxItems})).prefixWith(null, "maxItems");
+    		    if (this.handleError(error)) {
+    			return error;
+    		    }
+    		}
+    	    }
+    	    return null;
+    	};
 
-		var errorCount = this.errors.length;
-		var error = this.validateAll(data, subSchema, [], ["anyOf", i], dataPointerPath);
+    	ValidatorContext.prototype.validateArrayUniqueItems = function validateArrayUniqueItems(data, schema) {
+    	    if (schema.uniqueItems) {
+            var i = 0, l = data.length;
+    		for (i = 0; i &lt; l; i++) {
+                var j = 0;
+    		    for (j = i + 1; j &lt; l; j++) {
+    			if (recursiveCompare(data[i], data[j])) {
+    			    var error = (this.createError(ErrorCodes.ARRAY_UNIQUE, {match1: i, match2: j})).prefixWith(null, "uniqueItems");
+    			    if (this.handleError(error)) {
+    				return error;
+    			    }
+    			}
+    		    }
+    		}
+    	    }
+    	    return null;
+    	};
 
-		if (error === null &amp;&amp; errorCount === this.errors.length) {
-		    this.errors = this.errors.slice(0, startErrorCount);
+    	ValidatorContext.prototype.validateArrayItems = function validateArrayItems(data, schema, dataPointerPath) {
+    	    if (schema.items === undefined) {
+    		return null;
+    	    }
+    	    var error, i;
+    	    if (Array.isArray(schema.items)) {
+            var l = data.length;
+    		for (i = 0; i &lt; l; i++) {
+    		    if (i &lt; schema.items.length) {
+    			if (error = this.validateAll(data[i], schema.items[i], [i], ["items", i], dataPointerPath + "/" + i)) {
+    			    return error;
+    			}
+    		    } else if (schema.additionalItems !== undefined) {
+    			if (typeof schema.additionalItems === "boolean") {
+    			    if (!schema.additionalItems) {
+    				error = (this.createError(ErrorCodes.ARRAY_ADDITIONAL_ITEMS, {})).prefixWith("" + i, "additionalItems");
+    				if (this.handleError(error)) {
+    				    return error;
+    				}
+    			    }
+    			} else if (error = this.validateAll(data[i], schema.additionalItems, [i], ["additionalItems"], dataPointerPath + "/" + i)) {
+    			    return error;
+    			}
+    		    }
+    		}
+    	    } else {
+            var l = data.length;
+    		for (i = 0; i &lt; l; i++) {
+    		    if (error = this.validateAll(data[i], schema.items, [i], ["items"], dataPointerPath + "/" + i)) {
+    			return error;
+    		    }
+    		}
+    	    }
+    	    return null;
+    	};
 
-		    if (this.trackUnknownProperties) {
-			for (var knownKey in this.knownPropertyPaths) {
-			    oldKnownPropertyPaths[knownKey] = true;
-			    delete oldUnknownPropertyPaths[knownKey];
-			}
-			for (var unknownKey in this.unknownPropertyPaths) {
-			    if (!oldKnownPropertyPaths[unknownKey]) {
-				oldUnknownPropertyPaths[unknownKey] = true;
-			    }
-			}
-			// We need to continue looping so we catch all the
-			// property definitions, but we don't want to return an
-			// error
-			errorAtEnd = false;
-			continue;
-		    }
+    	ValidatorContext.prototype.validateObject = function validateObject(data, schema, dataPointerPath) {
+    	    if (typeof data !== "object" || data === null || Array.isArray(data)) {
+    		return null;
+    	    }
+    	    return this.validateObjectMinMaxProperties(data, schema, dataPointerPath) || this.validateObjectRequiredProperties(data, schema, dataPointerPath) || this.validateObjectProperties(data, schema, dataPointerPath) || this.validateObjectDependencies(data, schema, dataPointerPath) || null;
+    	};
 
-		    return null;
-		}
-		if (error) {
-		    errors.push(error.prefixWith(null, "" + i).prefixWith(null, "anyOf"));
-		}
-	    }
-	    if (this.trackUnknownProperties) {
-		this.unknownPropertyPaths = oldUnknownPropertyPaths;
-		this.knownPropertyPaths = oldKnownPropertyPaths;
-	    }
-	    if (errorAtEnd) {
-		errors = errors.concat(this.errors.slice(startErrorCount));
-		this.errors = this.errors.slice(0, startErrorCount);
-		return this.createError(ErrorCodes.ANY_OF_MISSING, {}, "", "/anyOf", errors);
-	    }
-	};
+    	ValidatorContext.prototype.validateObjectMinMaxProperties = function validateObjectMinMaxProperties(data, schema) {
+    	    var keys = Object.keys(data);
+    	    var error;
+    	    if (schema.minProperties !== undefined) {
+    		if (keys.length &lt; schema.minProperties) {
+    		    error = this.createError(ErrorCodes.OBJECT_PROPERTIES_MINIMUM, {propertyCount: keys.length, minimum: schema.minProperties}).prefixWith(null, "minProperties");
+    		    if (this.handleError(error)) {
+    			return error;
+    		    }
+    		}
+    	    }
+    	    if (schema.maxProperties !== undefined) {
+    		if (keys.length > schema.maxProperties) {
+    		    error = this.createError(ErrorCodes.OBJECT_PROPERTIES_MAXIMUM, {propertyCount: keys.length, maximum: schema.maxProperties}).prefixWith(null, "maxProperties");
+    		    if (this.handleError(error)) {
+    			return error;
+    		    }
+    		}
+    	    }
+    	    return null;
+    	};
 
-	ValidatorContext.prototype.validateOneOf = function validateOneOf(data, schema, dataPointerPath) {
-	    if (schema.oneOf === undefined) {
-		return null;
-	    }
-	    var validIndex = null;
-	    var errors = [];
-	    var startErrorCount = this.errors.length;
-	    var oldUnknownPropertyPaths, oldKnownPropertyPaths;
-	    if (this.trackUnknownProperties) {
-		oldUnknownPropertyPaths = this.unknownPropertyPaths;
-		oldKnownPropertyPaths = this.knownPropertyPaths;
-	    }
-	    for (var i = 0; i &lt; schema.oneOf.length; i++) {
-		if (this.trackUnknownProperties) {
-		    this.unknownPropertyPaths = {};
-		    this.knownPropertyPaths = {};
-		}
-		var subSchema = schema.oneOf[i];
+    	ValidatorContext.prototype.validateObjectRequiredProperties = function validateObjectRequiredProperties(data, schema) {
+    	    if (schema.required !== undefined) {
+                var i = 0, l = schema.required.length;
+    		for (i = 0; i &lt; l; i++) {
+    		    var key = schema.required[i];
+    		    if (data[key] === undefined) {
+    			var error = this.createError(ErrorCodes.OBJECT_REQUIRED, {key: key}).prefixWith(null, "" + i).prefixWith(null, "required");
+    			if (this.handleError(error)) {
+    			    return error;
+    			}
+    		    }
+    		}
+    	    }
+    	    return null;
+    	};
 
-		var errorCount = this.errors.length;
-		var error = this.validateAll(data, subSchema, [], ["oneOf", i], dataPointerPath);
+    	ValidatorContext.prototype.validateObjectProperties = function validateObjectProperties(data, schema, dataPointerPath) {
+    	    var error;
+    	    for (var key in data) {
+    		var keyPointerPath = dataPointerPath + "/" + key.replace(/~/g, '~0').replace(/\//g, '~1');
+    		var foundMatch = false;
+    		if (schema.properties !== undefined &amp;&amp; schema.properties[key] !== undefined) {
+    		    foundMatch = true;
+    		    if (error = this.validateAll(data[key], schema.properties[key], [key], ["properties", key], keyPointerPath)) {
+    			return error;
+    		    }
+    		}
+    		if (schema.patternProperties !== undefined) {
+    		    for (var patternKey in schema.patternProperties) {
+    			var regexp = new RegExp(patternKey);
+    			if (regexp.test(key)) {
+    			    foundMatch = true;
+    			    if (error = this.validateAll(data[key], schema.patternProperties[patternKey], [key], ["patternProperties", patternKey], keyPointerPath)) {
+    				return error;
+    			    }
+    			}
+    		    }
+    		}
+    		if (!foundMatch) {
+    		    if (schema.additionalProperties !== undefined) {
+    			if (this.trackUnknownProperties) {
+    			    this.knownPropertyPaths[keyPointerPath] = true;
+    			    delete this.unknownPropertyPaths[keyPointerPath];
+    			}
+    			if (typeof schema.additionalProperties === "boolean") {
+    			    if (!schema.additionalProperties) {
+    				error = this.createError(ErrorCodes.OBJECT_ADDITIONAL_PROPERTIES, {}).prefixWith(key, "additionalProperties");
+    				if (this.handleError(error)) {
+    				    return error;
+    				}
+    			    }
+    			} else {
+    			    if (error = this.validateAll(data[key], schema.additionalProperties, [key], ["additionalProperties"], keyPointerPath)) {
+    				return error;
+    			    }
+    			}
+    		    } else if (this.trackUnknownProperties &amp;&amp; !this.knownPropertyPaths[keyPointerPath]) {
+    			this.unknownPropertyPaths[keyPointerPath] = true;
+    		    }
+    		} else if (this.trackUnknownProperties) {
+    		    this.knownPropertyPaths[keyPointerPath] = true;
+    		    delete this.unknownPropertyPaths[keyPointerPath];
+    		}
+    	    }
+    	    return null;
+    	};
 
-		if (error === null &amp;&amp; errorCount === this.errors.length) {
-		    if (validIndex === null) {
-			validIndex = i;
-		    } else {
-			this.errors = this.errors.slice(0, startErrorCount);
-			return this.createError(ErrorCodes.ONE_OF_MULTIPLE, {index1: validIndex, index2: i}, "", "/oneOf");
-		    }
-		    if (this.trackUnknownProperties) {
-			for (var knownKey in this.knownPropertyPaths) {
-			    oldKnownPropertyPaths[knownKey] = true;
-			    delete oldUnknownPropertyPaths[knownKey];
-			}
-			for (var unknownKey in this.unknownPropertyPaths) {
-			    if (!oldKnownPropertyPaths[unknownKey]) {
-				oldUnknownPropertyPaths[unknownKey] = true;
-			    }
-			}
-		    }
-		} else if (error) {
-		    errors.push(error);
-		}
-	    }
-	    if (this.trackUnknownProperties) {
-		this.unknownPropertyPaths = oldUnknownPropertyPaths;
-		this.knownPropertyPaths = oldKnownPropertyPaths;
-	    }
-	    if (validIndex === null) {
-		errors = errors.concat(this.errors.slice(startErrorCount));
-		this.errors = this.errors.slice(0, startErrorCount);
-		return this.createError(ErrorCodes.ONE_OF_MISSING, {}, "", "/oneOf", errors);
-	    } else {
-		this.errors = this.errors.slice(0, startErrorCount);
-	    }
-	    return null;
-	};
+    	ValidatorContext.prototype.validateObjectDependencies = function validateObjectDependencies(data, schema, dataPointerPath) {
+    	    var error;
+    	    if (schema.dependencies !== undefined) {
+    		for (var depKey in schema.dependencies) {
+    		    if (data[depKey] !== undefined) {
+    			var dep = schema.dependencies[depKey];
+    			if (typeof dep === "string") {
+    			    if (data[dep] === undefined) {
+    				error = this.createError(ErrorCodes.OBJECT_DEPENDENCY_KEY, {key: depKey, missing: dep}).prefixWith(null, depKey).prefixWith(null, "dependencies");
+    				if (this.handleError(error)) {
+    				    return error;
+    				}
+    			    }
+    			} else if (Array.isArray(dep)) {
+                    var i = 0, l = dep.lenth;
+    			    for (i = 0; i &lt; l; i++) {
+    				var requiredKey = dep[i];
+    				if (data[requiredKey] === undefined) {
+    				    error = this.createError(ErrorCodes.OBJECT_DEPENDENCY_KEY, {key: depKey, missing: requiredKey}).prefixWith(null, "" + i).prefixWith(null, depKey).prefixWith(null, "dependencies");
+    				    if (this.handleError(error)) {
+    					return error;
+    				    }
+    				}
+    			    }
+    			} else {
+    			    if (error = this.validateAll(data, dep, [], ["dependencies", depKey], dataPointerPath)) {
+    				return error;
+    			    }
+    			}
+    		    }
+    		}
+    	    }
+    	    return null;
+    	};
 
-	ValidatorContext.prototype.validateNot = function validateNot(data, schema, dataPointerPath) {
-	    if (schema.not === undefined) {
-		return null;
-	    }
-	    var oldErrorCount = this.errors.length;
-	    var oldUnknownPropertyPaths, oldKnownPropertyPaths;
-	    if (this.trackUnknownProperties) {
-		oldUnknownPropertyPaths = this.unknownPropertyPaths;
-		oldKnownPropertyPaths = this.knownPropertyPaths;
-		this.unknownPropertyPaths = {};
-		this.knownPropertyPaths = {};
-	    }
-	    var error = this.validateAll(data, schema.not, null, null, dataPointerPath);
-	    var notErrors = this.errors.slice(oldErrorCount);
-	    this.errors = this.errors.slice(0, oldErrorCount);
-	    if (this.trackUnknownProperties) {
-		this.unknownPropertyPaths = oldUnknownPropertyPaths;
-		this.knownPropertyPaths = oldKnownPropertyPaths;
-	    }
-	    if (error === null &amp;&amp; notErrors.length === 0) {
-		return this.createError(ErrorCodes.NOT_PASSED, {}, "", "/not");
-	    }
-	    return null;
-	};
+    	ValidatorContext.prototype.validateCombinations = function validateCombinations(data, schema, dataPointerPath) {
+    	    return this.validateAllOf(data, schema, dataPointerPath) || this.validateAnyOf(data, schema, dataPointerPath) || this.validateOneOf(data, schema, dataPointerPath) || this.validateNot(data, schema, dataPointerPath) || null;
+    	};
 
-	ValidatorContext.prototype.validateHypermedia = function validateCombinations(data, schema, dataPointerPath) {
-	    if (!schema.links) {
-		return null;
-	    }
-	    var error;
-	    for (var i = 0; i &lt; schema.links.length; i++) {
-		var ldo = schema.links[i];
-		if (ldo.rel === "describedby") {
-		    var template = new UriTemplate(ldo.href);
-		    var allPresent = true;
-		    for (var j = 0; j &lt; template.varNames.length; j++) {
-			if (!(template.varNames[j] in data)) {
-			    allPresent = false;
-			    break;
-			}
-		    }
-		    if (allPresent) {
-			var schemaUrl = template.fillFromObject(data);
-			var subSchema = {"$ref": schemaUrl};
-			if (error = this.validateAll(data, subSchema, [], ["links", i], dataPointerPath)) {
-			    return error;
-			}
-		    }
-		}
-	    }
-	};
+    	ValidatorContext.prototype.validateAllOf = function validateAllOf(data, schema, dataPointerPath) {
+    	    if (schema.allOf === undefined) {
+    		return null;
+    	    }
+    	    var error;
+            var i = 0, l = schema.allOf.length;
+    	    for (i = 0; i &lt; l; i++) {
+    		var subSchema = schema.allOf[i];
+    		if (error = this.validateAll(data, subSchema, [], ["allOf", i], dataPointerPath)) {
+    		    return error;
+    		}
+    	    }
+    	    return null;
+    	};
 
-	// parseURI() and resolveUrl() are from https://gist.github.com/1088850
-	// - released as public domain by author ("Yaffle") - see comments on
-	// gist
+    	ValidatorContext.prototype.validateAnyOf = function validateAnyOf(data, schema, dataPointerPath) {
+    	    if (schema.anyOf === undefined) {
+    		return null;
+    	    }
+    	    var errors = [];
+    	    var startErrorCount = this.errors.length;
+    	    var oldUnknownPropertyPaths, oldKnownPropertyPaths;
+    	    if (this.trackUnknownProperties) {
+    		oldUnknownPropertyPaths = this.unknownPropertyPaths;
+    		oldKnownPropertyPaths = this.knownPropertyPaths;
+    	    }
+    	    var errorAtEnd = true;
+            var i = 0, l = schema.anyOf.length;
+    	    for (i = 0; i &lt; l; i++) {
+    		if (this.trackUnknownProperties) {
+    		    this.unknownPropertyPaths = {};
+    		    this.knownPropertyPaths = {};
+    		}
+    		var subSchema = schema.anyOf[i];
 
-	function parseURI(url) {
-	    var m = String(url).replace(/^\s+|\s+$/g, '').match(/^([^:\/?#]+:)?(\/\/(?:[^:@]*(?::[^:@]*)?@)?(([^:\/?#]*)(?::(\d*))?))?([^?#]*)(\?[^#]*)?(#[\s\S]*)?/);
-	    // authority = '//' + user + ':' + pass '@' + hostname + ':' port
-	    return (m ? {
-		href     : m[0] || '',
-		protocol : m[1] || '',
-		authority: m[2] || '',
-		host     : m[3] || '',
-		hostname : m[4] || '',
-		port     : m[5] || '',
-		pathname : m[6] || '',
-		search   : m[7] || '',
-		hash     : m[8] || ''
-	    } : null);
-	}
+    		var errorCount = this.errors.length;
+    		var error = this.validateAll(data, subSchema, [], ["anyOf", i], dataPointerPath);
 
-	function resolveUrl(base, href) {// RFC 3986
+    		if (error === null &amp;&amp; errorCount === this.errors.length) {
+    		    this.errors = this.errors.slice(0, startErrorCount);
 
-	    function removeDotSegments(input) {
-		var output = [];
-		input.replace(/^(\.\.?(\/|$))+/, '')
-		.replace(/\/(\.(\/|$))+/g, '/')
-		.replace(/\/\.\.$/, '/../')
-		.replace(/\/?[^\/]*/g, function (p) {
-		    if (p === '/..') {
-			output.pop();
-		    } else {
-			output.push(p);
-		    }
-		});
-		return output.join('').replace(/^\//, input.charAt(0) === '/' ? '/' : '');
-	    }
+    		    if (this.trackUnknownProperties) {
+    			for (var knownKey in this.knownPropertyPaths) {
+    			    oldKnownPropertyPaths[knownKey] = true;
+    			    delete oldUnknownPropertyPaths[knownKey];
+    			}
+    			for (var unknownKey in this.unknownPropertyPaths) {
+    			    if (!oldKnownPropertyPaths[unknownKey]) {
+    				oldUnknownPropertyPaths[unknownKey] = true;
+    			    }
+    			}
+    			// We need to continue looping so we catch all the
+    			// property definitions, but we don't want to return an
+    			// error
+    			errorAtEnd = false;
+    			continue;
+    		    }
 
-	    href = parseURI(href || '');
-	    base = parseURI(base || '');
+    		    return null;
+    		}
+    		if (error) {
+    		    errors.push(error.prefixWith(null, "" + i).prefixWith(null, "anyOf"));
+    		}
+    	    }
+    	    if (this.trackUnknownProperties) {
+    		this.unknownPropertyPaths = oldUnknownPropertyPaths;
+    		this.knownPropertyPaths = oldKnownPropertyPaths;
+    	    }
+    	    if (errorAtEnd) {
+    		errors = errors.concat(this.errors.slice(startErrorCount));
+    		this.errors = this.errors.slice(0, startErrorCount);
+    		return this.createError(ErrorCodes.ANY_OF_MISSING, {}, "", "/anyOf", errors);
+    	    }
+    	};
 
-	    return !href || !base ? null : (href.protocol || base.protocol) +
-		    (href.protocol || href.authority ? href.authority : base.authority) +
-		    removeDotSegments(href.protocol || href.authority || href.pathname.charAt(0) === '/' ? href.pathname : (href.pathname ? ((base.authority &amp;&amp; !base.pathname ? '/' : '') + base.pathname.slice(0, base.pathname.lastIndexOf('/') + 1) + href.pathname) : base.pathname)) +
-		    (href.protocol || href.authority || href.pathname ? href.search : (href.search || base.search)) +
-		    href.hash;
-	}
+    	ValidatorContext.prototype.validateOneOf = function validateOneOf(data, schema, dataPointerPath) {
+    	    if (schema.oneOf === undefined) {
+    		return null;
+    	    }
+    	    var validIndex = null;
+    	    var errors = [];
+    	    var startErrorCount = this.errors.length;
+    	    var oldUnknownPropertyPaths, oldKnownPropertyPaths;
+    	    if (this.trackUnknownProperties) {
+    		oldUnknownPropertyPaths = this.unknownPropertyPaths;
+    		oldKnownPropertyPaths = this.knownPropertyPaths;
+    	    }
+            var i = 0, l = schema.oneOf.length;
+    	    for (i = 0; i &lt; l; i++) {
+    		if (this.trackUnknownProperties) {
+    		    this.unknownPropertyPaths = {};
+    		    this.knownPropertyPaths = {};
+    		}
+    		var subSchema = schema.oneOf[i];
 
-	function getDocumentUri(uri) {
-	    return uri.split('#')[0];
-	}
-	function normSchema(schema, baseUri) {
-	    if (schema &amp;&amp; typeof schema === "object") {
-		if (baseUri === undefined) {
-		    baseUri = schema.id;
-		} else if (typeof schema.id === "string") {
-		    baseUri = resolveUrl(baseUri, schema.id);
-		    schema.id = baseUri;
-		}
-		if (Array.isArray(schema)) {
-		    for (var i = 0; i &lt; schema.length; i++) {
-			normSchema(schema[i], baseUri);
-		    }
-		} else {
-		    if (typeof schema['$ref'] === "string") {
-			schema['$ref'] = resolveUrl(baseUri, schema['$ref']);
-		    }
-		    for (var key in schema) {
-			if (key !== "enum") {
-			    normSchema(schema[key], baseUri);
-			}
-		    }
-		}
-	    }
-	}
+    		var errorCount = this.errors.length;
+    		var error = this.validateAll(data, subSchema, [], ["oneOf", i], dataPointerPath);
 
-	var ErrorCodes = {
-		INVALID_TYPE: 0,
-		ENUM_MISMATCH: 1,
-		ANY_OF_MISSING: 10,
-		ONE_OF_MISSING: 11,
-		ONE_OF_MULTIPLE: 12,
-		NOT_PASSED: 13,
-		// Numeric errors
-		NUMBER_MULTIPLE_OF: 100,
-		NUMBER_MINIMUM: 101,
-		NUMBER_MINIMUM_EXCLUSIVE: 102,
-		NUMBER_MAXIMUM: 103,
-		NUMBER_MAXIMUM_EXCLUSIVE: 104,
-		NUMBER_NOT_A_NUMBER: 105,
-		// String errors
-		STRING_LENGTH_SHORT: 200,
-		STRING_LENGTH_LONG: 201,
-		STRING_PATTERN: 202,
-		// Object errors
-		OBJECT_PROPERTIES_MINIMUM: 300,
-		OBJECT_PROPERTIES_MAXIMUM: 301,
-		OBJECT_REQUIRED: 302,
-		OBJECT_ADDITIONAL_PROPERTIES: 303,
-		OBJECT_DEPENDENCY_KEY: 304,
-		// Array errors
-		ARRAY_LENGTH_SHORT: 400,
-		ARRAY_LENGTH_LONG: 401,
-		ARRAY_UNIQUE: 402,
-		ARRAY_ADDITIONAL_ITEMS: 403,
-		// Custom/user-defined errors
-		FORMAT_CUSTOM: 500,
-		KEYWORD_CUSTOM: 501,
-		// Schema structure
-		CIRCULAR_REFERENCE: 600,
-		// Non-standard validation options
-		UNKNOWN_PROPERTY: 1000
-	};
-	var ErrorCodeLookup = {};
-	for (var key in ErrorCodes) {
-	    ErrorCodeLookup[ErrorCodes[key]] = key;
-	}
-	// TODO: bundle this
-	var ErrorMessagesDefault = {
-		INVALID_TYPE: "Invalid type: {type} (expected {expected})",
-		ENUM_MISMATCH: "No enum match for: {value}",
-		ANY_OF_MISSING: "Data does not match any schemas from \"anyOf\"",
-		ONE_OF_MISSING: "Data does not match any schemas from \"oneOf\"",
-		ONE_OF_MULTIPLE: "Data is valid against more than one schema from \"oneOf\": indices {index1} and {index2}",
-		NOT_PASSED: "Data matches schema from \"not\"",
-		// Numeric errors
-		NUMBER_MULTIPLE_OF: "Value {value} is not a multiple of {multipleOf}",
-		NUMBER_MINIMUM: "Value {value} is less than minimum {minimum}",
-		NUMBER_MINIMUM_EXCLUSIVE: "Value {value} is equal to exclusive minimum {minimum}",
-		NUMBER_MAXIMUM: "Value {value} is greater than maximum {maximum}",
-		NUMBER_MAXIMUM_EXCLUSIVE: "Value {value} is equal to exclusive maximum {maximum}",
-		NUMBER_NOT_A_NUMBER: "Value {value} is not a valid number",
-		// String errors
-		STRING_LENGTH_SHORT: "String is too short ({length} chars), minimum {minimum}",
-		STRING_LENGTH_LONG: "String is too long ({length} chars), maximum {maximum}",
-		STRING_PATTERN: "String does not match pattern: {pattern}",
-		// Object errors
-		OBJECT_PROPERTIES_MINIMUM: "Too few properties defined ({propertyCount}), minimum {minimum}",
-		OBJECT_PROPERTIES_MAXIMUM: "Too many properties defined ({propertyCount}), maximum {maximum}",
-		OBJECT_REQUIRED: "Missing required property: {key}",
-		OBJECT_ADDITIONAL_PROPERTIES: "Additional properties not allowed",
-		OBJECT_DEPENDENCY_KEY: "Dependency failed - key must exist: {missing} (due to key: {key})",
-		// Array errors
-		ARRAY_LENGTH_SHORT: "Array is too short ({length}), minimum {minimum}",
-		ARRAY_LENGTH_LONG: "Array is too long ({length}), maximum {maximum}",
-		ARRAY_UNIQUE: "Array items are not unique (indices {match1} and {match2})",
-		ARRAY_ADDITIONAL_ITEMS: "Additional items not allowed",
-		// Format errors
-		FORMAT_CUSTOM: "Format validation failed ({message})",
-		KEYWORD_CUSTOM: "Keyword failed: {key} ({message})",
-		// Schema structure
-		CIRCULAR_REFERENCE: "Circular $refs: {urls}",
-		// Non-standard validation options
-		UNKNOWN_PROPERTY: "Unknown property (not in schema)"
-	};
+    		if (error === null &amp;&amp; errorCount === this.errors.length) {
+    		    if (validIndex === null) {
+    			validIndex = i;
+    		    } else {
+    			this.errors = this.errors.slice(0, startErrorCount);
+    			return this.createError(ErrorCodes.ONE_OF_MULTIPLE, {index1: validIndex, index2: i}, "", "/oneOf");
+    		    }
+    		    if (this.trackUnknownProperties) {
+    			for (var knownKey in this.knownPropertyPaths) {
+    			    oldKnownPropertyPaths[knownKey] = true;
+    			    delete oldUnknownPropertyPaths[knownKey];
+    			}
+    			for (var unknownKey in this.unknownPropertyPaths) {
+    			    if (!oldKnownPropertyPaths[unknownKey]) {
+    				oldUnknownPropertyPaths[unknownKey] = true;
+    			    }
+    			}
+    		    }
+    		} else if (error) {
+    		    errors.push(error);
+    		}
+    	    }
+    	    if (this.trackUnknownProperties) {
+    		this.unknownPropertyPaths = oldUnknownPropertyPaths;
+    		this.knownPropertyPaths = oldKnownPropertyPaths;
+    	    }
+    	    if (validIndex === null) {
+    		errors = errors.concat(this.errors.slice(startErrorCount));
+    		this.errors = this.errors.slice(0, startErrorCount);
+    		return this.createError(ErrorCodes.ONE_OF_MISSING, {}, "", "/oneOf", errors);
+    	    } else {
+    		this.errors = this.errors.slice(0, startErrorCount);
+    	    }
+    	    return null;
+    	};
 
-	function ValidationError(code, message, params, dataPath, schemaPath, subErrors) {
-	    Error.call(this);
-	    if (code === undefined) {
-		throw new Error ("No code supplied for error: "+ message);
-	    }
-	    this.message = message;
-	    this.params = params;
-	    this.code = code;
-	    this.dataPath = dataPath || "";
-	    this.schemaPath = schemaPath || "";
-	    this.subErrors = subErrors || null;
+    	ValidatorContext.prototype.validateNot = function validateNot(data, schema, dataPointerPath) {
+    	    if (schema.not === undefined) {
+    		return null;
+    	    }
+    	    var oldErrorCount = this.errors.length;
+    	    var oldUnknownPropertyPaths, oldKnownPropertyPaths;
+    	    if (this.trackUnknownProperties) {
+    		oldUnknownPropertyPaths = this.unknownPropertyPaths;
+    		oldKnownPropertyPaths = this.knownPropertyPaths;
+    		this.unknownPropertyPaths = {};
+    		this.knownPropertyPaths = {};
+    	    }
+    	    var error = this.validateAll(data, schema.not, null, null, dataPointerPath);
+    	    var notErrors = this.errors.slice(oldErrorCount);
+    	    this.errors = this.errors.slice(0, oldErrorCount);
+    	    if (this.trackUnknownProperties) {
+    		this.unknownPropertyPaths = oldUnknownPropertyPaths;
+    		this.knownPropertyPaths = oldKnownPropertyPaths;
+    	    }
+    	    if (error === null &amp;&amp; notErrors.length === 0) {
+    		return this.createError(ErrorCodes.NOT_PASSED, {}, "", "/not");
+    	    }
+    	    return null;
+    	};
 
-	    var err = new Error(this.message);
-	    this.stack = err.stack || err.stacktrace;
-	    if (!this.stack) {
-		try {
-		    throw err;
-		}
-		catch(err) {
-		    this.stack = err.stack || err.stacktrace;
-		}
-	    }
-	}
-	ValidationError.prototype = Object.create(Error.prototype);
-	ValidationError.prototype.constructor = ValidationError;
-	ValidationError.prototype.name = 'ValidationError';
+    	ValidatorContext.prototype.validateHypermedia = function validateCombinations(data, schema, dataPointerPath) {
+    	    if (!schema.links) {
+    		return null;
+    	    }
+    	    var error;
+            var i = 0, l = schema.links.length;
+    	    for (i = 0; i &lt; l; i++) {
+    		var ldo = schema.links[i];
+    		if (ldo.rel === "describedby") {
+    		    var template = new UriTemplate(ldo.href);
+    		    var allPresent = true;
+                var j = 0, ll = template.varNames.length;
+    		    for (j = 0; j &lt; ll; j++) {
+    			if (!(template.varNames[j] in data)) {
+    			    allPresent = false;
+    			    break;
+    			}
+    		    }
+    		    if (allPresent) {
+    			var schemaUrl = template.fillFromObject(data);
+    			var subSchema = {"$ref": schemaUrl};
+    			if (error = this.validateAll(data, subSchema, [], ["links", i], dataPointerPath)) {
+    			    return error;
+    			}
+    		    }
+    		}
+    	    }
+    	};
 
-	ValidationError.prototype.prefixWith = function (dataPrefix, schemaPrefix) {
-	    if (dataPrefix !== null) {
-		dataPrefix = dataPrefix.replace(/~/g, "~0").replace(/\//g, "~1");
-		this.dataPath = "/" + dataPrefix + this.dataPath;
-	    }
-	    if (schemaPrefix !== null) {
-		schemaPrefix = schemaPrefix.replace(/~/g, "~0").replace(/\//g, "~1");
-		this.schemaPath = "/" + schemaPrefix + this.schemaPath;
-	    }
-	    if (this.subErrors !== null) {
-		for (var i = 0; i &lt; this.subErrors.length; i++) {
-		    this.subErrors[i].prefixWith(dataPrefix, schemaPrefix);
-		}
-	    }
-	    return this;
-	};
+    	// parseURI() and resolveUrl() are from https://gist.github.com/1088850
+    	// - released as public domain by author ("Yaffle") - see comments on
+    	// gist
 
-	function isTrustedUrl(baseUrl, testUrl) {
-	    if(testUrl.substring(0, baseUrl.length) === baseUrl){
-		var remainder = testUrl.substring(baseUrl.length);
-		if ((testUrl.length > 0 &amp;&amp; testUrl.charAt(baseUrl.length - 1) === "/") || remainder.charAt(0) === "#" || remainder.charAt(0) === "?") {
-		    return true;
-		}
-	    }
-	    return false;
-	}
+    	function parseURI(url) {
+    	    var m = String(url).replace(/^\s+|\s+$/g, '').match(/^([^:\/?#]+:)?(\/\/(?:[^:@]*(?::[^:@]*)?@)?(([^:\/?#]*)(?::(\d*))?))?([^?#]*)(\?[^#]*)?(#[\s\S]*)?/);
+    	    // authority = '//' + user + ':' + pass '@' + hostname + ':' port
+    	    return (m ? {
+    		href     : m[0] || '',
+    		protocol : m[1] || '',
+    		authority: m[2] || '',
+    		host     : m[3] || '',
+    		hostname : m[4] || '',
+    		port     : m[5] || '',
+    		pathname : m[6] || '',
+    		search   : m[7] || '',
+    		hash     : m[8] || ''
+    	    } : null);
+    	}
 
-	var languages = {};
-	function createApi(language) {
-	    var globalContext = new ValidatorContext();
-	    var currentLanguage = language || 'en';
-	    var api = {
-		    addFormat: function () {
-			globalContext.addFormat.apply(globalContext, arguments);
-		    },
-		    language: function (code) {
-			if (!code) {
-			    return currentLanguage;
-			}
-			if (!languages[code]) {
-			    code = code.split('-')[0]; // fall back to base
-							// language
-			}
-			if (languages[code]) {
-			    currentLanguage = code;
-			    return code; // so you can tell if fall-back has
-					    // happened
-			}
-			return false;
-		    },
-		    addLanguage: function (code, messageMap) {
-			var key;
-			for (key in ErrorCodes) {
-			    if (messageMap[key] &amp;&amp; !messageMap[ErrorCodes[key]]) {
-				messageMap[ErrorCodes[key]] = messageMap[key];
-			    }
-			}
-			var rootCode = code.split('-')[0];
-			if (!languages[rootCode]) { // use for base language if
-						    // not yet defined
-			    languages[code] = messageMap;
-			    languages[rootCode] = messageMap;
-			} else {
-			    languages[code] = Object.create(languages[rootCode]);
-			    for (key in messageMap) {
-				if (typeof languages[rootCode][key] === 'undefined') {
-				    languages[rootCode][key] = messageMap[key];
-				}
-				languages[code][key] = messageMap[key];
-			    }
-			}
-			return this;
-		    },
-		    freshApi: function (language) {
-			var result = createApi();
-			if (language) {
-			    result.language(language);
-			}
-			return result;
-		    },
-		    validate: function (data, schema, checkRecursive, banUnknownProperties) {
-			var context = new ValidatorContext(globalContext, false, languages[currentLanguage], checkRecursive, banUnknownProperties);
-			if (typeof schema === "string") {
-			    schema = {"$ref": schema};
-			}
-			context.addSchema("", schema);
-			var error = context.validateAll(data, schema, null, null, "");
-			if (!error &amp;&amp; banUnknownProperties) {
-			    error = context.banUnknownProperties();
-			}
-			this.error = error;
-			this.missing = context.missing;
-			this.valid = (error === null);
-			return this.valid;
-		    },
-		    validateResult: function () {
-			var result = {};
-			this.validate.apply(result, arguments);
-			return result;
-		    },
-		    validateMultiple: function (data, schema, checkRecursive, banUnknownProperties) {
-			var context = new ValidatorContext(globalContext, true, languages[currentLanguage], checkRecursive, banUnknownProperties);
-			if (typeof schema === "string") {
-			    schema = {"$ref": schema};
-			}
-			context.addSchema("", schema);
-			context.validateAll(data, schema, null, null, "");
-			if (banUnknownProperties) {
-			    context.banUnknownProperties();
-			}
-			var result = {};
-			result.errors = context.errors;
-			result.missing = context.missing;
-			result.valid = (result.errors.length === 0);
-			return result;
-		    },
-		    addSchema: function () {
-			return globalContext.addSchema.apply(globalContext, arguments);
-		    },
-		    getSchema: function () {
-			return globalContext.getSchema.apply(globalContext, arguments);
-		    },
-		    getSchemaMap: function () {
-			return globalContext.getSchemaMap.apply(globalContext, arguments);
-		    },
-		    getSchemaUris: function () {
-			return globalContext.getSchemaUris.apply(globalContext, arguments);
-		    },
-		    getMissingUris: function () {
-			return globalContext.getMissingUris.apply(globalContext, arguments);
-		    },
-		    dropSchemas: function () {
-			globalContext.dropSchemas.apply(globalContext, arguments);
-		    },
-		    defineKeyword: function () {
-			globalContext.defineKeyword.apply(globalContext, arguments);
-		    },
-		    defineError: function (codeName, codeNumber, defaultMessage) {
-			if (typeof codeName !== 'string' || !/^[A-Z]+(_[A-Z]+)*$/.test(codeName)) {
-			    // TODO message bundle this
-			    throw new Error('Code name must be a string in UPPER_CASE_WITH_UNDERSCORES');
-			}
-			if (typeof codeNumber !== 'number' || codeNumber%1 !== 0 || codeNumber &lt; 10000) {
-			    // TODO message bundle this
-			    throw new Error('Code number must be an integer > 10000');
-			}
-			if (typeof ErrorCodes[codeName] !== 'undefined') {
-			    // TODO message bundle this
-			    throw new Error('Error already defined: ' + codeName + ' as ' + ErrorCodes[codeName]);
-			}
-			if (typeof ErrorCodeLookup[codeNumber] !== 'undefined') {
-			    // TODO message bundle this
-			    throw new Error('Error code already used: ' + ErrorCodeLookup[codeNumber] + ' as ' + codeNumber);
-			}
-			ErrorCodes[codeName] = codeNumber;
-			ErrorCodeLookup[codeNumber] = codeName;
-			ErrorMessagesDefault[codeName] = ErrorMessagesDefault[codeNumber] = defaultMessage;
-			for (var langCode in languages) {
-			    var language = languages[langCode];
-			    if (language[codeName]) {
-				language[codeNumber] = language[codeNumber] || language[codeName];
-			    }
-			}
-		    },
-		    reset: function () {
-			globalContext.reset();
-			this.error = null;
-			this.missing = [];
-			this.valid = true;
-		    },
-		    missing: [],
-		    error: null,
-		    valid: true,
-		    normSchema: normSchema,
-		    resolveUrl: resolveUrl,
-		    getDocumentUri: getDocumentUri,
-		    errorCodes: ErrorCodes
-	    };
-	    return api;
-	}
+    	function resolveUrl(base, href) {// RFC 3986
 
-	var tv4 = createApi();
-	tv4.addLanguage('en-us', ErrorMessagesDefault);  // changed to US
-							    // Engilsh
+    	    function removeDotSegments(input) {
+    		var output = [];
+    		input.replace(/^(\.\.?(\/|$))+/, '')
+    		.replace(/\/(\.(\/|$))+/g, '/')
+    		.replace(/\/\.\.$/, '/../')
+    		.replace(/\/?[^\/]*/g, function (p) {
+    		    if (p === '/..') {
+    			output.pop();
+    		    } else {
+    			output.push(p);
+    		    }
+    		});
+    		return output.join('').replace(/^\//, input.charAt(0) === '/' ? '/' : '');
+    	    }
 
-	// legacy property
-	tv4.tv4 = tv4;
+    	    href = parseURI(href || '');
+    	    base = parseURI(base || '');
+
+    	    return !href || !base ? null : (href.protocol || base.protocol) +
+    		    (href.protocol || href.authority ? href.authority : base.authority) +
+    		    removeDotSegments(href.protocol || href.authority || href.pathname.charAt(0) === '/' ? href.pathname : (href.pathname ? ((base.authority &amp;&amp; !base.pathname ? '/' : '') + base.pathname.slice(0, base.pathname.lastIndexOf('/') + 1) + href.pathname) : base.pathname)) +
+    		    (href.protocol || href.authority || href.pathname ? href.search : (href.search || base.search)) +
+    		    href.hash;
+    	}
+
+    	function getDocumentUri(uri) {
+    	    return uri.split('#')[0];
+    	}
+    	function normSchema(schema, baseUri) {
+    	    if (schema &amp;&amp; typeof schema === "object") {
+    		if (baseUri === undefined) {
+    		    baseUri = schema.id;
+    		} else if (typeof schema.id === "string") {
+    		    baseUri = resolveUrl(baseUri, schema.id);
+    		    schema.id = baseUri;
+    		}
+    		if (Array.isArray(schema)) {
+                var i = 0, l = schema.length;
+    		    for (i = 0; i &lt; l; i++) {
+    			normSchema(schema[i], baseUri);
+    		    }
+    		} else {
+    		    if (typeof schema['$ref'] === "string") {
+    			schema['$ref'] = resolveUrl(baseUri, schema['$ref']);
+    		    }
+    		    for (var key in schema) {
+    			if (key !== "enum") {
+    			    normSchema(schema[key], baseUri);
+    			}
+    		    }
+    		}
+    	    }
+    	}
+
+    	var ErrorCodes = {
+    		INVALID_TYPE: 0,
+    		ENUM_MISMATCH: 1,
+    		ANY_OF_MISSING: 10,
+    		ONE_OF_MISSING: 11,
+    		ONE_OF_MULTIPLE: 12,
+    		NOT_PASSED: 13,
+    		// Numeric errors
+    		NUMBER_MULTIPLE_OF: 100,
+    		NUMBER_MINIMUM: 101,
+    		NUMBER_MINIMUM_EXCLUSIVE: 102,
+    		NUMBER_MAXIMUM: 103,
+    		NUMBER_MAXIMUM_EXCLUSIVE: 104,
+    		NUMBER_NOT_A_NUMBER: 105,
+    		// String errors
+    		STRING_LENGTH_SHORT: 200,
+    		STRING_LENGTH_LONG: 201,
+    		STRING_PATTERN: 202,
+    		// Object errors
+    		OBJECT_PROPERTIES_MINIMUM: 300,
+    		OBJECT_PROPERTIES_MAXIMUM: 301,
+    		OBJECT_REQUIRED: 302,
+    		OBJECT_ADDITIONAL_PROPERTIES: 303,
+    		OBJECT_DEPENDENCY_KEY: 304,
+    		// Array errors
+    		ARRAY_LENGTH_SHORT: 400,
+    		ARRAY_LENGTH_LONG: 401,
+    		ARRAY_UNIQUE: 402,
+    		ARRAY_ADDITIONAL_ITEMS: 403,
+    		// Custom/user-defined errors
+    		FORMAT_CUSTOM: 500,
+    		KEYWORD_CUSTOM: 501,
+    		// Schema structure
+    		CIRCULAR_REFERENCE: 600,
+    		// Non-standard validation options
+    		UNKNOWN_PROPERTY: 1000
+    	};
+    	var ErrorCodeLookup = {};
+    	for (var key in ErrorCodes) {
+    	    ErrorCodeLookup[ErrorCodes[key]] = key;
+    	}
+    	// TODO: bundle this
+    	var ErrorMessagesDefault = {
+    		INVALID_TYPE: "Invalid type: {type} (expected {expected})",
+    		ENUM_MISMATCH: "No enum match for: {value}",
+    		ANY_OF_MISSING: "Data does not match any schemas from \"anyOf\"",
+    		ONE_OF_MISSING: "Data does not match any schemas from \"oneOf\"",
+    		ONE_OF_MULTIPLE: "Data is valid against more than one schema from \"oneOf\": indices {index1} and {index2}",
+    		NOT_PASSED: "Data matches schema from \"not\"",
+    		// Numeric errors
+    		NUMBER_MULTIPLE_OF: "Value {value} is not a multiple of {multipleOf}",
+    		NUMBER_MINIMUM: "Value {value} is less than minimum {minimum}",
+    		NUMBER_MINIMUM_EXCLUSIVE: "Value {value} is equal to exclusive minimum {minimum}",
+    		NUMBER_MAXIMUM: "Value {value} is greater than maximum {maximum}",
+    		NUMBER_MAXIMUM_EXCLUSIVE: "Value {value} is equal to exclusive maximum {maximum}",
+    		NUMBER_NOT_A_NUMBER: "Value {value} is not a valid number",
+    		// String errors
+    		STRING_LENGTH_SHORT: "String is too short ({length} chars), minimum {minimum}",
+    		STRING_LENGTH_LONG: "String is too long ({length} chars), maximum {maximum}",
+    		STRING_PATTERN: "String does not match pattern: {pattern}",
+    		// Object errors
+    		OBJECT_PROPERTIES_MINIMUM: "Too few properties defined ({propertyCount}), minimum {minimum}",
+    		OBJECT_PROPERTIES_MAXIMUM: "Too many properties defined ({propertyCount}), maximum {maximum}",
+    		OBJECT_REQUIRED: "Missing required property: {key}",
+    		OBJECT_ADDITIONAL_PROPERTIES: "Additional properties not allowed",
+    		OBJECT_DEPENDENCY_KEY: "Dependency failed - key must exist: {missing} (due to key: {key})",
+    		// Array errors
+    		ARRAY_LENGTH_SHORT: "Array is too short ({length}), minimum {minimum}",
+    		ARRAY_LENGTH_LONG: "Array is too long ({length}), maximum {maximum}",
+    		ARRAY_UNIQUE: "Array items are not unique (indices {match1} and {match2})",
+    		ARRAY_ADDITIONAL_ITEMS: "Additional items not allowed",
+    		// Format errors
+    		FORMAT_CUSTOM: "Format validation failed ({message})",
+    		KEYWORD_CUSTOM: "Keyword failed: {key} ({message})",
+    		// Schema structure
+    		CIRCULAR_REFERENCE: "Circular $refs: {urls}",
+    		// Non-standard validation options
+    		UNKNOWN_PROPERTY: "Unknown property (not in schema)"
+    	};
+
+    	function ValidationError(code, message, params, dataPath, schemaPath, subErrors) {
+    	    Error.call(this);
+    	    if (code === undefined) {
+    		throw new Error ("No code supplied for error: "+ message);
+    	    }
+    	    this.message = message;
+    	    this.params = params;
+    	    this.code = code;
+    	    this.dataPath = dataPath || "";
+    	    this.schemaPath = schemaPath || "";
+    	    this.subErrors = subErrors || null;
+
+    	    var err = new Error(this.message);
+    	    this.stack = err.stack || err.stacktrace;
+    	    if (!this.stack) {
+    		try {
+    		    throw err;
+    		}
+    		catch(err) {
+    		    this.stack = err.stack || err.stacktrace;
+    		}
+    	    }
+    	}
+    	ValidationError.prototype = Object.create(Error.prototype);
+    	ValidationError.prototype.constructor = ValidationError;
+    	ValidationError.prototype.name = 'ValidationError';
+
+    	ValidationError.prototype.prefixWith = function (dataPrefix, schemaPrefix) {
+    	    if (dataPrefix !== null) {
+    		dataPrefix = dataPrefix.replace(/~/g, "~0").replace(/\//g, "~1");
+    		this.dataPath = "/" + dataPrefix + this.dataPath;
+    	    }
+    	    if (schemaPrefix !== null) {
+    		schemaPrefix = schemaPrefix.replace(/~/g, "~0").replace(/\//g, "~1");
+    		this.schemaPath = "/" + schemaPrefix + this.schemaPath;
+    	    }
+    	    if (this.subErrors !== null) {
+                var i = 0, l = this.subErrors.length;
+    		for (i = 0; i &lt; l; i++) {
+    		    this.subErrors[i].prefixWith(dataPrefix, schemaPrefix);
+    		}
+    	    }
+    	    return this;
+    	};
+
+    	function isTrustedUrl(baseUrl, testUrl) {
+    	    if(testUrl.substring(0, baseUrl.length) === baseUrl){
+    		var remainder = testUrl.substring(baseUrl.length);
+    		if ((testUrl.length > 0 &amp;&amp; testUrl.charAt(baseUrl.length - 1) === "/") || remainder.charAt(0) === "#" || remainder.charAt(0) === "?") {
+    		    return true;
+    		}
+    	    }
+    	    return false;
+    	}
+
+    	var languages = {};
+    	function createApi(language) {
+    	    var globalContext = new ValidatorContext();
+    	    var currentLanguage = language || 'en';
+    	    var api = {
+    		    addFormat: function () {
+    			globalContext.addFormat.apply(globalContext, arguments);
+    		    },
+    		    language: function (code) {
+    			if (!code) {
+    			    return currentLanguage;
+    			}
+    			if (!languages[code]) {
+    			    code = code.split('-')[0]; // fall back to base
+    							// language
+    			}
+    			if (languages[code]) {
+    			    currentLanguage = code;
+    			    return code; // so you can tell if fall-back has
+    					    // happened
+    			}
+    			return false;
+    		    },
+    		    addLanguage: function (code, messageMap) {
+    			var key;
+    			for (key in ErrorCodes) {
+    			    if (messageMap[key] &amp;&amp; !messageMap[ErrorCodes[key]]) {
+    				messageMap[ErrorCodes[key]] = messageMap[key];
+    			    }
+    			}
+    			var rootCode = code.split('-')[0];
+    			if (!languages[rootCode]) { // use for base language if
+    						    // not yet defined
+    			    languages[code] = messageMap;
+    			    languages[rootCode] = messageMap;
+    			} else {
+    			    languages[code] = Object.create(languages[rootCode]);
+    			    for (key in messageMap) {
+    				if (typeof languages[rootCode][key] === 'undefined') {
+    				    languages[rootCode][key] = messageMap[key];
+    				}
+    				languages[code][key] = messageMap[key];
+    			    }
+    			}
+    			return this;
+    		    },
+    		    freshApi: function (language) {
+    			var result = createApi();
+    			if (language) {
+    			    result.language(language);
+    			}
+    			return result;
+    		    },
+    		    validate: function (data, schema, checkRecursive, banUnknownProperties) {
+    			var context = new ValidatorContext(globalContext, false, languages[currentLanguage], checkRecursive, banUnknownProperties);
+    			if (typeof schema === "string") {
+    			    schema = {"$ref": schema};
+    			}
+    			context.addSchema("", schema);
+    			var error = context.validateAll(data, schema, null, null, "");
+    			if (!error &amp;&amp; banUnknownProperties) {
+    			    error = context.banUnknownProperties();
+    			}
+    			this.error = error;
+    			this.missing = context.missing;
+    			this.valid = (error === null);
+    			return this.valid;
+    		    },
+    		    validateResult: function () {
+    			var result = {};
+    			this.validate.apply(result, arguments);
+    			return result;
+    		    },
+    		    validateMultiple: function (data, schema, checkRecursive, banUnknownProperties) {
+    			var context = new ValidatorContext(globalContext, true, languages[currentLanguage], checkRecursive, banUnknownProperties);
+    			if (typeof schema === "string") {
+    			    schema = {"$ref": schema};
+    			}
+    			context.addSchema("", schema);
+    			context.validateAll(data, schema, null, null, "");
+    			if (banUnknownProperties) {
+    			    context.banUnknownProperties();
+    			}
+    			var result = {};
+    			result.errors = context.errors;
+    			result.missing = context.missing;
+    			result.valid = (result.errors.length === 0);
+    			return result;
+    		    },
+    		    addSchema: function () {
+    			return globalContext.addSchema.apply(globalContext, arguments);
+    		    },
+    		    getSchema: function () {
+    			return globalContext.getSchema.apply(globalContext, arguments);
+    		    },
+    		    getSchemaMap: function () {
+    			return globalContext.getSchemaMap.apply(globalContext, arguments);
+    		    },
+    		    getSchemaUris: function () {
+    			return globalContext.getSchemaUris.apply(globalContext, arguments);
+    		    },
+    		    getMissingUris: function () {
+    			return globalContext.getMissingUris.apply(globalContext, arguments);
+    		    },
+    		    dropSchemas: function () {
+    			globalContext.dropSchemas.apply(globalContext, arguments);
+    		    },
+    		    defineKeyword: function () {
+    			globalContext.defineKeyword.apply(globalContext, arguments);
+    		    },
+    		    defineError: function (codeName, codeNumber, defaultMessage) {
+    			if (typeof codeName !== 'string' || !/^[A-Z]+(_[A-Z]+)*$/.test(codeName)) {
+    			    // TODO message bundle this
+    			    throw new Error('Code name must be a string in UPPER_CASE_WITH_UNDERSCORES');
+    			}
+    			if (typeof codeNumber !== 'number' || codeNumber%1 !== 0 || codeNumber &lt; 10000) {
+    			    // TODO message bundle this
+    			    throw new Error('Code number must be an integer > 10000');
+    			}
+    			if (typeof ErrorCodes[codeName] !== 'undefined') {
+    			    // TODO message bundle this
+    			    throw new Error('Error already defined: ' + codeName + ' as ' + ErrorCodes[codeName]);
+    			}
+    			if (typeof ErrorCodeLookup[codeNumber] !== 'undefined') {
+    			    // TODO message bundle this
+    			    throw new Error('Error code already used: ' + ErrorCodeLookup[codeNumber] + ' as ' + codeNumber);
+    			}
+    			ErrorCodes[codeName] = codeNumber;
+    			ErrorCodeLookup[codeNumber] = codeName;
+    			ErrorMessagesDefault[codeName] = ErrorMessagesDefault[codeNumber] = defaultMessage;
+    			for (var langCode in languages) {
+    			    var language = languages[langCode];
+    			    if (language[codeName]) {
+    				language[codeNumber] = language[codeNumber] || language[codeName];
+    			    }
+    			}
+    		    },
+    		    reset: function () {
+    			globalContext.reset();
+    			this.error = null;
+    			this.missing = [];
+    			this.valid = true;
+    		    },
+    		    missing: [],
+    		    error: null,
+    		    valid: true,
+    		    normSchema: normSchema,
+    		    resolveUrl: resolveUrl,
+    		    getDocumentUri: getDocumentUri,
+    		    errorCodes: ErrorCodes
+    	    };
+    	    return api;
+    	}
+
+    	var tv4 = createApi();
+    	tv4.addLanguage('en-us', ErrorMessagesDefault);  // changed to US
+    							    // Engilsh
+
+    	// legacy property
+    	tv4.tv4 = tv4;
 
 	return tv4;
     };
@@ -2857,401 +2945,404 @@
      * @private
      */
     var i18nBase = function() {
-	var i18n = {};
+    	var i18n = {};
 
-	/** Map holding bundle keys (if mode: 'map') */
-	i18n.map = {};
+    	/** Map holding bundle keys (if mode: 'map') */
+    	i18n.map = {};
 
-	/**
-	 *
-     * @method properties
-     * @memberof i18nBase
-	 *
-	 * @param name
-	 *                (string/string[], optional) names of file to load (eg,
-	 *                'Messages' or ['Msg1','Msg2']). Defaults to "Messages"
-	 * @param language
-	 *                (string, optional) language/country code (eg, 'en',
-	 *                'en_US', 'pt_PT'). if not specified, language reported
-	 *                by the browser will be used instead.
-	 * @param path
-	 *                (string, optional) path of directory that contains
-	 *                file to load
-	 * @param mode
-	 *                (string, optional) whether bundles keys are available
-	 *                as JavaScript variables/functions or as a map (eg,
-	 *                'vars' or 'map')
-	 * @param cache
-	 *                (boolean, optional) whether bundles should be cached
-	 *                by the browser, or forcibly reloaded on each page
-	 *                load. Defaults to false (i.e. forcibly reloaded)
-	 * @param encoding
-	 *                (string, optional) the encoding to request for
-	 *                bundles. Property file resource bundles are specified
-	 *                to be in ISO-8859-1 format. Defaults to UTF-8 for
-	 *                backward compatibility.
-	 * @param callback
-	 *                (function, optional) callback function to be called
-	 *                after script is terminated
-	 */
-	this.properties = function(settings) {
-	    // set up settings
-	    var defaults = {
-		    name: Augmented.Configuration.MessageBundle,//'Messages',
-		    language: '',
-		    path: '',
-		    mode: 'vars',
-		    cache: false,
-		    encoding: 'UTF-8',
-		    callback: null
-	    };
-	    settings = Augmented.Utility.extend(defaults, settings);
-	    if (settings.language === null || settings.language === '') {
-		settings.language = browserLang();
-	    }
-	    if (settings.language === null) {
-		settings.language = '';
-	    }
+    	/**
+    	 *
+         * @method properties
+         * @memberof i18nBase
+    	 *
+    	 * @param name
+    	 *                (string/string[], optional) names of file to load (eg,
+    	 *                'Messages' or ['Msg1','Msg2']). Defaults to "Messages"
+    	 * @param language
+    	 *                (string, optional) language/country code (eg, 'en',
+    	 *                'en_US', 'pt_PT'). if not specified, language reported
+    	 *                by the browser will be used instead.
+    	 * @param path
+    	 *                (string, optional) path of directory that contains
+    	 *                file to load
+    	 * @param mode
+    	 *                (string, optional) whether bundles keys are available
+    	 *                as JavaScript variables/functions or as a map (eg,
+    	 *                'vars' or 'map')
+    	 * @param cache
+    	 *                (boolean, optional) whether bundles should be cached
+    	 *                by the browser, or forcibly reloaded on each page
+    	 *                load. Defaults to false (i.e. forcibly reloaded)
+    	 * @param encoding
+    	 *                (string, optional) the encoding to request for
+    	 *                bundles. Property file resource bundles are specified
+    	 *                to be in ISO-8859-1 format. Defaults to UTF-8 for
+    	 *                backward compatibility.
+    	 * @param callback
+    	 *                (function, optional) callback function to be called
+    	 *                after script is terminated
+    	 */
+    	this.properties = function(settings) {
+    	    // set up settings
+    	    var defaults = {
+    		    name: Augmented.Configuration.MessageBundle,//'Messages',
+    		    language: '',
+    		    path: '',
+    		    mode: 'vars',
+    		    cache: false,
+    		    encoding: 'UTF-8',
+    		    callback: null
+    	    };
+    	    settings = Augmented.Utility.extend(defaults, settings);
+    	    if (settings.language === null || settings.language === '') {
+    		settings.language = browserLang();
+    	    }
+    	    if (settings.language === null) {
+    		settings.language = '';
+    	    }
 
-	    // load and parse bundle files
-	    var files = getFiles(settings.name);
-	    for (var i = 0; i &lt; files.length; i++) {
-		// 1. load base (eg, Messages.properties)
-		loadAndParseFile(settings.path + files[i] + '.properties', settings);
-		// 2. with language code (eg, Messages_pt.properties)
-		if (settings.language.length >= 2) {
-		    loadAndParseFile(settings.path + files[i] + '_' + settings.language.substring(0, 2) + '.properties', settings);
-		}
-		// 3. with language code and country code (eg,
-		// Messages_pt_PT.properties)
-		if (settings.language.length >= 5) {
-		    loadAndParseFile(settings.path + files[i] + '_' + settings.language.substring(0, 5) + '.properties', settings);
-		}
-	    }
+    	    // load and parse bundle files
+    	    var files = getFiles(settings.name);
+            var i = 0, l = files.length;
+    	    for (i = 0; i &lt; l; i++) {
+    		// 1. load base (eg, Messages.properties)
+    		loadAndParseFile(settings.path + files[i] + '.properties', settings);
+    		// 2. with language code (eg, Messages_pt.properties)
+    		if (settings.language.length >= 2) {
+    		    loadAndParseFile(settings.path + files[i] + '_' + settings.language.substring(0, 2) + '.properties', settings);
+    		}
+    		// 3. with language code and country code (eg,
+    		// Messages_pt_PT.properties)
+    		if (settings.language.length >= 5) {
+    		    loadAndParseFile(settings.path + files[i] + '_' + settings.language.substring(0, 5) + '.properties', settings);
+    		}
+    	    }
 
-	    // call callback
-	    if (settings.callback) {
-		settings.callback();
-	    }
-	};
+    	    // call callback
+    	    if (settings.callback) {
+    		settings.callback();
+    	    }
+    	};
 
-	/**
-	 * When configured with mode: 'map', allows access to bundle values by
-	 * specifying its key. Eg, prop('com.company.bundles.menu_add')
-   * @method prop
-   * @memberof i18nBase
-	 */
-	this.prop = function(key /*
-				     * Add parameters as function arguments as
-				     * necessary
-				     */) {
-	    var value = i18n.map[key];
-	    if (!value) {
-		    return '[' + key + ']';
-        }
+    	/**
+    	 * When configured with mode: 'map', allows access to bundle values by
+    	 * specifying its key. Eg, prop('com.company.bundles.menu_add')
+       * @method prop
+       * @memberof i18nBase
+    	 */
+    	this.prop = function(key /*
+    				     * Add parameters as function arguments as
+    				     * necessary
+    				     */) {
+    	    var value = i18n.map[key];
+    	    if (!value) {
+    		    return '[' + key + ']';
+            }
 
-	    var phvList;
-	    if (arguments.length == 2 &amp;&amp; Array.isArray(arguments[1]))
-		// An array was passed as the only parameter, so assume it is
-		// the list of place holder values.
-		phvList = arguments[1];
+    	    var phvList;
+    	    if (arguments.length == 2 &amp;&amp; Array.isArray(arguments[1]))
+    		// An array was passed as the only parameter, so assume it is
+    		// the list of place holder values.
+    		phvList = arguments[1];
 
-	    // Place holder replacement
-	    /**
-	     * Tested with: test.t1=asdf ''{0}'' test.t2=asdf '{0}'
-	     * '{1}'{1}'zxcv test.t3=This is \"a quote" 'a''{0}''s'd{fgh{ij'
-	     * test.t4="'''{'0}''" {0}{a} test.t5="'''{0}'''" {1} test.t6=a {1}
-	     * b {0} c test.t7=a 'quoted \\ s\ttringy' \t\t x
-	     *
-	     * Produces: test.t1, p1 ==> asdf 'p1' test.t2, p1 ==> asdf {0}
-	     * {1}{1}zxcv test.t3, p1 ==> This is "a quote" a'{0}'sd{fgh{ij
-	     * test.t4, p1 ==> "'{0}'" p1{a} test.t5, p1 ==> "'{0}'" {1}
-	     * test.t6, p1 ==> a {1} b p1 c test.t6, p1, p2 ==> a p2 b p1 c
-	     * test.t6, p1, p2, p3 ==> a p2 b p1 c test.t7 ==> a quoted \ s
-	     * tringy x
-	     */
+    	    // Place holder replacement
+    	    /**
+    	     * Tested with: test.t1=asdf ''{0}'' test.t2=asdf '{0}'
+    	     * '{1}'{1}'zxcv test.t3=This is \"a quote" 'a''{0}''s'd{fgh{ij'
+    	     * test.t4="'''{'0}''" {0}{a} test.t5="'''{0}'''" {1} test.t6=a {1}
+    	     * b {0} c test.t7=a 'quoted \\ s\ttringy' \t\t x
+    	     *
+    	     * Produces: test.t1, p1 ==> asdf 'p1' test.t2, p1 ==> asdf {0}
+    	     * {1}{1}zxcv test.t3, p1 ==> This is "a quote" a'{0}'sd{fgh{ij
+    	     * test.t4, p1 ==> "'{0}'" p1{a} test.t5, p1 ==> "'{0}'" {1}
+    	     * test.t6, p1 ==> a {1} b p1 c test.t6, p1, p2 ==> a p2 b p1 c
+    	     * test.t6, p1, p2, p3 ==> a p2 b p1 c test.t7 ==> a quoted \ s
+    	     * tringy x
+    	     */
 
-	    var i;
-	    if (typeof(value) == 'string') {
-		// Handle escape characters. Done separately from the tokenizing
-		// loop below because escape characters are
-		// active in quoted strings.
-		i = 0;
-		while ((i = value.indexOf('\\', i)) != -1) {
-		    if (value.charAt(i + 1) == 't')
-			value = value.substring(0, i) + '\t' + value.substring((i++) + 2); // tab
-		    else if (value.charAt(i + 1) == 'r')
-			value = value.substring(0, i) + '\r' + value.substring((i++) + 2); // return
-		    else if (value.charAt(i + 1) == 'n')
-			value = value.substring(0, i) + '\n' + value.substring((i++) + 2); // line
-											    // feed
-		    else if (value.charAt(i + 1) == 'f')
-			value = value.substring(0, i) + '\f' + value.substring((i++) + 2); // form
-											    // feed
-		    else if (value.charAt(i + 1) == '\\')
-			value = value.substring(0, i) + '\\' + value.substring((i++) + 2); // \
-		    else
-			value = value.substring(0, i) + value.substring(i + 1); // Quietly
-										// drop
-										// the
-										// character
-		}
+    	    var i;
+    	    if (typeof(value) == 'string') {
+    		// Handle escape characters. Done separately from the tokenizing
+    		// loop below because escape characters are
+    		// active in quoted strings.
+    		i = 0;
+    		while ((i = value.indexOf('\\', i)) != -1) {
+    		    if (value.charAt(i + 1) == 't')
+    			value = value.substring(0, i) + '\t' + value.substring((i++) + 2); // tab
+    		    else if (value.charAt(i + 1) == 'r')
+    			value = value.substring(0, i) + '\r' + value.substring((i++) + 2); // return
+    		    else if (value.charAt(i + 1) == 'n')
+    			value = value.substring(0, i) + '\n' + value.substring((i++) + 2); // line
+    											    // feed
+    		    else if (value.charAt(i + 1) == 'f')
+    			value = value.substring(0, i) + '\f' + value.substring((i++) + 2); // form
+    											    // feed
+    		    else if (value.charAt(i + 1) == '\\')
+    			value = value.substring(0, i) + '\\' + value.substring((i++) + 2); // \
+    		    else
+    			value = value.substring(0, i) + value.substring(i + 1); // Quietly
+    										// drop
+    										// the
+    										// character
+    		}
 
-		// Lazily convert the string to a list of tokens.
-		var arr = [], j, index;
-		i = 0;
-		while (i &lt; value.length) {
-		    if (value.charAt(i) == '\'') {
-			// Handle quotes
-			if (i == value.length - 1)
-			    value = value.substring(0, i); // Silently drop the
-							    // trailing quote
-			else if (value.charAt(i + 1) == '\'')
-			    value = value.substring(0, i) + value.substring(++i); // Escaped
-										    // quote
-			else {
-			    // Quoted string
-			    j = i + 2;
-			    while ((j = value.indexOf('\'', j)) != -1) {
-				if (j == value.length - 1 || value.charAt(j + 1) != '\'') {
-				    // Found start and end quotes. Remove them
-				    value = value.substring(0, i) + value.substring(i + 1, j) + value.substring(j + 1);
-				    i = j - 1;
-				    break;
-				}
-				else {
-				    // Found a double quote, reduce to a single
-				    // quote.
-				    value = value.substring(0, j) + value.substring(++j);
-				}
-			    }
+    		// Lazily convert the string to a list of tokens.
+    		var arr = [], j, index;
+    		i = 0;
+    		while (i &lt; value.length) {
+    		    if (value.charAt(i) == '\'') {
+    			// Handle quotes
+    			if (i == value.length - 1)
+    			    value = value.substring(0, i); // Silently drop the
+    							    // trailing quote
+    			else if (value.charAt(i + 1) == '\'')
+    			    value = value.substring(0, i) + value.substring(++i); // Escaped
+    										    // quote
+    			else {
+    			    // Quoted string
+    			    j = i + 2;
+    			    while ((j = value.indexOf('\'', j)) != -1) {
+    				if (j == value.length - 1 || value.charAt(j + 1) != '\'') {
+    				    // Found start and end quotes. Remove them
+    				    value = value.substring(0, i) + value.substring(i + 1, j) + value.substring(j + 1);
+    				    i = j - 1;
+    				    break;
+    				}
+    				else {
+    				    // Found a double quote, reduce to a single
+    				    // quote.
+    				    value = value.substring(0, j) + value.substring(++j);
+    				}
+    			    }
 
-			    if (j == -1) {
-				// There is no end quote. Drop the start quote
-				value = value.substring(0, i) + value.substring(i + 1);
-			    }
-			}
-		    }
-		    else if (value.charAt(i) == '{') {
-			// Beginning of an unquoted place holder.
-			j = value.indexOf('}', i + 1);
-			if (j == -1)
-			    i++; // No end. Process the rest of the line.
-				    // Java would throw an exception
-			else {
-			    // Add 1 to the index so that it aligns with the
-			    // function arguments.
-			    index = parseInt(value.substring(i + 1, j));
-			    if (!isNaN(index) &amp;&amp; index >= 0) {
-				// Put the line thus far (if it isn't empty)
-				// into the array
-				var s = value.substring(0, i);
-				if (s !== "")
-				    arr.push(s);
-				// Put the parameter reference into the array
-				arr.push(index);
-				// Start the processing over again starting from
-				// the rest of the line.
-				i = 0;
-				value = value.substring(j + 1);
-			    }
-			    else
-				i = j + 1; // Invalid parameter. Leave as is.
-			}
-		    }
-		    else
-			i++;
-		}
+    			    if (j == -1) {
+    				// There is no end quote. Drop the start quote
+    				value = value.substring(0, i) + value.substring(i + 1);
+    			    }
+    			}
+    		    }
+    		    else if (value.charAt(i) == '{') {
+    			// Beginning of an unquoted place holder.
+    			j = value.indexOf('}', i + 1);
+    			if (j == -1)
+    			    i++; // No end. Process the rest of the line.
+    				    // Java would throw an exception
+    			else {
+    			    // Add 1 to the index so that it aligns with the
+    			    // function arguments.
+    			    index = parseInt(value.substring(i + 1, j));
+    			    if (!isNaN(index) &amp;&amp; index >= 0) {
+    				// Put the line thus far (if it isn't empty)
+    				// into the array
+    				var s = value.substring(0, i);
+    				if (s !== "")
+    				    arr.push(s);
+    				// Put the parameter reference into the array
+    				arr.push(index);
+    				// Start the processing over again starting from
+    				// the rest of the line.
+    				i = 0;
+    				value = value.substring(j + 1);
+    			    }
+    			    else
+    				i = j + 1; // Invalid parameter. Leave as is.
+    			}
+    		    }
+    		    else
+    			i++;
+    		}
 
-		// Put the remainder of the no-empty line into the array.
-		if (value !== "")
-		    arr.push(value);
-		value = arr;
+    		// Put the remainder of the no-empty line into the array.
+    		if (value !== "")
+    		    arr.push(value);
+    		value = arr;
 
-		// Make the array the value for the entry.
-		i18n.map[key] = arr;
-	    }
+    		// Make the array the value for the entry.
+    		i18n.map[key] = arr;
+    	    }
 
-	    if (value.length === 0)
-		return "";
-	    if (value.lengh == 1 &amp;&amp; typeof(value[0]) == "string")
-		return value[0];
+    	    if (value.length === 0)
+    		return "";
+    	    if (value.lengh == 1 &amp;&amp; typeof(value[0]) == "string")
+    		return value[0];
 
-	    var s = "";
-	    for (i = 0; i &lt; value.length; i++) {
-		if (typeof(value[i]) == "string")
-		    s += value[i];
-		// Must be a number
-		else if (phvList &amp;&amp; value[i] &lt; phvList.length)
-		    s += phvList[value[i]];
-		else if (!phvList &amp;&amp; value[i] + 1 &lt; arguments.length)
-		    s += arguments[value[i] + 1];
-		else
-		    s += "{" + value[i] + "}";
-	    }
+    	    var s = "";
+            var l = value.length;
+    	    for (i = 0; i &lt; l; i++) {
+    		if (typeof(value[i]) == "string")
+    		    s += value[i];
+    		// Must be a number
+    		else if (phvList &amp;&amp; value[i] &lt; phvList.length)
+    		    s += phvList[value[i]];
+    		else if (!phvList &amp;&amp; value[i] + 1 &lt; arguments.length)
+    		    s += arguments[value[i] + 1];
+    		else
+    		    s += "{" + value[i] + "}";
+    	    }
 
-	    return s;
-	};
+    	    return s;
+    	};
 
-	/*
-   * Language reported by browser, normalized code
-   */
-	function browserLang() {
-	    return normaliseLanguageCode(navigator.language /* Mozilla */ || navigator.userLanguage /* IE */);
-	}
+    	/*
+       * Language reported by browser, normalized code
+       */
+    	function browserLang() {
+    	    return normaliseLanguageCode(navigator.language /* Mozilla */ || navigator.userLanguage /* IE */);
+    	}
 
-	/** Load and parse .properties files
-   * @method loadAndParseFile
-   * @memberof i18nBase
-   * @param filename
-   * @param settings
-   */
-	function loadAndParseFile(filename, settings) {
-	    ajax({
-		url: filename,
-		async: false,
-		cache: settings.cache,
-		contentType: 'text/plain;charset=' + settings.encoding,
-		dataType: 'text',
-		success: function (data, status) {
-		    parseData(data, settings.mode);
-		}
-	    });
-	}
+    	/** Load and parse .properties files
+       * @method loadAndParseFile
+       * @memberof i18nBase
+       * @param filename
+       * @param settings
+       */
+    	function loadAndParseFile(filename, settings) {
+    	    ajax({
+    		url: filename,
+    		async: false,
+    		cache: settings.cache,
+    		contentType: 'text/plain;charset=' + settings.encoding,
+    		dataType: 'text',
+    		success: function (data, status) {
+    		    parseData(data, settings.mode);
+    		}
+    	    });
+    	}
 
-	/*
-   * Parse .properties files
-   */
-	function parseData(data, mode) {
-	    var parsed = '';
-	    var parameters = data.split(/\n/);
-	    var regPlaceHolder = /(\{\d+\})/g;
-	    var regRepPlaceHolder = /\{(\d+)\}/g;
-	    var unicodeRE = /(\\u.{4})/ig;
-	    for (var i = 0; i &lt; parameters.length; i++) {
-		parameters[i] = parameters[i].replace(/^\s\s*/, '').replace(/\s\s*$/, ''); // trim
-		if (parameters[i].length > 0 &amp;&amp; parameters[i].match("^#") != "#") { // skip
-										    // comments
-		    var pair = parameters[i].split('=');
-		    if (pair.length > 0) {
-			/** Process key &amp; value */
-			var name = unescape(pair[0]).replace(/^\s\s*/, '').replace(/\s\s*$/, ''); // trim
-			var value = pair.length == 1 ? "" : pair[1];
-			// process multi-line values
-			while (value.match(/\\$/) == "\\") {
-			    value = value.substring(0, value.length - 1);
-			    value += parameters[++i].replace(/\s\s*$/, ''); // right
-									    // trim
-			}
-			// Put values with embedded '='s back together
-			for (var s = 2; s &lt; pair.length; s++) {
-			    value += '=' + pair[s];
-			}
-			value = value.replace(/^\s\s*/, '').replace(/\s\s*$/, ''); // trim
+    	/*
+       * Parse .properties files
+       */
+    	function parseData(data, mode) {
+    	    var parsed = '';
+    	    var parameters = data.split(/\n/);
+    	    var regPlaceHolder = /(\{\d+\})/g;
+    	    var regRepPlaceHolder = /\{(\d+)\}/g;
+    	    var unicodeRE = /(\\u.{4})/ig;
+            var i = 0, l = parameters.length;
+    	    for (i = 0; i &lt; l; i++) {
+    		parameters[i] = parameters[i].replace(/^\s\s*/, '').replace(/\s\s*$/, ''); // trim
+    		if (parameters[i].length > 0 &amp;&amp; parameters[i].match("^#") != "#") { // skip
+    										    // comments
+    		    var pair = parameters[i].split('=');
+    		    if (pair.length > 0) {
+    			/** Process key &amp; value */
+    			var name = unescape(pair[0]).replace(/^\s\s*/, '').replace(/\s\s*$/, ''); // trim
+    			var value = pair.length == 1 ? "" : pair[1];
+    			// process multi-line values
+    			while (value.match(/\\$/) == "\\") {
+    			    value = value.substring(0, value.length - 1);
+    			    value += parameters[++i].replace(/\s\s*$/, ''); // right
+    									    // trim
+    			}
+    			// Put values with embedded '='s back together
+    			for (var s = 2; s &lt; pair.length; s++) {
+    			    value += '=' + pair[s];
+    			}
+    			value = value.replace(/^\s\s*/, '').replace(/\s\s*$/, ''); // trim
 
-			/** Mode: bundle keys in a map */
-			if (mode == 'map' || mode == 'both') {
-			    // handle unicode chars possibly left out
-			    var unicodeMatches = value.match(unicodeRE);
-			    if (unicodeMatches) {
-				for (var u = 0; u &lt; unicodeMatches.length; u++) {
-				    value = value.replace(unicodeMatches[u], unescapeUnicode(unicodeMatches[u]));
-				}
-			    }
-			    // add to map
-			    i18n.map[name] = value;
-			}
+    			/** Mode: bundle keys in a map */
+    			if (mode == 'map' || mode == 'both') {
+    			    // handle unicode chars possibly left out
+    			    var unicodeMatches = value.match(unicodeRE);
+    			    if (unicodeMatches) {
+    				for (var u = 0; u &lt; unicodeMatches.length; u++) {
+    				    value = value.replace(unicodeMatches[u], unescapeUnicode(unicodeMatches[u]));
+    				}
+    			    }
+    			    // add to map
+    			    i18n.map[name] = value;
+    			}
 
-			/* Mode: bundle keys as vars/functions */
-			if (mode == 'vars' || mode == 'both') {
-			    value = value.replace(/"/g, '\\"'); // escape quotation mark
+    			/* Mode: bundle keys as vars/functions */
+    			if (mode == 'vars' || mode == 'both') {
+    			    value = value.replace(/"/g, '\\"'); // escape quotation mark
 
-			    // make sure namespaced key exists (eg, some.key')
-			    checkKeyNamespace(name);
+    			    // make sure namespaced key exists (eg, some.key')
+    			    checkKeyNamespace(name);
 
-			    // value with variable substitutions
-			    if (regPlaceHolder.test(value)) {
-				var parts = value.split(regPlaceHolder);
-				// process function args
-				var first = true;
-				var fnArgs = '';
-				var usedArgs = [];
-				for (var p = 0; p &lt; parts.length; p++) {
-				    if (regPlaceHolder.test(parts[p]) &amp;&amp; (usedArgs.length === 0 || usedArgs.indexOf(parts[p]) === -1)) {
-					if (!first) {
-					    fnArgs += ',';
-					}
-					fnArgs += parts[p].replace(regRepPlaceHolder, 'v$1');
-					usedArgs.push(parts[p]);
-					first = false;
-				    }
-				}
-				parsed += name + '=function(' + fnArgs + '){';
-				// process function body
-				var fnExpr = '"' + value.replace(regRepPlaceHolder, '"+v$1+"') + '"';
-				parsed += 'return ' + fnExpr + ';' + '};';
+    			    // value with variable substitutions
+    			    if (regPlaceHolder.test(value)) {
+    				var parts = value.split(regPlaceHolder);
+    				// process function args
+    				var first = true;
+    				var fnArgs = '';
+    				var usedArgs = [];
+    				for (var p = 0; p &lt; parts.length; p++) {
+    				    if (regPlaceHolder.test(parts[p]) &amp;&amp; (usedArgs.length === 0 || usedArgs.indexOf(parts[p]) === -1)) {
+    					if (!first) {
+    					    fnArgs += ',';
+    					}
+    					fnArgs += parts[p].replace(regRepPlaceHolder, 'v$1');
+    					usedArgs.push(parts[p]);
+    					first = false;
+    				    }
+    				}
+    				parsed += name + '=function(' + fnArgs + '){';
+    				// process function body
+    				var fnExpr = '"' + value.replace(regRepPlaceHolder, '"+v$1+"') + '"';
+    				parsed += 'return ' + fnExpr + ';' + '};';
 
-				// simple value
-			    } else {
-				parsed += name + '="' + value + '";';
-			    }
-			} // END: Mode: bundle keys as vars/functions
-		    } // END: if(pair.length > 0)
-		} // END: skip comments
-	    }
-	    eval(parsed);
-	}
+    				// simple value
+    			    } else {
+    				parsed += name + '="' + value + '";';
+    			    }
+    			} // END: Mode: bundle keys as vars/functions
+    		    } // END: if(pair.length > 0)
+    		} // END: skip comments
+    	    }
+    	    eval(parsed);
+    	}
 
-	/** Make sure namespace exists (for keys with dots in name) */
-	// TODO key parts that start with numbers quietly fail. i.e.
-	// month.short.1=Jan
-	function checkKeyNamespace(key) {
-	    var regDot = /\./;
-	    if (regDot.test(key)) {
-		var fullname = '';
-		var names = key.split(/\./);
-		for (var i = 0; i &lt; names.length; i++) {
-		    if (i > 0) {
-			fullname += '.';
-		    }
-		    fullname += names[i];
-		    if (eval('typeof ' + fullname + ' == "undefined"')) {
-			eval(fullname + '={};');
-		    }
-		}
-	    }
-	}
+    	/** Make sure namespace exists (for keys with dots in name) */
+    	// TODO key parts that start with numbers quietly fail. i.e.
+    	// month.short.1=Jan
+    	function checkKeyNamespace(key) {
+    	    var regDot = /\./;
+    	    if (regDot.test(key)) {
+    		var fullname = '';
+    		var names = key.split(/\./);
+    		for (var i = 0; i &lt; names.length; i++) {
+    		    if (i > 0) {
+    			fullname += '.';
+    		    }
+    		    fullname += names[i];
+    		    if (eval('typeof ' + fullname + ' == "undefined"')) {
+    			eval(fullname + '={};');
+    		    }
+    		}
+    	    }
+    	}
 
-	/* Make sure filename is an array */
-	function getFiles(names) {
-	    return (names &amp;&amp; names.constructor == Array) ? names : [names];
-	}
+    	/* Make sure filename is an array */
+    	function getFiles(names) {
+    	    return (names &amp;&amp; names.constructor == Array) ? names : [names];
+    	}
 
-	/* Ensure language code is in the format aa_AA. */
-	function normaliseLanguageCode(lang) {
-	    lang = lang.toLowerCase();
-	    if (lang.length > 3) {
-		lang = lang.substring(0, 3) + lang.substring(3).toUpperCase();
-	    }
-	    return lang;
-	}
+    	/* Ensure language code is in the format aa_AA. */
+    	function normaliseLanguageCode(lang) {
+    	    lang = lang.toLowerCase();
+    	    if (lang.length > 3) {
+    		lang = lang.substring(0, 3) + lang.substring(3).toUpperCase();
+    	    }
+    	    return lang;
+    	}
 
-	/* Unescape unicode chars ('\u00e3') */
-	function unescapeUnicode(str) {
-	    // unescape unicode codes
-	    var codes = [];
-	    var code = parseInt(str.substr(2), 16);
-	    if (code >= 0 &amp;&amp; code &lt; Math.pow(2, 16)) {
-		codes.push(code);
-	    }
-	    // convert codes to text
-	    var unescaped = '';
-	    for (var i = 0; i &lt; codes.length; ++i) {
-		unescaped += String.fromCharCode(codes[i]);
-	    }
-	    return unescaped;
-	}
-};
+    	/* Unescape unicode chars ('\u00e3') */
+    	function unescapeUnicode(str) {
+    	    // unescape unicode codes
+    	    var codes = [];
+    	    var code = parseInt(str.substr(2), 16);
+    	    if (code >= 0 &amp;&amp; code &lt; Math.pow(2, 16)) {
+    		codes.push(code);
+    	    }
+    	    // convert codes to text
+    	    var unescaped = '';
+    	    for (var i = 0; i &lt; codes.length; ++i) {
+    		unescaped += String.fromCharCode(codes[i]);
+    	    }
+    	    return unescaped;
+    	}
+    };
 
     /* Assign an object if null */
     var resourceBundle = (!resourceBundle) ? new i18nBase() : resourceBundle;
@@ -3675,11 +3766,29 @@
 
             var ret = Augmented.sync(method, model, options);
     	    return ret;
-    	}
+    	},
+        /**
+         * sortBy - Sorts the collection by a property key
+         * @method sortBy
+         * @param {object} key The key to sort by
+         * @memberof Augmented.Collection
+         */
+        sortBy: function(key) {
+            if (key) {
+                var data = this.toJSON();
+                if (data) {
+                    var sorted = Augmented.Utility.Sort(data, key);
+                    this.reset(sorted);
+                }
+            }
+        }
     });
 
 	// Extend Collection with Object base functions
     Augmented.Utility.extend(augmentedCollection, Augmented.Object);
+
+
+
 
     /**
      * Paginated Collection Class - A Collection that handles pagination from client or server-side
@@ -3905,7 +4014,6 @@
      * @extends Augmented.Object
      */
     var augmentedView = Backbone.View.extend({
-
         /**
          * Custom initialize - Override for custom code
          * @method init
@@ -3925,6 +4033,7 @@
             this.init(options);
             this.render = Augmented.Utility.wrap(this.render, function(render) {
                 this.beforeRender();
+                render.apply(this);
                 render();
                 this.afterRender();
                 return this;
@@ -3933,13 +4042,16 @@
         /**
          * Before Render callback for the view
          * @method beforeRender
+         * @returns this Context of the view
          * @memberof Augmented.View
          */
         beforeRender: function() {
+            return this;
         },
         /**
          * Render callback for the view
          * @method render
+         * @returns this Context of the view
          * @memberof Augmented.View
          */
         render: function() {
@@ -3948,9 +4060,11 @@
         /**
          * After Render callback for the view
          * @method afterRender
+         * @returns this Context of the view
          * @memberof Augmented.View
          */
         afterRender: function() {
+            return this;
         },
         /**
          * The name property of the view
@@ -4091,12 +4205,13 @@
     });
 
     // Extend View with Object base functions
-    Augmented.Utility.extend(augmentedView, Augmented.Object);
+    //Augmented.Utility.extend(augmentedView, Augmented.Object);
 
     /* Augmented Backbone - Extend Backbone with awesome */
     Augmented.Model = augmentedModel;
     Augmented.Collection = augmentedCollection;
     Augmented.View = augmentedView;
+
     /**
      * @function history
      * @extends Backbone.history
@@ -4115,6 +4230,8 @@
      * @memberof Augmented
      */
     Augmented.Router = Backbone.Router;
+
+    Augmented.Model.extend = Augmented.Collection.extend = Augmented.Router.extend = Augmented.View.extend = Augmented.History.extend = Augmented.extend;
 
     /* Core Package */
 
@@ -4148,7 +4265,7 @@
 
     	// true = localStorage, false = sessionStorage
     	if (this.isSupported()) {
-    	    logger.debug("localStorage exists");
+    	    logger.debug("AUGMENTED: localStorage exists");
 
     	    if (this.isPersisted) {
     		this.myStore = localStorage;
@@ -4156,7 +4273,7 @@
     		this.myStore = sessionStorage;
     	    }
     	} else {
-    	    logger.debug("No localStorage.");
+    	    logger.warn("AUGMENTED: No localStorage.");
     	}
 
         /**
@@ -4247,7 +4364,7 @@
     	        map = JSON.parse(ls.getItem(this.namespace));
             } catch(e) {
                 // TODO: bundle this
-                logger.error("Could not parse item map from storage!");
+                logger.error("AUGMENTED: Augmented Local Strorage could not parse item map from storage!");
                 return null;
             }
             this.myNameSpacedStore.clear();
@@ -4450,11 +4567,12 @@
                 Augmented.Utility.extend(this.queue, arguments);
             }
             var args = this.queue;
-            if (args.length &lt;= 0) {
+            var l = args.length;
+            if (l &lt;= 0) {
                 return false;
             }
             (function chain(i) {
-                if (i >= args.length || typeof args[i] !== 'function') {
+                if (i >= l || typeof args[i] !== 'function') {
                     return false;
                 }
                 window.setTimeout(function() {
@@ -4582,29 +4700,30 @@
          * @method start
          * @memberof Augmented.Application
          */
-		this.start = function() {
+        this.start = function() {
             var asyncQueue = new Augmented.Utility.AsynchronousQueue(Augmented.Configuration.ApplicationInitProcessTimeout);
+            var startCheck = function() {
+                if (!Augmented.History.started) {
+                    Augmented.history.start();
+                }
+            };
             this.started = asyncQueue.process(
                 this.beforeInitialize(),
                 this.initialize(),
                 this.afterInitialize(),
-                function() {
-                    if (!Augmented.history.started) {
-        				Augmented.history.start();
-        		    }
-                }
+                startCheck()
             );
             if (!this.started) {
                 this.stop();
             }
-		};
+ 		};
 
         /** Event to stop the application and history
          * @method stop
          * @memberof Augmented.Application
          */
         this.stop = function() {
-		    if (Augmented.history.started) {
+		    if (Augmented.History.started) {
 				Augmented.history.stop();
 		    }
 		    this.started = false;
@@ -4624,13 +4743,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">EditableTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sat Dec 05 2015 22:12:51 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Feb 29 2016 15:30:17 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>
