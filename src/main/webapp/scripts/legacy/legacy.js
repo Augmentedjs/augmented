@@ -3,7 +3,7 @@
  * Collection of legacy code (polyfills) and deprecated code to be removed later
  *
  * @author Bob Warren
- *
+ * @deprecated
  * @requires augmented.js
  * @module
  */

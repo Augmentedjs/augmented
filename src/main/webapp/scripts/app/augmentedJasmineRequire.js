@@ -92,11 +92,13 @@ var specs = [ 'core/test/coreSpec',
               'core/test/modelSpec',
               'core/test/collectionSpec',
               'core/test/viewSpec',
-
               'core/test/transformerSpec',
 
               'presentation/test/presentationSpec',
               'presentation/test/autoTableSpec',
+              'presentation/test/applicationSpec',
+              'presentation/test/mediationSpec',
+
 
               //TODO: redo these to work with the new system
               //'service/test/mockServiceSpec',

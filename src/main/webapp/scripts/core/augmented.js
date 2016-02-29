@@ -3759,6 +3759,9 @@
 	// Extend Collection with Object base functions
     Augmented.Utility.extend(augmentedCollection, Augmented.Object);
 
+
+
+
     /**
      * Paginated Collection Class - A Collection that handles pagination from client or server-side
      * @constructor Augmented.PaginatedCollection

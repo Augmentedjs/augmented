@@ -107,5 +107,25 @@ define([
 
     		});
         });
+
+        describe("Can create subclasses", function() {
+            it('can create a BigDataTable class', function() {
+                var b = new Presentation.BigDataTable();
+                expect(Presentation.BigDataTable).toBeDefined();
+                expect(b instanceof Presentation.BigDataTable).toBeTruthy();
+    		});
+
+            it('can create a EditableTable class', function() {
+                var b = new Presentation.EditableTable();
+                expect(Presentation.EditableTable).toBeDefined();
+                expect(b instanceof Presentation.EditableTable).toBeTruthy();
+    		});
+
+            it('can create a EditableBigDataTable class', function() {
+                var b = new Presentation.EditableBigDataTable();
+                expect(Presentation.EditableBigDataTable).toBeDefined();
+                expect(b instanceof Presentation.EditableBigDataTable).toBeTruthy();
+    		});
+        });
 	});
 });
