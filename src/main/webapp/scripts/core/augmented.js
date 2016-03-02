@@ -3714,10 +3714,10 @@
          */
     	crossOrigin: false,
         /**
-         * Model.sync - rewritten sync method from Backbone.Collection.sync
+         * Collecion.sync - rewritten sync method from Backbone.Collection.sync
          * @method sync
          * @memberof Augmented.Collection
-         * @borrows Collection.sync
+         * @borrows Backbone.sync
          */
     	sync: function(method, model, options) {
     	    if (!options) {
@@ -3740,6 +3740,22 @@
     	    return ret;
     	},
         /**
+         * Collection.save - Saves the collection as a 'create'
+         * @method save
+         * @memberof Augmented.Collection
+         */
+        save: function (options) {
+            Augmented.sync("create", this, options);
+        },
+        /**
+         * Collection.update - Updates the collection as a 'update'
+         * @method update
+         * @memberof Augmented.Collection
+         */
+        update: function (options) {
+            Augmented.sync("update", this, options);
+        },
+        /**
          * sortBy - Sorts the collection by a property key
          * @method sortBy
          * @param {object} key The key to sort by
@@ -3758,9 +3774,6 @@
 
 	// Extend Collection with Object base functions
     Augmented.Utility.extend(augmentedCollection, Augmented.Object);
-
-
-
 
     /**
      * Paginated Collection Class - A Collection that handles pagination from client or server-side
@@ -4219,7 +4232,7 @@
     var augmentedLocalStorage = function(persist) {
         /**
          * is Persistant or not
-         * @property {boolean} isPersisted Persiatnt property
+         * @property {boolean} isPersisted Persistant property
          * @memberof augmentedLocalStorage
          */
     	this.isPersisted = persist;
@@ -4396,7 +4409,7 @@
      */
     var localStorageFactory = Augmented.LocalStorageFactory = {
         /**
-         * @method getStorage Get the storage inastance
+         * @method getStorage Get the storage instance
          * @param {boolean} persist Persistance or not
          * @param {string} namespace The namespace of the storage if needed (optional)
          * @returns Returns an instance of local storage
@@ -4415,6 +4428,97 @@
     		return null;
 	    }
     };
+
+    /**
+     * Augmented.LocalStorageCollection
+     * A local storage-based Collection
+     * @constructor Augmented.Collection
+     * @memberof Augmented
+     * @extends Augmented.Collection
+     */
+    Augmented.LocalStorageCollection = Augmented.Collection.extend({
+        /**
+         * Base key name for the collection (simular to url for rest-based)
+         * @property {string} key The key
+         * @memberof augmentedLocalStorage
+         */
+        key: "augmented.localstorage.collection.key",
+        /**
+         * is Persistant or not
+         * @property {boolean} isPersisted Persistant property
+         * @memberof LocalStorageCollection
+         */
+        persist: false,
+        /**
+         * Storage for the collection
+         * @property {string} storage The storage used for the collection
+         * @memberof augmentedLocalStorage
+         * @private
+         */
+        storage: null,
+        url: null,
+        initialize: function (attributes, options) {
+            if (options && options.persist) {
+                this.persist = options.persist;
+            }
+            if (options && options.key) {
+                this.key = options.key;
+            }
+            this.storage = Augmented.LocalStorageFactory.getStorage(this.persist,"augmented.localstorage.collection");
+        },
+        /**
+         * @method fetch Fetch the collection
+         * @param {object} options Any options to pass
+         * @memberof Augmented.augmentedLocalStorage
+         */
+        fetch: function(options) {
+            this.sync('read', this, options);
+        },
+        /**
+         * @method save Save the collection
+         * @param {object} options Any options to pass
+         * @memberof Augmented.augmentedLocalStorage
+         */
+        save: function(options) {
+            this.sync('create', this, options);
+        },
+        /**
+         * @method update Update the collection
+         * @param {object} options Any options to pass
+         * @memberof Augmented.augmentedLocalStorage
+         */
+        update: function(options) {
+            this.sync('update', this, options);
+        },
+        /**
+         * @method destroy Destroy the collection
+         * @param {object} options Any options to pass
+         * @memberof Augmented.augmentedLocalStorage
+         */
+        destroy: function(options) {
+            this.sync('delete', this, options);
+        },
+        sync: function(method, model, options) {
+            if (!options) {
+                options = {};
+            }
+            var s = "", j = {};
+            if (method === "create" || method === "update") {
+                j = this.toJSON();
+                this.storage.setItem(this.key, j);
+            } else if (method === "delete") {
+                this.storage.removeItem(this.key);
+            } else {
+                // read
+                j = this.storage.getItem(this.key);
+                //j = JSON.parse(s);
+                this.reset(j);
+            }
+
+            return {};
+        }
+    });
+
 
     /**
      * Augmented.Utility.Stack -

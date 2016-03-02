@@ -5,16 +5,18 @@ define([
 	Augmented,
 	AugmentedService
 ) {
+    var data = [ { "Name": "Bob", "ID": 123, "Email": "bob@augmentedjs.org" },
+                 { "Name": "Jonathan", "ID": 234, "Email": "jonathon@augmentedjs.org" },
+                 { "Name": "Corey", "ID": 345, "Email": "corey@augmentedjs.org" },
+                 { "Name": "Seema", "ID": 456, "Email": "seema@augmentedjs.org" },
+                 { "Name": "Jasmine", "ID": 567, "Email": "jasmine@augmentedjs.org" }
+                ];
+
     describe('Given an Augmented Collection', function() {
         it('has an augmented Collection', function() {
             expect(Augmented.Collection).toBeDefined();
         });
-        var data = [ { "Name": "Bob", "ID": 123, "Email": "bob@augmentedjs.org" },
-                     { "Name": "Jonathan", "ID": 234, "Email": "jonathon@augmentedjs.org" },
-                     { "Name": "Corey", "ID": 345, "Email": "corey@augmentedjs.org" },
-                     { "Name": "Seema", "ID": 456, "Email": "seema@augmentedjs.org" },
-                     { "Name": "Jasmine", "ID": 567, "Email": "jasmine@augmentedjs.org" }
-                    ];
+
         it('can populate data', function() {
             var c = new Augmented.Collection();
             c.add(data);
@@ -27,7 +29,37 @@ define([
             var first = c.at(1);
             expect(first.get("Name")).toEqual("Corey");
         });
+    });
 
+    describe('Given an Augmented Collection Backed by Local Storage', function() {
+        var c, myC = Augmented.LocalStorageCollection.extend({
+            key: "augmented.localStorage.collection.jasmine"
+        });
+        beforeEach(function() {
+            c = new myC();
+        });
+
+        afterEach(function() {
+            c.destroy();
+            c = null;
+        });
+
+        it('has an augmented local storage Collection', function() {
+            expect(Augmented.LocalStorageCollection).toBeDefined();
+        });
+
+        it('can populate data', function() {
+            c.add(data);
+            expect(c.size()).toEqual(5);
+        });
+
+        it('can save and fetch data', function() {
+            c.add(data);
+            c.save();
+
+            c.fetch();
+            expect(c.size()).toEqual(5);
+        });
     });
 
     describe('Given an Augmented Collection needing pagination', function() {
