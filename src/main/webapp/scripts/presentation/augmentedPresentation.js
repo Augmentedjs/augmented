@@ -597,14 +597,17 @@
         sortClass:      "sorted"
     };
 
-    var csvTableCompile = function(name, desc, columns, data){
+    var csvTableCompile = function(name, desc, columns, data, del){
         var csv = "";
+        if (!del) {
+            del = ",";
+        }
         if (columns) {
             var key, obj;
             for (key in columns) {
                 if (columns.hasOwnProperty(key)) {
                     obj = columns[key];
-                    csv = csv + key + ",";
+                    csv = csv + key + del;
                 }
             }
             csv = csv.slice(0, -1);
@@ -618,13 +621,17 @@
                 if (d.hasOwnProperty(dkey)) {
                     dobj = d[dkey];
                     t = (typeof dobj);
-                    csv = csv + dobj + ",";
+                    csv = csv + dobj + del;
                 }
             }
             csv = csv.slice(0, -1);
             csv = csv + "\n";
         }
         return csv;
+    };
+
+    var tsvTableCompile = function(name, desc, columns, data){
+        return csvTableCompile(name, desc, columns, data, "\t");
     };
 
     var defaultTableCompile = function(name, desc, columns, data, lineNumbers, sortKey, editable) {
@@ -755,6 +762,12 @@
          * @memberof Augmented.Presentation.AutomaticTable
          */
         sortStyle: "client",
+        /**
+         * The sortKey property
+         * @property {string} sortKey sorted key
+         * @private
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         sortKey: null,
         /**
          * Sort the tabe by a key (sent via a UI Event)
@@ -848,7 +861,22 @@
             this.refresh();
         },
 
-        // standard functionality
+        // local storage
+
+        /**
+         * The localStorage property - enables localStorage
+         * @property {boolean} localStorage The localStorage property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        localStorage: false,
+        /**
+         * The localStorageKey property - set the key for use in storage
+         * @property {string} localStorageKey The localStorage key property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        localStorageKey: "augmented.localstorage.autotable.key",
+
+        // editable
 
         /**
          * The editable property - enables editing of cells
@@ -856,6 +884,53 @@
          * @memberof Augmented.Presentation.AutomaticTable
          */
         editable: false,
+
+        /**
+         * Edit a cell at the row and column specified
+         * @method editCell
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {number} row The row
+         * @param {number} col The column
+         * @param {any} value The value to set
+         */
+        editCell: function(row, col, value) {
+            if (row && col) {
+                var model = this.collection.at(row), name = this.columns[col];
+                if (model && name) {
+                    model.set(name, value);
+                }
+            }
+        },
+        /**
+         * Copy a cell at the row and column  to another
+         * @method copyCell
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {number} row1 The 'from' row
+         * @param {number} col1 The 'from' column
+         * @param {number} row2 The 'to' row
+         * @param {number} col2 The 'to' column
+         */
+        copyCell: function(row1, col1, row2, col2) {
+            if (row1 && col1 && row2 && col2) {
+                var model1 = this.collection.at(row1), name1 = this.columns[col1],
+                    model2 = this.collection.at(row);
+                if (model1 && name1 && model2) {
+                    model2.set(name1, value1);
+                }
+            }
+        },
+        /**
+         * Clear a cell at the row and column specified
+         * @method clearCell
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {number} row The row
+         * @param {number} col The column
+         */
+        clearCell: function(row, col) {
+            this.editCell(row, col, null);
+        },
+
+        // standard functionality
 
         /**
          * The crossOrigin property - enables cross origin fetch
@@ -872,6 +947,7 @@
         /**
          * The columns property
          * @property {object} columns The columns property
+         * @private
          * @memberof Augmented.Presentation.AutomaticTable
          */
         columns: {},
@@ -918,8 +994,14 @@
                 if (options.paginationAPI) {
                     this.paginationAPI = options.paginationAPI;
                 }
-                if (!this.collection) {
+                if (!this.collection && this.paginationAPI) {
                     this.collection = Augmented.PaginationFactory.getPaginatedCollection(this.paginationAPI);
+                    this.paginationAPI = this.collection.paginationAPI;
+                    this.localStorage = false;
+                } else if (!this.collection && this.localStorage) {
+                    this.collection = new Augmented.LocalStorageCollection();
+                } else if (!this.collection) {
+                    this.collection = new Augmented.Collection();
                 }
                 if (options.schema) {
                     this.schema = options.schema;
@@ -929,9 +1011,9 @@
                     this.el = options.el;
                 }
 
-                if (options.url) {
-                    this.url = options.url;
-                    this.collection.url = options.url;
+                if (options.uri) {
+                    this.uri = options.uri;
+                    this.collection.url = options.uri;
                 }
 
                 if (options.data && (Array.isArray(options.data))) {
@@ -952,6 +1034,11 @@
 
                 if (options.editable) {
                     this.editable = options.editable;
+                }
+
+                if (options.localStorageKey && !options.uri) {
+                    this.localStorageKey = options.localStorageKey;
+                    this.uri = null;
                 }
             }
             if (this.uri) {
@@ -1010,7 +1097,7 @@
         },
 
         /**
-         * Save the data to the source URI
+         * Save the data to the source
          * This only functions if the table is editable
          * @method save
          * @memberof Augmented.Presentation.AutomaticTable
@@ -1067,9 +1154,10 @@
             this.collection.reset(null);
         },
         /**
-         * Refresh the table
+         * Refresh the table (Same as render)
          * @method refresh Refresh the table
          * @memberof Augmented.Presentation.AutomaticTable
+         * @see Augmented.Presentation.AutomaticTable.render
          */
         refresh: function() {
             this.render();
@@ -1161,12 +1249,19 @@
             return this;
         },
 
+        /**
+         * Save Cell Event
+         * @private
+         */
         saveCell: function(event) {
             var key = event.target;
             var model = this.collection.at(key.getAttribute(tableDataAttributes.index));
             model.set(key.getAttribute(tableDataAttributes.name), key.value);
         },
 
+        /**
+         * @private
+         */
         bindCellChangeEvents: function() {
             var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
             var cells = [].slice.call(document.querySelectorAll(myEl + " table tr td input"));
@@ -1176,6 +1271,9 @@
             }
         },
 
+        /**
+         * @private
+         */
         unbindCellChangeEvents: function() {
             var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
             var cells = [].slice.call(document.querySelectorAll(myEl + " table tr td input"));
@@ -1196,6 +1294,8 @@
             var e = "";
             if (type === "csv") {
                 e = csvTableCompile(this.name, this.description, this.columns, this.collection.toJSON());
+            } else if (type === "tsv") {
+                e = tsvTableCompile(this.name, this.description, this.columns, this.collection.toJSON());
             } else {
                 // html
                 e = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), false, null);
@@ -1203,6 +1303,9 @@
             return e;
         },
 
+        /**
+         * @private
+         */
         unbindPaginationControlEvents: function() {
             if (this.pageControlBound) {
                 var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
@@ -1226,8 +1329,14 @@
             }
         },
 
+        /**
+         * @private
+         */
         pageControlBound: false,
 
+        /**
+         * @private
+         */
         bindPaginationControlEvents: function() {
             if (!this.pageControlBound) {
                 var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
@@ -1251,6 +1360,9 @@
             }
         },
 
+        /**
+         * @private
+         */
         deriveEventTarget: function(event) {
             var key = null;
             if (event) {
@@ -1258,10 +1370,16 @@
             }
             return key;
         },
+        /**
+         * @private
+         */
         sortByHeaderEvent: function(event) {
             var key = this.deriveEventTarget(event);
             this.sortBy(key);
         },
+        /**
+         * @private
+         */
         unbindSortableColumnEvents: function()  {
             if (this.el && this.sortable) {
                 var list;
@@ -1276,7 +1394,9 @@
                 }
             }
         },
-
+        /**
+         * @private
+         */
         bindSortableColumnEvents: function()  {
             if (this.el && this.sortable) {
                 var list;
@@ -1335,6 +1455,12 @@
             }
         },
 
+        /**
+         * Enable/Disable the progress bar
+         * @method showProgressBar
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {boolean} show Show or Hide the progress bar
+         */
         showProgressBar: function(show) {
             if (this.el) {
                 var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
@@ -1345,6 +1471,12 @@
                 }
             }
         },
+        /**
+         * Show a message related to the table
+         * @method showMessage
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {string} message Some message to display
+         */
         showMessage: function(message) {
             if (this.el) {
                 var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
@@ -1398,6 +1530,34 @@
         lineNumbers: true,
         sortable: true,
         editable: true
+    });
+
+    /**
+     * Augmented.Presentation.LocalStorageTable
+     * Instance class preconfigured for local storage-based table
+     * @constructor Augmented.Presentation.LocalStorageTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.LocalStorageTable = Augmented.Presentation.AutomaticTable.extend({
+        renderPaginationControl: false,
+        lineNumbers: true,
+        sortable: true,
+        editable: false,
+        localStorage: true
+    });
+
+    /**
+     * Augmented.Presentation.EditableLocalStorageTable
+     * Instance class preconfigured for editing, sorting, from local storage
+     * @constructor Augmented.Presentation.EditableLocalStorageTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.EditableLocalStorageTable = Augmented.Presentation.AutomaticTable.extend({
+        renderPaginationControl: false,
+        lineNumbers: true,
+        sortable: true,
+        editable: true,
+        localStorage: true
     });
 
 

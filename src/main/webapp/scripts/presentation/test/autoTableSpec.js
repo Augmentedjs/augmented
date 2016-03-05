@@ -8,6 +8,12 @@ define([
 			expect(Presentation.AutomaticTable).toBeDefined();
 		});
 
+        it('is not initialized without a schema', function() {
+            var at = new Presentation.AutomaticTable();
+			expect(at).toBeDefined();
+            expect(at.isInitalized).toBeFalsy();
+		});
+
         describe('Given some user data and a schema', function() {
             var uri = "test.json";
             var schema = {
@@ -53,6 +59,11 @@ define([
     			expect(at instanceof Presentation.AutomaticTable).toBeTruthy();
     		});
 
+            it('is initialized with a schema', function() {
+    			expect(at).toBeDefined();
+                expect(at.isInitalized).toBeTruthy();
+    		});
+
             it('can set uri and schema', function() {
                 at.setURI(uri);
                 expect(at.uri).toEqual(uri);
@@ -95,16 +106,21 @@ define([
     			at.populate(data);
                 var t = at.export('csv');
                 expect(t).toBeDefined();
+                expect(t).not.toEqual("");
+    		});
+
+            it('can export the table to tsv', function() {
+    			at.populate(data);
+                var t = at.export('tsv');
+                expect(t).toBeDefined();
+                expect(t).not.toEqual("");
     		});
 
             it('can export the table to html', function() {
     			at.populate(data);
                 var t = at.export('html');
                 expect(t).toBeDefined();
-    		});
-
-            xit('can paginate the table', function() {
-
+                expect(t).not.toEqual("");
     		});
         });
 
@@ -113,18 +129,41 @@ define([
                 var b = new Presentation.BigDataTable();
                 expect(Presentation.BigDataTable).toBeDefined();
                 expect(b instanceof Presentation.BigDataTable).toBeTruthy();
+                expect(b.paginationAPI).toBeDefined();
     		});
 
             it('can create a EditableTable class', function() {
                 var b = new Presentation.EditableTable();
                 expect(Presentation.EditableTable).toBeDefined();
                 expect(b instanceof Presentation.EditableTable).toBeTruthy();
+                expect(b.editable).toBeTruthy();
     		});
 
             it('can create a EditableBigDataTable class', function() {
                 var b = new Presentation.EditableBigDataTable();
                 expect(Presentation.EditableBigDataTable).toBeDefined();
                 expect(b instanceof Presentation.EditableBigDataTable).toBeTruthy();
+                expect(b.editable).toBeTruthy();
+                expect(b.paginationAPI).toBeDefined();
+    		});
+
+            it('can create a LocalStorageTable class', function() {
+                var b = new Presentation.LocalStorageTable();
+                expect(Presentation.LocalStorageTable).toBeDefined();
+                expect(b instanceof Presentation.LocalStorageTable).toBeTruthy();
+                expect(b.localStorage).toBeTruthy();
+                expect(b.localStorageKey).toBeDefined();
+                expect(b.uri).toEqual(null);
+    		});
+
+            it('can create a EditableLocalStorageTable class', function() {
+                var b = new Presentation.EditableLocalStorageTable();
+                expect(Presentation.EditableLocalStorageTable).toBeDefined();
+                expect(b instanceof Presentation.EditableLocalStorageTable).toBeTruthy();
+                expect(b.localStorage).toBeTruthy();
+                expect(b.localStorageKey).toBeDefined();
+                expect(b.editable).toBeTruthy();
+                expect(b.uri).toEqual(null);
     		});
         });
 	});

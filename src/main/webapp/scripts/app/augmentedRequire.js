@@ -8,31 +8,26 @@ require.config({
 		'handlebars': 'lib/handlebars-v4.0.2',
 		'text': 'lib/text',
 		'json': 'lib/json',
-		'mockjax': 'lib/jquery.mockjax',
 
 		'augmented': 'core/augmented',
 		'augmentedPresentation': 'presentation/augmentedPresentation',
 		'augmentedService': 'service/augmentedService'
 	},
 	'shim': {
-		jquery: {
+		/*jquery: {
 			'exports': '$'
 		},
 		backbone: {
 			'deps': ['jquery', 'underscore', 'handlebars'],
 			'exports': 'Backbone'
-		},
+		},*/
 		underscore: {
 			'exports': '_'
-		},
+		}/*,
 		handlebars: {
 			'exports': 'Handlebars'
-		},
-		mockjax: {
-			'deps':['jquery'],
-			'exports': 'mockjax'
-		},
-
+		}
+        
 		augmented: {
 			'deps': ['backbone'],
 			'exports': 'Augmented'
@@ -47,7 +42,7 @@ require.config({
 			'deps': ['jquery', 'mockjax', 'underscore', 'augmented'],
 			'exports': 'augmentedService'
 		}
-
+        */
 	}
 });
 

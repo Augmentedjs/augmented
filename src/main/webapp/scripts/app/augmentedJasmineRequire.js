@@ -8,7 +8,6 @@ require.config({
 		'handlebars': 'lib/handlebars-v4.0.2',
 		'text': 'lib/text',
 		'json': 'lib/json',
-		'mockjax': 'lib/jquery.mockjax',
 
 		'augmented': 'core/augmented',
 		'augmentedPresentation': 'presentation/augmentedPresentation',
@@ -22,22 +21,19 @@ require.config({
 
 	},
 	'shim': {
-		jquery: {
+		/*jquery: {
 			'exports': '$'
 		},
 		backbone: {
 			'deps': ['jquery', 'underscore', 'handlebars'],
 			'exports': 'Backbone'
-		},
+		},*/
 		underscore: {
 			'exports': '_'
 		},
+        /*
 		handlebars: {
 			'exports': 'Handlebars'
-		},
-		mockjax: {
-			'deps':['jquery'],
-			'exports': 'mockjax'
 		},
 
 		augmented: {
@@ -59,7 +55,7 @@ require.config({
 			'deps': ['augmented'],
 			'exports': 'augmentedLegacy'
 		},
-
+*/
 		jasmine: {
 			exports : 'window.jasmineRequire'
 		},

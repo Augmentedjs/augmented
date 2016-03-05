@@ -13,16 +13,16 @@ require.config({
 		'augmentedPresentation': 'presentation/augmentedPresentation'
 	},
 	'shim': {
-		jquery: {
+		/*jquery: {
 			'exports': '$'
 		},
 		backbone: {
 			'deps': ['jquery', 'underscore', 'handlebars'],
 			'exports': 'Backbone'
-		},
+		},*/
 		underscore: {
 			'exports': '_'
-		},
+		}/*,
 		handlebars: {
 			'exports': 'Handlebars'
 		},
@@ -36,6 +36,7 @@ require.config({
 			'deps': ['augmented'],
 			'exports': 'Presentation'
 		}
+        */
 	}
 });
 
