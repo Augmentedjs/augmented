@@ -122,6 +122,13 @@ define([
                 expect(t).toBeDefined();
                 expect(t).not.toEqual("");
     		});
+
+            it('can validate', function() {
+    			at.populate(data);
+                var m = at.validate();
+                expect(m).toBeDefined();
+                expect(at.isValid()).toBeTruthy();
+    		});
         });
 
         describe("Can create subclasses", function() {

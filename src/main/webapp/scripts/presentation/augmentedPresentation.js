@@ -741,6 +741,22 @@
                     "<span class=\"last\">Last >></span></div>";
     };
 
+    var formatValidationMessages = function(messages) {
+        var html = "";
+        if (messages && messages.length > 0) {
+            html = html + "<ul class=\"errors\">";
+            var i = 0, l = messages.length;
+            for (i = 0; i < l; i++) {
+                var ii = 0, ll = messages[i].errors.length;
+                for (ii = 0; ii < ll; ii++) {
+                    html = html + "<li>" + messages[i].errors[ii] + "</li>";
+                }
+            }
+            html = html + "</ul>";
+        }
+        return html;
+    };
+
     /**
      * Augmented.Presentation.AutomaticTable<br/>
      * Creates a table automatically via a schema for defintion and a uri/json for data
@@ -776,9 +792,9 @@
          * @param {string} key The key to sort by
          */
         sortBy: function(key) {
-            if (key && this.sortKey !== key) {
+            if (key && ( (this.editable) || (!this.editable && this.sortKey !== key))) {
                 this.sortKey = key;
-                this.collection.sortBy(key);
+                this.collection.sortByKey(key);
                 this.refresh();
             }
         },
@@ -1255,8 +1271,12 @@
          */
         saveCell: function(event) {
             var key = event.target;
-            var model = this.collection.at(key.getAttribute(tableDataAttributes.index));
-            model.set(key.getAttribute(tableDataAttributes.name), key.value);
+            var model = this.collection.at(parseInt(key.getAttribute(tableDataAttributes.index)));
+            var value = key.value;
+            if ((key.getAttribute("type")) === "number") {
+                value = parseInt(key.value);
+            }
+            model.set(key.getAttribute(tableDataAttributes.name), value);
         },
 
         /**
@@ -1482,9 +1502,21 @@
                 var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
                 var p = e.querySelector("p[class=message]");
                 if (p) {
-                    p.textContent = message;
+                    p.innerHTML = message;
                 }
             }
+        },
+        validate: function() {
+            var messages = (this.collection) ? this.collection.validate() : null;
+            if (!this.collection.isValid() && messages && messages.messages) {
+                this.showMessage(formatValidationMessages(messages.messages));
+            } else {
+                this.showMessage("");
+            }
+            return messages;
+        },
+        isValid: function() {
+            return (this.collection) ? this.collection.isValid() : true;
         }
     });
 

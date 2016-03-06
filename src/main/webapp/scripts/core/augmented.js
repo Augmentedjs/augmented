@@ -3676,10 +3676,7 @@
          * @returns {boolean} Returns True if this collection supports validation
          */
     	supportsValidation: function() {
-    	    if (this.schema !== null) {
-    		    return true;
-    	    }
-    	    return false;
+            return (this.schema && this.schema !== {});
     	},
         /**
          * isValid - Returns True if this collection is valid
@@ -3688,20 +3685,40 @@
          * @returns {boolean} Returns True if this collection is valid
          */
     	isValid: function() {
-    	    this.validate();
-    	    return this.validationMessages.valid;
+    	    return (this.validationMessages) ? this.validationMessages.valid : true;
     	},
+        /**
+         * getValidationMessages - Returns the validation messages
+         * @method getValidationMessages
+         * @memberof Augmented.Collection
+         * @returns {array} Returns the message is an array of objects.
+         */
+        getValidationMessages: function() {
+            return (this.validationMessages && this.validationMessages.messages) ? this.validationMessages.messages : [];
+        },
         /**
          * Validates the collection
          * @method validate
          * @memberof Augmented.Collection
          * @returns {array} Returns array of message from validation
-         * TODO: Should we validate every model to call this valid or is this be a 'instance' validation?
          */
     	validate: function() {
     	    if (this.supportsValidation() && Augmented.ValidationFramework.supportsValidation()) {
-    		// validate from Validator
-    		    this.validationMessages = Augmented.ValidationFramework.validate(this.toJSON(), this.schema);
+                // validate from Validator
+                var messages = [];
+                this.validationMessages.messages = messages;
+                this.validationMessages.valid = true;
+
+                var a = this.toJSON(), i = 0, l = a.length;
+                logger.debug("AUGMENTED: Collection Validate: Beginning with " + l + " models.");
+                for (i = 0; i < l; i++) {
+                    messages[i] = Augmented.ValidationFramework.validate(a[i], this.schema);
+                    if (!messages[i].valid) {
+                        this.validationMessages.valid = false;
+                    }
+                }
+
+                logger.debug("AUGMENTED: Collection Validate: Completed isValid " + this.validationMessages.valid);
     	    } else {
     		    this.validationMessages.valid = true;
     	    }
@@ -3756,12 +3773,12 @@
             Augmented.sync("update", this, options);
         },
         /**
-         * sortBy - Sorts the collection by a property key
-         * @method sortBy
+         * sortByKey - Sorts the collection by a property key
+         * @method sortByKey
          * @param {object} key The key to sort by
          * @memberof Augmented.Collection
          */
-        sortBy: function(key) {
+        sortByKey: function(key) {
             if (key) {
                 var data = this.toJSON();
                 if (data) {

@@ -1,9 +1,7 @@
 define([
-	"augmented",
-	"augmentedService"
+	"augmented"
 ], function(
-	Augmented,
-	AugmentedService
+	Augmented
 ) {
     var data = [ { "Name": "Bob", "ID": 123, "Email": "bob@augmentedjs.org" },
                  { "Name": "Jonathan", "ID": 234, "Email": "jonathon@augmentedjs.org" },
@@ -11,23 +9,63 @@ define([
                  { "Name": "Seema", "ID": 456, "Email": "seema@augmentedjs.org" },
                  { "Name": "Jasmine", "ID": 567, "Email": "jasmine@augmentedjs.org" }
                 ];
+    var schema = {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "title": "User",
+        "description": "A list of users",
+        "type": "object",
+        "properties": {
+            "Name" : {
+                "description": "Name of the user",
+                "type" : "string"
+            },
+            "ID" : {
+                "description": "The unique identifier for a user",
+                "type" : "integer"
+            },
+            "Email" : {
+                "description": "The email of the user",
+                "type" : "string"
+            }
+        },
+        "required": ["ID", "Name"]
+    };
 
     describe('Given an Augmented Collection', function() {
+        var c;
+        beforeEach(function() {
+            c = new Augmented.Collection();
+        });
+        afterEach(function() {
+            c = null;
+        });
         it('has an augmented Collection', function() {
             expect(Augmented.Collection).toBeDefined();
         });
 
         it('can populate data', function() {
-            var c = new Augmented.Collection();
             c.add(data);
             expect(c.size()).toEqual(5);
         });
-        it('can sort data', function() {
-            var c = new Augmented.Collection();
+        it('can sort data by key', function() {
             c.add(data);
-            c.sortBy("Name");
+            c.sortByKey("Name");
             var first = c.at(1);
             expect(first.get("Name")).toEqual("Corey");
+        });
+        it('can validate', function() {
+            c.schema = schema;
+            c.add(data);
+            c.validate();
+            console.debug(c.validationMessages);
+            expect(c.isValid()).toBeTruthy();
+        });
+        it('validation returns messages on invalid data', function() {
+            c.schema = schema;
+            c.add({bubba: "junk"});
+            c.validate();
+            console.debug(c.validationMessages);
+            expect(c.isValid()).toBeFalsy();
         });
     });
 
@@ -104,8 +142,7 @@ define([
         });
 
         describe('Given an Augmented Collection', function() {
-            var c;
-            var defConfig = {
+            var c, defConfig = {
                 currentPageParam: "p",
                 pageSizeParam: "pp"
             };
@@ -119,17 +156,17 @@ define([
 
             beforeEach(function() {
                 c = new Augmented.PaginatedCollection();
-				Augmented.Service.MockService.at(testUrl)
+				/*Augmented.Service.MockService.at(testUrl)
 									 .on(testMethod)
 									 .respondWithText(testText)
 									 .respondWithStatus(testStatus)
 									 .respondWithHeaders(testHeaders)
-									 .register();
+									 .register();*/
             });
 
             afterEach(function() {
                 c = null;
-                Augmented.Service.MockService.clear();
+                //Augmented.Service.MockService.clear();
             });
 
             it('has an augmented PaginatedCollection', function() {
@@ -149,9 +186,9 @@ define([
                 expect(c.paginationConfiguration).toEqual(defConfig);
             });
 
-            //TODO: fix this for the new mock service
-            xit('can fetch', function() {
+            it('can fetch', function() {
                 c.url = "/tests/1";
+                c.mock = true;
                 var ret = c.fetch();
                 expect(ret).toBeDefined();
             });
