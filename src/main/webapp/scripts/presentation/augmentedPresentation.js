@@ -1212,6 +1212,9 @@
                         } else {
                             h = "";
                         }
+                        if (this.editable) {
+                            this.unbindCellChangeEvents();
+                        }
                         tbody.innerHTML = h;
 
                     }
@@ -1226,6 +1229,9 @@
                         jh = editableTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
                     } else {
                         jh = defaultTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                    }
+                    if (this.editable) {
+                        this.unbindCellChangeEvents();
                     }
                     this.$el("tbody").html(jh);
                 } else {
@@ -1257,7 +1263,6 @@
             }
 
             if (this.editable) {
-                this.unbindCellChangeEvents();
                 this.bindCellChangeEvents();
             }
 
@@ -1527,6 +1532,299 @@
      * @extends Augmented.Presentation.AutomaticTable
      */
     Augmented.Presentation.AutoTable = Augmented.Presentation.AutomaticTable;
+
+    var directDOMTableCompile = function(el, name, desc, columns, data, lineNumbers, sortKey, editable) {
+        var table, thead, tbody, n, t;
+
+        table = document.createElement("table");
+        table.setAttribute(tableDataAttributes.name, name);
+        table.setAttribute(tableDataAttributes.description, desc);
+        if (name) {
+            n = document.createElement("caption");
+            if (desc) {
+                n.setAttribute("title", desc);
+            }
+            t = document.createTextNode(name);
+            n.appendChild(t);
+            table.appendChild(n);
+        }
+        thead = document.createElement("thead");
+        directDOMTableHeader(thead, columns, lineNumbers, sortKey);
+        table.appendChild(thead);
+        tbody = document.createElement("tbody");
+        table.appendChild(tbody);
+        if (data) {
+            if (editable) {
+                directDOMEditableTableBody(tbody, data, lineNumbers, sortKey);
+            } else {
+                directDOMTableBody(tbody, data, lineNumbers, sortKey);
+            }
+        }
+        el.appendChild(table);
+    };
+
+    var directDOMTableHeader = function(el, columns, lineNumbers, sortKey) {
+        var tr, n, t;
+
+        if (columns) {
+            tr = document.createElement("tr");
+            if (lineNumbers) {
+                n = document.createElement("th");
+                n.setAttribute(tableDataAttributes.name, "lineNumber");
+                t = document.createTextNode("#");
+                n.appendChild(t);
+                tr.appendChild(n);
+            }
+            var key, obj;
+            for (key in columns) {
+                if (columns.hasOwnProperty(key)) {
+                    obj = columns[key];
+
+                    n = document.createElement("th");
+                    n.setAttribute(tableDataAttributes.name, key);
+                    n.setAttribute(tableDataAttributes.description, obj.description);
+                    n.setAttribute(tableDataAttributes.type, obj.type);
+                    if (sortKey === key) {
+                        n.classList.add(tableDataAttributes.sortClass);
+                    }
+
+                    t = document.createTextNode(key);
+                    n.appendChild(t);
+                    tr.appendChild(n);
+                }
+            }
+            el.appendChild(tr);
+        }
+    };
+
+    var directDOMTableBody = function(el, data, lineNumbers, sortKey) {
+        var i, d, dkey, dobj, l = data.length, t, td, tn, tr;
+        for (i = 0; i < l; i++) {
+            d = data[i];
+            tr = document.createElement("tr");
+
+            if (lineNumbers) {
+                td = document.createElement("td");
+                tn = document.createTextNode("" + (i+1));
+                td.appendChild(tn);
+                td.classList.add("label", "number");
+                tr.appendChild(td);
+            }
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    dobj = d[dkey];
+                    t = (typeof dobj);
+
+                    td = document.createElement("td");
+                    tn = document.createTextNode(dobj);
+                    td.appendChild(tn);
+                    td.classList.add(t);
+                    if (sortKey === dkey) {
+                        td.classList.add(tableDataAttributes.sortClass);
+                    }
+                    td.setAttribute(tableDataAttributes.type, t);
+
+                    tr.appendChild(td);
+                }
+            }
+            el.appendChild(tr);
+        }
+    };
+
+    var directDOMEditableTableBody = function(el, data, lineNumbers, sortKey) {
+        var i, d, dkey, dobj, l = data.length, t, td, tn, tr, input;
+        for (i = 0; i < l; i++) {
+            d = data[i];
+            tr = document.createElement("tr");
+
+            if (lineNumbers) {
+                td = document.createElement("td");
+                tn = document.createTextNode("" + (i+1));
+                td.appendChild(tn);
+                td.classList.add("label", "number");
+                tr.appendChild(td);
+            }
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    dobj = d[dkey];
+                    t = (typeof dobj);
+
+                    td = document.createElement("td");
+                    td.classList.add(t);
+                    if (sortKey === dkey) {
+                        td.classList.add(tableDataAttributes.sortClass);
+                    }
+                    td.setAttribute(tableDataAttributes.type, t);
+
+                    // input field
+                    input = document.createElement("input");
+                    input.setAttribute("type", (t==="number" ? "number" : "text"));
+                    input.setAttribute("value", dobj);
+                    input.setAttribute(tableDataAttributes.name, dkey);
+                    input.setAttribute(tableDataAttributes.name, dkey);
+                    input.setAttribute(tableDataAttributes.index, i);
+
+                    input.value = dobj;
+
+                    td.appendChild(input);
+
+                    tr.appendChild(td);
+                }
+            }
+            el.appendChild(tr);
+        }
+    };
+
+    /*
+     * << First | < Previous | # | Next > | Last >>
+    */
+    var directDOMPaginationControl = function(el, currentPage, totalPages) {
+        var d, n, t;
+        d = document.createElement("div");
+        d.classList.add("paginationControl");
+
+        n = document.createElement("span");
+        n.classList.add("first");
+        t = document.createTextNode("<< First");
+        n.appendChild(t);
+        d.appendChild(n);
+
+        n = document.createElement("span");
+        n.classList.add("previous");
+        t = document.createTextNode("< Previous");
+        n.appendChild(t);
+        d.appendChild(n);
+
+        n = document.createElement("span");
+        n.classList.add("current");
+        t = document.createTextNode(currentPage + " of " + totalPages);
+        n.appendChild(t);
+        d.appendChild(n);
+
+        n = document.createElement("span");
+        n.classList.add("next");
+        t = document.createTextNode("Next >");
+        n.appendChild(t);
+        d.appendChild(n);
+
+        n = document.createElement("span");
+        n.classList.add("last");
+        t = document.createTextNode("Last >>");
+        n.appendChild(t);
+        d.appendChild(n);
+
+        el.appendChild(d);
+    };
+
+    /**
+     * Augmented.Presentation.DirectDOMAutomaticTable<br/>
+     * Uses direct DOM methods vs cached HTML<br/>
+     * Creates a table automatically via a schema for defintion and a uri/json for data
+     * @constructor Augmented.Presentation.DirectDOMAutomaticTable
+     * @extends Augmented.Presentation.AutomaticTable
+     * @memberof Augmented.Presentation
+     */
+    Augmented.Presentation.DirectDOMAutomaticTable = Augmented.Presentation.AutomaticTable.extend({
+        compileTemplate: function() {
+            return "";
+        },
+        render: function() {
+            var e;
+            if (this.template) {
+                // refresh the table body only
+                this.showProgressBar(true);
+                if (this.el) {
+                    e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                    var tbody = e.querySelector("tbody"), thead = e.querySelector("thead");
+                    if (e) {
+                        if (this.sortable) {
+                            this.unbindSortableColumnEvents();
+                        }
+                        if (this.editable) {
+                            this.unbindCellChangeEvents();
+                        }
+                        if (this.columns && (Object.keys(this.columns).length > 0)){
+
+                            while (thead.hasChildNodes()) {
+                                thead.removeChild(thead.lastChild);
+                            }
+                            directDOMTableHeader(thead, this.columns, this.lineNumbers, this.sortKey);
+                        } else {
+                            while (thead.hasChildNodes()) {
+                                thead.removeChild(thead.lastChild);
+                            }
+                        }
+
+                        if (this.collection && (this.collection.length > 0)){
+                            while (tbody.hasChildNodes()) {
+                                tbody.removeChild(tbody.lastChild);
+                            }
+                            if (this.editable) {
+                                directDOMEditableTableBody(tbody, this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                            } else {
+                                directDOMTableBody(tbody, this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                            }
+                        } else {
+                            while (tbody.hasChildNodes()) {
+                                tbody.removeChild(tbody.lastChild);
+                            }
+                        }
+                    }
+                } else if (this.$el) {
+                    logger.warn("AUGMENTED: AutoTable no jquery, sorry not rendering.");
+                } else {
+                    logger.warn("AUGMENTED: AutoTable no element anchor, not rendering.");
+                }
+            } else {
+                this.template = "notused";
+                this.showProgressBar(true);
+
+                if (this.el) {
+                    e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                    if (e) {
+                        // progress bar
+                        var n = document.createElement("progress");
+                        var t = document.createTextNode("Please wait.");
+                        n.appendChild(t);
+                        e.appendChild(n);
+
+                        // the table
+                        directDOMTableCompile(e, this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers, this.sortKey, this.editable);
+
+                        // pagination control
+                        if (this.renderPaginationControl) {
+                            directDOMPaginationControl(e, this.currentPage(), this.totalPages());
+                        }
+
+                        // message
+                        n = document.createElement("p");
+                        n.classList.add("message");
+                        e.appendChild(n);
+                    }
+                } else if (this.$el) {
+                    logger.warn("AUGMENTED: AutoTable no jquery render, sorry not rendering.");
+                } else {
+                    logger.warn("AUGMENTED: AutoTable no element anchor, not rendering.");
+                }
+
+                if (this.renderPaginationControl) {
+                    this.bindPaginationControlEvents();
+                }
+            }
+            this.delegateEvents();
+
+            if (this.sortable) {
+                this.bindSortableColumnEvents();
+            }
+
+            if (this.editable) {
+                this.bindCellChangeEvents();
+            }
+
+            this.showProgressBar(false);
+            return this;
+        }
+    });
 
     /**
      * Augmented.Presentation.BigDataTable
