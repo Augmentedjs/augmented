@@ -13,7 +13,7 @@
  *
  * @requires augmented.js
  * @module Augmented.Presentation
- * @version 0.2.0α
+ * @version 0.2.0-RC1
  * @license Apache-2.0
  */
 (function(moduleFactory) {

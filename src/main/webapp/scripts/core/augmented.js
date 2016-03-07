@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 0.2.0α
+ * @version 0.2.0-RC1
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -56,7 +56,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = '0.2.0α';
+    Augmented.VERSION = '0.2.0-RC1';
     /**
      * A codename for internal use
      * @constant codename
