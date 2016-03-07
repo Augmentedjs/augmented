@@ -625,14 +625,17 @@
         sortClass:      "sorted"
     };
 
-    var csvTableCompile = function(name, desc, columns, data){
+    var csvTableCompile = function(name, desc, columns, data, del){
         var csv = "";
+        if (!del) {
+            del = ",";
+        }
         if (columns) {
             var key, obj;
             for (key in columns) {
                 if (columns.hasOwnProperty(key)) {
                     obj = columns[key];
-                    csv = csv + key + ",";
+                    csv = csv + key + del;
                 }
             }
             csv = csv.slice(0, -1);
@@ -646,13 +649,17 @@
                 if (d.hasOwnProperty(dkey)) {
                     dobj = d[dkey];
                     t = (typeof dobj);
-                    csv = csv + dobj + ",";
+                    csv = csv + dobj + del;
                 }
             }
             csv = csv.slice(0, -1);
             csv = csv + "\n";
         }
         return csv;
+    };
+
+    var tsvTableCompile = function(name, desc, columns, data){
+        return csvTableCompile(name, desc, columns, data, "\t");
     };
 
     var defaultTableCompile = function(name, desc, columns, data, lineNumbers, sortKey, editable) {
@@ -762,6 +769,22 @@
                     "&lt;span class=\"last\">Last >>&lt;/span>&lt;/div>";
     };
 
+    var formatValidationMessages = function(messages) {
+        var html = "";
+        if (messages &amp;&amp; messages.length > 0) {
+            html = html + "&lt;ul class=\"errors\">";
+            var i = 0, l = messages.length;
+            for (i = 0; i &lt; l; i++) {
+                var ii = 0, ll = messages[i].errors.length;
+                for (ii = 0; ii &lt; ll; ii++) {
+                    html = html + "&lt;li>" + messages[i].errors[ii] + "&lt;/li>";
+                }
+            }
+            html = html + "&lt;/ul>";
+        }
+        return html;
+    };
+
     /**
      * Augmented.Presentation.AutomaticTable&lt;br/>
      * Creates a table automatically via a schema for defintion and a uri/json for data
@@ -783,6 +806,12 @@
          * @memberof Augmented.Presentation.AutomaticTable
          */
         sortStyle: "client",
+        /**
+         * The sortKey property
+         * @property {string} sortKey sorted key
+         * @private
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
         sortKey: null,
         /**
          * Sort the tabe by a key (sent via a UI Event)
@@ -791,9 +820,9 @@
          * @param {string} key The key to sort by
          */
         sortBy: function(key) {
-            if (key &amp;&amp; this.sortKey !== key) {
+            if (key &amp;&amp; ( (this.editable) || (!this.editable &amp;&amp; this.sortKey !== key))) {
                 this.sortKey = key;
-                this.collection.sortBy(key);
+                this.collection.sortByKey(key);
                 this.refresh();
             }
         },
@@ -876,7 +905,22 @@
             this.refresh();
         },
 
-        // standard functionality
+        // local storage
+
+        /**
+         * The localStorage property - enables localStorage
+         * @property {boolean} localStorage The localStorage property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        localStorage: false,
+        /**
+         * The localStorageKey property - set the key for use in storage
+         * @property {string} localStorageKey The localStorage key property
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        localStorageKey: "augmented.localstorage.autotable.key",
+
+        // editable
 
         /**
          * The editable property - enables editing of cells
@@ -884,6 +928,53 @@
          * @memberof Augmented.Presentation.AutomaticTable
          */
         editable: false,
+
+        /**
+         * Edit a cell at the row and column specified
+         * @method editCell
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {number} row The row
+         * @param {number} col The column
+         * @param {any} value The value to set
+         */
+        editCell: function(row, col, value) {
+            if (row &amp;&amp; col) {
+                var model = this.collection.at(row), name = this.columns[col];
+                if (model &amp;&amp; name) {
+                    model.set(name, value);
+                }
+            }
+        },
+        /**
+         * Copy a cell at the row and column  to another
+         * @method copyCell
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {number} row1 The 'from' row
+         * @param {number} col1 The 'from' column
+         * @param {number} row2 The 'to' row
+         * @param {number} col2 The 'to' column
+         */
+        copyCell: function(row1, col1, row2, col2) {
+            if (row1 &amp;&amp; col1 &amp;&amp; row2 &amp;&amp; col2) {
+                var model1 = this.collection.at(row1), name1 = this.columns[col1],
+                    model2 = this.collection.at(row);
+                if (model1 &amp;&amp; name1 &amp;&amp; model2) {
+                    model2.set(name1, value1);
+                }
+            }
+        },
+        /**
+         * Clear a cell at the row and column specified
+         * @method clearCell
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {number} row The row
+         * @param {number} col The column
+         */
+        clearCell: function(row, col) {
+            this.editCell(row, col, null);
+        },
+
+        // standard functionality
 
         /**
          * The crossOrigin property - enables cross origin fetch
@@ -900,6 +991,7 @@
         /**
          * The columns property
          * @property {object} columns The columns property
+         * @private
          * @memberof Augmented.Presentation.AutomaticTable
          */
         columns: {},
@@ -946,8 +1038,14 @@
                 if (options.paginationAPI) {
                     this.paginationAPI = options.paginationAPI;
                 }
-                if (!this.collection) {
+                if (!this.collection &amp;&amp; this.paginationAPI) {
                     this.collection = Augmented.PaginationFactory.getPaginatedCollection(this.paginationAPI);
+                    this.paginationAPI = this.collection.paginationAPI;
+                    this.localStorage = false;
+                } else if (!this.collection &amp;&amp; this.localStorage) {
+                    this.collection = new Augmented.LocalStorageCollection();
+                } else if (!this.collection) {
+                    this.collection = new Augmented.Collection();
                 }
                 if (options.schema) {
                     this.schema = options.schema;
@@ -957,9 +1055,9 @@
                     this.el = options.el;
                 }
 
-                if (options.url) {
-                    this.url = options.url;
-                    this.collection.url = options.url;
+                if (options.uri) {
+                    this.uri = options.uri;
+                    this.collection.url = options.uri;
                 }
 
                 if (options.data &amp;&amp; (Array.isArray(options.data))) {
@@ -980,6 +1078,11 @@
 
                 if (options.editable) {
                     this.editable = options.editable;
+                }
+
+                if (options.localStorageKey &amp;&amp; !options.uri) {
+                    this.localStorageKey = options.localStorageKey;
+                    this.uri = null;
                 }
             }
             if (this.uri) {
@@ -1038,7 +1141,7 @@
         },
 
         /**
-         * Save the data to the source URI
+         * Save the data to the source
          * This only functions if the table is editable
          * @method save
          * @memberof Augmented.Presentation.AutomaticTable
@@ -1095,9 +1198,10 @@
             this.collection.reset(null);
         },
         /**
-         * Refresh the table
+         * Refresh the table (Same as render)
          * @method refresh Refresh the table
          * @memberof Augmented.Presentation.AutomaticTable
+         * @see Augmented.Presentation.AutomaticTable.render
          */
         refresh: function() {
             this.render();
@@ -1136,6 +1240,9 @@
                         } else {
                             h = "";
                         }
+                        if (this.editable) {
+                            this.unbindCellChangeEvents();
+                        }
                         tbody.innerHTML = h;
 
                     }
@@ -1150,6 +1257,9 @@
                         jh = editableTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
                     } else {
                         jh = defaultTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                    }
+                    if (this.editable) {
+                        this.unbindCellChangeEvents();
                     }
                     this.$el("tbody").html(jh);
                 } else {
@@ -1181,7 +1291,6 @@
             }
 
             if (this.editable) {
-                this.unbindCellChangeEvents();
                 this.bindCellChangeEvents();
             }
 
@@ -1189,12 +1298,23 @@
             return this;
         },
 
+        /**
+         * Save Cell Event
+         * @private
+         */
         saveCell: function(event) {
             var key = event.target;
-            var model = this.collection.at(key.getAttribute(tableDataAttributes.index));
-            model.set(key.getAttribute(tableDataAttributes.name), key.value);
+            var model = this.collection.at(parseInt(key.getAttribute(tableDataAttributes.index)));
+            var value = key.value;
+            if ((key.getAttribute("type")) === "number") {
+                value = parseInt(key.value);
+            }
+            model.set(key.getAttribute(tableDataAttributes.name), value);
         },
 
+        /**
+         * @private
+         */
         bindCellChangeEvents: function() {
             var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
             var cells = [].slice.call(document.querySelectorAll(myEl + " table tr td input"));
@@ -1204,6 +1324,9 @@
             }
         },
 
+        /**
+         * @private
+         */
         unbindCellChangeEvents: function() {
             var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
             var cells = [].slice.call(document.querySelectorAll(myEl + " table tr td input"));
@@ -1224,6 +1347,8 @@
             var e = "";
             if (type === "csv") {
                 e = csvTableCompile(this.name, this.description, this.columns, this.collection.toJSON());
+            } else if (type === "tsv") {
+                e = tsvTableCompile(this.name, this.description, this.columns, this.collection.toJSON());
             } else {
                 // html
                 e = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), false, null);
@@ -1231,6 +1356,9 @@
             return e;
         },
 
+        /**
+         * @private
+         */
         unbindPaginationControlEvents: function() {
             if (this.pageControlBound) {
                 var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
@@ -1254,8 +1382,14 @@
             }
         },
 
+        /**
+         * @private
+         */
         pageControlBound: false,
 
+        /**
+         * @private
+         */
         bindPaginationControlEvents: function() {
             if (!this.pageControlBound) {
                 var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
@@ -1279,6 +1413,9 @@
             }
         },
 
+        /**
+         * @private
+         */
         deriveEventTarget: function(event) {
             var key = null;
             if (event) {
@@ -1286,10 +1423,16 @@
             }
             return key;
         },
+        /**
+         * @private
+         */
         sortByHeaderEvent: function(event) {
             var key = this.deriveEventTarget(event);
             this.sortBy(key);
         },
+        /**
+         * @private
+         */
         unbindSortableColumnEvents: function()  {
             if (this.el &amp;&amp; this.sortable) {
                 var list;
@@ -1304,7 +1447,9 @@
                 }
             }
         },
-
+        /**
+         * @private
+         */
         bindSortableColumnEvents: function()  {
             if (this.el &amp;&amp; this.sortable) {
                 var list;
@@ -1363,6 +1508,12 @@
             }
         },
 
+        /**
+         * Enable/Disable the progress bar
+         * @method showProgressBar
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {boolean} show Show or Hide the progress bar
+         */
         showProgressBar: function(show) {
             if (this.el) {
                 var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
@@ -1373,14 +1524,32 @@
                 }
             }
         },
+        /**
+         * Show a message related to the table
+         * @method showMessage
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @param {string} message Some message to display
+         */
         showMessage: function(message) {
             if (this.el) {
                 var e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
                 var p = e.querySelector("p[class=message]");
                 if (p) {
-                    p.textContent = message;
+                    p.innerHTML = message;
                 }
             }
+        },
+        validate: function() {
+            var messages = (this.collection) ? this.collection.validate() : null;
+            if (!this.collection.isValid() &amp;&amp; messages &amp;&amp; messages.messages) {
+                this.showMessage(formatValidationMessages(messages.messages));
+            } else {
+                this.showMessage("");
+            }
+            return messages;
+        },
+        isValid: function() {
+            return (this.collection) ? this.collection.isValid() : true;
         }
     });
 
@@ -1391,6 +1560,299 @@
      * @extends Augmented.Presentation.AutomaticTable
      */
     Augmented.Presentation.AutoTable = Augmented.Presentation.AutomaticTable;
+
+    var directDOMTableCompile = function(el, name, desc, columns, data, lineNumbers, sortKey, editable) {
+        var table, thead, tbody, n, t;
+
+        table = document.createElement("table");
+        table.setAttribute(tableDataAttributes.name, name);
+        table.setAttribute(tableDataAttributes.description, desc);
+        if (name) {
+            n = document.createElement("caption");
+            if (desc) {
+                n.setAttribute("title", desc);
+            }
+            t = document.createTextNode(name);
+            n.appendChild(t);
+            table.appendChild(n);
+        }
+        thead = document.createElement("thead");
+        directDOMTableHeader(thead, columns, lineNumbers, sortKey);
+        table.appendChild(thead);
+        tbody = document.createElement("tbody");
+        table.appendChild(tbody);
+        if (data) {
+            if (editable) {
+                directDOMEditableTableBody(tbody, data, lineNumbers, sortKey);
+            } else {
+                directDOMTableBody(tbody, data, lineNumbers, sortKey);
+            }
+        }
+        el.appendChild(table);
+    };
+
+    var directDOMTableHeader = function(el, columns, lineNumbers, sortKey) {
+        var tr, n, t;
+
+        if (columns) {
+            tr = document.createElement("tr");
+            if (lineNumbers) {
+                n = document.createElement("th");
+                n.setAttribute(tableDataAttributes.name, "lineNumber");
+                t = document.createTextNode("#");
+                n.appendChild(t);
+                tr.appendChild(n);
+            }
+            var key, obj;
+            for (key in columns) {
+                if (columns.hasOwnProperty(key)) {
+                    obj = columns[key];
+
+                    n = document.createElement("th");
+                    n.setAttribute(tableDataAttributes.name, key);
+                    n.setAttribute(tableDataAttributes.description, obj.description);
+                    n.setAttribute(tableDataAttributes.type, obj.type);
+                    if (sortKey === key) {
+                        n.classList.add(tableDataAttributes.sortClass);
+                    }
+
+                    t = document.createTextNode(key);
+                    n.appendChild(t);
+                    tr.appendChild(n);
+                }
+            }
+            el.appendChild(tr);
+        }
+    };
+
+    var directDOMTableBody = function(el, data, lineNumbers, sortKey) {
+        var i, d, dkey, dobj, l = data.length, t, td, tn, tr;
+        for (i = 0; i &lt; l; i++) {
+            d = data[i];
+            tr = document.createElement("tr");
+
+            if (lineNumbers) {
+                td = document.createElement("td");
+                tn = document.createTextNode("" + (i+1));
+                td.appendChild(tn);
+                td.classList.add("label", "number");
+                tr.appendChild(td);
+            }
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    dobj = d[dkey];
+                    t = (typeof dobj);
+
+                    td = document.createElement("td");
+                    tn = document.createTextNode(dobj);
+                    td.appendChild(tn);
+                    td.classList.add(t);
+                    if (sortKey === dkey) {
+                        td.classList.add(tableDataAttributes.sortClass);
+                    }
+                    td.setAttribute(tableDataAttributes.type, t);
+
+                    tr.appendChild(td);
+                }
+            }
+            el.appendChild(tr);
+        }
+    };
+
+    var directDOMEditableTableBody = function(el, data, lineNumbers, sortKey) {
+        var i, d, dkey, dobj, l = data.length, t, td, tn, tr, input;
+        for (i = 0; i &lt; l; i++) {
+            d = data[i];
+            tr = document.createElement("tr");
+
+            if (lineNumbers) {
+                td = document.createElement("td");
+                tn = document.createTextNode("" + (i+1));
+                td.appendChild(tn);
+                td.classList.add("label", "number");
+                tr.appendChild(td);
+            }
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    dobj = d[dkey];
+                    t = (typeof dobj);
+
+                    td = document.createElement("td");
+                    td.classList.add(t);
+                    if (sortKey === dkey) {
+                        td.classList.add(tableDataAttributes.sortClass);
+                    }
+                    td.setAttribute(tableDataAttributes.type, t);
+
+                    // input field
+                    input = document.createElement("input");
+                    input.setAttribute("type", (t==="number" ? "number" : "text"));
+                    input.setAttribute("value", dobj);
+                    input.setAttribute(tableDataAttributes.name, dkey);
+                    input.setAttribute(tableDataAttributes.name, dkey);
+                    input.setAttribute(tableDataAttributes.index, i);
+
+                    input.value = dobj;
+
+                    td.appendChild(input);
+
+                    tr.appendChild(td);
+                }
+            }
+            el.appendChild(tr);
+        }
+    };
+
+    /*
+     * &lt;&lt; First | &lt; Previous | # | Next > | Last >>
+    */
+    var directDOMPaginationControl = function(el, currentPage, totalPages) {
+        var d, n, t;
+        d = document.createElement("div");
+        d.classList.add("paginationControl");
+
+        n = document.createElement("span");
+        n.classList.add("first");
+        t = document.createTextNode("&lt;&lt; First");
+        n.appendChild(t);
+        d.appendChild(n);
+
+        n = document.createElement("span");
+        n.classList.add("previous");
+        t = document.createTextNode("&lt; Previous");
+        n.appendChild(t);
+        d.appendChild(n);
+
+        n = document.createElement("span");
+        n.classList.add("current");
+        t = document.createTextNode(currentPage + " of " + totalPages);
+        n.appendChild(t);
+        d.appendChild(n);
+
+        n = document.createElement("span");
+        n.classList.add("next");
+        t = document.createTextNode("Next >");
+        n.appendChild(t);
+        d.appendChild(n);
+
+        n = document.createElement("span");
+        n.classList.add("last");
+        t = document.createTextNode("Last >>");
+        n.appendChild(t);
+        d.appendChild(n);
+
+        el.appendChild(d);
+    };
+
+    /**
+     * Augmented.Presentation.DirectDOMAutomaticTable&lt;br/>
+     * Uses direct DOM methods vs cached HTML&lt;br/>
+     * Creates a table automatically via a schema for defintion and a uri/json for data
+     * @constructor Augmented.Presentation.DirectDOMAutomaticTable
+     * @extends Augmented.Presentation.AutomaticTable
+     * @memberof Augmented.Presentation
+     */
+    Augmented.Presentation.DirectDOMAutomaticTable = Augmented.Presentation.AutomaticTable.extend({
+        compileTemplate: function() {
+            return "";
+        },
+        render: function() {
+            var e;
+            if (this.template) {
+                // refresh the table body only
+                this.showProgressBar(true);
+                if (this.el) {
+                    e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                    var tbody = e.querySelector("tbody"), thead = e.querySelector("thead");
+                    if (e) {
+                        if (this.sortable) {
+                            this.unbindSortableColumnEvents();
+                        }
+                        if (this.editable) {
+                            this.unbindCellChangeEvents();
+                        }
+                        if (this.columns &amp;&amp; (Object.keys(this.columns).length > 0)){
+
+                            while (thead.hasChildNodes()) {
+                                thead.removeChild(thead.lastChild);
+                            }
+                            directDOMTableHeader(thead, this.columns, this.lineNumbers, this.sortKey);
+                        } else {
+                            while (thead.hasChildNodes()) {
+                                thead.removeChild(thead.lastChild);
+                            }
+                        }
+
+                        if (this.collection &amp;&amp; (this.collection.length > 0)){
+                            while (tbody.hasChildNodes()) {
+                                tbody.removeChild(tbody.lastChild);
+                            }
+                            if (this.editable) {
+                                directDOMEditableTableBody(tbody, this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                            } else {
+                                directDOMTableBody(tbody, this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                            }
+                        } else {
+                            while (tbody.hasChildNodes()) {
+                                tbody.removeChild(tbody.lastChild);
+                            }
+                        }
+                    }
+                } else if (this.$el) {
+                    logger.warn("AUGMENTED: AutoTable no jquery, sorry not rendering.");
+                } else {
+                    logger.warn("AUGMENTED: AutoTable no element anchor, not rendering.");
+                }
+            } else {
+                this.template = "notused";
+                this.showProgressBar(true);
+
+                if (this.el) {
+                    e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
+                    if (e) {
+                        // progress bar
+                        var n = document.createElement("progress");
+                        var t = document.createTextNode("Please wait.");
+                        n.appendChild(t);
+                        e.appendChild(n);
+
+                        // the table
+                        directDOMTableCompile(e, this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers, this.sortKey, this.editable);
+
+                        // pagination control
+                        if (this.renderPaginationControl) {
+                            directDOMPaginationControl(e, this.currentPage(), this.totalPages());
+                        }
+
+                        // message
+                        n = document.createElement("p");
+                        n.classList.add("message");
+                        e.appendChild(n);
+                    }
+                } else if (this.$el) {
+                    logger.warn("AUGMENTED: AutoTable no jquery render, sorry not rendering.");
+                } else {
+                    logger.warn("AUGMENTED: AutoTable no element anchor, not rendering.");
+                }
+
+                if (this.renderPaginationControl) {
+                    this.bindPaginationControlEvents();
+                }
+            }
+            this.delegateEvents();
+
+            if (this.sortable) {
+                this.bindSortableColumnEvents();
+            }
+
+            if (this.editable) {
+                this.bindCellChangeEvents();
+            }
+
+            this.showProgressBar(false);
+            return this;
+        }
+    });
 
     /**
      * Augmented.Presentation.BigDataTable
@@ -1428,6 +1890,34 @@
         editable: true
     });
 
+    /**
+     * Augmented.Presentation.LocalStorageTable
+     * Instance class preconfigured for local storage-based table
+     * @constructor Augmented.Presentation.LocalStorageTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.LocalStorageTable = Augmented.Presentation.AutomaticTable.extend({
+        renderPaginationControl: false,
+        lineNumbers: true,
+        sortable: true,
+        editable: false,
+        localStorage: true
+    });
+
+    /**
+     * Augmented.Presentation.EditableLocalStorageTable
+     * Instance class preconfigured for editing, sorting, from local storage
+     * @constructor Augmented.Presentation.EditableLocalStorageTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.EditableLocalStorageTable = Augmented.Presentation.AutomaticTable.extend({
+        renderPaginationControl: false,
+        lineNumbers: true,
+        sortable: true,
+        editable: true,
+        localStorage: true
+    });
+
 
     return Augmented.Presentation;
 }));
@@ -1441,13 +1931,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">EditableTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-src_main_webapp_scripts_legacy_legacy.html">src/main/webapp/scripts/legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.DirectDOMAutomaticTable.html">DirectDOMAutomaticTable</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableLocalStorageTable.html">EditableLocalStorageTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">EditableTable</a></li><li><a href="Augmented.Presentation.LocalStorageTable.html">LocalStorageTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Feb 29 2016 15:30:17 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sun Mar 06 2016 18:18:04 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>
