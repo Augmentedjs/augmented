@@ -1,6 +1,6 @@
 # Augmented.js
 ## The Augmented.js Framework.
-### Version 0.2.0α
+### Version 0.2.0-RC1
 
 **aug·ment·ed**
 /ˌôɡˈmentəd /
