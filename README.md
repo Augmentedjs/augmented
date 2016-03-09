@@ -1,6 +1,6 @@
 # Augmented.js
 ## The Augmented.js Framework.
-### Version 0.2.0-RC1
+### Version 0.2.0
 
 **aug·ment·ed**
 /ˌôɡˈmentəd /
@@ -12,7 +12,7 @@ adjective: augmented
 
 **Augmented.js** is a javascript framework based on Backbone.js that provides a large set of enterprise functionality.
 
-The key focus of the project is to tie a number of missing features, patterns, and what would normally be thrid-party plugins together in a powerful framework.  Another goal of *Augmented.js* is to limit third party libraries for a smaller footprint, easy dependency management, and high performance.  Performance is a key item in the framework.  In every case the performance will beat other libraries and frameworks (such as jQuery) usually by large amounts.
+The key focus of the project is to tie a number of missing features, patterns, and what would normally be third-party plugins together in a powerful framework.  Another goal of *Augmented.js* is to limit third party libraries for a smaller footprint, easy dependency management, and high performance.  Performance is a key item in the framework.  In every case the performance will beat other libraries and frameworks (such as jQuery) usually by large amounts.
 
 # Modules
 
