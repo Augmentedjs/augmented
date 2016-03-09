@@ -13,37 +13,37 @@ define([
             });
 
     		it('can transform to a string', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.string);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xString);
                 expect(typeof out === "string").toBeTruthy();
     			expect(out).toEqual("100");
     		});
 
             it('can transform to a integer', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.integer);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xInteger);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(100);
     		});
 
             it('can transform to a number', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.number);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xNumber);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(100);
     		});
 
             it('can transform to a boolean', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.boolean);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xBoolean);
                 expect(typeof out === "boolean").toBeTruthy();
     			expect(out).toEqual(true);
     		});
 
             it('can transform to an array', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.array);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xArray);
                 expect(Array.isArray(out)).toBeTruthy();
                 expect(out).toEqual([100]);
     		});
 
             it('can transform to an object', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.object);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xObject);
                 expect(typeof out === "object").toBeTruthy();
                 expect(out).toEqual({100: 100});
     		});
@@ -58,37 +58,37 @@ define([
             });
 
     		it('can transform to a string', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.string);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xString);
                 expect(typeof out === "string").toBeTruthy();
     			expect(out).toEqual("1024.55");
     		});
 
             it('can transform to a integer', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.integer);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xInteger);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(1024);
     		});
 
             it('can transform to a number', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.number);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xNumber);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(1024.55);
     		});
 
             it('can transform to a boolean', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.boolean);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xBoolean);
                 expect(typeof out === "boolean").toBeTruthy();
     			expect(out).toEqual(true);
     		});
 
             it('can transform to an array', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.array);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xArray);
                 expect(Array.isArray(out)).toBeTruthy();
                 expect(out).toEqual([1024.55]);
     		});
 
             it('can transform to an object', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.object);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xObject);
                 expect(typeof out === "object").toBeTruthy();
                 expect(out).toEqual({1024.55: 1024.55});
     		});
@@ -103,37 +103,37 @@ define([
             });
 
     		it('can transform to a string', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.string);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xString);
                 expect(typeof out === "string").toBeTruthy();
     			expect(out).toEqual("12345.80");
     		});
 
             it('can transform to a integer', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.integer);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xInteger);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(12345);
     		});
 
             it('can transform to a number', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.number);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xNumber);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(12345.80);
     		});
 
             it('can transform to a boolean', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.boolean);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xBoolean);
                 expect(typeof out === "boolean").toBeTruthy();
     			expect(out).toEqual(true);
     		});
 
             it('can transform to an array', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.array);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xArray);
                 expect(Array.isArray(out)).toBeTruthy();
                 expect(out).toEqual(["12345.80"]);
     		});
 
             it('can transform to an object', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.object);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xObject);
                 expect(typeof out === "object").toBeTruthy();
                 expect(out).toEqual({"12345.80": "12345.80"});
     		});
@@ -148,37 +148,37 @@ define([
             });
 
     		it('can transform to a string', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.string);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xString);
                 expect(typeof out === "string").toBeTruthy();
     			expect(out).toEqual("false");
     		});
 
             it('will transform to a integer (NaN)', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.integer);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xInteger);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(NaN);
     		});
 
             it('can transform to a number', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.number);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xNumber);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(0);
     		});
 
             it('can transform to a boolean', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.boolean);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xBoolean);
                 expect(typeof out === "boolean").toBeTruthy();
     			expect(out).toEqual(false);
     		});
 
             it('can transform to an array', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.array);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xArray);
                 expect(Array.isArray(out)).toBeTruthy();
                 expect(out).toEqual([false]);
     		});
 
             it('can transform to an object', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.object);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xObject);
                 expect(typeof out === "object").toBeTruthy();
                 expect(out).toEqual({false: false});
     		});
@@ -193,37 +193,37 @@ define([
             });
 
     		it('can transform to a string', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.string);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xString);
                 expect(typeof out === "string").toBeTruthy();
     			expect(out).toEqual("[1,2,3]");
     		});
 
             it('will transform to a integer (first in array)', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.integer);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xInteger);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(1);
     		});
 
             it('can transform to a number (NaN)', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.number);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xNumber);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(NaN);
     		});
 
             it('can transform to a boolean', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.boolean);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xBoolean);
                 expect(typeof out === "boolean").toBeTruthy();
                 expect(out).toEqual(true);
     		});
 
             it('can transform to an array', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.array);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xArray);
                 expect(Array.isArray(out)).toBeTruthy();
                 expect(out).toEqual([1,2,3]);
     		});
 
             it('can transform to an object', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.object);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xObject);
                 expect(typeof out === "object").toBeTruthy();
                 expect(out).toEqual([1,2,3]);
     		});
@@ -238,36 +238,36 @@ define([
             });
 
     		it('can transform to a string', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.string);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xString);
                 expect(typeof out === "string").toBeTruthy();
     			expect(out).toEqual('{"a":"a"}');
     		});
 
             it('will transform to a integer (NaN)', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.integer);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xInteger);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(NaN);
     		});
 
             it('can transform to a number (NaN)', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.number);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xNumber);
                 expect(typeof out === "number").toBeTruthy();
     			expect(out).toEqual(NaN);
     		});
 
             it('can transform to a boolean', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.boolean);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xBoolean);
                 expect(typeof out === "boolean").toBeTruthy();
                 expect(out).toEqual(true);
     		});
 
             it('can transform to an array', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.array);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xArray);
                 expect(Array.isArray(out)).toBeTruthy();
     		});
 
             it('can transform to an object', function() {
-                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.object);
+                out = Augmented.Utility.Transformer.transform(source, Augmented.Utility.Transformer.type.xObject);
                 expect(typeof out === "object").toBeTruthy();
                 expect(out).toEqual(source);
     		});

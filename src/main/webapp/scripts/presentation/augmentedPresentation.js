@@ -192,7 +192,7 @@
     	    this.unsetSubscriptions(subscriptions);
 
             var i = 0, l = subscriptions.length;
-            for (i; i < l; i++) {
+            for (i = 0; i < l; i++) {
                 var subscription = subscriptions[i];
                 var once = false;
                 if (subscription.$once) {
@@ -219,7 +219,7 @@
     	    }
 
             var i = 0, l = subscriptions.length;
-            for (i; i < l; i++) {
+            for (i = 0; i < l; i++) {
                 var subscription = subscriptions[i];
                 var once = false;
                 if (subscription.$once) {
@@ -526,7 +526,7 @@
         this.attachStylesheets = function() {
             var headElement = document.getElementsByTagName("head")[0];
             var i = 0, l = this.Stylesheets.length;
-            for (i; i < l; i++) {
+            for (i = 0; i < l; i++) {
                 var link = document.createElement("link");
                 link.type = "text/css";
                 link.rel = "stylesheet";
@@ -1309,13 +1309,13 @@
         },
 
         /**
-         * Exports the table data in requested format
-         * @method export Exports the table
+         * Export the table data in requested format
+         * @method exportTo Exports the table
          * @param {string} type The type requested (csv or html-default)
          * @memberof Augmented.Presentation.AutomaticTable
          * @returns {string} The table data in requested format
          */
-        export: function(type) {
+        exportTo: function(type) {
             var e = "";
             if (type === "csv") {
                 e = csvTableCompile(this.name, this.description, this.columns, this.collection.toJSON());

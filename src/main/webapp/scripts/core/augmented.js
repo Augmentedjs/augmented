@@ -163,16 +163,17 @@
         return Augmented.isFunction(value) ? value.call(object) : value;
     };
 
-    /**
-     * Array.includes - returns is a property is included in the array (can pass an start index)
-     * <em>ES7 Polyfill</em>
-     * @function Array.includes
-     * @memberof Array
-     * @param {object} searchElement Element to search for
-     * @param {number} fromIndex Optional index to start from
-     * @returns true if property is included in an array
-     */
+
     if (!Array.prototype.includes) {
+        /**
+         * Array.includes - returns is a property is included in the array (can pass an start index)
+         * <em>ES7 Polyfill</em>
+         * @function Array.includes
+         * @memberof Array
+         * @param {object} searchElement Element to search for
+         * @param {number} fromIndex Optional index to start from
+         * @returns true if property is included in an array
+         */
         Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
             'use strict';
             var O = Object(this);
@@ -243,22 +244,22 @@
      * @enum {number} Augmented.Utility.TransformerType
      * @name Augmented.Utility.TransformerType
      * @memberof Augmented.Utility
-     * @property {number} string Standard String
-     * @property {number} integer Integer
-     * @property {number} number Any number
-     * @property {number} boolean True/False
-     * @property {number} array Stanrdard Array
-     * @property {number} object Any Object
-     * @property {number} null Null
+     * @property {number} xString Standard String
+     * @property {number} nInteger Integer
+     * @property {number} xNumber Any number
+     * @property {number} xBoolean True/False
+     * @property {number} xArray Stanrdard Array
+     * @property {number} xObject Any Object
+     * @property {number} xNull Null
      */
     var transformerType = Augmented.Utility.TransformerType = {
-        "string": 0,
-        "integer": 1,
-        "number": 2,
-        "boolean": 3,
-        "array": 4,
-        "object": 5,
-        "null": 6
+        "xString": 0,
+        "xInteger": 1,
+        "xNumber": 2,
+        "xBoolean": 3,
+        "xArray": 4,
+        "xObject": 5,
+        "xNull": 6
     };
 
     /**
@@ -286,23 +287,23 @@
         transform: function(source, type) {
             var out = null;
             switch(type) {
-                case transformerType.string:
+                case transformerType.xString:
                     if (typeof source === 'object') {
                         out = JSON.stringify(source);
                     } else {
                         out = String(source);
                     }
                 break;
-                case transformerType.integer:
+                case transformerType.xInteger:
                     out = parseInt(source);
                 break;
-                case transformerType.number:
+                case transformerType.xNumber:
                     out = Number(source);
                 break;
-                case transformerType.boolean:
+                case transformerType.xBoolean:
                     out = Boolean(source);
                 break;
-                case transformerType.array:
+                case transformerType.xArray:
                     if (!Array.isArray(source)) {
                         out = [];
                         out[0] = source;
@@ -310,7 +311,7 @@
                         out = source;
                     }
                 break;
-                case transformerType.object:
+                case transformerType.xObject:
                     if (typeof source !== 'object') {
                         out = {};
                         out[source] = source;
@@ -330,17 +331,17 @@
          */
         isType: function(source) {
             if (source === null) {
-                return transformerType.null;
+                return transformerType.xNull;
             } else if (typeof source === 'string') {
-                return transformerType.string;
+                return transformerType.xString;
             } else if (typeof source === 'number') {
-                return transformerType.number;
+                return transformerType.xNumber;
             } else if (typeof source === 'boolean') {
-                return transformerType.boolean;
+                return transformerType.xBoolean;
             } else if (Array.isArray(source)) {
-                return transformerType.array;
+                return transformerType.xArray;
             } else if (typeof source === 'object') {
-                return transformerType.object;
+                return transformerType.xObject;
             }
         }
     };

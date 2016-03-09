@@ -104,21 +104,21 @@ define([
 
             it('can export the table to csv', function() {
     			at.populate(data);
-                var t = at.export('csv');
+                var t = at.exportTo('csv');
                 expect(t).toBeDefined();
                 expect(t).not.toEqual("");
     		});
 
             it('can export the table to tsv', function() {
     			at.populate(data);
-                var t = at.export('tsv');
+                var t = at.exportTo('tsv');
                 expect(t).toBeDefined();
                 expect(t).not.toEqual("");
     		});
 
             it('can export the table to html', function() {
     			at.populate(data);
-                var t = at.export('html');
+                var t = at.exportTo('html');
                 expect(t).toBeDefined();
                 expect(t).not.toEqual("");
     		});
