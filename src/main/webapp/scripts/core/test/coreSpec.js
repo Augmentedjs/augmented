@@ -114,5 +114,68 @@ define([
 			});
 		});
 
+        describe('Given Augmented has', function() {
+            var o;
+            beforeEach(function() {
+                o = { x: "", y: function() { return true; } };
+            });
+            afterEach(function() {
+                o = null;
+            });
+            it('checks if an object has a key', function() {
+                expect(Augmented.has(o, "x")).toBeTruthy();
+            });
+            it('checks if an object does not have a key', function() {
+                expect(Augmented.has(o, "xx")).toBeFalsy();
+            });
+            it('checks if an object has a function key', function() {
+                expect(Augmented.has(o, "y")).toBeTruthy();
+            });
+        });
+
+        describe('Given Augmented isObject', function() {
+            var o = {}, p = 123, f = function() { return true; };
+
+            it('checks if object is an object', function() {
+                expect(Augmented.isObject(o)).toBeTruthy();
+            });
+            it('checks if number is not an object', function() {
+                expect(Augmented.isObject(p)).toBeFalsy();
+            });
+            it('checks if function is an object', function() {
+                expect(Augmented.isObject(f)).toBeTruthy();
+            });
+        });
+
+        describe('Given Augmented isFunction', function() {
+            var o = {}, p = 123, f = function() { return true; };
+
+            it('checks if object is an function', function() {
+                expect(Augmented.isFunction(o)).toBeFalsy();
+            });
+            it('checks if number is not an function', function() {
+                expect(Augmented.isFunction(p)).toBeFalsy();
+            });
+            it('checks if function is not an function', function() {
+                expect(Augmented.isFunction(f)).toBeTruthy();
+            });
+        });
+
+        describe('Given Augmented isString', function() {
+            var o = {}, n = 123, p = "123", f = function() { return true; };
+
+            it('checks if object is a string', function() {
+                expect(Augmented.isString(o)).toBeFalsy();
+            });
+            it('checks if number is not a string', function() {
+                expect(Augmented.isFunction(p)).toBeFalsy();
+            });
+            it('checks if string is a string', function() {
+                expect(Augmented.isString(p)).toBeTruthy();
+            });
+            it('checks if function is not a string', function() {
+                expect(Augmented.isString(f)).toBeFalsy();
+            });
+        });
 	});
 });

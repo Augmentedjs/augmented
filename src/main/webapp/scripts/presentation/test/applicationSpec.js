@@ -14,7 +14,7 @@ define([
 				app = null;
 			});
 
-			it('has a ramdom name', function() {
+			it('has a random name', function() {
 				expect(app.getName()).not.toEqual("untitled");
 			});
 

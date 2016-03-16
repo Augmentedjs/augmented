@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 0.2.0
+ * @version 0.3.0ɑ
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -56,7 +56,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = '0.2.0';
+    Augmented.VERSION = '0.3.0ɑ';
     /**
      * A codename for internal use
      * @constant codename
@@ -66,7 +66,7 @@
      * A release name to help with identification of minor releases
      * @constant releasename
      */
-    Augmented.releasename = "Hengsha";
+    Augmented.releasename = "The Hive";
 
     /**
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'
@@ -123,9 +123,87 @@
      * . isFunction
      */
 
+    var has = Augmented.has = function(obj, key) {
+        return obj !== null && hasOwnProperty.call(obj, key);
+    };
+    var createAssigner = function(keysFunc, undefinedOnly) {
+        return function(obj) {
+            var length = arguments.length;
+            if (length < 2 || obj === null) return obj;
+                var index = 1, i = 0;
+                for (index = 1; index < length; index++) {
+                var source = arguments[index],
+                    keys = keysFunc(source),
+                    l = keys.length;
+                for (i = 0; i < l; i++) {
+                    var key = keys[i];
+                    if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
+                }
+            }
+            return obj;
+        };
+    };
+
+    var isObject = Augmented.isObject = function(obj) {
+        var type = typeof obj;
+        return (type === 'function' || type === 'object' && !!obj);
+    };
+
+    var allKeys = function(obj) {
+      if (!isObject(obj)) return [];
+      var keys = [], key;
+      for (key in obj) keys.push(key);
+      return keys;
+    };
+
+    var ex = createAssigner(allKeys);
+
+    var create = function(prototype, props) {
+        var result = function(prototype) {
+            if (!isObject(prototype)) return {};
+            return Object.create(prototype);
+          };
+        if (props) Object.assign(result, props);
+        return result;
+    };
+
+    /** Helper function to correctly set up the prototype chain for subclasses.
+     * Similar to `goog.inherits`, but uses a hash of prototype properties and
+     * class properties to be extended.
+     */
+    var classExtend = function(protoProps, staticProps) {
+        var parent = this;
+        var child;
+
+        // The constructor function for the new subclass is either defined by you
+        // (the "constructor" property in your `extend` definition), or defaulted
+        // by us to simply call the parent constructor.
+        if (protoProps && has(protoProps, 'constructor')) {
+            child = protoProps.constructor;
+        } else {
+            child = function(){
+                return parent.apply(this, arguments);
+            };
+        }
+
+        // Add static properties to the constructor function, if supplied.
+        ex(child, parent, staticProps);
+
+        // Set the prototype chain to inherit from `parent`, without calling
+        // `parent`'s constructor function and add the prototype properties.
+        child.prototype = create(parent.prototype, protoProps);
+        child.prototype.constructor = child;
+
+        // Set a convenience property in case the parent's prototype is needed
+        // later.
+        child.__super__ = parent.prototype;
+
+        return child;
+    };
+
      /**
       * Augmented.extend - Can extend base classes via .extend simular to Backbone.js
-      * @function Augmented.extend
+      * @function extend
       * @memberof Augmented
       */
     Augmented.extend = Backbone.Model.extend;
@@ -222,6 +300,8 @@
      * @memberof Augmented
      */
     Augmented.Utility = {};
+
+    Augmented.Utility.classExtend = classExtend;
 
     /**
      * Sorts an array by key
@@ -347,14 +427,14 @@
     };
 
     /**
-     * Augmented.Utility.isString -
+     * Augmented.isString -
      * checks is a value is a String
-     * @function Augmented.Utility.isString
-     * @memberof Augmented.Utility
+     * @function isString
+     * @memberof Augmented
      * @param {string} variable to check
      * @returns {boolean} true if value is a string
      */
-    var isString = Augmented.Utility.isString = function(val) {
+    var isString = Augmented.isString = function(val) {
         return typeof val === 'string' ||
             ((!!val && typeof val === 'object') &&
             Object.prototype.toString.call(val) === '[object String]');
@@ -1042,8 +1122,12 @@
      */
 	Augmented.Object = function(options) {
     	this.options = Augmented.Utility.extend({}, Augmented.result(this, 'options'), options);
-	    this.initialize.apply(this, arguments);
+
 	};
+
+    Augmented.Object.prototype = function () {
+        this.initialize.apply(this, arguments);
+    };
 
   /**
    * Entend the Object as a new instance
@@ -4234,7 +4318,7 @@
      */
     Augmented.Router = Backbone.Router;
 
-    Augmented.Model.extend = Augmented.Collection.extend = Augmented.Router.extend = Augmented.View.extend = Augmented.History.extend = Augmented.extend;
+    Augmented.Object.extend = Augmented.Model.extend = Augmented.Collection.extend = Augmented.Router.extend = Augmented.View.extend = Augmented.History.extend = Augmented.extend;
 
     /* Core Package */
 
