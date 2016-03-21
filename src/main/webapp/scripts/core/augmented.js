@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 0.3.0ɑ
+ * @version 0.3.0
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -860,27 +860,6 @@
         return function () {
             return wrap.apply(this, [fn].concat(Array.prototype.slice.call(arguments)));
         };
-    };
-
-    /**
-     * Augmented Array Utility
-     * @constructor Augmented.Utility.Array
-     * @memberof Augmented.Utility
-     * @param array to work with
-     * @memberof Augmented.Utility
-     * @deprecated
-     */
-    Augmented.Utility.Array = function(arr) {
-        /**
-         * Has returns whether a key exists in the Array
-         * @method has
-         * @param key {string} name of the key
-         * @returns true if the key exists in the Array
-         * @memberof Augmented.Utility.Array
-         */
-    	this.has = function(key) {
-    	    return arr.has(key);
-    	};
     };
 
     /**
@@ -4121,7 +4100,7 @@
             this.render = Augmented.Utility.wrap(this.render, function(render) {
                 this.beforeRender();
                 render.apply(this);
-                render();
+                //render();
                 this.afterRender();
                 return this;
             });

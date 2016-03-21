@@ -1,68 +1,132 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Class: AugmentedMap</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Augmented.js Class: AugmentedMap</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
+
 </head>
 
 <body>
 
-<div id="main">
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Augmented.js</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.Ajax.html">Augmented.Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Augmented.Ajax.Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">Augmented.LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Augmented.Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">Augmented.Logger.LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">Augmented.PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Augmented.Presentation</a></li><li><a href="Augmented.Security.html">Augmented.Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">Augmented.Security.AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Augmented.Security.Client</a></li><li><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></li><li><a href="Augmented.Utility.html">Augmented.Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">Augmented.Utility.BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">Augmented.Utility.MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">Augmented.Utility.MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">Augmented.Utility.ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Augmented.Utility.Transformer</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.module_Presentation.html">Augmented.Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="-_.html">_</a></li><li><a href="Augmented.Application.html">Augmented.Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">Augmented.augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Augmented.Collection</a></li><li><a href="Augmented.History.html">Augmented.History</a></li><li><a href="Augmented.Logger.abstractLogger.html">Augmented.Logger.abstractLogger</a></li><li><a href="Augmented.Model.html">Augmented.Model</a></li><li><a href="Augmented.Object.html">Augmented.Object</a></li><li><a href="Augmented.PaginatedCollection.html">Augmented.PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Augmented.Presentation.Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">Augmented.Presentation.AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">Augmented.Presentation.AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">Augmented.Presentation.BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Augmented.Presentation.Colleague</a></li><li><a href="Augmented.Presentation.DirectDOMAutomaticTable.html">Augmented.Presentation.DirectDOMAutomaticTable</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">Augmented.Presentation.EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableLocalStorageTable.html">Augmented.Presentation.EditableLocalStorageTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">Augmented.Presentation.EditableTable</a></li><li><a href="Augmented.Presentation.LocalStorageTable.html">Augmented.Presentation.LocalStorageTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Augmented.Presentation.Mediator</a></li><li><a href="Augmented.Router.html">Augmented.Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">Augmented.Security.Client.ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">Augmented.Security.Client.OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Augmented.Security.Context</a></li><li><a href="Augmented.Security.Entry.html">Augmented.Security.Entry</a></li><li><a href="Augmented.Utility.Array.html">Augmented.Utility.Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">Augmented.Utility.AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">Augmented.Utility.AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Augmented.Utility.Stack</a></li><li><a href="Augmented.ValidationFramework.html">Augmented.ValidationFramework</a></li><li><a href="Augmented.View.html">Augmented.View</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.View.getFormData.html">Augmented.View.getFormData</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
 
-    <h1 class="page-title">Class: AugmentedMap</h1>
-
-    
-
+</div>
+</div>
 
 
+<div class="container" id="toc-content">
+<div class="row">
 
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	<h1 class="page-title">Class: AugmentedMap</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Augmented.Utility.html">.Utility</a>.</span>AugmentedMap</h2>
+            <span class="ancestors"><a href="Augmented.Utility.html">.Utility</a>.</span>
+        
+        AugmentedMap
+        </h2>
         
     
 </header>
+
 
 <article>
     <div class="container-overview">
     
         
+<hr>
+<dt>
+    <h4 class="name" id="AugmentedMap"><span class="type-signature"></span>new AugmentedMap(myData)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>ES6-like Map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id="AugmentedMap"><span class="type-signature"></span>new AugmentedMap<span class="signature">(myData)</span><span class="type-signature"></span></h4>
-
     
 
-
-
-<div class="description">
-    ES6-like Map
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+    
+        <h5>Parameters:</h5>
+        
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -93,6 +157,7 @@
 <span class="param-type">object</span>
 
 
+
             
             </td>
 
@@ -100,19 +165,24 @@
 
             
 
-            <td class="description last">Map data to fill map</td>
+            <td class="description last"><p>Map data to fill map</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
+    
 
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -122,50 +192,52 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-865">line 865</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line806">line 806</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
     
     </div>
@@ -176,7 +248,7 @@
 
     
 
-     
+    
 
     
 
@@ -185,34 +257,38 @@
     
         <h3 class="subsection-title">Methods</h3>
 
-        
+        <dl>
             
+<hr>
+<dt>
+    <h4 class="name" id=".clear"><span class="type-signature">&lt;static> </span>clear()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Clear the map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".clear"><span class="type-signature">(static) </span>clear<span class="signature">()</span><span class="type-signature"></span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    Clear the map
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -222,79 +298,85 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-999">line 999</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line940">line 940</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".entries"><span class="type-signature">&lt;static> </span>entries()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The entries value object in the map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".entries"><span class="type-signature">(static) </span>entries<span class="signature">()</span><span class="type-signature"></span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    The entries value object in the map
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -304,88 +386,90 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-966">line 966</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line907">line 907</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    Array of entries value objects
+    <p>Array of entries value objects</p>
 </div>
 
-
-
-    
 
 
 
         
+
+    
+</dd>
+
+        
             
+<hr>
+<dt>
+    <h4 class="name" id=".forEach"><span class="type-signature">&lt;static> </span>forEach(fn)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Iterator forEach key to value in the map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".forEach"><span class="type-signature">(static) </span>forEach<span class="signature">(fn)</span><span class="type-signature"></span></h4>
-
     
 
-
-
-<div class="description">
-    Iterator forEach key to value in the map
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+    
+        <h5>Parameters:</h5>
+        
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -416,6 +500,7 @@
 <span class="param-type">function</span>
 
 
+
             
             </td>
 
@@ -423,19 +508,24 @@
 
             
 
-            <td class="description last">callback for the iterator</td>
+            <td class="description last"><p>callback for the iterator</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
+    
 
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -445,78 +535,79 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-936">line 936</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line877">line 877</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".get"><span class="type-signature">&lt;static> </span>get(key)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Get the value by key in the map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".get"><span class="type-signature">(static) </span>get<span class="signature">(key)</span><span class="type-signature"></span></h4>
-
     
 
-
-
-<div class="description">
-    Get the value by key in the map
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+    
+        <h5>Parameters:</h5>
+        
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -547,6 +638,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -554,19 +646,24 @@
 
             
 
-            <td class="description last">name of the key</td>
+            <td class="description last"><p>name of the key</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
+    
 
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -576,88 +673,90 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-891">line 891</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line832">line 832</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    The value for the key
+    <p>The value for the key</p>
 </div>
 
 
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".has"><span class="type-signature">&lt;static> </span>has(key)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Has returns whether a key exists in the map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".has"><span class="type-signature">(static) </span>has<span class="signature">(key)</span><span class="type-signature"></span></h4>
-
     
 
-
-
-<div class="description">
-    Has returns whether a key exists in the map
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+    
+        <h5>Parameters:</h5>
+        
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -688,6 +787,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -695,19 +795,24 @@
 
             
 
-            <td class="description last">name of the key</td>
+            <td class="description last"><p>name of the key</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
+    
 
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -717,88 +822,90 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-925">line 925</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line866">line 866</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    true if the key exists in the map
+    <p>true if the key exists in the map</p>
 </div>
 
 
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".indexOf"><span class="type-signature">&lt;static> </span>indexOf(key)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Index of the key in the map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".indexOf"><span class="type-signature">(static) </span>indexOf<span class="signature">(key)</span><span class="type-signature"></span></h4>
-
     
 
-
-
-<div class="description">
-    Index of the key in the map
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+    
+        <h5>Parameters:</h5>
+        
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -829,6 +936,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -836,19 +944,24 @@
 
             
 
-            <td class="description last">name of the key</td>
+            <td class="description last"><p>name of the key</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
+    
 
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -858,89 +971,96 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-902">line 902</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line843">line 843</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    index of the key
+    <p>index of the key</p>
 </div>
 
 
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".isEmpty"><span class="type-signature">&lt;static> </span>isEmpty()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Checks of the map is empty (not ES6)</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".isEmpty"><span class="type-signature">(static) </span>isEmpty<span class="signature">()</span><span class="type-signature"></span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    Checks of the map is empty (not ES6)
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -950,88 +1070,90 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-1041">line 1041</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line982">line 982</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    true if the map is empty
+    <p>true if the map is empty</p>
 </div>
 
 
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".key"><span class="type-signature">&lt;static> </span>key(i)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Get the key for the index in the map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".key"><span class="type-signature">(static) </span>key<span class="signature">(i)</span><span class="type-signature"></span></h4>
-
     
 
-
-
-<div class="description">
-    Get the key for the index in the map
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+    
+        <h5>Parameters:</h5>
+        
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -1062,6 +1184,7 @@
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -1069,19 +1192,24 @@
 
             
 
-            <td class="description last">index of the key</td>
+            <td class="description last"><p>index of the key</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
+    
 
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -1091,88 +1219,90 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-955">line 955</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line896">line 896</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    the key at index
+    <p>the key at index</p>
 </div>
 
 
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".marshall"><span class="type-signature">&lt;static> </span>marshall(data)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Marshalls a map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".marshall"><span class="type-signature">(static) </span>marshall<span class="signature">(data)</span><span class="type-signature"></span></h4>
-
     
 
-
-
-<div class="description">
-    Marshalls a map
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+    
+        <h5>Parameters:</h5>
+        
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -1203,6 +1333,7 @@
 <span class="param-type"><a href="Augmented.Utility.AugmentedMap.html">Augmented.Utility.AugmentedMap</a></span>
 
 
+
             
             </td>
 
@@ -1210,19 +1341,24 @@
 
             
 
-            <td class="description last">Data to marsh as a map</td>
+            <td class="description last"><p>Data to marsh as a map</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
+    
 
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -1232,78 +1368,79 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-1051">line 1051</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line992">line 992</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".remove"><span class="type-signature">&lt;static> </span>remove(key)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Remove the value by key in the map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".remove"><span class="type-signature">(static) </span>remove<span class="signature">(key)</span><span class="type-signature"></span></h4>
-
     
 
-
-
-<div class="description">
-    Remove the value by key in the map
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+    
+        <h5>Parameters:</h5>
+        
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -1334,6 +1471,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1341,19 +1479,24 @@
 
             
 
-            <td class="description last">name of the key</td>
+            <td class="description last"><p>name of the key</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
+    
 
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -1363,78 +1506,79 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-913">line 913</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line854">line 854</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".set"><span class="type-signature">&lt;static> </span>set(key, value)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Set the value by key in the map</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".set"><span class="type-signature">(static) </span>set<span class="signature">(key, value)</span><span class="type-signature"></span></h4>
-
     
 
-
-
-<div class="description">
-    Set the value by key in the map
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+    
+        <h5>Parameters:</h5>
+        
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -1465,6 +1609,7 @@
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -1472,7 +1617,7 @@
 
             
 
-            <td class="description last">name of the key</td>
+            <td class="description last"><p>name of the key</p></td>
         </tr>
 
     
@@ -1488,6 +1633,7 @@
 <span class="param-type">any</span>
 
 
+
             
             </td>
 
@@ -1495,19 +1641,24 @@
 
             
 
-            <td class="description last">value for the key</td>
+            <td class="description last"><p>value for the key</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
+    
 
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -1517,79 +1668,85 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-875">line 875</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line816">line 816</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".size"><span class="type-signature">&lt;static> </span>size()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The size of the map in keys</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".size"><span class="type-signature">(static) </span>size<span class="signature">()</span><span class="type-signature"></span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    The size of the map in keys
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -1599,89 +1756,96 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-1009">line 1009</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line950">line 950</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    size of map by keys
+    <p>size of map by keys</p>
 </div>
 
 
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".toJSON"><span class="type-signature">&lt;static> </span>toJSON()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Represent the map in JSON</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".toJSON"><span class="type-signature">(static) </span>toJSON<span class="signature">()</span><span class="type-signature"></span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    Represent the map in JSON
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -1691,89 +1855,96 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-1019">line 1019</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line960">line 960</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    JSON of the map
+    <p>JSON of the map</p>
 </div>
 
 
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".toString"><span class="type-signature">&lt;static> </span>toString()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Represent the map in a String of JSON</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".toString"><span class="type-signature">(static) </span>toString<span class="signature">()</span><span class="type-signature"></span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    Represent the map in a String of JSON
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -1783,89 +1954,96 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-1029">line 1029</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line970">line 970</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    Stringified JSON of the map
+    <p>Stringified JSON of the map</p>
 </div>
 
 
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".values"><span class="type-signature">&lt;static> </span>values()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The values in the map as an Array</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".values"><span class="type-signature">(static) </span>values<span class="signature">()</span><span class="type-signature"></span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    The values in the map as an Array
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -1875,62 +2053,65 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-984">line 984</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line925">line 925</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    values as an Array
+    <p>values as an Array</p>
 </div>
 
 
 
-    
-
-
 
         
+
+    
+</dd>
+
+        </dl>
     
 
     
@@ -1943,19 +2124,127 @@
 
 
 
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.DirectDOMAutomaticTable.html">DirectDOMAutomaticTable</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableLocalStorageTable.html">EditableLocalStorageTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">EditableTable</a></li><li><a href="Augmented.Presentation.LocalStorageTable.html">LocalStorageTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
-</nav>
-
-<br class="clear">
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Mar 08 2016 20:22:23 GMT-0800 (PST)
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on Sun Mar 20th 2016
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
 </body>
 </html>

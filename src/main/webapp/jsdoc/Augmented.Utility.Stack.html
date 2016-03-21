@@ -1,70 +1,138 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Class: Stack</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Augmented.js Class: Stack</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
+
 </head>
 
 <body>
 
-<div id="main">
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Augmented.js</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.Ajax.html">Augmented.Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Augmented.Ajax.Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">Augmented.LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Augmented.Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">Augmented.Logger.LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">Augmented.PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Augmented.Presentation</a></li><li><a href="Augmented.Security.html">Augmented.Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">Augmented.Security.AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Augmented.Security.Client</a></li><li><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></li><li><a href="Augmented.Utility.html">Augmented.Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">Augmented.Utility.BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">Augmented.Utility.MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">Augmented.Utility.MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">Augmented.Utility.ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Augmented.Utility.Transformer</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.module_Presentation.html">Augmented.Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="-_.html">_</a></li><li><a href="Augmented.Application.html">Augmented.Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">Augmented.augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Augmented.Collection</a></li><li><a href="Augmented.History.html">Augmented.History</a></li><li><a href="Augmented.Logger.abstractLogger.html">Augmented.Logger.abstractLogger</a></li><li><a href="Augmented.Model.html">Augmented.Model</a></li><li><a href="Augmented.Object.html">Augmented.Object</a></li><li><a href="Augmented.PaginatedCollection.html">Augmented.PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Augmented.Presentation.Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">Augmented.Presentation.AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">Augmented.Presentation.AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">Augmented.Presentation.BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Augmented.Presentation.Colleague</a></li><li><a href="Augmented.Presentation.DirectDOMAutomaticTable.html">Augmented.Presentation.DirectDOMAutomaticTable</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">Augmented.Presentation.EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableLocalStorageTable.html">Augmented.Presentation.EditableLocalStorageTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">Augmented.Presentation.EditableTable</a></li><li><a href="Augmented.Presentation.LocalStorageTable.html">Augmented.Presentation.LocalStorageTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Augmented.Presentation.Mediator</a></li><li><a href="Augmented.Router.html">Augmented.Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">Augmented.Security.Client.ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">Augmented.Security.Client.OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Augmented.Security.Context</a></li><li><a href="Augmented.Security.Entry.html">Augmented.Security.Entry</a></li><li><a href="Augmented.Utility.Array.html">Augmented.Utility.Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">Augmented.Utility.AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">Augmented.Utility.AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Augmented.Utility.Stack</a></li><li><a href="Augmented.ValidationFramework.html">Augmented.ValidationFramework</a></li><li><a href="Augmented.View.html">Augmented.View</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.View.getFormData.html">Augmented.View.getFormData</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
 
-    <h1 class="page-title">Class: Stack</h1>
-
-    
-
+</div>
+</div>
 
 
+<div class="container" id="toc-content">
+<div class="row">
 
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	<h1 class="page-title">Class: Stack</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Augmented.Utility.html">.Utility</a>.</span>Stack</h2>
+            <span class="ancestors"><a href="Augmented.Utility.html">.Utility</a>.</span>
+        
+        Stack
+        </h2>
         
     
 </header>
+
 
 <article>
     <div class="container-overview">
     
         
+<hr>
+<dt>
+    <h4 class="name" id="Stack"><span class="type-signature"></span>new Stack()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Augmented.Utility.Stack -<br>Standard Stack data structure</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id="Stack"><span class="type-signature"></span>new Stack<span class="signature">()</span><span class="type-signature"></span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    Augmented.Utility.Stack -
-Standard Stack data structure
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -74,50 +142,52 @@ Standard Stack data structure
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-4604">line 4604</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line4541">line 4541</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
     
     </div>
@@ -128,7 +198,7 @@ Standard Stack data structure
 
     
 
-     
+    
 
     
 
@@ -137,34 +207,38 @@ Standard Stack data structure
     
         <h3 class="subsection-title">Methods</h3>
 
-        
+        <dl>
             
+<hr>
+<dt>
+    <h4 class="name" id=".clear"><span class="type-signature">&lt;static> </span>clear()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The clear method clears the stack</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".clear"><span class="type-signature">(static) </span>clear<span class="signature">()</span><span class="type-signature"></span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    The clear method clears the stack
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -174,79 +248,85 @@ Standard Stack data structure
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-4665">line 4665</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line4602">line 4602</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".empty"><span class="type-signature">&lt;static> </span>empty()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The empty method clears the stack</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".empty"><span class="type-signature">(static) </span>empty<span class="signature">()</span><span class="type-signature"></span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    The empty method clears the stack
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -256,79 +336,85 @@ Standard Stack data structure
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-4612">line 4612</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line4549">line 4549</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".peek"><span class="type-signature">&lt;static> </span>peek()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The peek method returns the first in the stack</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".peek"><span class="type-signature">(static) </span>peek<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    The peek method returns the first in the stack
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -338,53 +424,54 @@ Standard Stack data structure
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-4620">line 4620</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line4557">line 4557</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    Returns the first object in the stack
+    <p>Returns the first object in the stack</p>
 </div>
 
 
@@ -398,41 +485,48 @@ Standard Stack data structure
 <span class="param-type">object</span>
 
 
+
     </dd>
 </dl>
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".pop"><span class="type-signature">&lt;static> </span>pop()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The pop method returns and removes the first in the stack</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".pop"><span class="type-signature">(static) </span>pop<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    The pop method returns and removes the first in the stack
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -442,53 +536,54 @@ Standard Stack data structure
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-4629">line 4629</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line4566">line 4566</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    Returns the first object in the stack
+    <p>Returns the first object in the stack</p>
 </div>
 
 
@@ -502,40 +597,42 @@ Standard Stack data structure
 <span class="param-type">object</span>
 
 
+
     </dd>
 </dl>
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".push"><span class="type-signature">&lt;static> </span>push(item)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The push method adds to the stack</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".push"><span class="type-signature">(static) </span>push<span class="signature">(item)</span><span class="type-signature"></span></h4>
-
     
 
-
-
-<div class="description">
-    The push method adds to the stack
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+    
+        <h5>Parameters:</h5>
+        
 
-<table class="params">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -566,6 +663,7 @@ Standard Stack data structure
 <span class="param-type">object</span>
 
 
+
             
             </td>
 
@@ -573,19 +671,24 @@ Standard Stack data structure
 
             
 
-            <td class="description last">The item to push to the stack</td>
+            <td class="description last"><p>The item to push to the stack</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
+    
 
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -595,79 +698,85 @@ Standard Stack data structure
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-4638">line 4638</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line4575">line 4575</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".search"><span class="type-signature">&lt;static> </span>search()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The search method returns where in the stack an item exists</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".search"><span class="type-signature">(static) </span>search<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    The search method returns where in the stack an item exists
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -677,53 +786,54 @@ Standard Stack data structure
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-4647">line 4647</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line4584">line 4584</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    Returns the index of the item
+    <p>Returns the index of the item</p>
 </div>
 
 
@@ -737,41 +847,48 @@ Standard Stack data structure
 <span class="param-type">number</span>
 
 
+
     </dd>
 </dl>
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".size"><span class="type-signature">&lt;static> </span>size()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The size method returns the size of the stack</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".size"><span class="type-signature">(static) </span>size<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    The size method returns the size of the stack
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -781,53 +898,54 @@ Standard Stack data structure
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-4656">line 4656</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line4593">line 4593</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    Returns the size of the stack
+    <p>Returns the size of the stack</p>
 </div>
 
 
@@ -841,41 +959,48 @@ Standard Stack data structure
 <span class="param-type">number</span>
 
 
+
     </dd>
 </dl>
 
+
+        
+
     
-
-
+</dd>
 
         
             
+<hr>
+<dt>
+    <h4 class="name" id=".toArray"><span class="type-signature">&lt;static> </span>toArray()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>The toArray method returns the stack as an array</p>
+    </div>
+    
 
     
 
-    <h4 class="name" id=".toArray"><span class="type-signature">(static) </span>toArray<span class="signature">()</span><span class="type-signature"> &rarr; {array}</span></h4>
-
     
 
+    
+    
 
-
-<div class="description">
-    The toArray method returns the stack as an array
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -885,53 +1010,54 @@ Standard Stack data structure
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-4673">line 4673</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line4610">line 4610</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
+    
+    <h5>Returns:</h5>
+    
+            
 <div class="param-desc">
-    Returns the stack as an array
+    <p>Returns the stack as an array</p>
 </div>
 
 
@@ -945,14 +1071,17 @@ Standard Stack data structure
 <span class="param-type">array</span>
 
 
+
     </dd>
 </dl>
 
-    
-
-
 
         
+
+    
+</dd>
+
+        </dl>
     
 
     
@@ -965,19 +1094,127 @@ Standard Stack data structure
 
 
 
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.DirectDOMAutomaticTable.html">DirectDOMAutomaticTable</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableLocalStorageTable.html">EditableLocalStorageTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">EditableTable</a></li><li><a href="Augmented.Presentation.LocalStorageTable.html">LocalStorageTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
-</nav>
-
-<br class="clear">
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Mar 08 2016 20:22:24 GMT-0800 (PST)
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on Sun Mar 20th 2016
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
 </body>
 </html>

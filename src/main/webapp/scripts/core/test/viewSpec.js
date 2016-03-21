@@ -116,11 +116,39 @@ define([
                 expect(fired).toBeTruthy();
             });
 
+            // defect fixs
             it('supports correct \'this\' when overriding a render', function() {
                 view.render = function() {
                     fired = ((this !== window) && (this.monkey === "monkey"));
                 };
                 view.render();
+                expect(fired).toBeTruthy();
+            });
+
+            it('supports beforeRender, render, then afterRender when attempting a render', function() {
+                var r = 0;
+                view.beforeRender = function() { r++; };
+                view.render = function() {
+                    r++;
+                    fired = true;
+                };
+                view.afterRender = function() { r++; };
+                view.initialize();
+                view.render();
+                expect(r).toEqual(3);
+                expect(fired).toBeTruthy();
+            });
+
+            it('calls render only once', function() {
+                var r = 0;
+                view.beforeRender = function() { fired = true; };
+                view.render = function() {
+                    r++;
+                    console.debug("render");
+                };
+                view.initialize();
+                view.render();
+                expect(r).toEqual(1);
                 expect(fired).toBeTruthy();
             });
         });

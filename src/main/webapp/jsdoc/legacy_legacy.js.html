@@ -1,32 +1,95 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: legacy/legacy.js</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Augmented.js Source: legacy/legacy.js</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
+
 </head>
 
 <body>
 
-<div id="main">
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Augmented.js</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.Ajax.html">Augmented.Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Augmented.Ajax.Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">Augmented.LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Augmented.Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">Augmented.Logger.LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">Augmented.PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Augmented.Presentation</a></li><li><a href="Augmented.Security.html">Augmented.Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">Augmented.Security.AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Augmented.Security.Client</a></li><li><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></li><li><a href="Augmented.Utility.html">Augmented.Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">Augmented.Utility.BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">Augmented.Utility.MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">Augmented.Utility.MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">Augmented.Utility.ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Augmented.Utility.Transformer</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.module_Presentation.html">Augmented.Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="-_.html">_</a></li><li><a href="Augmented.Application.html">Augmented.Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">Augmented.augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Augmented.Collection</a></li><li><a href="Augmented.History.html">Augmented.History</a></li><li><a href="Augmented.Logger.abstractLogger.html">Augmented.Logger.abstractLogger</a></li><li><a href="Augmented.Model.html">Augmented.Model</a></li><li><a href="Augmented.Object.html">Augmented.Object</a></li><li><a href="Augmented.PaginatedCollection.html">Augmented.PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Augmented.Presentation.Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">Augmented.Presentation.AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">Augmented.Presentation.AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">Augmented.Presentation.BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Augmented.Presentation.Colleague</a></li><li><a href="Augmented.Presentation.DirectDOMAutomaticTable.html">Augmented.Presentation.DirectDOMAutomaticTable</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">Augmented.Presentation.EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableLocalStorageTable.html">Augmented.Presentation.EditableLocalStorageTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">Augmented.Presentation.EditableTable</a></li><li><a href="Augmented.Presentation.LocalStorageTable.html">Augmented.Presentation.LocalStorageTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Augmented.Presentation.Mediator</a></li><li><a href="Augmented.Router.html">Augmented.Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">Augmented.Security.Client.ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">Augmented.Security.Client.OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Augmented.Security.Context</a></li><li><a href="Augmented.Security.Entry.html">Augmented.Security.Entry</a></li><li><a href="Augmented.Utility.Array.html">Augmented.Utility.Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">Augmented.Utility.AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">Augmented.Utility.AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Augmented.Utility.Stack</a></li><li><a href="Augmented.ValidationFramework.html">Augmented.ValidationFramework</a></li><li><a href="Augmented.View.html">Augmented.View</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.View.getFormData.html">Augmented.View.getFormData</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
 
-    <h1 class="page-title">Source: legacy/legacy.js</h1>
+</div>
+</div>
 
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: legacy/legacy.js</h1>
     
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">/**
  * Legacy.js - The Legacy Component and package
  * Collection of legacy code (polyfills) and deprecated code to be removed later
  *
@@ -37,16 +100,37 @@
  */
 (function(moduleFactory) {
     if (typeof exports === 'object') {
-	       module.exports = moduleFactory(require('augmented'));
+	       module.exports = moduleFactory(require('augmented', 'underscore'));
     } else if (typeof define === 'function' &amp;&amp; define.amd) {
-	       define([ 'augmented' ], moduleFactory);
+	       define(['augmented', 'underscore'], moduleFactory);
     } else {
 	       window.Augmented.Legacy = moduleFactory(window.Augmented);
     }
-}(function(Augmented) {
+}(function(Augmented, _) {
     Augmented.Legacy = {};
 
-    Augmented.Legacy.VERSION = '0.1.0';
+    Augmented.Legacy.VERSION = '0.3.0';
+
+    /**
+     * Augmented Array Utility
+     * @constructor Augmented.Utility.Array
+     * @memberof Augmented.Utility
+     * @param array to work with
+     * @memberof Augmented.Utility
+     * @deprecated
+     */
+    Augmented.Utility.Array = function(arr) {
+        /**
+         * Has returns whether a key exists in the Array
+         * @method has
+         * @param key {string} name of the key
+         * @returns true if the key exists in the Array
+         * @memberof Augmented.Utility.Array
+         */
+        this.has = function(key) {
+            return arr.has(key);
+        };
+    };
 
     /**
      * Application Context
@@ -166,125 +250,119 @@
 	this.hasPrivilege = function(privilegeName) {
 	    var ret = false;
 
-	    if (this.model
-		    &amp;&amp; this.model.attributes.security.privilege != undefined) {
+	    if (this.model &amp;&amp; this.model.attributes.security.privilege !== undefined) {
 		var priv = this.model.attributes.security.privilege;
 
 		ret = (priv.indexOf(privilegeName) != -1);
 	    }
 	    return ret;
-	}
+	};
 	this.hasRole = function(roleName){
     var ret = false;
-	    if (this.model
-		    &amp;&amp; this.model.attributes.security.role != undefined) {
+	    if (this.model &amp;&amp; this.model.attributes.security.role !== undefined) {
 		var role = this.model.attributes.security.role;
 
 		ret = (role.indexOf(roleName) != -1);
 	    }
 	    return ret;
 
-	}
+	};
 
 	this.getAllPrivileges = function() {
-	    if (this.model
-		    &amp;&amp; this.model.attributes.security.privilege != undefined) {
+	    if (this.model &amp;&amp; this.model.attributes.security.privilege !== undefined) {
 		var priv = this.model.attributes.security.privilege;
 		return priv;
 	    }
-	}
+	};
 
 	this.getAllRoles = function(){
-	    if (this.model
-		    &amp;&amp; this.model.attributes.security.role != undefined) {
+	    if (this.model &amp;&amp; this.model.attributes.security.role !== undefined) {
 		var priv = this.model.attributes.security.role;
 		return priv;
 	    }
-	}
+	};
 
 	this.hasMetadata = function(metadataName) {
 	    var ret = false;
 
-	    if (this.model &amp;&amp; this.model.attributes.metadata != undefined
-		    &amp;&amp; (metadataName in this.model.attributes.metadata)) {
+	    if (this.model &amp;&amp; this.model.attributes.metadata !== undefined &amp;&amp; (metadataName in this.model.attributes.metadata)) {
 		ret = true;
 	    }
 	    return ret;
-	}
+	};
 
 	this.getAllMetadata = function() {
 
-	    if (this.model &amp;&amp; this.model.attributes.metadata != undefined) {
+	    if (this.model &amp;&amp; this.model.attributes.metadata !== undefined) {
 		return this.model.attributes.metadata;
 	    }
 
-	}
+	};
 
 	this.getMetadata = function(metadataName){
 
-	    if (this.model &amp;&amp; this.model.attributes.metadata != undefined
-		    &amp;&amp; (metadataName in this.model.attributes.metadata)) {
+	    if (this.model &amp;&amp; this.model.attributes.metadata !== undefined &amp;&amp; (metadataName in this.model.attributes.metadata)) {
 		if (this.model.attributes.metadata.hasOwnProperty(metadataName)) {
 		    return this.model.attributes.metadata[metadataName];
 		}
 	    }
-	}
+	};
 
 	this.setMetadata = function(metadata)
 	{
-	    if (this.model &amp;&amp; this.model.attributes.metadata != undefined){
+	    if (this.model &amp;&amp; this.model.attributes.metadata !== undefined){
 
 		this.model.attributes.metadata[metadata[0]] = metadata[1];
 
 	    }
 	    return this.model.attributes.metadata;
-	}
+	};
 
 
 	this.authorize = function() {
 
-	}
+	};
 	this.access = function() {
 
-	}
+	};
 	this.fetch = function() {
 	    if (this.model) {
 		this.model.fetch();
 	    }
-	}
+	};
 	this.save = function() {
 	    if (this.model) {
 		this.model.save();
 	    }
-	}
+	};
 	this.isValid = function() {
 	    if (this.model) {
 		return this.model.isValid();
 	    }
 	    return false;
-	}
+	};
 	this.populate = function(data) {
 	    if (this.model &amp;&amp; data) {
 		this.model = new applicationContextModel(data);
 	    }
-	}
+	};
 	this.setURI = function(uri) {
 	    if (this.model &amp;&amp; uri) {
 		this.model.url = uri;
 		this.model.attributes.url = uri;
 	    }
-	}
+	};
 
 	this.clear = function()
 	{
 	    this.model = new applicationContextModel();
-	}
+	};
 
     };
 
     /** Application Context - The Security Object for the framework */
 
-    Augmented.ApplicationContext;
+    Augmented.ApplicationContext = null;
 
     var applicationContextFactory = {
 	    getApplicationContext : function() {
@@ -297,28 +375,188 @@
 
     Augmented.ApplicationContextFactory = applicationContextFactory;
 
+    Augmented.Utility.extend(Augmented.View, {
+        /**
+         * Augmented Presentation View extension - getFormData&lt;br/>
+         * Two-way binding to models&lt;br/>
+         * @method getFormData
+         * @param {string} region The region (element) to parse
+         * @memberof Augmented.View
+         * @deprecated
+         * @mixin
+         */
+        getFormData: function(region) {
+            // Get form data.
+            var serializeFormField = function(array) {
+                var sarr = [];
+
+                var i = 0;
+                for (i=0; i&lt;array.length;i++) {
+                    var a = array[i];
+                    var o = {};
+                    o.name = a.name;
+                    o.value = a.value;
+                    o.type = a.type;
+                    if (a.type === "checkbox") {
+                        o.value = (a.checked) ? "on" : "off";
+                    }
+                    sarr.push(o);
+                }
+                return sarr;
+            };
+
+            var n = serializeFormField(document.querySelectorAll(region + " > input"));
+
+            var data = (n).reduce(function(obj, field) {
+                switch (field.type) {
+                case 'number':
+                    if (field.value !== "") {
+                        obj[field.name] = parseFloat(field.value); // for fields that are numbers.
+                    }
+                    break;
+
+                case 'checkbox':
+                    obj[field.name] = (field.value === 'on') ? true : false; // for checkboxes.
+                    break;
+
+                default:
+                    obj[field.name] = field.value; // default for fields that are text.
+                    break;
+                }
+
+                return obj;
+            }, {});
+
+            return data;
+        }
+    });
 
 }));
-</code></pre>
-        </article>
-    </section>
+</pre>
+    </article>
+</section>
 
 
 
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
 
 </div>
+</div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.DirectDOMAutomaticTable.html">DirectDOMAutomaticTable</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableLocalStorageTable.html">EditableLocalStorageTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">EditableTable</a></li><li><a href="Augmented.Presentation.LocalStorageTable.html">LocalStorageTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
-</nav>
-
-<br class="clear">
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Mar 08 2016 20:22:23 GMT-0800 (PST)
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on Sun Mar 20th 2016
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
 </body>
 </html>

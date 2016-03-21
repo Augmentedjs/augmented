@@ -13,14 +13,14 @@
  *
  * @requires augmented.js
  * @module Augmented.Presentation
- * @version 0.2.0-RC1
+ * @version 0.3.0
  * @license Apache-2.0
  */
 (function(moduleFactory) {
     if (typeof exports === 'object') {
 	    module.exports = moduleFactory(require('augmented'));
     } else if (typeof define === 'function' && define.amd) {
-	    define(['augmented' ], moduleFactory);
+	    define(['augmented'], moduleFactory);
     } else {
 	    window.Augmented.Presentation = moduleFactory(window.Augmented);
     }
@@ -43,63 +43,6 @@
      * @private
      */
     var logger = Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.console, Augmented.Configuration.LoggerLevel);
-
-    Augmented.Utility.extend(Augmented.View, {
-        /**
-         * Augmented Presentation View extension - getFormData<br/>
-         * Two-way binding to models<br/>
-         * TODO: maybe deprecate this and use something better
-         * @method getFormData
-         * @param {string} region The region (element) to parse
-         * @memberof Augmented.View
-         * @deprecated
-         * @mixin
-         */
-    	getFormData: function(region) {
-    	    // Get form data.
-    	    var serializeFormField = function(array) {
-        		var sarr = [];
-
-        		var i = 0;
-        		for (i=0; i<array.length;i++) {
-        		    var a = array[i];
-        		    var o = {};
-        		    o.name = a.name;
-        		    o.value = a.value;
-        		    o.type = a.type;
-        		    if (a.type === "checkbox") {
-        			    o.value = (a.checked) ? "on" : "off";
-        		    }
-        		    sarr.push(o);
-        		}
-        		return sarr;
-    	    };
-
-    	    var n = serializeFormField(document.querySelectorAll(region + " > input"));
-
-    	    var data = (n).reduce(function(obj, field) {
-        		switch (field.type) {
-        		case 'number':
-        		    if (field.value !== "") {
-        			    obj[field.name] = parseFloat(field.value); // for fields that are numbers.
-        		    }
-        		    break;
-
-        		case 'checkbox':
-        		    obj[field.name] = (field.value === 'on') ? true : false; // for checkboxes.
-        		    break;
-
-        		default:
-        		    obj[field.name] = field.value; // default for fields that are text.
-        		    break;
-        		}
-
-    		    return obj;
-    	    }, {});
-
-    	    return data;
-    	}
-    });
 
     /**
      * Augmented Presentation View extension
@@ -496,6 +439,7 @@
         this.getMediators = function() {
             return this.Mediators;
         };
+
         /**
          * Register a stylesheet
          * @method registerStylesheet
@@ -524,15 +468,19 @@
          * @memberof Augmented.Presentation.Application
          */
         this.attachStylesheets = function() {
-            var headElement = document.getElementsByTagName("head")[0];
-            var i = 0, l = this.Stylesheets.length;
+            var headElement = document.getElementsByTagName("head")[0],
+            // create a shadow DOM
+                shaddowDom = document.createDocumentFragment(),
+                i = 0, l = this.Stylesheets.length, link = null;
             for (i = 0; i < l; i++) {
-                var link = document.createElement("link");
+                link = document.createElement("link");
                 link.type = "text/css";
                 link.rel = "stylesheet";
                 link.href = this.Stylesheets[i];
-                headElement.appendChild(link);
+                shaddowDom.appendChild(link);
             }
+            // add the shadow to the real DOM
+            headElement.appendChild(shaddowDom);
         };
         /**
          * Replace stylesheets then attach registered stylesheets to the DOM
@@ -721,7 +669,20 @@
                         html = html + " " + tableDataAttributes.sortClass;
                     }
                     html = html + "\">";
-                    html = html + "<input type=\"" + (t==="number" ? "number" : "text") + "\" value=\"" + dobj + "\"" + tableDataAttributes.name + "=\"" + dkey + "\" " + tableDataAttributes.index + "=\"" + i + "\"/></td>";
+                    var myType = "text";
+                    if (t === "boolean") {
+                        myType = "checkbox";
+                    } else if (t === "number") {
+                        myType = "number";
+                    } else if (t === "array") {
+                        myType = "radio";
+                    }
+
+                    html = html + "<input type=\"" + myType + "\" " +
+                        (dobj === true ? "checked=\"checked\"" : "") +
+                        " value=\"" + dobj + "\"" +
+                        tableDataAttributes.name + "=\"" + dkey + "\" " +
+                        tableDataAttributes.index + "=\"" + i + "\"/></td>";
                 }
             }
             html = html + "</tr>";
@@ -1658,9 +1619,22 @@
 
                     // input field
                     input = document.createElement("input");
-                    input.setAttribute("type", (t==="number" ? "number" : "text"));
-                    input.setAttribute("value", dobj);
-                    input.setAttribute(tableDataAttributes.name, dkey);
+                    if (t === "boolean") {
+                        input.setAttribute("type", "checkbox");
+                        if (dobj === true) {
+                            input.setAttribute("checked", "checked");
+                        }
+                    } else if (t === "number") {
+                        input.setAttribute("type", "number");
+                    } else if (t === "array") {
+                        input.setAttribute("type", "radio");
+                        if (dobj === true) {
+                            input.setAttribute("checked", "checked");
+                        }
+                    } else {
+                        input.setAttribute("type", "text");
+                    }
+
                     input.setAttribute(tableDataAttributes.name, dkey);
                     input.setAttribute(tableDataAttributes.index, i);
 

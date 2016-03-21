@@ -1,49 +1,118 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Namespace: Security</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Augmented.js Namespace: Security</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
+
 </head>
 
 <body>
 
-<div id="main">
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Augmented.js</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.Ajax.html">Augmented.Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Augmented.Ajax.Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">Augmented.LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Augmented.Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">Augmented.Logger.LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">Augmented.PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Augmented.Presentation</a></li><li><a href="Augmented.Security.html">Augmented.Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">Augmented.Security.AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Augmented.Security.Client</a></li><li><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></li><li><a href="Augmented.Utility.html">Augmented.Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">Augmented.Utility.BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">Augmented.Utility.MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">Augmented.Utility.MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">Augmented.Utility.ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Augmented.Utility.Transformer</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.module_Presentation.html">Augmented.Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="-_.html">_</a></li><li><a href="Augmented.Application.html">Augmented.Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">Augmented.augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Augmented.Collection</a></li><li><a href="Augmented.History.html">Augmented.History</a></li><li><a href="Augmented.Logger.abstractLogger.html">Augmented.Logger.abstractLogger</a></li><li><a href="Augmented.Model.html">Augmented.Model</a></li><li><a href="Augmented.Object.html">Augmented.Object</a></li><li><a href="Augmented.PaginatedCollection.html">Augmented.PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Augmented.Presentation.Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">Augmented.Presentation.AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">Augmented.Presentation.AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">Augmented.Presentation.BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Augmented.Presentation.Colleague</a></li><li><a href="Augmented.Presentation.DirectDOMAutomaticTable.html">Augmented.Presentation.DirectDOMAutomaticTable</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">Augmented.Presentation.EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableLocalStorageTable.html">Augmented.Presentation.EditableLocalStorageTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">Augmented.Presentation.EditableTable</a></li><li><a href="Augmented.Presentation.LocalStorageTable.html">Augmented.Presentation.LocalStorageTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Augmented.Presentation.Mediator</a></li><li><a href="Augmented.Router.html">Augmented.Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">Augmented.Security.Client.ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">Augmented.Security.Client.OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Augmented.Security.Context</a></li><li><a href="Augmented.Security.Entry.html">Augmented.Security.Entry</a></li><li><a href="Augmented.Utility.Array.html">Augmented.Utility.Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">Augmented.Utility.AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">Augmented.Utility.AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Augmented.Utility.Stack</a></li><li><a href="Augmented.ValidationFramework.html">Augmented.ValidationFramework</a></li><li><a href="Augmented.View.html">Augmented.View</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="mixins.list.html" class="dropdown-toggle" data-toggle="dropdown">Mixins<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Augmented.View.getFormData.html">Augmented.View.getFormData</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
 
-    <h1 class="page-title">Namespace: Security</h1>
-
-    
-
+</div>
+</div>
 
 
+<div class="container" id="toc-content">
+<div class="row">
 
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	<h1 class="page-title">Namespace: Security</h1>
 <section>
 
 <header>
     
-        <h2>Security</h2>
+        <h2>
+        Security
+        </h2>
         
     
 </header>
+
 
 <article>
     <div class="container-overview">
     
         
-            <div class="description">Security Package and API</div>
+            <div class="description"><p>Security Package and API</p></div>
         
 
         
-
-
 <dl class="details">
+    
+
+	
+
+	
+
+	
 
     
 
@@ -53,34 +122,35 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-1125">line 1125</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line1062">line 1062</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
@@ -104,19 +174,19 @@
         </dl>
     
 
-     
+    
 
     
         <h3 class="subsection-title">Namespaces</h3>
 
         <dl>
-            <dt><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></dt>
+            <dt><a href="namespaces.html#Augmented.Security.AuthenticationFactory"><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></a></dt>
             <dd></dd>
         
-            <dt><a href="Augmented.Security.Client.html">Client</a></dt>
+            <dt><a href="namespaces.html#Augmented.Security.Client"><a href="Augmented.Security.Client.html">Client</a></a></dt>
             <dd></dd>
         
-            <dt><a href="Augmented.Security.Principal.html">Principal</a></dt>
+            <dt><a href="namespaces.html#Augmented.Security.Principal"><a href="Augmented.Security.Principal.html">Principal</a></a></dt>
             <dd></dd>
         </dl>
     
@@ -124,38 +194,43 @@
     
         <h3 class="subsection-title">Members</h3>
 
-        
+        <dl>
             
-<h4 class="name" id=".ClientType"><span class="type-signature">(static) </span>ClientType<span class="type-signature"> :number</span></h4>
+<hr>
+<dt class="name" id=".ClientType">
+    <h4><span class="type-signature">&lt;static> </span>ClientType<span class="type-signature"> :number</span></h4>
 
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Augmented.Security.ClientType - Security client type</p>
+    </div>
+    
 
-
-
-<div class="description">
-    Augmented.Security.ClientType - Security client type
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
 <span class="param-type">number</span>
 
 
-        </li>
-    </ul>
 
+            </li>
+        </ul>
+    
 
-
-
+    
+<dl class="details">
+    
 
     <h5 class="subsection-title">Properties:</h5>
 
-    
+    <dl>
 
-<table class="props">
+<table class="props table table-striped">
     <thead>
     <tr>
         
@@ -186,6 +261,7 @@
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -193,7 +269,7 @@
 
             
 
-            <td class="description last">The OAuth2 type</td>
+            <td class="description last"><p>The OAuth2 type</p></td>
         </tr>
 
     
@@ -209,6 +285,7 @@
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -216,17 +293,21 @@
 
             
 
-            <td class="description last">The ACL type</td>
+            <td class="description last"><p>The ACL type</p></td>
         </tr>
 
     
     </tbody>
 </table>
+</dl>
 
+    
 
+	
 
+	
 
-<dl class="details">
+	
 
     
 
@@ -236,42 +317,42 @@
 
     
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
+	
 
-    
 
-    
 
-    
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="core_augmented.js.html">core/augmented.js</a>,
+				 <a href="core_augmented.js.html#sunlight-1-line-1229">line 1229</a>
+			</li>
+		</ul>
+	</dd>
+	
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_augmented.js.html">core/augmented.js</a>, <a href="core_augmented.js.html#line1166">line 1166</a>
-    </li></ul></dd>
-    
+	
 
-    
+	
 
-    
-
-    
+	
 </dl>
 
 
+    
+</dd>
 
-
-
-
-        
+        </dl>
     
 
     
@@ -286,19 +367,127 @@
 
 
 
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="Augmented.module_Presentation.html">Presentation</a></li><li><a href="module-Augmented.html">Augmented</a></li><li><a href="module-legacy_legacy.html">legacy/legacy</a></li></ul><h3>Classes</h3><ul><li><a href="Augmented.Application.html">Application</a></li><li><a href="Augmented.augmentedLocalStorage.html">augmentedLocalStorage</a></li><li><a href="Augmented.Collection.html">Collection</a></li><li><a href="Augmented.History.html">History</a></li><li><a href="Augmented.Logger.abstractLogger.html">abstractLogger</a></li><li><a href="Augmented.Model.html">Model</a></li><li><a href="Augmented.Object.html">Object</a></li><li><a href="Augmented.PaginatedCollection.html">PaginatedCollection</a></li><li><a href="Augmented.Presentation.Application.html">Application</a></li><li><a href="Augmented.Presentation.AutomaticTable.html">AutomaticTable</a></li><li><a href="Augmented.Presentation.AutoTable.html">AutoTable</a></li><li><a href="Augmented.Presentation.BigDataTable.html">BigDataTable</a></li><li><a href="Augmented.Presentation.Colleague.html">Colleague</a></li><li><a href="Augmented.Presentation.DirectDOMAutomaticTable.html">DirectDOMAutomaticTable</a></li><li><a href="Augmented.Presentation.EditableBigDataTable.html">EditableBigDataTable</a></li><li><a href="Augmented.Presentation.EditableLocalStorageTable.html">EditableLocalStorageTable</a></li><li><a href="Augmented.Presentation.EditableTable.html">EditableTable</a></li><li><a href="Augmented.Presentation.LocalStorageTable.html">LocalStorageTable</a></li><li><a href="Augmented.Presentation.Mediator.html">Mediator</a></li><li><a href="Augmented.Router.html">Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Context</a></li><li><a href="Augmented.Security.Entry.html">Entry</a></li><li><a href="Augmented.Utility.Array.html">Array</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">AugmentedMap</a></li><li><a href="Augmented.Utility.Stack.html">Stack</a></li><li><a href="Augmented.ValidationFramework.html">ValidationFramework</a></li><li><a href="Augmented.View.html">View</a></li></ul><h3>Namespaces</h3><ul><li><a href="Augmented.Ajax.html">Ajax</a></li><li><a href="Augmented.Ajax.Configuration.html">Configuration</a></li><li><a href="Augmented.LocalStorageFactory.html">LocalStorageFactory</a></li><li><a href="Augmented.Logger.html">Logger</a></li><li><a href="Augmented.Logger.LoggerFactory.html">LoggerFactory</a></li><li><a href="Augmented.PaginationFactory.html">PaginationFactory</a></li><li><a href="Augmented.Presentation.html">Presentation</a></li><li><a href="Augmented.Security.html">Security</a></li><li><a href="Augmented.Security.AuthenticationFactory.html">AuthenticationFactory</a></li><li><a href="Augmented.Security.Client.html">Client</a></li><li><a href="Augmented.Security.Principal.html">Principal</a></li><li><a href="Augmented.Utility.html">Utility</a></li><li><a href="Augmented.Utility.BundleObject.html">BundleObject</a></li><li><a href="Augmented.Utility.MessageKeyFormatter.html">MessageKeyFormatter</a></li><li><a href="Augmented.Utility.MessageReader.html">MessageReader</a></li><li><a href="Augmented.Utility.ResourceBundle.html">ResourceBundle</a></li><li><a href="Augmented.Utility.Transformer.html">Transformer</a></li></ul><h3>Mixins</h3><ul><li><a href="Augmented.View.getFormData.html">getFormData</a></li></ul>
-</nav>
-
-<br class="clear">
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Mar 08 2016 20:22:23 GMT-0800 (PST)
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on Sun Mar 20th 2016
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
 </body>
 </html>
