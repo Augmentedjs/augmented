@@ -284,6 +284,11 @@
 
     Augmented.ApplicationContextFactory = applicationContextFactory;
 
+    /**
+     * Augmented Presentation View extension
+     * @augments Augmented.View
+     * @mixes getFormData
+     */
     Augmented.Utility.extend(Augmented.View, {
         /**
          * Augmented Presentation View extension - getFormData<br/>

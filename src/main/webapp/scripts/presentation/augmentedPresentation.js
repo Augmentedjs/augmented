@@ -44,12 +44,6 @@
      */
     var logger = Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.console, Augmented.Configuration.LoggerLevel);
 
-    /**
-     * Augmented Presentation View extension
-     * @augments Augmented.View
-     * @mixes getFormData
-     */
-
     /*
      * Mediator View
      */
