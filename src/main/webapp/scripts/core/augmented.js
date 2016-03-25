@@ -31,7 +31,7 @@
     }
 
 }(this, function(root, Augmented, Backbone) {
-
+    "use strict";
     /* Extend function for use throughout the framework */
     var extend = function() {
         var i =0, l = arguments.length;
@@ -82,7 +82,7 @@
     };
 
     /**
-     * Augmented underscore (if it exists from Bakcbone.js)
+     * Augmented underscore (if it exists from Backbone.js)
      * @module _
      * @name _
      * @private
@@ -90,7 +90,7 @@
      */
     var _ = Augmented._ = Backbone._;
     /**
-     * Augmented jQuery (if it exists from Bakcbone.js)
+     * Augmented jQuery (if it exists from Backbone.js)
      * @module $
      * @name $
      * @private
@@ -117,15 +117,19 @@
     /*
      * Base functionality
      * Set of base capabilities used throughout the framework
-     * . ajax
-     * . extend
-     * . result
-     * . isFunction
      */
 
-    var has = Augmented.has = function(obj, key) {
+    /**
+     * Augmented.has
+     * @method has
+     * @param {object} obj The input object
+     * @param {object} key The test key
+     * @returns {boolean} Returns true of the key exists
+     */
+    Augmented.has = function(obj, key) {
         return obj !== null && hasOwnProperty.call(obj, key);
     };
+
     var createAssigner = function(keysFunc, undefinedOnly) {
         return function(obj) {
             var length = arguments.length;
@@ -144,23 +148,38 @@
         };
     };
 
-    var isObject = Augmented.isObject = function(obj) {
+    /**
+     * Augmented.isObject
+     * @method isObject
+     * @param {object} obj The input object
+     * @returns {boolean} Returns true of the param is an object
+     */
+    Augmented.isObject = function(obj) {
         var type = typeof obj;
         return (type === 'function' || type === 'object' && !!obj);
     };
 
-    var allKeys = function(obj) {
-      if (!isObject(obj)) return [];
-      var keys = [], key;
-      for (key in obj) keys.push(key);
-      return keys;
+    /**
+     * Augmented.allKeys
+     * @method allKeys
+     * @param {object} obj The input object
+     * @returns {array} Returns the array of ALL keys including prototyped
+     */
+    Augmented.allKeys = function(obj) {
+      if (!Augmented.isObject(obj)) return [];
+      return Object.getOwnPropertyNames(obj);
     };
 
-    var ex = createAssigner(allKeys);
-
-    var create = function(prototype, props) {
+    /**
+     * Augmented.create
+     * @method create
+     * @param {object} prototype The input prototype
+     * @param {object} props The properties (optional)
+     * @returns {object} Returns the created object
+     */
+    Augmented.create = function(prototype, props) {
         var result = function(prototype) {
-            if (!isObject(prototype)) return {};
+            if (!Augmented.isObject(prototype)) return {};
             return Object.create(prototype);
           };
         if (props) Object.assign(result, props);
@@ -178,7 +197,7 @@
         // The constructor function for the new subclass is either defined by you
         // (the "constructor" property in your `extend` definition), or defaulted
         // by us to simply call the parent constructor.
-        if (protoProps && has(protoProps, 'constructor')) {
+        if (protoProps && Augmented.has(protoProps, 'constructor')) {
             child = protoProps.constructor;
         } else {
             child = function(){
@@ -187,11 +206,11 @@
         }
 
         // Add static properties to the constructor function, if supplied.
-        ex(child, parent, staticProps);
+        createAssigner(child, parent, staticProps);
 
         // Set the prototype chain to inherit from `parent`, without calling
         // `parent`'s constructor function and add the prototype properties.
-        child.prototype = create(parent.prototype, protoProps);
+        child.prototype = Augmented.create(parent.prototype, protoProps);
         child.prototype.constructor = child;
 
         // Set a convenience property in case the parent's prototype is needed
@@ -434,7 +453,7 @@
      * @param {string} variable to check
      * @returns {boolean} true if value is a string
      */
-    var isString = Augmented.isString = function(val) {
+    Augmented.isString = function(val) {
         return typeof val === 'string' ||
             ((!!val && typeof val === 'object') &&
             Object.prototype.toString.call(val) === '[object String]');
@@ -537,7 +556,7 @@
      *         failure: function (data, status) { ... }
      *     });
      */
-    var ajax = Augmented.ajax = Augmented.Ajax.ajax = function(ajaxObject) {
+    Augmented.ajax = Augmented.Ajax.ajax = function(ajaxObject) {
         logger.debug("AUGMENTED: Ajax object: " + JSON.stringify(ajaxObject));
         var xhr = null;
   		if (ajaxObject && ajaxObject.url) {
@@ -570,6 +589,10 @@
 	            (ajaxObject.password !== undefined) ? ajaxObject.password : '');
     	    xhr.setRequestHeader('Content-Type', (ajaxObject.contentType) ? ajaxObject.contentType : 'text/plain');
 
+            if (ajaxObject.dataType === "json") {
+                xhr.setRequestHeader("Accept", "application/json");
+            }
+
     	    if (!cache) {
                 xhr.setRequestHeader('Cache-Control', 'no-cache');
     	    }
@@ -594,31 +617,49 @@
             }
 
     	    xhr.onload = function() {
-    		    if (xhr.status > 199 && xhr.status < 300) {
-                    if (ajaxObject.success) {
-                        if ((xhr.responseType === "" || xhr.responseType === "text" || (xhr.responseType === "json" && !xhr.response))) {
-                            ajaxObject.success(xhr.responseText, xhr.status, xhr);
-                        } else if (xhr.responseType === "json") {
-                            // should this have any special behavior?
-                            if (!xhr.response) {
-                                logger.debug("AUGMENTED: Ajax (JSON responseType) parsed JSON from string.");
-                                ajaxObject.success(JSON.parse(xhr.responseText), xhr.status, xhr);
+                try {
+        		    if (xhr.status > 199 && xhr.status < 300) {
+                        if (ajaxObject.success) {
+                            if (xhr.responseType === "" || xhr.responseType === "text") {
+                                if (xhr.responseText) {
+                                    ajaxObject.success(xhr.responseText, xhr.status, xhr);
+                                } else {
+                                    logger.warn("AUGMENTED: Ajax (" + xhr.responseType + " responseType) did not return anything.");
+                                    ajaxObject.success("", xhr.status, xhr);
+                                }
+                            } else if (xhr.responseType === "json") {
+                                if (xhr.response) {
+                                    logger.debug("AUGMENTED: Ajax (JSON responseType) native JSON.");
+                                    ajaxObject.success(xhr.response, xhr.status, xhr);
+                                } else if (xhr.responseText) {
+                                    logger.debug("AUGMENTED: Ajax (JSON responseType) parsed JSON from string.");
+                                    ajaxObject.success(JSON.parse(xhr.responseText), xhr.status, xhr);
+                                } else {
+                                    logger.warn("AUGMENTED: Ajax (" + xhr.responseType + " responseType) did not return anything.");
+                                    ajaxObject.success("", xhr.status, xhr);
+                                }
                             } else {
-                                logger.debug("AUGMENTED: Ajax (JSON responseType) native JSON.");
-                                ajaxObject.success(xhr.response, xhr.status, xhr);
+                                if (xhr.responseText) {
+                                    ajaxObject.success(xhr.responseText, xhr.status, xhr);
+                                } else if (xhr.response) {
+                                    ajaxObject.success(xhr.response, xhr.status, xhr);
+                                } else {
+                                    logger.warn("AUGMENTED: Ajax (" + xhr.responseType + " responseType) did not return anything.");
+                                    ajaxObject.success("", xhr.status, xhr);
+                                }
                             }
-                        } else {
-                            ajaxObject.success(xhr.response, xhr.status, xhr);
                         }
-                    }
-
-    		    } else if (xhr.status > 399 && xhr.status < 600) {
-                    if (ajaxObject.failure) {
-                        ajaxObject.failure(xhr, xhr.status, xhr.statusText);
-                    } else if (ajaxObject.error) {
-                        ajaxObject.error(xhr, xhr.status, xhr.statusText);
-                    }
-    		    }
+        		    } else if (xhr.status > 399 && xhr.status < 600) {
+                        if (ajaxObject.failure) {
+                            ajaxObject.failure(xhr, xhr.status, xhr.statusText);
+                        } else if (ajaxObject.error) {
+                            ajaxObject.error(xhr, xhr.status, xhr.statusText);
+                        }
+        		    }
+                } catch(e) {
+                    logger.error("AUGMENTED: Ajax (" + e + ")");
+                    ajaxObject.error(xhr, xhr.status, xhr.statusText);
+                }
                 if (ajaxObject.complete) {
                     ajaxObject.complete(xhr, xhr.status);
                 }
@@ -641,7 +682,7 @@
     };
 
     /* Overide Backbone.ajax so models and collections use Augmented Ajax instead */
-    Backbone.ajax = ajax;
+    Backbone.ajax = Augmented.ajax;
 
     /**
      * @namespace Augmented.Logger
@@ -809,7 +850,7 @@
         this.uri = uri;
     };
     restLogger.prototype.logMe = function(message) {
-        ajax({
+        Augmented.ajax({
             url: this.uri,
             method: "POST",
             contentType: 'text/plain',
@@ -1313,7 +1354,7 @@
      */
     authenticate: function(username, password) {
         var c = null;
-        ajax({
+        Augmented.ajax({
             url: this.uri,
             method: "GET",
             user: username,
@@ -3233,7 +3274,7 @@
        * @param settings
        */
     	function loadAndParseFile(filename, settings) {
-    	    ajax({
+    	    Augmented.ajax({
     		url: filename,
     		async: false,
     		cache: settings.cache,

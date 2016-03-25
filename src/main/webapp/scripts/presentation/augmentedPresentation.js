@@ -25,6 +25,7 @@
 	    window.Augmented.Presentation = moduleFactory(window.Augmented);
     }
 }(function(Augmented) {
+    "use strict";
     /**
      * The base namespece for all of the Presentation module.
      * @namespace Presentation
@@ -42,7 +43,7 @@
      * A private logger for use in the framework only
      * @private
      */
-    var logger = Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.console, Augmented.Configuration.LoggerLevel);
+    var logger = Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.Type.console, Augmented.Configuration.LoggerLevel);
 
     /*
      * Mediator View
@@ -590,9 +591,9 @@
         html = html + "</thead><tbody>";
         if (data) {
             if (editable) {
-                html = html + editableTableBody(data, lineNumbers, sortKey);
+                html = html + editableTableBody(data, columns, lineNumbers, sortKey);
             } else {
-                html = html + defaultTableBody(data, lineNumbers, sortKey);
+                html = html + defaultTableBody(data, columns, lineNumbers, sortKey);
             }
         }
         html = html + "</tbody></table>";
@@ -622,7 +623,7 @@
         return html;
     };
 
-    var defaultTableBody = function(data, lineNumbers, sortKey) {
+    var defaultTableBody = function(data, columns, lineNumbers, sortKey) {
         var i, d, dkey, dobj, html = "", l = data.length, t;
         for (i = 0; i < l; i++) {
             d = data[i];
@@ -646,7 +647,7 @@
         return html;
     };
 
-    var editableTableBody = function(data, lineNumbers, sortKey) {
+    var editableTableBody = function(data, columns, lineNumbers, sortKey) {
         var i, d, dkey, dobj, html = "", l = data.length, t;
         for (i = 0; i < l; i++) {
             d = data[i];
@@ -975,7 +976,26 @@
                     this.collection = new Augmented.Collection();
                 }
                 if (options.schema) {
-                    this.schema = options.schema;
+                    // TODO: check if this is a schema vs a URI to get a schema
+                    if (Augmented.isObject(options.schema)) {
+                        this.schema = options.schema;
+                    } else {
+                        // is a URI?
+                        var parsedSchema = null;
+                        try {
+                            parsedSchema = JSON.parse(options.schema);
+                            if (parsedSchema && Augmented.isObject(parsedSchema)) {
+                                this.schema = parsedSchema;
+                            }
+                        } catch(e) {
+                            logger.warn("AUGMENTED: AutoTable parsing string schema failed.  URI perhaps?");
+                        }
+                        if (!this.schema) {
+                            this.retrieveSchema(options.schema);
+                            this.isInitalized = false;
+                            //return false;
+                        }
+                    }
                 }
 
                 if (options.el) {
@@ -1015,24 +1035,49 @@
             if (this.uri) {
                 this.collection.url = this.uri;
             }
-            if (!this.schema) {
+            this.collection.crossOrigin = this.crossOrigin;
+
+            if (this.schema) {
+                if (this.schema.title) {
+                    this.name = this.schema.title;
+                }
+                if (this.schema.description) {
+                    this.description = this.schema.description;
+                }
+
+                if (!this.isInitalized) {
+                    this.columns = this.schema.properties;
+                    this.collection.schema = this.schema;
+                    this.isInitalized = true;
+                }
+
+            } else {
                 this.isInitalized = false;
                 return false;
             }
-            if (!this.isInitalized) {
-                this.columns = this.schema.properties;
-                this.collection.schema = this.schema;
-                this.isInitalized = true;
-            }
-            if (this.schema.title) {
-                this.name = this.schema.title;
-            }
-            if (this.schema.description) {
-                this.description = this.schema.description;
-            }
-            this.collection.crossOrigin = this.crossOrigin;
 
             return this.isInitalized;
+        },
+        retrieveSchema: function(uri){
+            var that = this;
+            var schema = null;
+            Augmented.ajax({
+                url: uri,
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(data, status) {
+                    if (typeof data === "string") {
+                        schema = JSON.parse(data);
+                    } else {
+                        schema = data;
+                    }
+                    var options = { "schema": schema };
+                    that.initialize(options);
+                },
+                failure: function(data, status) {
+                    logger.warn("AUGMENTED: AutoTable Failed to fetch schema!");
+                }
+            });
         },
         /**
          * Fetch the data from the source URI
@@ -1181,9 +1226,9 @@
                     this.$el("thead").html(defaultTableHeader(this.columns, this.lineNumbers, this.sortKey));
                     var jh = "";
                     if (this.editable) {
-                        jh = editableTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                        jh = editableTableBody(this.collection.toJSON(), this.columns, this.lineNumbers, this.sortKey);
                     } else {
-                        jh = defaultTableBody(this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                        jh = defaultTableBody(this.collection.toJSON(), this.columns, this.lineNumbers, this.sortKey);
                     }
                     if (this.editable) {
                         this.unbindCellChangeEvents();
@@ -1249,6 +1294,13 @@
             for(i=0; i < l; i++) {
                 cells[i].addEventListener("change", this.saveCell.bind(this), false);
             }
+            // bind the select boxes as well
+            cells = [].slice.call(document.querySelectorAll(myEl + " table tr td select"));
+            i=0;
+            l=cells.length;
+            for(i=0; i < l; i++) {
+                cells[i].addEventListener("change", this.saveCell.bind(this), false);
+            }
         },
 
         /**
@@ -1258,6 +1310,13 @@
             var myEl = (typeof this.el === 'string') ? this.el : this.el.localName;
             var cells = [].slice.call(document.querySelectorAll(myEl + " table tr td input"));
             var i=0, l=cells.length;
+            for(i=0; i < l; i++) {
+                cells[i].removeEventListener("change", this.saveCell, false);
+            }
+            // unbind the select boxes as well
+            cells = [].slice.call(document.querySelectorAll(myEl + " table tr td select"));
+            i=0;
+            l=cells.length;
             for(i=0; i < l; i++) {
                 cells[i].removeEventListener("change", this.saveCell, false);
             }
@@ -1510,9 +1569,9 @@
         table.appendChild(tbody);
         if (data) {
             if (editable) {
-                directDOMEditableTableBody(tbody, data, lineNumbers, sortKey);
+                directDOMEditableTableBody(tbody, data, columns, lineNumbers, sortKey);
             } else {
-                directDOMTableBody(tbody, data, lineNumbers, sortKey);
+                directDOMTableBody(tbody, data, columns, lineNumbers, sortKey);
             }
         }
         el.appendChild(table);
@@ -1552,8 +1611,8 @@
         }
     };
 
-    var directDOMTableBody = function(el, data, lineNumbers, sortKey) {
-        var i, d, dkey, dobj, l = data.length, t, td, tn, tr;
+    var directDOMTableBody = function(el, data, columns, lineNumbers, sortKey) {
+        var i, d, dkey, dobj, l = data.length, t, td, tn, tr, cobj;
         for (i = 0; i < l; i++) {
             d = data[i];
             tr = document.createElement("tr");
@@ -1568,6 +1627,8 @@
             for (dkey in d) {
                 if (d.hasOwnProperty(dkey)) {
                     dobj = d[dkey];
+                    //cobj = columns[dkey];
+                    //logger.debug("AUGMENTED: AutoTable column key: " + cobj);
                     t = (typeof dobj);
 
                     td = document.createElement("td");
@@ -1586,22 +1647,28 @@
         }
     };
 
-    var directDOMEditableTableBody = function(el, data, lineNumbers, sortKey) {
-        var i, d, dkey, dobj, l = data.length, t, td, tn, tr, input;
+    var directDOMEditableTableBody = function(el, data, columns, lineNumbers, sortKey) {
+        var i, d, dkey, dobj, l = data.length, t, td, tn, tr, input, cobj, ln;
+        ln = lineNumbers;
         for (i = 0; i < l; i++) {
             d = data[i];
             tr = document.createElement("tr");
 
-            if (lineNumbers) {
+            if (ln) {
                 td = document.createElement("td");
                 tn = document.createTextNode("" + (i+1));
                 td.appendChild(tn);
                 td.classList.add("label", "number");
                 tr.appendChild(td);
             }
+
             for (dkey in d) {
                 if (d.hasOwnProperty(dkey)) {
+                    cobj = (columns[dkey]) ? columns[dkey] : {};
                     dobj = d[dkey];
+
+                    logger.debug("column type: " + JSON.stringify(cobj));
+
                     t = (typeof dobj);
 
                     td = document.createElement("td");
@@ -1612,27 +1679,86 @@
                     td.setAttribute(tableDataAttributes.type, t);
 
                     // input field
-                    input = document.createElement("input");
-                    if (t === "boolean") {
+
+                    if (t === "object") {
+                        if (Array.isArray(dobj)) {
+                            var iii = 0, lll = dobj.length, option, tOption;
+                            input = document.createElement("select");
+                            for (iii = 0; iii < lll; iii++) {
+                                option = document.createElement("option");
+                                option.setAttribute("value", dobj[iii]);
+                                tOption = document.createTextNode(dobj[iii]);
+                                option.appendChild(tOption);
+                                input.appendChild(option);
+                            }
+                        } else {
+                            input = document.createElement("textarea");
+                            input.value = JSON.stringify(dobj);
+                        }
+                    } else if (t === "boolean") {
+                        input = document.createElement("input");
                         input.setAttribute("type", "checkbox");
                         if (dobj === true) {
                             input.setAttribute("checked", "checked");
                         }
+                        input.value = dobj;
                     } else if (t === "number") {
+                        input = document.createElement("input");
                         input.setAttribute("type", "number");
-                    } else if (t === "array") {
-                        input.setAttribute("type", "radio");
-                        if (dobj === true) {
-                            input.setAttribute("checked", "checked");
+                        input.value = dobj;
+                    } else if (t === "string" && cobj.enum) {
+                        input = document.createElement("select");
+                        var iii = 0, lll = cobj.enum.length, option, tOption;
+                        for (iii = 0; iii < lll; iii++) {
+                            option = document.createElement("option");
+                            option.setAttribute("value", cobj.enum[iii]);
+                            tOption = document.createTextNode(cobj.enum[iii]);
+                            if (dobj === cobj.enum[iii]) {
+                                option.setAttribute("selected", "selected");
+                            }
+                            option.appendChild(tOption);
+                            input.appendChild(option);
                         }
+                    } else if (t === "string" && (cobj.format === "email")) {
+                        input = document.createElement("input");
+                        input.setAttribute("type", "email");
+                        input.value = dobj;
+                    } else if (t === "string" && (cobj.format === "uri")) {
+                        input = document.createElement("input");
+                        input.setAttribute("type", "url");
+                        input.value = dobj;
+                    } else if (t === "string" && (cobj.format === "date-time")) {
+                        input = document.createElement("input");
+                        input.setAttribute("type", "datetime");
+                        input.value = dobj;
                     } else {
+                        input = document.createElement("input");
                         input.setAttribute("type", "text");
+                        input.value = dobj;
+                    }
+
+                    if (t === "string" && cobj.pattern) {
+                        input.setAttribute("pattern", cobj.pattern);
+                    }
+
+                    if (cobj.minimum) {
+                        input.setAttribute("min", cobj.minimum);
+                    }
+
+                    if (cobj.maximum) {
+                        input.setAttribute("max", cobj.maximum);
+                    }
+
+                    if (t === "string" && cobj.minlength) {
+                        input.setAttribute("minlength", cobj.minlength);
+                    }
+
+                    if (t === "string" && cobj.maxlength) {
+                        input.setAttribute("maxlength", cobj.maxlength);
                     }
 
                     input.setAttribute(tableDataAttributes.name, dkey);
                     input.setAttribute(tableDataAttributes.index, i);
-
-                    input.value = dobj;
 
                     td.appendChild(input);
 
@@ -1691,12 +1817,27 @@
      * @constructor Augmented.Presentation.DirectDOMAutomaticTable
      * @extends Augmented.Presentation.AutomaticTable
      * @memberof Augmented.Presentation
+     * @example
+     * var myAt = Augmented.Presentation.DirectDOMAutomaticTable.extend({ ... });
+     * var at = new myAt({
+     *     schema : schema,
+     *     el: "#autoTable",
+     *     crossOrigin: false,
+     *     sortable: true,
+     *     lineNumbers: true,
+     *     editable: true,
+     *     uri: "/example/data/table.json"
+     * });
      */
     Augmented.Presentation.DirectDOMAutomaticTable = Augmented.Presentation.AutomaticTable.extend({
         compileTemplate: function() {
             return "";
         },
         render: function() {
+            if (!this.isInitalized) {
+                logger.warn("AUGMENTED: AutoTable Can't render yet, not initialized!");
+                return this;
+            }
             var e;
             if (this.template) {
                 // refresh the table body only
@@ -1728,9 +1869,9 @@
                                 tbody.removeChild(tbody.lastChild);
                             }
                             if (this.editable) {
-                                directDOMEditableTableBody(tbody, this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                                directDOMEditableTableBody(tbody, this.collection.toJSON(), this.columns, this.lineNumbers, this.sortKey);
                             } else {
-                                directDOMTableBody(tbody, this.collection.toJSON(), this.lineNumbers, this.sortKey);
+                                directDOMTableBody(tbody, this.collection.toJSON(), this.columns, this.lineNumbers, this.sortKey);
                             }
                         } else {
                             while (tbody.hasChildNodes()) {
@@ -1798,9 +1939,9 @@
      * Augmented.Presentation.BigDataTable
      * Instance class preconfigured for sorting and pagination
      * @constructor Augmented.Presentation.BigDataTable
-     * @extends Augmented.Presentation.AutomaticTable
+     * @extends Augmented.Presentation.DirectDOMAutomaticTable
      */
-    Augmented.Presentation.BigDataTable = Augmented.Presentation.AutomaticTable.extend({
+    Augmented.Presentation.BigDataTable = Augmented.Presentation.DirectDOMAutomaticTable.extend({
         renderPaginationControl: true,
         lineNumbers: true,
         sortable: true
@@ -1810,9 +1951,9 @@
      * Augmented.Presentation.EditableTable
      * Instance class preconfigured for editing
      * @constructor Augmented.Presentation.EditableTable
-     * @extends Augmented.Presentation.AutomaticTable
+     * @extends Augmented.Presentation.DirectDOMAutomaticTable
      */
-    Augmented.Presentation.EditableTable = Augmented.Presentation.AutomaticTable.extend({
+    Augmented.Presentation.EditableTable = Augmented.Presentation.DirectDOMAutomaticTable.extend({
         editable: true,
         lineNumbers: true
     });
@@ -1821,9 +1962,9 @@
      * Augmented.Presentation.EditableBigDataTable
      * Instance class preconfigured for editing, sorting, and pagination
      * @constructor Augmented.Presentation.EditableBigDataTable
-     * @extends Augmented.Presentation.AutomaticTable
+     * @extends Augmented.Presentation.DirectDOMAutomaticTable
      */
-    Augmented.Presentation.EditableBigDataTable = Augmented.Presentation.AutomaticTable.extend({
+    Augmented.Presentation.EditableBigDataTable = Augmented.Presentation.DirectDOMAutomaticTable.extend({
         renderPaginationControl: true,
         lineNumbers: true,
         sortable: true,
@@ -1834,9 +1975,9 @@
      * Augmented.Presentation.LocalStorageTable
      * Instance class preconfigured for local storage-based table
      * @constructor Augmented.Presentation.LocalStorageTable
-     * @extends Augmented.Presentation.AutomaticTable
+     * @extends Augmented.Presentation.DirectDOMAutomaticTable
      */
-    Augmented.Presentation.LocalStorageTable = Augmented.Presentation.AutomaticTable.extend({
+    Augmented.Presentation.LocalStorageTable = Augmented.Presentation.DirectDOMAutomaticTable.extend({
         renderPaginationControl: false,
         lineNumbers: true,
         sortable: true,
@@ -1848,9 +1989,9 @@
      * Augmented.Presentation.EditableLocalStorageTable
      * Instance class preconfigured for editing, sorting, from local storage
      * @constructor Augmented.Presentation.EditableLocalStorageTable
-     * @extends Augmented.Presentation.AutomaticTable
+     * @extends Augmented.Presentation.DirectDOMAutomaticTable
      */
-    Augmented.Presentation.EditableLocalStorageTable = Augmented.Presentation.AutomaticTable.extend({
+    Augmented.Presentation.EditableLocalStorageTable = Augmented.Presentation.DirectDOMAutomaticTable.extend({
         renderPaginationControl: false,
         lineNumbers: true,
         sortable: true,
