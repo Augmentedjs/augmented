@@ -976,7 +976,7 @@
                     this.collection = new Augmented.Collection();
                 }
                 if (options.schema) {
-                    // TODO: check if this is a schema vs a URI to get a schema
+                    // check if this is a schema vs a URI to get a schema
                     if (Augmented.isObject(options.schema)) {
                         this.schema = options.schema;
                     } else {
@@ -1997,6 +1997,92 @@
         sortable: true,
         editable: true,
         localStorage: true
+    });
+
+    var decoratorEventAttributeEnum = {
+            "click": "data-click"
+
+    };
+
+    /* Decorator View */
+    Augmented.Presentation.DecoratorView = Augmented.Presentation.Colleague.extend({
+        events: function(){
+            var _events = {};
+            if (this.name) {
+                _events["change input[" + this.bindingAttribute() + "]"] = "changed";
+                _events["change textarea[" + this.bindingAttribute() + "]"] = "changed";
+                _events["change select[" + this.bindingAttribute() + "]"] = "changed";
+                _events["click button[" + this.bindingAttribute() + "]"] = "click";
+            }
+            return _events;
+        },
+        changed: function(event) {
+            this.model.set(event.currentTarget.name, event.currentTarget.value);
+            logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
+        },
+        click: function(event) {
+            var func = event.currentTarget.getAttribute(decoratorEventAttributeEnum.click);
+            if (func && this[func]) {
+                this._executeFunctionByName(func, this, event);
+            } else {
+                logger.debug("AUGMENTED: DecoratorView No function bound or no function exists! " + func);
+            }
+        },
+        initialize: function(options) {
+            this.init(options);
+            this.model = new Augmented.Model();
+        },
+        _executeFunctionByName: function(functionName, context /*, args */) {
+            var args = Array.prototype.slice.call(arguments, 2);
+            var namespaces = functionName.split(".");
+            var func = namespaces.pop();
+            for (var i = 0; i < namespaces.length; i++) {
+                context = context[namespaces[i]];
+            }
+            return context[func].apply(context, args);
+        },
+        bindingAttribute: function() {
+            return "data-" + this.name;
+        },
+        injectTemplate: function(template, mount) {
+            var domInject = false, m = mount;
+            if (!mount) {
+                mount = this.el;
+            }
+            if (Augmented.isString(mount)) {
+                mount = document.querySelector(mount);
+            }
+            if (Augmented.isString(template)) {
+                // html
+                domInject = false;
+
+            } else if (template.nodeType > 0) {
+                // DOM
+                domInject = true;
+            }
+
+            if (domInject) {
+                mount.appendChild(template);
+            } else {
+                var currentHTML = mount.innerHTML;
+                mount.innerHTML = currentHTML + template;
+            }
+            this.delegateEvents();
+        },
+        removeTemplate: function(mount) {
+            while (mount.firstChild) {
+                mount.removeChild(mount.firstChild);
+            }
+            var p = mount.parentNode;
+            p.removeChild(mount);
+            this.delegateEvents();
+        },
+        boundElement: function(id) {
+            if (this.el && id) {
+                return this.el.querySelector("[" + this.bindingAttribute() + "=" + id + "]");
+            }
+            return null;
+        }
     });
 
 
