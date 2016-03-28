@@ -4,7 +4,7 @@
   "description": "The Augmented.js Framework.",
   "main": "src/main/scripts/core/augmented.js",
   "scripts": {
-    "test": "mocha",
+    "test": "karma start my.conf.js",
     "test-coverage": "npm test && istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
     "install-local": "npm install -g mocha & npm install -g node-inspector & npm install"
   },
