@@ -3,7 +3,7 @@ define([
 ], function(
 	Augmented
 ) {
-    describe('Given Resource Bundle Support and Message Utilities', function() {
+    xdescribe('Given Resource Bundle Support and Message Utilities', function() {
         Augmented.Utility.ResourceBundle.getBundle({
             name: 'scripts/bundle/Messages',
             mode: 'both',

@@ -1032,11 +1032,13 @@
                     this.uri = null;
                 }
             }
-            if (this.uri) {
+
+            if (this.collection && this.uri) {
                 this.collection.url = this.uri;
             }
-            this.collection.crossOrigin = this.crossOrigin;
-
+            if (this.collection) {
+                this.collection.crossOrigin = this.crossOrigin;
+            }
             if (this.schema) {
                 if (this.schema.title) {
                     this.name = this.schema.title;
@@ -2030,7 +2032,9 @@
         },
         initialize: function(options) {
             this.init(options);
-            this.model = new Augmented.Model();
+            if (!this.model) {
+                this.model = new Augmented.Model();
+            }
         },
         _executeFunctionByName: function(functionName, context /*, args */) {
             var args = Array.prototype.slice.call(arguments, 2);
