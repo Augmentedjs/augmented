@@ -6,7 +6,7 @@ module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    //basePath: '.',
+    basePath: './src/main/webapp',
 
 
     // frameworks to use
@@ -18,8 +18,13 @@ module.exports = function(config) {
     files: [
    //   'test-main.js',
     //	'scripts/**/*.js',
-    {pattern: 'scripts/**/*.js', included: false},
-    {pattern: 'scripts/**/*Spec.js', included: false},
+  //  {pattern: 'scripts/**/*.js', included: false},
+  //  {pattern: 'scripts/**/*Spec.js', included: false},
+    {pattern: 'scripts/core/augmented.js', included: false},
+    {pattern: 'scripts/lib/backbone-min.js', included: false},
+    {pattern: 'scripts/lib/lodash.min.js', included: false},
+    {pattern: 'scripts/lib/jquery-2.1.4.min.js', included: false},
+    {pattern: 'scripts/core/test/utilitySpec.js', included: false},
       {pattern: 'test-main.js', included: true}
     ],
 
