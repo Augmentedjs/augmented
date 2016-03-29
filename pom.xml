@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>augmented</groupId>
+	<artifactId>augmented</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.kelveden</groupId>
+				<artifactId>maven-karma-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<karmaExecutable>${basedir}/node_modules/.bin/karma</karmaExecutable>
+					<configFile>my.conf.js</configFile>
+					<junitReportFile>src/main/webapp/resources/test-results.xml</junitReportFile>
+					<reportsDirectory>${project.build.directory}/karma-reports</reportsDirectory>
+					<browsers>PhantomJS</browsers>
+					<autoWatch>false</autoWatch>
+					<singleRun>true</singleRun>
+					<colors>true</colors>
+					<skipKarma>false</skipKarma>
+					<skipTests>false</skipTests>
+					<karmaFailureIgnore>false</karmaFailureIgnore>
+					<reporters>dots,junit</reporters>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -29,7 +29,7 @@ module.exports = function(config) {
     {pattern: 'scripts/bundle/Messages_en-US.properties', included: false},
     {pattern: 'scripts/bundle/Messages_en.properties', included: false},
     {pattern: 'scripts/bundle/Messages.properties', included: false},
-////    {pattern: 'scripts/core/test/ajaxSpec.js', included: false},
+  //  {pattern: 'scripts/core/test/ajaxSpec.js', included: false},
     {pattern: 'scripts/core/test/applicationSpec.js', included: false},
     {pattern: 'scripts/core/test/collectionSpec.js', included: false},
     {pattern: 'scripts/core/test/asyncQueueSpec.js', included: false},
@@ -66,7 +66,17 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'junit'],
+    
+    // the default configuration
+    junitReporter: {
+      outputDir: '', // results will be saved as $outputDir/$browserName.xml
+      outputFile: undefined, // if included, results will be saved as $outputDir/$browserName/$outputFile
+      suite: '', // suite will become the package name attribute in xml testsuite element
+      useBrowserName: true, // add browser name to report and classes names
+      nameFormatter: undefined, // function (browser, result) to customize the name attribute in xml testcase element
+      classNameFormatter: undefined // function (browser, result) to customize the classname attribute in xml testcase element
+    },
 
 
     // web server port
