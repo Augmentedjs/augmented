@@ -4,6 +4,15 @@ define([
 	Augmented
 ) {
 	describe('Given Basic ES5.1 or ES6', function() {
+
+        describe('Given an Array Utility', function() {
+          var arr = [ 'x', 'y', 'z'];
+          it('can check if an Array has an item', function() {
+            var au = new Augmented.Utility.Array(arr);
+            expect(au.has('z')).toBeTruthy();
+          });
+        });
+
 		describe('supports by native or polyfill', function() {
 			it('supports Object.keys', function() {
 				expect(Object.keys).toBeDefined();

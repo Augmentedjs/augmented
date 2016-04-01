@@ -4,7 +4,7 @@
   "description": "The Augmented.js Framework.",
   "main": "src/main/scripts/core/augmented.js",
   "scripts": {
-    "test": "mocha",
+    "test": "karma start my.conf.js",
     "test-coverage": "npm test && istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
     "install-local": "npm install -g mocha & npm install -g node-inspector & npm install"
   },
@@ -18,8 +18,19 @@
   "author": "Bob Warren <jedi.master@augmentedjs.com> (http://augmentedjs.com)",
   "license": "Apache-2.0",
   "devDependencies": {
-    "jquery": "^2.1.4",
     "backbone": "^1.2.3",
+    "jasmine-core": "^2.4.1",
+    "jquery": "^2.1.4",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^0.2.3",
+    "karma-firefox-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.8",
+    "karma-junit-reporter": "^0.4.1",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-requirejs": "^0.2.6",
+    "phantomjs": "^2.1.3",
+    "phantomjs-prebuilt": "^2.1.7",
+    "requirejs": "^2.2.0",
     "underscore": "^1.8.3"
   },
   "dependencies": {
