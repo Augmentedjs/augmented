@@ -39,7 +39,7 @@ module.exports = function(config) {
     {pattern: 'scripts/core/test/modelSpec.js', included: false},
 ////  {pattern: 'scripts/core/test/resourceBundleSpec.js', included: false},
     {pattern: 'scripts/core/test/securitySpec.js', included: false},
-    {pattern: 'scripts/core/test/testTemplateSpec.js', included: false},
+//    {pattern: 'scripts/core/test/testTemplateSpec.js', included: false},
     {pattern: 'scripts/core/test/transformerSpec.js', included: false},
     {pattern: 'scripts/core/test/utilitySpec.js', included: false},
     {pattern: 'scripts/core/test/validationSpec.js', included: false},
