@@ -266,5 +266,13 @@ define([
                 expect(x).toBeTruthy();
             });
         });
+
+        describe('Given an object', function() {
+            var o = { "this": "this", "is": "is", "an": "an", "object": "object" };
+            it('can pretty print', function() {
+                var x = Augmented.Utility.PrettyPrint(o);
+                expect(x).not.toEqual("");
+            });
+        });
 	});
 });

@@ -322,6 +322,22 @@
     Augmented.Utility.classExtend = classExtend;
 
     /**
+     * Prints an object nicely
+     * @function PrettyPrint
+     * @namespace Augmented.Utility
+     * @param {object} obj The object to print
+     * @param {boolean} spaces Use spaces instead of tabs
+     * @returns {number} number The number of spaces to pad
+     */
+    Augmented.Utility.PrettyPrint = function(obj, spaces, number) {
+        var x = "\t";
+        if (spaces) {
+            x = " ".repeat(number);
+        }
+        return JSON.stringify(obj, null, x);
+    };
+
+    /**
      * Sorts an array by key
      * @function Sort
      * @namespace Augmented.Utility
@@ -1504,8 +1520,8 @@
     		";": true,
     		"?": true,
     		"&": true
-    	};
-    	var uriTemplateSuffices = {
+    	},
+        uriTemplateSuffices = {
     		"*": true
     	};
 
@@ -1823,9 +1839,9 @@
     	ValidatorContext.prototype.searchSchemas = function (schema, url) {
     	    if (Array.isArray(schema)) {
                 var i = 0, l = schema.length;
-    		for (i = 0; i < l; i++) {
-    		    this.searchSchemas(schema[i], url);
-    		}
+        		for (i = 0; i < l; i++) {
+        		    this.searchSchemas(schema[i], url);
+        		}
     	    } else if (schema && typeof schema === "object") {
     		if (typeof schema.id === "string") {
     		    if (isTrustedUrl(url, schema.id)) {
@@ -3128,6 +3144,36 @@
 	    }
     };
 
+    var schemaGenerator = function(data) {
+        var obj = {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "title": "model",
+            "description": "Generated Schema",
+            "type": "object",
+            "properties": { }
+        };
+
+        var i, d, dkey, p, keys = Object.keys(data), l = keys.length;
+        for (i = 0; i < l; i++) {
+            d = keys[i];
+            for (dkey in d) {
+                if (d.hasOwnProperty(dkey)) {
+                    p = obj.properties[d] = {};
+
+                    var t = (typeof data[d]);
+                    if (t === "object") {
+                        t = (Array.isArray(data[d])) ? "array" : "object";
+                    } else if (t === "number") {
+                        t = (Number.isInteger(data[d])) ? "integer" : "number";
+                    }
+                    p.type = t;
+                    p.description = String(d);
+                }
+            }
+        }
+        return obj;
+    };
+
     /**
      * Augmented.ValidationFramework -
      * The Validation Framework Base Wrapper Class.
@@ -3206,6 +3252,14 @@
     	this.getValidationMessages = function() {
     	    return myValidator.error;
     	};
+
+        this.generateSchema = function(model) {
+            if (model && model instanceof Augmented.Model) {
+                return schemaGenerator(model.toJSON());
+            }
+
+            return schemaGenerator(model);
+        };
     };
 
     Augmented.ValidationFramework = (!Augmented.ValidationFramework) ? new validationFramework() : Augmented.ValidationFramework;
@@ -3314,7 +3368,19 @@
 
             var ret = Augmented.sync(method, model, options);
     	    return ret;
-    	}
+    	},
+        /**
+         * Model.reset - clear and rewrite the model with passed data
+         * @method reset
+         * @memberof Augmented.Model
+         * @param {object} data The data to replace the model with (optional)
+         */
+        reset: function(data) {
+            this.clear();
+            if (data) {
+                this.set(data);
+            }
+        }
     });
 
     // Extend Model with Object base functions

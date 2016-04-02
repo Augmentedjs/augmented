@@ -27,5 +27,20 @@ define([
             model.url = "/info";
             expect(model.fetch()).toBeDefined();
         });
+
+        it('can reset with data', function() {
+            var model = new Augmented.Model();
+            model.set({ "y": "y" });
+            model.reset({ "x": "x" });
+
+            expect(model.get("x")).toEqual("x");
+            expect(model.get("y")).not.toBeDefined();
+        });
+
+        it('can set with data', function() {
+            var model = new Augmented.Model();
+            model.set({ "x": "x" });
+            expect(model.get("x")).toEqual("x");
+        });
     });
 });
