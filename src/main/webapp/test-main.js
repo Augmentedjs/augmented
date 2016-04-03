@@ -19,9 +19,9 @@ require.config({
 		'jquery': 'scripts/lib/jquery-2.1.4.min',
 		'underscore': 'scripts/lib/lodash.min',
 		'backbone': 'scripts/lib/backbone-min',
-		'handlebars': 'scripts/lib/handlebars-v4.0.2',
-		'text': 'scripts/lib/text',
-		'json': 'scripts/lib/json',
+		//'handlebars': 'scripts/lib/handlebars-v4.0.2',
+		//'text': 'scripts/lib/text',
+		//'json': 'scripts/lib/json',
 
 		'augmented': 'scripts/core/augmented',
 		'augmentedPresentation': 'scripts/presentation/augmentedPresentation',
@@ -31,45 +31,11 @@ require.config({
 // 		'jasmine': '../lib/jasmine-2.x/jasmine',
 // 		'jasmine_html': '../lib/jasmine-2.x/jasmine-html',
 // 		'boot': '../lib/jasmine-2.x/boot',
-         'jasmineajax': 'scripts/lib/mock-ajax'
+        'jasmineajax': 'scripts/lib/mock-ajax'
 
 	},
 	'shim': {
-		/*jquery: {
-			'exports': '$'
-		},
-		backbone: {
-			'deps': ['jquery', 'underscore', 'handlebars'],
-			'exports': 'Backbone'
-		},*/
-		underscore: {
-			'exports': '_'
-		},
-        /*
-		handlebars: {
-			'exports': 'Handlebars'
-		},
 
-		augmented: {
-			'deps': ['backbone'],
-			'exports': 'Augmented'
-		},
-
-		augmentedPresentation: {
-			'deps': ['augmented'],
-			'exports': 'augmentedPresentation'
-		},
-
-		augmentedService: {
-			'deps': ['jquery', 'mockjax', 'underscore', 'augmented'],
-			'exports': 'augmentedService'
-		},
-
-		augmentedLegacy: {
-			'deps': ['augmented'],
-			'exports': 'augmentedLegacy'
-		},
-*/
 	},
 	// ask Require.js to load these files (all our tests)
     deps: allTestFiles,
@@ -96,6 +62,7 @@ var specs = [ 'core/test/coreSpec',
               'presentation/test/autoTableSpec',
               'presentation/test/applicationSpec',
               'presentation/test/mediationSpec',
+              'presentation/test/decoratorViewSpec',
 
 
               //TODO: redo these to work with the new system
@@ -105,4 +72,3 @@ var specs = [ 'core/test/coreSpec',
               'legacy/test/polyfillSpec'
 
             ];
-            

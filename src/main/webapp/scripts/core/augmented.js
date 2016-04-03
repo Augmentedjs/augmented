@@ -260,6 +260,12 @@
         return Augmented.isFunction(value) ? value.call(object) : value;
     };
 
+    // Polyfill for ES6 function
+    if (!Number.isInteger) {
+        Number.isInteger = function(value) {
+            return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
+        };
+    }
 
     if (!Array.prototype.includes) {
         /**
@@ -4415,7 +4421,7 @@
                 Augmented.Utility.extend(this.queue, arguments);
             }
             var args = this.queue;
-            var l = args.length;
+            var l = Object.keys(args).length;//args.length;
             if (l <= 0) {
                 return false;
             }

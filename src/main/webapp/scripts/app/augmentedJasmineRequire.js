@@ -21,41 +21,6 @@ require.config({
 
 	},
 	'shim': {
-		/*jquery: {
-			'exports': '$'
-		},
-		backbone: {
-			'deps': ['jquery', 'underscore', 'handlebars'],
-			'exports': 'Backbone'
-		},*/
-		underscore: {
-			'exports': '_'
-		},
-        /*
-		handlebars: {
-			'exports': 'Handlebars'
-		},
-
-		augmented: {
-			'deps': ['backbone'],
-			'exports': 'Augmented'
-		},
-
-		augmentedPresentation: {
-			'deps': ['augmented'],
-			'exports': 'augmentedPresentation'
-		},
-
-		augmentedService: {
-			'deps': ['jquery', 'mockjax', 'underscore', 'augmented'],
-			'exports': 'augmentedService'
-		},
-
-		augmentedLegacy: {
-			'deps': ['augmented'],
-			'exports': 'augmentedLegacy'
-		},
-*/
 		jasmine: {
 			exports : 'window.jasmineRequire'
 		},
@@ -94,6 +59,7 @@ var specs = [ 'core/test/coreSpec',
               'presentation/test/autoTableSpec',
               'presentation/test/applicationSpec',
               'presentation/test/mediationSpec',
+              'presentation/test/decoratorViewSpec',
 
 
               //TODO: redo these to work with the new system

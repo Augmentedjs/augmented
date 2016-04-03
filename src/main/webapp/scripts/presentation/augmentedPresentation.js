@@ -2001,15 +2001,42 @@
         localStorage: true
     });
 
+    Augmented.Presentation.Dom = {
+        setValue: function(el, value) {
+            if (el.nodeType === 1) {
+                if (el.nodeName === "input" || el.nodeName === "INPUT" || el.nodeName === "textarea" || el.nodeName === "TEXTAREA") {
+                    el.value = value;
+                } else {
+                    el.innerHTML = value;
+                }
+            }
+        }
+    };
+
     var decoratorEventAttributeEnum = {
             "click": "data-click"
 
     };
 
-    /* Decorator View */
+    /**
+     * Augmented.Presentation.DecoratorView<br/>
+     * An MVVM view designed around decorating the DOM with bindings.
+     * This concept is designed to decouple the view from the backend contract.
+     * Although this is acheaved via views in general, the idea is:<br/>
+     * <blockquote>As a Javascript Developer, I'd like the ability to decorate HTML and control view rendering without the use of CSS selectors</blockquote>
+     * <em>Important to note: This view <strong>gives up</strong> it's template and events!
+     * This is because all events and templates are used on the DOM directly.</em><br/>
+     * To add custom events, use customEvents instead of 'events'
+     * @constructor Augmented.Presentation.DecoratorView
+     * @extends Augmented.Presentation.Colleague
+     */
     Augmented.Presentation.DecoratorView = Augmented.Presentation.Colleague.extend({
+        /**
+         * Events Property - Do Not Override
+         * @property Events
+         */
         events: function(){
-            var _events = {};
+            var _events = (this.customEvents) ? this.customEvents : {};
             if (this.name) {
                 _events["change input[" + this.bindingAttribute() + "]"] = "changed";
                 _events["change textarea[" + this.bindingAttribute() + "]"] = "changed";
@@ -2020,7 +2047,7 @@
         },
         changed: function(event) {
             this.model.set(event.currentTarget.name, event.currentTarget.value);
-            logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
+            //logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
         },
         click: function(event) {
             var func = event.currentTarget.getAttribute(decoratorEventAttributeEnum.click);
@@ -2030,12 +2057,21 @@
                 logger.debug("AUGMENTED: DecoratorView No function bound or no function exists! " + func);
             }
         },
+        /**
+         * Initialize method - Do Not Override
+         * @method initialize
+         */
         initialize: function(options) {
             this.init(options);
             if (!this.model) {
                 this.model = new Augmented.Model();
             }
         },
+        /**
+         * _executeFunctionByName method - Private
+         * @method _executeFunctionByName
+         * @private
+         */
         _executeFunctionByName: function(functionName, context /*, args */) {
             var args = Array.prototype.slice.call(arguments, 2);
             var namespaces = functionName.split(".");
@@ -2045,9 +2081,20 @@
             }
             return context[func].apply(context, args);
         },
+        /**
+         * bindingAttribute method - Returns the binging data attribute name
+         * @method bindingAttribute
+         * @returns {string} Binding attribute name
+         */
         bindingAttribute: function() {
             return "data-" + this.name;
         },
+        /**
+         * injectTemplate method - Injects a template at a mount point
+         * @method injectTemplate
+         * @param {string} template The template to inject
+         * @param {Element} mount The mouse point as Document.Element or String
+         */
         injectTemplate: function(template, mount) {
             var domInject = false, m = mount;
             if (!mount) {
@@ -2073,22 +2120,87 @@
             }
             this.delegateEvents();
         },
+        /**
+         * removeTemplate method - Removes a template (children) at a mount point
+         * @method removeTemplate
+         * @param {Element} mount The mouse point as Document.Element or String
+         */
         removeTemplate: function(mount) {
             while (mount.firstChild) {
                 mount.removeChild(mount.firstChild);
             }
             var p = mount.parentNode;
-            p.removeChild(mount);
-            this.delegateEvents();
+            if (p) {
+                p.removeChild(mount);
+                this.delegateEvents();
+            }
         },
+        /**
+         * boundElement method - returns the bound element from identifer
+         * @method boundElement
+         * @param {string} id The identifier (not id attribute) of the element
+         * @example
+         * from HTML: <div data-myMountedView="something" id="anything"></div>
+         * from JavaScript: var el = this.boundElement("something");
+         */
         boundElement: function(id) {
             if (this.el && id) {
                 return this.el.querySelector("[" + this.bindingAttribute() + "=" + id + "]");
             }
             return null;
+        },
+        /**
+         * bindModelChange method - binds the model changes to elements
+         * @method bindModelChange
+         * @param {func} func The function to call when changing (normally render)
+         */
+        bindModelChange: function(func) {
+            if (!this.model) {
+                this.model = new Augmented.Model();
+            }
+            this.model.on('change', func, this);
+        },
+        /**
+         * syncModelChange method - binds the model changes to a specified bound element
+         * @method syncModelChange
+         * @param {Element} element The element to bind as Document.Element or string
+         */
+        syncModelChange: function(element) {
+            if (!this.model) {
+                this.model = new Augmented.Model();
+            }
+            this.model.on('change:' + element, this._syncData.bind(this, element), this);
+        },
+        /**
+         * _syncData method - syncs the model changes to a specified bound element
+         * @method _syncData
+         * @param {Element} element The element to bind as Document.Element or string
+         * @private
+         */
+        _syncData: function(element) {
+            var e = this.boundElement(element);
+            if (e) {
+                var d = this.model.get(element);
+                Augmented.Presentation.Dom.setValue(e, ((d) ? d : ""));
+            }
+        },
+        /**
+         * unbindModelChange method - unbinds the model changes to elements
+         * @method unbindModelChange
+         * @param {func} func The function to call when changing (normally render)
+         */
+        unbindModelChange: function(func) {
+            this.model.unBind('change', func, this);
+        },
+        /**
+         * unbindModelSync method - unbinds the model changes to a specified bound element
+         * @method unbindModelSync
+         * @param {Element} element The element to bind as Document.Element or string
+         */
+        unbindModelSync: function(element) {
+            this.model.unBind('change:' + element, this._syncData, this);
         }
     });
-
 
     return Augmented.Presentation;
 }));
