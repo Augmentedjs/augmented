@@ -15,7 +15,7 @@
   "keywords": [
     "none"
   ],
-  "author": "Bob Warren <jedi.master@augmentedjs.com> (http://augmentedjs.com)",
+  "author": "Bob Warren <jedi.master@augmentedjs.com> (http://www.augmentedjs.com)",
   "license": "Apache-2.0",
   "devDependencies": {
     "backbone": "^1.2.3",
@@ -38,8 +38,13 @@
     "backbone": "^1.2.3",
     "underscore": "^1.8.3"
   },
+  "browserDependencies": {
+    "jquery": "^2.1.4",
+    "backbone": "^1.2.3",
+    "underscore": "^1.8.3"
+  },
   "bugs": {
     "url": "https://github.com/Augmentedjs/augmented/issues"
   },
-  "homepage": "https://github.com/Augmentedjs/augmented#readme"
+  "homepage": "http://www.augmentedjs.com"
 }
