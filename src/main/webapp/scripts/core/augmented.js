@@ -322,7 +322,7 @@
      * @method exec
      * @param {string} functionName The name of the function
      * @param {object} context The context to call from
-     * @param (object) args Arguments 
+     * @param (object) args Arguments
      */
     Augmented.exec = function(functionName, context /*, args */) {
         var args = Array.prototype.slice.call(arguments, 2);
@@ -1638,8 +1638,9 @@
     			if (showVariables) {
     			    result += varSpec.name + "=";
     			}
-                var j=0, l = value.length;
-    			for (var j = 0; j < l; j++) {
+                var j = 0;
+                l = value.length;
+    			for (j = 0; j < l; j++) {
     			    if (j > 0) {
     				result += varSpec.suffices['*'] ? (separator || ",") : ",";
     				if (varSpec.suffices['*'] && showVariables) {

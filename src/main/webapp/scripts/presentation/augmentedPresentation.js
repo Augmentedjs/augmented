@@ -2003,11 +2003,16 @@
 
     Augmented.Presentation.Dom = {
         setValue: function(el, value) {
-            if (el.nodeType === 1) {
-                if (el.nodeName === "input" || el.nodeName === "INPUT" || el.nodeName === "textarea" || el.nodeName === "TEXTAREA") {
-                    el.value = value;
-                } else {
-                    el.innerHTML = value;
+            if (el && value) {
+                var myEl = el;
+                if (typeof(el) === 'string') {
+                    myEl = document.querySelector(el);
+                }
+
+                if (myEl && (myEl.nodeType === 1) && (myEl.nodeName === "input" || myEl.nodeName === "INPUT" || myEl.nodeName === "textarea" || myEl.nodeName === "TEXTAREA")) {
+                    myEl.value = value;
+                } else if (myEl && (myEl.nodeType === 1)) {
+                    myEl.innerHTML = value;
                 }
             }
         }

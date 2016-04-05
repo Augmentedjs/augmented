@@ -5,9 +5,6 @@ require.config({
 		'jquery': 'lib/jquery-2.1.4.min',
 		'underscore': 'lib/lodash.min',
 		'backbone': 'lib/backbone-min',
-		'handlebars': 'lib/handlebars-v4.0.2',
-		'text': 'lib/text',
-		'json': 'lib/json',
 
 		'augmented': 'core/augmented',
 		'augmentedPresentation': 'presentation/augmentedPresentation',
@@ -22,7 +19,7 @@ require.config({
 	},
 	'shim': {
 		jasmine: {
-			exports : 'window.jasmineRequire'
+			exports: 'window.jasmineRequire'
 		},
 		jasmine_html: {
 			deps: [ 'jasmine' ],
@@ -34,7 +31,7 @@ require.config({
 		},
         jasmineajax: {
             deps: [ 'jasmine' ],
-            exports : 'jasmine-ajax'
+            exports: 'jasmine-ajax'
         }
 	}
 });
@@ -61,13 +58,11 @@ var specs = [ 'core/test/coreSpec',
               'presentation/test/mediationSpec',
               'presentation/test/decoratorViewSpec',
 
-
               //TODO: redo these to work with the new system
               //'service/test/mockServiceSpec',
 
 			  'legacy/test/applicationContextSpec',
               'legacy/test/polyfillSpec'
-
             ];
 
 // Load Jasmine - This will still create all of the normal Jasmine browser globals unless `boot.js` is re-written to use the
@@ -76,20 +71,16 @@ var specs = [ 'core/test/coreSpec',
 // initialize the HTML Reporter and execute the environment.
 require(['augmented', 'augmentedPresentation', 'boot'], function(Augmented, Presentation) {
     "use strict";
-    var app = new Augmented.Presentation.Application("Data Push");
+    var app = new Augmented.Presentation.Application("Jasmine Suite");
     //app.registerStylesheet("styles/main.css");
     app.registerStylesheet("https://fonts.googleapis.com/css?family=Roboto:100,300,400");
     app.start();
 
-    var versionLine = document.getElementById("augmented");
-    Augmented.Presentation.Dom.setValue(versionLine, "<span class=\"version\">Version " + Augmented.VERSION + " (" + Augmented.codename + ")</span>&emsp;<span class=\"release\">Release (" + Augmented.releasename + ")</span>");
-
-    //$("#augmented").html("Version " + Augmented.VERSION + " (" + Augmented.codename + ") Release " + Augmented.releasename);
+    Augmented.Presentation.Dom.setValue("h2#augmented", "<span class=\"version\">Version " + Augmented.VERSION + " (" + Augmented.codename + ")</span>&emsp;<span class=\"release\">Release (" + Augmented.releasename + ")</span>");
 
 	// Load the specs
 	require(specs, function() {
 		// Initialize the HTML Reporter and execute the environment (setup by `boot.js`)
 		window.onload();
-
 	});
 });

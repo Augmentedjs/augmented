@@ -17,10 +17,6 @@ define([
 			expect(typeof Augmented.noConflict === 'function').toBeTruthy();
 		});
 
-        it('test fail', function() {
-			expect(false).toBeTruthy();
-		});
-
         describe('Given an Augmented exec', function() {
             var object = {stuff: function() { return true; } };
 
