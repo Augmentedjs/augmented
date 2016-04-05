@@ -2073,13 +2073,14 @@
          * @private
          */
         _executeFunctionByName: function(functionName, context /*, args */) {
-            var args = Array.prototype.slice.call(arguments, 2);
+            /*var args = Array.prototype.slice.call(arguments, 2);
             var namespaces = functionName.split(".");
             var func = namespaces.pop();
             for (var i = 0; i < namespaces.length; i++) {
                 context = context[namespaces[i]];
             }
-            return context[func].apply(context, args);
+            return context[func].apply(context, args);*/
+            return Augmented.exec(functionName, context, arguments);
         },
         /**
          * bindingAttribute method - Returns the binging data attribute name

@@ -318,6 +318,23 @@
     };
 
     /**
+     * exec method - Execute a function by name
+     * @method exec
+     * @param {string} functionName The name of the function
+     * @param {object} context The context to call from
+     * @param (object) args Arguments 
+     */
+    Augmented.exec = function(functionName, context /*, args */) {
+        var args = Array.prototype.slice.call(arguments, 2);
+        var namespaces = functionName.split(".");
+        var func = namespaces.pop();
+        for (var i = 0; i < namespaces.length; i++) {
+            context = context[namespaces[i]];
+        }
+        return context[func].apply(context, args);
+    };
+
+    /**
      * Utility Package -
      * Small Utilities
      * @namespace Augmented.Utility

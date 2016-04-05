@@ -17,6 +17,23 @@ define([
 			expect(typeof Augmented.noConflict === 'function').toBeTruthy();
 		});
 
+        it('test fail', function() {
+			expect(false).toBeTruthy();
+		});
+
+        describe('Given an Augmented exec', function() {
+            var object = {stuff: function() { return true; } };
+
+			it('is defined', function() {
+				expect(Augmented.exec).toBeDefined();
+			});
+
+            it('can exec a function by name', function() {
+				expect(Augmented.exec("stuff", object)).toBeTruthy();
+			});
+
+        });
+
 		describe('Given an Augmented Object', function() {
 			it('is defined', function() {
 				expect(Augmented.Object).toBeDefined();
@@ -36,9 +53,21 @@ define([
 		});
 
 		describe('Given Augmented.isFunction', function() {
-			it('is defined', function() {
+            var o = {}, p = 123, f = function() { return true; };
+
+            it('is defined', function() {
 				expect(Augmented.isFunction).toBeDefined();
 			});
+
+            it('checks if object is an function', function() {
+                expect(Augmented.isFunction(o)).toBeFalsy();
+            });
+            it('checks if number is not an function', function() {
+                expect(Augmented.isFunction(p)).toBeFalsy();
+            });
+            it('checks if function is not an function', function() {
+                expect(Augmented.isFunction(f)).toBeTruthy();
+            });
 
 			it('returns true for a function call', function() {
 				var t = function() {};
@@ -144,20 +173,6 @@ define([
             });
             it('checks if function is an object', function() {
                 expect(Augmented.isObject(f)).toBeTruthy();
-            });
-        });
-
-        describe('Given Augmented isFunction', function() {
-            var o = {}, p = 123, f = function() { return true; };
-
-            it('checks if object is an function', function() {
-                expect(Augmented.isFunction(o)).toBeFalsy();
-            });
-            it('checks if number is not an function', function() {
-                expect(Augmented.isFunction(p)).toBeFalsy();
-            });
-            it('checks if function is not an function', function() {
-                expect(Augmented.isFunction(f)).toBeTruthy();
             });
         });
 
