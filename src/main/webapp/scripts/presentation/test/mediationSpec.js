@@ -36,7 +36,7 @@ define([
 					expect(c instanceof Augmented.Presentation.Colleague).toBeTruthy();
 				});
 
-				it('the mediator can subscribe a colleague', function() {
+				it('the mediator can observe a colleague', function() {
 					m.observeColleague(c, function() { return "EEAK!";});
 
 					var channels = m.getDefaultChannel();
@@ -62,6 +62,16 @@ define([
 					c.setSubscriptions();
 
 					expect(c.subscriptions).toBeDefined();
+				});
+
+                it('the mediator can dismiss colleagues from channel "monkey"', function() {
+                    m.observeColleague(c, function() { return "EEAK!";}, "monkey");
+                    m.dismissColleague(c, function() { return "EEAK!";}, "monkey");
+					var channels = m.getDefaultChannel();
+
+					expect(channels).toBeDefined();
+					expect(channels instanceof Array).toBeTruthy();
+					expect(channels[0].context).not.toEqual(c);
 				});
 			});
 		});
