@@ -2108,7 +2108,7 @@
      * Augmented.Presentation.DecoratorView<br/>
      * An MVVM view designed around decorating the DOM with bindings.
      * This concept is designed to decouple the view from the backend contract.
-     * Although this is acheaved via views in general, the idea is:<br/>
+     * Although this is achieved via views in general, the idea is:<br/>
      * <blockquote>As a Javascript Developer, I'd like the ability to decorate HTML and control view rendering without the use of CSS selectors</blockquote>
      * <em>Important to note: This view <strong>gives up</strong> it's template and events!
      * This is because all events and templates are used on the DOM directly.</em><br/>

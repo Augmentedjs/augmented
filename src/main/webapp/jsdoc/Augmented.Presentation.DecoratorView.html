@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Augmented.js Namespace: ResourceBundle</title>
+	<title>Augmented.js Class: DecoratorView</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -84,15 +84,15 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Namespace: ResourceBundle</h1>
+	<h1 class="page-title">Class: DecoratorView</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Augmented.Utility.html">.Utility</a>.</span>
+            <span class="ancestors"><a href="Augmented.Presentation.html">.Presentation</a>.</span>
         
-        ResourceBundle
+        DecoratorView
         </h2>
         
     
@@ -103,83 +103,9 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Augmented.Utility.ResourceBundle</p></div>
-        
-
-        
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-3064">line 3064</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
-            
 <hr>
 <dt>
-    <h4 class="name" id=".getBundle"><span class="type-signature">&lt;static> </span>getBundle(Bundle)</h4>
+    <h4 class="name" id="DecoratorView"><span class="type-signature"></span>new DecoratorView()</h4>
     
     
 </dt>
@@ -187,169 +113,8 @@
 
     
     <div class="description">
-        <p>Gets the bundle(s) and registers to Augmented.Utility.ResourceBundle</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>Bundle</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Augmented.Utility.BundleObject.html">Augmented.Utility.BundleObject</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>to get</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-3071">line 3071</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>returns a bundle</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".getString"><span class="type-signature">&lt;static> </span>getString()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>Gets a string from the registered bundle</p>
+        <p>Augmented.Presentation.DecoratorView<br/><br>An MVVM view designed around decorating the DOM with bindings.<br>This concept is designed to decouple the view from the backend contract.<br>Although this is achieved via views in general, the idea is:<br/></p>
+<p><blockquote>As a Javascript Developer, I'd like the ability to decorate HTML and control view rendering without the use of CSS selectors</blockquote><br><em>Important to note: This view <strong>gives up</strong> it's template and events!<br>This is because all events and templates are used on the DOM directly.</em><br/><br>To add custom events, use customEvents instead of 'events'</p>
     </div>
     
 
@@ -395,8 +160,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-3082">line 3082</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2107">line 2107</a>
 			</li>
 		</ul>
 	</dd>
@@ -425,7 +190,32 @@
     
 </dd>
 
-        </dl>
+    
+    </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="Augmented.Presentation.Colleague.html">Augmented.Presentation.Colleague</a></li>
+    </ul>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
     
 
     
