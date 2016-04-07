@@ -2082,19 +2082,105 @@
         localStorage: true
     });
 
+    /**
+     * DOM related functions
+     * @namespace Dom
+     * @memberof Augmented.Presentation
+     */
     Augmented.Presentation.Dom = {
-        setValue: function(el, value) {
+        /**
+         * Sets the value of an element<br/>
+         * Will detect the correct method to do so by element type
+         * @method setValue
+         * @param {Element} el Element or string of element selector
+         * @param {string} value Value to set (or HTML)
+         * @param {boolean} onlyText Value will set as text only
+         * @memberof Augmented.Presentation.Dom
+         */
+        setValue: function(el, value, onlyText) {
             if (el && value) {
-                var myEl = el;
-                if (typeof(el) === 'string') {
-                    myEl = document.querySelector(el);
-                }
+                var myEl = this.selector(el);
 
-                if (myEl && (myEl.nodeType === 1) && (myEl.nodeName === "input" || myEl.nodeName === "INPUT" || myEl.nodeName === "textarea" || myEl.nodeName === "TEXTAREA")) {
+                if (myEl && (myEl.nodeType === 1) &&
+                        (myEl.nodeName === "input" || myEl.nodeName === "INPUT" || myEl.nodeName === "textarea" || myEl.nodeName === "TEXTAREA")) {
                     myEl.value = value;
                 } else if (myEl && (myEl.nodeType === 1)) {
-                    myEl.innerHTML = value;
+                    if (onlyText){
+                        myEl.innerText = value;
+                    } else {
+                        myEl.innerHTML = value;
+                    }
                 }
+            }
+        },
+        /**
+         * Gets the value of an element<br/>
+         * Will detect the correct method to do so by element type
+         * @method getValue
+         * @param {Element} el Element or string of element selector
+         * @returns {string} Returns the value of the element (or HTML)
+         * @memberof Augmented.Presentation.Dom
+         */
+        getValue: function(el) {
+            if (el) {
+                var myEl = this.selector(el);
+
+                if (myEl && (myEl.nodeType === 1) &&
+                        (myEl.nodeName === "input" || myEl.nodeName === "INPUT" || myEl.nodeName === "textarea" || myEl.nodeName === "TEXTAREA")) {
+                    return myEl.value;
+                } else if (myEl && (myEl.nodeType === 1)) {
+                    return myEl.innerHTML;
+                }
+            }
+            return null;
+        },
+        /**
+         * Selector function<br/>
+         * Supports full query selection
+         * @method selector
+         * @param {string} query Element or string of element selector
+         * @returns {Element} Returns the element (or first of type)
+         * @memberof Augmented.Presentation.Dom
+         */
+        selector: function(query) {
+            return Augmented.isString(query) ? document.querySelector(query) : query;
+        },
+        /**
+         * Selectors function<br/>
+         * Supports full query selection
+         * @method selectors
+         * @param {string} query Element or string of element selector
+         * @returns {NodeList} Returns all the nodes selected
+         * @memberof Augmented.Presentation.Dom
+         */
+        selectors: function(query) {
+            return Augmented.isString(query) ? document.querySelectorAll(query) : query;
+        },
+        /**
+         * Hides an element
+         * @method hide
+         * @param {Element} el Element or string of element selector
+         * @memberof Augmented.Presentation.Dom
+         */
+        hide: function(el) {
+            var myEl = this.selector(el);
+            if (myEl) {
+                myEl.style.display = "none";
+                myEl.style.visibility = "hidden";
+            }
+        },
+        /**
+         * Shows an element
+         * @method show
+         * @param {Element} el Element or string of element selector
+         * @param {string} display Value to set for 'display' property (optional)
+         * @memberof Augmented.Presentation.Dom
+         */
+        show: function(el, display) {
+            var myEl = this.selector(el);
+            if (myEl) {
+                myEl.style.display = (display) ? display : "block";
+                myEl.style.visibility = "visible";
             }
         }
     };

@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Augmented.js Namespace: MessageKeyFormatter</title>
+	<title>Augmented.js Namespace: Dom</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -84,15 +84,15 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Namespace: MessageKeyFormatter</h1>
+	<h1 class="page-title">Namespace: Dom</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Augmented.Utility.html">.Utility</a>.</span>
+            <span class="ancestors"><a href="Augmented.Presentation.html">.Presentation</a>.</span>
         
-        MessageKeyFormatter
+        Dom
         </h2>
         
     
@@ -103,7 +103,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Augmented.Utility.MessageKeyFormatter<br/><br><br>Concatenate the pieces of the message together if a portion of the key is<br>missing, the rest of the key is ignored. <em>ex. if the &quot;rule&quot; attribute is<br>missing, then the key will return with the message.level + message.kind only</em></p></div>
+            <div class="description"><p>DOM related functions</p></div>
         
 
         
@@ -141,8 +141,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-3134">line 3134</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2085">line 2085</a>
 			</li>
 		</ul>
 	</dd>
@@ -170,133 +170,6 @@
 
     
 
-    
-        <h3 class="subsection-title">Members</h3>
-
-        <dl>
-            
-<hr>
-<dt class="name" id=".delimiter">
-    <h4><span class="type-signature">&lt;static> </span>delimiter<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>Key Delimiter</p>
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>delimiter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">srting</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The delimter used to seperate each key</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-3150">line 3150</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        </dl>
     
 
     
@@ -306,7 +179,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".format"><span class="type-signature">&lt;static> </span>format(message)</h4>
+    <h4 class="name" id=".getValue"><span class="type-signature">&lt;static> </span>getValue(el)</h4>
     
     
 </dt>
@@ -314,7 +187,7 @@
 
     
     <div class="description">
-        <p>Format a key for a message</p>
+        <p>Gets the value of an element<br/><br>Will detect the correct method to do so by element type</p>
     </div>
     
 
@@ -349,13 +222,13 @@
 
         <tr>
             
-                <td class="name"><code>message</code></td>
+                <td class="name"><code>el</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">message</span>
+<span class="param-type">Element</span>
 
 
 
@@ -366,7 +239,7 @@
 
             
 
-            <td class="description last"><p>The message to format</p></td>
+            <td class="description last"><p>Element or string of element selector</p></td>
         </tr>
 
     
@@ -410,8 +283,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-3151">line 3151</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2116">line 2116</a>
 			</li>
 		</ul>
 	</dd>
@@ -440,13 +313,836 @@
     
             
 <div class="param-desc">
-    <p>The key to lookup in a bundle</p>
+    <p>Returns the value of the element (or HTML)</p>
 </div>
 
 
 
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+
+    </dd>
+</dl>
+
 
         
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".hide"><span class="type-signature">&lt;static> </span>hide(el)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Hides an element</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>el</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Element</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Element or string of element selector</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2159">line 2159</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".selector"><span class="type-signature">&lt;static> </span>selector(query)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Selector function<br/><br>Supports full query selection</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>query</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Element or string of element selector</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2137">line 2137</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Returns the element (or first of type)</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Element</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".selectors"><span class="type-signature">&lt;static> </span>selectors(query)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Selectors function<br/><br>Supports full query selection</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>query</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Element or string of element selector</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2148">line 2148</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Returns all the nodes selected</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">NodeList</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".setValue"><span class="type-signature">&lt;static> </span>setValue(el, value, onlyText)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Sets the value of an element<br/><br>Will detect the correct method to do so by element type</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>el</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Element</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Element or string of element selector</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value to set (or HTML)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>onlyText</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value will set as text only</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2091">line 2091</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".show"><span class="type-signature">&lt;static> </span>show(el, display)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Shows an element</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>el</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Element</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Element or string of element selector</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>display</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value to set for 'display' property (optional)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2172">line 2172</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 </dd>
