@@ -4008,7 +4008,24 @@
      * @extends Backbone.Router
      * @memberof Augmented
      */
-    Augmented.Router = Backbone.Router;
+    Augmented.Router = Backbone.Router.extend({
+        /**
+         * Load a view safely and remove the last view by calling cleanup, then remove
+         * @method loadView
+         * @param {Augmented.View} view The View to load
+         * @memberof Augmented
+         */
+        loadView: function(view) {
+            if (this.view) {
+                if (this.view.cleanup) {
+                    this.view.cleanup();
+                }
+                this.view.remove();
+            }
+    		this.view = view;
+            this.view.render();
+    	}
+    });
 
     Augmented.Object.extend = Augmented.Model.extend = Augmented.Collection.extend = Augmented.Router.extend = Augmented.View.extend = Augmented.History.extend = Augmented.extend;
 
@@ -4484,7 +4501,15 @@
      * app.start();
      */
     var application = Augmented.Application = function(name) {
-		var metadata;
+		var metadata, routers = [];
+
+        /**
+         * The router property of the view
+         * @property router
+         * @memberof Augmented.Application
+         */
+        this.router = null;
+
         /**
          * The started property of the view
          * @property started
@@ -4512,6 +4537,7 @@
         this.initialize = function() {
 
         };
+
         /** Event for before the startup of the application
          * @method beforeInitialize
          * @memberof Augmented.Application
@@ -4519,6 +4545,7 @@
         this.beforeInitialize = function() {
 
         };
+
         /** Event for after the startup of the application
          * @method afterInitialize
          * @memberof Augmented.Application
@@ -4568,6 +4595,16 @@
 			return metadata.get(key);
 		};
 
+        /** Register a Router - adds routes to the application
+         * @method registerRouter
+         * @memberof Augmented.Application
+         */
+        this.registerRouter = function(router) {
+            if (router && routers) {
+                routers.push(router);
+            }
+        };
+
         /** Event to start the application and history
          * @method start
          * @memberof Augmented.Application
@@ -4579,10 +4616,16 @@
                     Augmented.history.start();
                 }
             };
+            var routerStarter = function() {
+                if (routers && routers.length > 0) {
+                    
+                }
+            };
             this.started = asyncQueue.process(
                 this.beforeInitialize(),
                 this.initialize(),
                 this.afterInitialize(),
+                //routerStarter(),
                 startCheck()
             );
             if (!this.started) {

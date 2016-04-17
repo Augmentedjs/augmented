@@ -2088,6 +2088,12 @@
      * @memberof Augmented.Presentation
      */
     Augmented.Presentation.Dom = {
+        getViewportHeight: function() {
+            return window.innerHeight;
+        },
+        getViewportWidth: function() {
+            return window.innerWidth;
+        },
         /**
          * Sets the value of an element<br/>
          * Will detect the correct method to do so by element type
@@ -2098,11 +2104,13 @@
          * @memberof Augmented.Presentation.Dom
          */
         setValue: function(el, value, onlyText) {
-            if (el && value) {
+            if (el) {
+                value = (value) ? value : "";
                 var myEl = this.selector(el);
 
                 if (myEl && (myEl.nodeType === 1) &&
-                        (myEl.nodeName === "input" || myEl.nodeName === "INPUT" || myEl.nodeName === "textarea" || myEl.nodeName === "TEXTAREA")) {
+                        (myEl.nodeName === "input" || myEl.nodeName === "INPUT" ||
+                         myEl.nodeName === "textarea" || myEl.nodeName === "TEXTAREA")) {
                     myEl.value = value;
                 } else if (myEl && (myEl.nodeType === 1)) {
                     if (onlyText){
@@ -2143,7 +2151,10 @@
          * @memberof Augmented.Presentation.Dom
          */
         selector: function(query) {
-            return Augmented.isString(query) ? document.querySelector(query) : query;
+            if (query) {
+                return Augmented.isString(query) ? document.querySelector(query) : query;
+            }
+            return null;
         },
         /**
          * Selectors function<br/>
@@ -2154,7 +2165,10 @@
          * @memberof Augmented.Presentation.Dom
          */
         selectors: function(query) {
-            return Augmented.isString(query) ? document.querySelectorAll(query) : query;
+            if (query) {
+                return Augmented.isString(query) ? document.querySelectorAll(query) : query;
+            }
+            return null;
         },
         /**
          * Hides an element
@@ -2182,12 +2196,78 @@
                 myEl.style.display = (display) ? display : "block";
                 myEl.style.visibility = "visible";
             }
+        },
+        addClass: function(el, cls) {
+            var myEl = this.selector(el);
+            if (myEl) {
+                myEl.setAttribute("class", cls);
+            }
+        },
+        removeClass: function(el, cls) {
+            var myEl = this.selector(el);
+            if (myEl) {
+                myEl.removeAttribute("class", cls);
+            }
+        },
+        empty: function(el) {
+            this.setValue(el, "", true);
+        },
+        /**
+         * injectTemplate method - Injects a template element at a mount point
+         * @method injectTemplate
+         * @param {string} template The template selector
+         * @param {Element} mount The mount point as Document.Element or String
+         * @memberof Augmented.Presentation.Dom
+         */
+        injectTemplate: function(template, mount) {
+            var t = this.selector(template), el = this.selector(mount);
+            if (t && el) {
+                var clone = document.importNode(t.content, true);
+                el.appendChild(clone);
+            }
         }
     };
 
-    var decoratorEventAttributeEnum = {
-            "click": "data-click"
+    Augmented.Presentation.Widget = {
+        List: function(data, ordered) {
+            var list = (ordered) ? document.createElement("ol") : document.createElement("ul"), i = 0, l, li, t;
+            if (data && Array.isArray(data)) {
+                l = data.length;
+                for (i = 0; i < l; i++) {
+                    li = document.createElement("li");
+                    t = document.createTextNode(String(data[i]));
+                    li.appendChild(t);
+                    list.appendChild(li);
+                }
+            }
+            return list;
+        },
+        DescriptionList: function(data) {
+            var list = document.createElement("dl"), i = 0, l, dd, dt, t, keys, key;
+            if (data && Object.isObject(data)) {
+                keys = Object.keys(data);
+                l = keys.length;
+                for (i = 0; i < l; i++) {
+                    dt = document.createElement("dt");
+                    t = document.createTextNode(String(keys[i]));
+                    dt.appendChild(t);
+                    list.appendChild(dt);
 
+                    key = data[keys[i]];
+                    dd = document.createElement("dd");
+                    t = document.createTextNode(String(key));
+                    dd.appendChild(t);
+                    list.appendChild(dd);
+                }
+            }
+            return list;
+        }
+    };
+
+    var decoratorAttributeEnum = {
+            "click": "data-click",
+            "func": "data-function",
+            "style": "data-style"
     };
 
     /**
@@ -2213,21 +2293,34 @@
                 _events["change input[" + this.bindingAttribute() + "]"] = "changed";
                 _events["change textarea[" + this.bindingAttribute() + "]"] = "changed";
                 _events["change select[" + this.bindingAttribute() + "]"] = "changed";
-                _events["click button[" + this.bindingAttribute() + "]"] = "click";
+                //_events["click button[" + this.bindingAttribute() + "]"] = "click";
+                // regular elements with click bindings
+                _events["click *[" + this.bindingAttribute() + "][" + decoratorAttributeEnum.click + "]"] = "click";
+
             }
             return _events;
         },
         changed: function(event) {
             this.model.set(event.currentTarget.name, event.currentTarget.value);
+            this.func(event);
             //logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
         },
         click: function(event) {
-            var func = event.currentTarget.getAttribute(decoratorEventAttributeEnum.click);
+            var func = event.currentTarget.getAttribute(decoratorAttributeEnum.click);
             if (func && this[func]) {
                 this._executeFunctionByName(func, this, event);
             } else {
                 logger.debug("AUGMENTED: DecoratorView No function bound or no function exists! " + func);
             }
+            this.func(event);
+        },
+        func: function(event) {
+            var func = event.currentTarget.getAttribute(decoratorAttributeEnum.func);
+            if (func && this[func]) {
+                this._executeFunctionByName(func, this, event);
+            } /*else {
+                logger.debug("AUGMENTED: DecoratorView No function bound or no function exists! " + func);
+            }*/
         },
         /**
          * Initialize method - Do Not Override
@@ -2240,19 +2333,29 @@
             }
         },
         /**
+         * Remove method - Does not remove DOM elements only bindings.
+         * @method remove
+         */
+        remove: function() {
+            /* off to unbind the events */
+            this.off(this.el);
+            this.stopListening();
+            return this;
+        },
+        /**
          * _executeFunctionByName method - Private
          * @method _executeFunctionByName
          * @private
          */
         _executeFunctionByName: function(functionName, context /*, args */) {
-            /*var args = Array.prototype.slice.call(arguments, 2);
+            var args = Array.prototype.slice.call(arguments, 2);
             var namespaces = functionName.split(".");
             var func = namespaces.pop();
             for (var i = 0; i < namespaces.length; i++) {
                 context = context[namespaces[i]];
             }
-            return context[func].apply(context, args);*/
-            return Augmented.exec(functionName, context, arguments);
+            return context[func].apply(context, args);
+            //return Augmented.exec(arguments);
         },
         /**
          * bindingAttribute method - Returns the binging data attribute name
@@ -2266,10 +2369,10 @@
          * injectTemplate method - Injects a template at a mount point
          * @method injectTemplate
          * @param {string} template The template to inject
-         * @param {Element} mount The mouse point as Document.Element or String
+         * @param {Element} mount The mount point as Document.Element or String
          */
         injectTemplate: function(template, mount) {
-            var domInject = false, m = mount;
+            var m = mount;
             if (!mount) {
                 mount = this.el;
             }
@@ -2278,18 +2381,14 @@
             }
             if (Augmented.isString(template)) {
                 // html
-                domInject = false;
-
-            } else if (template.nodeType > 0) {
-                // DOM
-                domInject = true;
-            }
-
-            if (domInject) {
-                mount.appendChild(template);
-            } else {
                 var currentHTML = mount.innerHTML;
                 mount.innerHTML = currentHTML + template;
+            } else if (template.nodeType > 0) {
+                // DOM
+                mount.appendChild(template);
+            } else if (template instanceof DocumentFragment) {
+                // Document Fragment
+                Augmented.Presentation.Dom.injectTemplate(template, mount);
             }
             this.delegateEvents();
         },
@@ -2322,6 +2421,14 @@
             }
             return null;
         },
+        addClass: function(id, cls) {
+            var myEl = this.boundElement(id);
+            myEl.classList.add(cls);
+        },
+        removeClass: function(id, cls) {
+            var myEl = this.boundElement(id);
+            myEl.classList.remove(cls);
+        },
         /**
          * bindModelChange method - binds the model changes to elements
          * @method bindModelChange
@@ -2342,7 +2449,11 @@
             if (!this.model) {
                 this.model = new Augmented.Model();
             }
-            this.model.on('change:' + element, this._syncData.bind(this, element), this);
+            if (element) {
+                this.model.on('change:' + element, this._syncData.bind(this, element), this);
+            } else {
+                this.model.on('change', this._syncAllData.bind(this, element), this);
+            }
         },
         /**
          * _syncData method - syncs the model changes to a specified bound element
@@ -2354,7 +2465,37 @@
             var e = this.boundElement(element);
             if (e) {
                 var d = this.model.get(element);
+                var renderStyle = e.getAttribute(decoratorAttributeEnum.style);
+                if (renderStyle) {
+                    var ee;
+                    if (renderStyle === "list" || renderStyle === "unordered-list") {
+                        ee = Augmented.Presentation.Widget.List(d, false);
+                        Augmented.Presentation.Dom.empty(e);
+                        e.appendChild(ee);
+                        return;
+                    } else if (renderStyle === "ordered-list") {
+                        ee = Augmented.Presentation.Widget.List(d, true);
+                        Augmented.Presentation.Dom.empty(e);
+                        e.appendChild(ee);
+                        return;
+                    } else if (renderStyle === "definition-list") {
+                        ee = Augmented.Presentation.Widget.DefinitionList(d);
+                        Augmented.Presentation.Dom.empty(e);
+                        e.appendChild(ee);
+                        return;
+                    }
+                }
                 Augmented.Presentation.Dom.setValue(e, ((d) ? d : ""));
+            }
+        },
+        _syncAllData: function() {
+            // get all model properties
+            var attr = this.model.attributes;
+            if (attr) {
+                var i = 0, keys = Object.keys(attr), l = keys.length;
+                for (i = 0; i < l; i++) {
+                    this._syncData(keys[i]);
+                }
             }
         },
         /**
@@ -2374,6 +2515,14 @@
             this.model.unBind('change:' + element, this._syncData, this);
         }
     });
+
+    Augmented.Presentation.ViewController = Augmented.Object.extend({
+        initialize: function() {},
+        render: function() {},
+        remove: function() {}
+    });
+
+
 
     return Augmented.Presentation;
 }));
