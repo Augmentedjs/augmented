@@ -370,8 +370,8 @@
 
             var id = (identifier) ? identifier : this.defaultIdentifier;
 
-    	    var subscription, i = 0, l = this.channels[channel].length;
-    	    for (i = 0; i < l; i++) {
+    	    var subscription, i = 0;
+    	    for (i = 0; i < this.channels[channel].length; i++) {
                 subscription = this.channels[channel][i];
                 if (subscription) {
                     if (subscription.identifier === id && subscription.context === context) {
@@ -2244,7 +2244,7 @@
         },
         DescriptionList: function(data) {
             var list = document.createElement("dl"), i = 0, l, dd, dt, t, keys, key;
-            if (data && Object.isObject(data)) {
+            if (data && Augmented.isObject(data)) {
                 keys = Object.keys(data);
                 l = keys.length;
                 for (i = 0; i < l; i++) {
@@ -2258,6 +2258,19 @@
                     t = document.createTextNode(String(key));
                     dd.appendChild(t);
                     list.appendChild(dd);
+                }
+            }
+            return list;
+        },
+        DataList: function(id, data) {
+            var list = document.createElement("datalist"), i = 0, l, o;
+            list.setAttribute("id", id);
+            if (data && Array.isArray(data)) {
+                l = data.length;
+                for (i = 0; i < l; i++) {
+                    o = document.createElement("option");
+                    o.value = String(data[i]);
+                    list.appendChild(o);
                 }
             }
             return list;
@@ -2301,17 +2314,19 @@
             return _events;
         },
         changed: function(event) {
-            this.model.set(event.currentTarget.name, event.currentTarget.value);
+            var key = event.currentTarget.getAttribute(this.bindingAttribute());
+
+            this.model.set(( (key) ? key : event.currentTarget.name ), event.currentTarget.value);
             this.func(event);
-            //logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
+            logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
         },
         click: function(event) {
             var func = event.currentTarget.getAttribute(decoratorAttributeEnum.click);
             if (func && this[func]) {
                 this._executeFunctionByName(func, this, event);
-            } else {
+            }/* else {
                 logger.debug("AUGMENTED: DecoratorView No function bound or no function exists! " + func);
-            }
+            }*/
             this.func(event);
         },
         func: function(event) {
@@ -2395,15 +2410,20 @@
         /**
          * removeTemplate method - Removes a template (children) at a mount point
          * @method removeTemplate
-         * @param {Element} mount The mouse point as Document.Element or String
+         * @param {Element} mount The mount point as Document.Element or String
+         * @param {boolean} onlyContent Only remove the content not the mount point
          */
-        removeTemplate: function(mount) {
-            while (mount.firstChild) {
-                mount.removeChild(mount.firstChild);
-            }
-            var p = mount.parentNode;
-            if (p) {
-                p.removeChild(mount);
+        removeTemplate: function(mount, onlyContent) {
+            if (mount) {
+                while (mount.firstChild) {
+                    mount.removeChild(mount.firstChild);
+                }
+                if (!onlyContent) {
+                    var p = mount.parentNode;
+                    if (p) {
+                        p.removeChild(mount);
+                    }
+                }
                 this.delegateEvents();
             }
         },
@@ -2420,6 +2440,19 @@
                 return this.el.querySelector("[" + this.bindingAttribute() + "=" + id + "]");
             }
             return null;
+        },
+        /**
+         * syncBoundElement - Syncs the data of a bound element by firing a change event
+         * @method syncBoundElement
+         * @param {string} id The identifier (not id attribute) of the element
+         */
+        syncBoundElement: function(id) {
+            var event = new UIEvent("change", {
+                "view": window,
+                "bubbles": true,
+                "cancelable": true
+            }), sel = this.boundElement(id);
+            sel.dispatchEvent(event);
         },
         addClass: function(id, cls) {
             var myEl = this.boundElement(id);
@@ -2478,8 +2511,8 @@
                         Augmented.Presentation.Dom.empty(e);
                         e.appendChild(ee);
                         return;
-                    } else if (renderStyle === "definition-list") {
-                        ee = Augmented.Presentation.Widget.DefinitionList(d);
+                    } else if (renderStyle === "description-list") {
+                        ee = Augmented.Presentation.Widget.DescriptionList(d);
                         Augmented.Presentation.Dom.empty(e);
                         e.appendChild(ee);
                         return;
@@ -2522,7 +2555,50 @@
         remove: function() {}
     });
 
+    // dialog
+    Augmented.Presentation.DialogView = Augmented.Presentation.Colleague.extend({
+        name: "dialog",
+        title: "",
+        body: "",
+        buttons: {
+            //name : callback
+        },
+        template: function() {
+            return "<div class=\"blur\"><dialog><h1>" + this.title + "</h1>" + this.body + this.getButtonGroup() + "</dialog></div>";
+        },
+        getButtonGroup: function() {
+            var html = "<div class=\"buttonGroup\">", i = 0, keys = Object.keys(this.buttons), l = (keys) ? keys.length: 0;
 
+            for (i = 0; i < l; i++) {
+                html = html + "<button data-callback=\"" + this.buttons[keys[i]] + "\">" + keys[i] + "</button>";
+            }
+
+            return html + "</div>";
+        },
+        render: function() {
+            Augmented.Presentation.Dom.setValue(this.el, this.template());
+            return this;
+        },
+        // built-in callbacks
+        cancel: function(event) {
+
+        }
+    });
+
+    Augmented.Presentation.ConfirmationDialogView = Augmented.Presentation.DialogView.extend({
+        buttons: {
+            //name : callback
+            "yes": "yes",
+            "no": "no"
+        },
+    });
+
+    Augmented.Presentation.AlertDialogView = Augmented.Presentation.DialogView.extend({
+        buttons: {
+            //name : callback
+            "cancel": "cancel"
+        }
+    });
 
     return Augmented.Presentation;
 }));
