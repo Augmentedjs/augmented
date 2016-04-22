@@ -3809,6 +3809,7 @@
          * @returns {Augmented.View} Returns 'this,' as in, this view context
          */
         initialize: function(options) {
+            this.options = options;
             this.init(options);
             this.render = Augmented.Utility.wrap(this.render, function(render) {
                 this.beforeRender();
@@ -4618,7 +4619,7 @@
             };
             var routerStarter = function() {
                 if (routers && routers.length > 0) {
-                    
+
                 }
             };
             this.started = asyncQueue.process(

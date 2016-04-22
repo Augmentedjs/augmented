@@ -2230,11 +2230,12 @@
 
     Augmented.Presentation.Widget = {
         List: function(data, ordered) {
-            var list = (ordered) ? document.createElement("ol") : document.createElement("ul"), i = 0, l, li, t;
+            var list = (ordered) ? document.createElement("ol") : document.createElement("ul"), i = 0, l, li, t, d;
             if (data && Array.isArray(data)) {
                 l = data.length;
                 for (i = 0; i < l; i++) {
                     li = document.createElement("li");
+                    li.setAttribute("data-index", i);
                     t = document.createTextNode(String(data[i]));
                     li.appendChild(t);
                     list.appendChild(li);
@@ -2280,7 +2281,8 @@
     var decoratorAttributeEnum = {
             "click": "data-click",
             "func": "data-function",
-            "style": "data-style"
+            "style": "data-style",
+            "appendTemplate": "data-append-template"
     };
 
     /**
@@ -2343,6 +2345,7 @@
          */
         initialize: function(options) {
             this.init(options);
+
             if (!this.model) {
                 this.model = new Augmented.Model();
             }
@@ -2353,7 +2356,8 @@
          */
         remove: function() {
             /* off to unbind the events */
-            this.off(this.el);
+            this.off();
+            //this.off(this.el);
             this.stopListening();
             return this;
         },
@@ -2398,10 +2402,11 @@
                 // html
                 var currentHTML = mount.innerHTML;
                 mount.innerHTML = currentHTML + template;
-            } else if (template.nodeType > 0) {
+            } else if ((template.nodeType && template.nodeName) &&
+                template.nodeType > 0 && !(template.nodeName === "template" || template.nodeName === "TEMPLATE")) {
                 // DOM
                 mount.appendChild(template);
-            } else if (template instanceof DocumentFragment) {
+            } else if (template instanceof DocumentFragment  || template.nodeName === "template" || template.nodeName === "TEMPLATE") {
                 // Document Fragment
                 Augmented.Presentation.Dom.injectTemplate(template, mount);
             }
@@ -2447,12 +2452,16 @@
          * @param {string} id The identifier (not id attribute) of the element
          */
         syncBoundElement: function(id) {
-            var event = new UIEvent("change", {
-                "view": window,
-                "bubbles": true,
-                "cancelable": true
-            }), sel = this.boundElement(id);
-            sel.dispatchEvent(event);
+            if (id) {
+                var event = new UIEvent("change", {
+                    "view": window,
+                    "bubbles": true,
+                    "cancelable": true
+                }), sel = this.boundElement(id);
+                if (sel) {
+                    sel.dispatchEvent(event);
+                }
+            }
         },
         addClass: function(id, cls) {
             var myEl = this.boundElement(id);
@@ -2497,28 +2506,50 @@
         _syncData: function(element) {
             var e = this.boundElement(element);
             if (e) {
-                var d = this.model.get(element);
-                var renderStyle = e.getAttribute(decoratorAttributeEnum.style);
+                var d = this.model.get(element),
+                renderStyle = e.getAttribute(decoratorAttributeEnum.style),
+                prependTemplate = e.getAttribute(decoratorAttributeEnum.prependTemplate),
+                appendTemplate = e.getAttribute(decoratorAttributeEnum.appendTemplate),
+                mount, template;
+
+                if (prependTemplate) {
+                    mount = document.createElement("div");
+                    template = Augmented.Presentation.Dom.selector("#" + prependTemplate);
+                    e.appendChild(mount);
+                    this.injectTemplate(template, mount);
+                }
+
                 if (renderStyle) {
-                    var ee;
+                    var ee,
+                    prependTemplateEach = e.getAttribute(decoratorAttributeEnum.prependTemplateEach),
+                    appendTemplateEach = e.getAttribute(decoratorAttributeEnum.appendTemplateEach),
+                    pEach = prependTemplateEach ? prependTemplateEach : null,
+                    aEach = appendTemplateEach ? appendTemplateEach : null;
+
                     if (renderStyle === "list" || renderStyle === "unordered-list") {
                         ee = Augmented.Presentation.Widget.List(d, false);
                         Augmented.Presentation.Dom.empty(e);
                         e.appendChild(ee);
-                        return;
                     } else if (renderStyle === "ordered-list") {
                         ee = Augmented.Presentation.Widget.List(d, true);
                         Augmented.Presentation.Dom.empty(e);
                         e.appendChild(ee);
-                        return;
                     } else if (renderStyle === "description-list") {
                         ee = Augmented.Presentation.Widget.DescriptionList(d);
                         Augmented.Presentation.Dom.empty(e);
                         e.appendChild(ee);
-                        return;
                     }
+                } else {
+                    Augmented.Presentation.Dom.setValue(e, ((d) ? d : ""));
                 }
-                Augmented.Presentation.Dom.setValue(e, ((d) ? d : ""));
+
+                if (appendTemplate) {
+                    mount = document.createElement("div");
+                    template = Augmented.Presentation.Dom.selector("#" + appendTemplate);
+                    e.appendChild(mount);
+
+                    this.injectTemplate(template, mount);
+                }
             }
         },
         _syncAllData: function() {
@@ -2556,32 +2587,46 @@
     });
 
     // dialog
-    Augmented.Presentation.DialogView = Augmented.Presentation.Colleague.extend({
+    Augmented.Presentation.DialogView = Augmented.Presentation.DecoratorView.extend({
         name: "dialog",
         title: "",
         body: "",
+        style: "form",
         buttons: {
             //name : callback
         },
+
         template: function() {
-            return "<div class=\"blur\"><dialog><h1>" + this.title + "</h1>" + this.body + this.getButtonGroup() + "</dialog></div>";
+            return "<div class=\"blur\"><dialog class=\"" + this.style + "\"><h1>" + this.title + "</h1>" + this.body + this._getButtonGroup() + "</dialog></div>";
         },
-        getButtonGroup: function() {
+        setBody: function(body) {
+            this.body = body;
+        },
+        _getButtonGroup: function() {
             var html = "<div class=\"buttonGroup\">", i = 0, keys = Object.keys(this.buttons), l = (keys) ? keys.length: 0;
 
             for (i = 0; i < l; i++) {
-                html = html + "<button data-callback=\"" + this.buttons[keys[i]] + "\">" + keys[i] + "</button>";
+                html = html + "<button data-" + this.name + "=\"" + this.buttons[keys[i]] + "\"data-click=\"" + this.buttons[keys[i]] + "\">" + keys[i] + "</button>";
             }
 
             return html + "</div>";
         },
         render: function() {
             Augmented.Presentation.Dom.setValue(this.el, this.template());
+            this.delegateEvents();
+            this.trigger("open");
             return this;
         },
         // built-in callbacks
         cancel: function(event) {
-
+            this.close();
+        },
+        open: function() {
+            this.render();
+        },
+        close: function() {
+            this.trigger("close");
+            Augmented.Presentation.Dom.empty(this.el, true);
         }
     });
 
@@ -2591,13 +2636,15 @@
             "yes": "yes",
             "no": "no"
         },
+        style: "alert"
     });
 
     Augmented.Presentation.AlertDialogView = Augmented.Presentation.DialogView.extend({
         buttons: {
             //name : callback
             "cancel": "cancel"
-        }
+        },
+        style: "alert"
     });
 
     return Augmented.Presentation;
