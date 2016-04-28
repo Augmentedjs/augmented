@@ -654,6 +654,16 @@
                 xhr.setRequestHeader('Authorization', 'Basic ' + window.btoa(ajaxObject.user + ':' + ajaxObject.password));
             }
 
+            // custom headers
+
+            if (ajaxObject.headers) {
+                var i = 0, keys = Object.keys(ajaxObject.headers), l = keys.length;
+
+                for (i = 0; i < l; i++) {
+                    xhr.setRequestHeader(keys[i], ajaxObject.headers[keys[i]]);
+                }
+            }
+
     	    xhr.onload = function() {
                 try {
         		    if (xhr.status > 199 && xhr.status < 300) {

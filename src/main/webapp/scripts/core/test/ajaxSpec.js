@@ -18,6 +18,7 @@ define([
     				contentType: 'text/plain',
     				dataType: 'text',
     				async: true,
+                    headers: { "custom": "something" },
     				success: function (data, status) { success = true; done(); },
     				failure: function (data, status) { success = false; done(); }
     			});
@@ -38,6 +39,7 @@ define([
     				dataType: 'text',
     				async: true,
                     mock: true,
+                    headers: { "custom": "something" },
     				success: function (data, status) { success = true; done(); },
     				failure: function (data, status) { success = false; done(); }
     			});
