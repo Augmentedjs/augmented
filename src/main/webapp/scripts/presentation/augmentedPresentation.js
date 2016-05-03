@@ -2581,9 +2581,23 @@
     });
 
     Augmented.Presentation.ViewController = Augmented.Object.extend({
+        _views: [],
         initialize: function() {},
         render: function() {},
-        remove: function() {}
+        remove: function() {},
+        manageView: function(view) {
+            this._views.push(view);
+        },
+        removeAllViews: function() {
+            var i = 0, l = this._views.length;
+            for (i = 0; i < l; i++) {
+                this._views[i].remove();
+            }
+            this._views = [];
+        },
+        getViews: function () {
+            return this._views;
+        }
     });
 
     // dialog

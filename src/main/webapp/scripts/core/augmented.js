@@ -96,7 +96,7 @@
      * @private
      * @memberof Augmented
      */
-    var $ = Augmented.$ = Backbone.$; // Does $ exist?
+    Augmented.$ = (Backbone.$) ? Backbone.$ : $; // Does $ exist?
 
     /**
      * Augmented.Configuration - a set of configuration properties for the framework
@@ -2848,8 +2848,8 @@
     		try {
     		    throw err;
     		}
-    		catch(err) {
-    		    this.stack = err.stack || err.stacktrace;
+    		catch(err2) {
+    		    this.stack = err2.stack || err2.stacktrace;
     		}
     	    }
     	}
@@ -4027,14 +4027,14 @@
          * @memberof Augmented
          */
         loadView: function(view) {
-            if (this.view) {
-                if (this.view.cleanup) {
-                    this.view.cleanup();
+            if (this._view) {
+                if (this._view.cleanup) {
+                    this._view.cleanup();
                 }
-                this.view.remove();
+                this._view.remove();
             }
-    		this.view = view;
-            this.view.render();
+    		this._view = view;
+            this._view.render();
     	}
     });
 
