@@ -2087,11 +2087,17 @@
     });
 
     /**
+     * DOM related functions - Same as Augmented.Presentation.Dom
+     * @namespace D
+     * @memberof Augmented
+     */
+
+    /**
      * DOM related functions
      * @namespace Dom
      * @memberof Augmented.Presentation
      */
-    Augmented.Presentation.Dom = {
+    Augmented.D = Augmented.Presentation.Dom = {
         getViewportHeight: function() {
             return window.innerHeight;
         },
