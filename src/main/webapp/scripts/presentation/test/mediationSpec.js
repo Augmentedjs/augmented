@@ -59,9 +59,14 @@ define([
 				it('the mediator can add subscriptions to the channel "monkey"', function() {
 					m.observeColleague(c, function() { return "EEAK!";}, "monkey");
 
-					c.setSubscriptions();
+					m.setSubscriptions({
+                		fn: function() {},
+                		context: this,
+                		once: false,
+                        identifier: "i"
+            	    });
 
-					expect(c.subscriptions).toBeDefined();
+					expect(m.getSubscriptions()).toBeDefined();
 				});
 
                 it('the mediator can dismiss colleagues from channel "monkey"', function() {
