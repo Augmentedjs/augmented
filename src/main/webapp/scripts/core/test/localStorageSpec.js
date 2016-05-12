@@ -117,7 +117,20 @@ define([
 					globalLocalStorage.removeItem("donkeys");
 				});
 
+                it('Can add an Item as Map', function() {
+                    var map = new Augmented.Utility.AugmentedMap();
+                    map.set("name", "Bob");
+                    map.set("age", 36);
+                    map.set("height", "6.0\"");
 
+					globalLocalStorage.setItem("myMap", map);
+                    var otherMap = new Augmented.Utility.AugmentedMap();
+                    otherMap.marshall(globalLocalStorage.getItem("myMap"));
+					expect(globalLocalStorage.getItem("myMap")).toEqual(map.toJSON());
+                    expect(otherMap.toJSON()).toEqual(map.toJSON());
+					globalLocalStorage.removeItem("myMap");
+
+				});
 			});
 
 		});

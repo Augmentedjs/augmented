@@ -156,6 +156,22 @@ define([
                 map.set({ name: "Bob", age: 36 }, { data: "xxxxxxx" });
                 expect(map.get({ name: "Bob", age: 36 })).toEqual({ data: "xxxxxxx" });
             });
+
+            it('can produce a string from the map', function() {
+                var o = {   p1: "p1",
+                            p2: "p2" };
+
+                var success = map.marshall(o);
+                expect(success).toBeTruthy();
+                expect(map.toString()).toEqual('{"p1":"p1","p2":"p2"}');
+            });
+
+            it('can marshall a stringified JSON', function() {
+                var success = map.marshall('{"p1":"p1","p2":"p2"}');
+                expect(success).toBeTruthy();
+                expect(map.toString()).toEqual('{"p1":"p1","p2":"p2"}');
+            });
+
 		});
 
         describe('Given Augmented Stack', function() {

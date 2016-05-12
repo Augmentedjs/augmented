@@ -1156,11 +1156,17 @@
                 dataToParse = dataToMarshall.toJSON();
             } else if(dataToMarshall && dataToMarshall instanceof Object && (Object.keys(dataToMarshall).length > 0)) {
                 dataToParse = dataToMarshall;
+            } else if(dataToMarshall && Augmented.isString(dataToMarshall)) {
+                try {
+                    dataToParse = JSON.parse(dataToMarshall);
+                } catch(e) {
+                    logger.warn("AUGMENTED: AugmentedMap: Could not marshall data: " + JSON.stringify(dataToMarshall));
+                    return false;
+                }
             } else {
                 logger.warn("AUGMENTED: AugmentedMap: Could not marshall data: " + JSON.stringify(dataToMarshall));
                 return false;
             }
-            //logger.debug("data to parse: " + JSON.stringify(dataToParse));
 
             var props = Object.keys(dataToParse);
             var l = props.length;
