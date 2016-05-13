@@ -81,6 +81,10 @@
         },
 
         setMediatorMessageQueue: function(e) {
+            if (this._mediator) {
+                // already registered, send a dismiss message
+                this._mediator._dismissMe(this);
+            }
             this._mediator = e;
         },
 
@@ -122,14 +126,22 @@
 
         /**
          * Channels Property
-         * @property {string} channels The channels for the view
+         * @property {object} _channels The channels for the view (object array)
          * @memberof Augmented.Presentation.Mediator
          * @private
          */
         _channels: {},
 
         /**
-        * @property {Object} List of subscriptions, to be defined
+         * Colleague Map Property
+         * @property {object} _colleagueMap The colleagues observed by index in the channel
+         * @memberof Augmented.Presentation.Mediator
+         * @private
+         */
+        _colleagueMap: {},
+
+        /**
+        * @property {Object} _subscriptions List of subscriptions
         * @memberof Augmented.Presentation.Colleague
         * @private
         */
@@ -240,7 +252,6 @@
         		    channel = this._defaultChannel;
         		}
                 colleague.setMediatorMessageQueue(this);
-
         		this.subscribe(channel, callback, colleague, false, (identifier) ? identifier : this._defaultIdentifier);
     	    }
     	},
@@ -264,6 +275,13 @@
             );
         },
 
+        _dismissMe: function(colleague) {
+            if (colleague instanceof Augmented.Presentation.Colleague) {
+                var channel = this._colleagueMap[colleague], myChannelObject = this._channels[channel];
+                this.unsubscribe(channel, myChannelObject.fn, colleague, myChannelObject.identifier);
+            }
+        },
+
     	/**
     	 * Dismiss a Colleague View - Remove a Colleague from the channel
          * @method dismissColleague
@@ -279,7 +297,7 @@
         		    channel = this._defaultChannel;
         		}
                 colleague.removeMediatorMessageQueue();
-        		this.unsubscribe(channel, callback, colleague, (identifier) ? identifier : this._defaultIdentifier);
+        		this.unsubscribe(channel, callback, colleague, identifier);
     	    }
     	},
 
@@ -317,12 +335,17 @@
     	    if (!this._channels[channel]) {
         		this._channels[channel] = [];
             }
-        	this._channels[channel].push({
+
+            var obj  = {
         		fn: callback,
+                // TODO: the context set to 'this' may be the source of the edge case mediator instance for a channel
         		context: context || this,
         		once: once,
                 identifier: (identifier) ? identifier : this._defaultIdentifier
-    	    });
+    	    };
+        	this._channels[channel].push(obj);
+
+            this._colleagueMap[context] = channel;
 
             this.on(channel, this.publish, context);
     	},
@@ -379,10 +402,11 @@
                 subscription = this._channels[channel][i];
                 if (subscription) {
                     if (subscription.identifier === id && subscription.context === context) {
-                    // originally compared function callbacks, but wwe don't alsways pass one so use identifier
-            		//if (subscription.fn === callback && subscription.context === context) {
+                    // originally compared function callbacks, but we don't always pass one so use identifier
             		    this._channels[channel].splice(i, 1);
             		    i--;
+
+                        delete this._colleagueMap[subscription.context];
             		}
                 } else {
                     logger.warn("AUGMENTED: Mediator: No subscription for channel '" + channel + "' on row " + i);
@@ -413,7 +437,7 @@
     	 */
     	getColleagues: function(channel) {
     	    var c = this.getChannel(channel);
-    	    return c.context;
+    	    return (c) ? c.context : null;
     	},
 
     	/**
@@ -431,13 +455,13 @@
     	 * @method getChannel
     	 * @param {string} channel The Channel events are pubished to
          * @memberof Augmented.Presentation.Mediator
-         * @returns {array} Returns the requested channel
+         * @returns {array} Returns the requested channel or null if nothing exists
     	 */
     	getChannel: function(channel) {
     	    if (!channel) {
     		    channel = this._defaultChannel;
     	    }
-    	    return this._channels[channel];
+    	    return (this._channels[channel]) ? (this._channels[channel]) : null;
     	},
 
     	/**
@@ -445,10 +469,11 @@
     	 * Convenience method for getChannel(null)
          * @method getDefaultChannel
          * @memberof Augmented.Presentation.Mediator
-         * @returns {array} Returns the default channel
+         * @returns {array} Returns the default channel or null if nothing exists
     	 */
     	getDefaultChannel: function() {
-    	    return this._channels[this._defaultChannel];
+            return this.getChannel(this._defaultChannel);
+    	    //return (this._channels[this._defaultChannel]) ? (this._channels[this._defaultChannel]) : null;
     	},
 
         /**

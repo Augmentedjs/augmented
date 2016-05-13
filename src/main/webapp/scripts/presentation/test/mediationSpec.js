@@ -24,6 +24,8 @@ define([
 				});
 
 				afterEach(function() {
+                    c.remove();
+                    m.remove();
 					m = null;
 					c = null;
 				});
@@ -44,6 +46,7 @@ define([
 					expect(channels).toBeDefined();
 					expect(channels instanceof Array).toBeTruthy();
 					expect(channels[0].context).toEqual(c);
+                    m.dismissColleague(c, function() { return "EEAK!";});
 				});
 
 				it('the mediator can subscribe a colleague in the channel "monkey"', function() {
@@ -54,6 +57,7 @@ define([
 					expect(channels).toBeDefined();
 					expect(channels instanceof Array).toBeTruthy();
 					expect(channels[0].context).toEqual(c);
+                    m.dismissColleague(c, function() { return "EEAK!";}, "monkey");
 				});
 
 				it('the mediator can add subscriptions to the channel "monkey"', function() {
@@ -67,16 +71,28 @@ define([
             	    });
 
 					expect(m.getSubscriptions()).toBeDefined();
+                    m.dismissColleague(c, function() { return "EEAK!";}, "monkey");
 				});
 
                 it('the mediator can dismiss colleagues from channel "monkey"', function() {
                     m.observeColleague(c, function() { return "EEAK!";}, "monkey");
                     m.dismissColleague(c, function() { return "EEAK!";}, "monkey");
-					var channels = m.getDefaultChannel();
+					var channels = m.getChannel("monkey");
+
+					expect(channels).toEqual([]);
+				});
+
+                it('the mediator can observe a colleague once and not leak', function() {
+					m.observeColleague(c, function() { return "EEAK!";}, "monkey");
+                    var m2 = new Augmented.Presentation.Mediator();
+                    m2.observeColleague(c, function() { return "EEAK!";}, "monkey");
+					var channels = m2.getChannel("monkey"), c2 = m.getChannel("monkey");
 
 					expect(channels).toBeDefined();
 					expect(channels instanceof Array).toBeTruthy();
-					expect(channels[0].context).not.toEqual(c);
+					expect(channels[0].context).toEqual(c);
+                    //expect(c2[0].context.cid).not.toEqual(c.cid);
+
 				});
 			});
 		});
