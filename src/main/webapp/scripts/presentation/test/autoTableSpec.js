@@ -90,7 +90,7 @@ define([
                 expect(at.data).toEqual([]);
     		});
 
-            it('can compile data to a template', function() {
+            xit('can compile data to a template (DEPRECATED)', function() {
     			at.populate(data);
                 var html = at.compileTemplate();
                 expect(html).not.toEqual("");

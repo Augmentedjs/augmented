@@ -147,7 +147,6 @@
         */
         _subscriptions: {},
 
-
         /**
          * Extend delegateEvents() to set subscriptions
          * @method delegateEvents
@@ -473,7 +472,6 @@
     	 */
     	getDefaultChannel: function() {
             return this.getChannel(this._defaultChannel);
-    	    //return (this._channels[this._defaultChannel]) ? (this._channels[this._defaultChannel]) : null;
     	},
 
         /**
@@ -535,6 +533,7 @@
                 }
             }
         };
+
         /**
          * Get all Mediators
          * @method getMediators
@@ -637,9 +636,6 @@
     app.prototype.constructor = app;
 
     // Tables and Grids
-    var autoTableCollection = Augmented.PaginatedCollection.extend({
-
-    });
 
     var tableDataAttributes = {
         name:           "data-name",
@@ -830,7 +826,7 @@
      * @extends Augmented.Presentation.Colleague
      * @memberof Augmented.Presentation
      */
-    var autoTable = Augmented.Presentation.AutomaticTable = abstractColleague.extend({
+    var AbstractAutoTable = abstractColleague.extend({
         // sorting
         /**
          * The sortable property - enable sorting in table
@@ -1651,13 +1647,7 @@
         }
     });
 
-    /**
-     * Augmented.Presentation.AutoTable
-     * Shorthand for Augmented.Presentation.AutomaticTable
-     * @constructor Augmented.Presentation.AutoTable
-     * @extends Augmented.Presentation.AutomaticTable
-     */
-    Augmented.Presentation.AutoTable = Augmented.Presentation.AutomaticTable;
+
 
     var directDOMTableCompile = function(el, name, desc, columns, data, lineNumbers, sortKey, editable) {
         var table, thead, tbody, n, t;
@@ -1820,16 +1810,16 @@
                         input.value = dobj;
                     } else if (t === "string" && cobj.enum) {
                         input = document.createElement("select");
-                        var iii = 0, lll = cobj.enum.length, option, tOption;
-                        for (iii = 0; iii < lll; iii++) {
-                            option = document.createElement("option");
-                            option.setAttribute("value", cobj.enum[iii]);
-                            tOption = document.createTextNode(cobj.enum[iii]);
-                            if (dobj === cobj.enum[iii]) {
-                                option.setAttribute("selected", "selected");
+                        var iiii = 0, llll = cobj.enum.length, option2, tOption2;
+                        for (iiii = 0; iiii < llll; iiii++) {
+                            option2 = document.createElement("option");
+                            option2.setAttribute("value", cobj.enum[iiii]);
+                            tOption2 = document.createTextNode(cobj.enum[iiii]);
+                            if (dobj === cobj.enum[iiii]) {
+                                option2.setAttribute("selected", "selected");
                             }
-                            option.appendChild(tOption);
-                            input.appendChild(option);
+                            option2.appendChild(tOption2);
+                            input.appendChild(option2);
                         }
                     } else if (t === "string" && (cobj.format === "email")) {
                         input = document.createElement("input");
@@ -1941,7 +1931,9 @@
      *     uri: "/example/data/table.json"
      * });
      */
-    Augmented.Presentation.DirectDOMAutomaticTable = Augmented.Presentation.AutomaticTable.extend({
+    Augmented.Presentation.AutomaticTable =
+        Augmented.Presentation.DirectDOMAutomaticTable =
+            AbstractAutoTable.extend({
         compileTemplate: function() {
             return "";
         },
@@ -2046,6 +2038,14 @@
             return this;
         }
     });
+
+    /**
+     * Augmented.Presentation.AutoTable
+     * Shorthand for Augmented.Presentation.AutomaticTable
+     * @constructor Augmented.Presentation.AutoTable
+     * @extends Augmented.Presentation.AutomaticTable
+     */
+    Augmented.Presentation.AutoTable = Augmented.Presentation.AutomaticTable;
 
     /**
      * Augmented.Presentation.BigDataTable
@@ -2272,6 +2272,8 @@
             }
         }
     };
+
+    Augmented.$ = (Augmented.$) ? Augmented.$ : Augmented.Presentation.Dom.selectors;
 
     Augmented.Presentation.Widget = {
         List: function(data, ordered) {

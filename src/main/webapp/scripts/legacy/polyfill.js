@@ -1,5 +1,5 @@
 /**
- * polyfill.js - Sme base polyfills if needed
+ * polyfill.js - Some base polyfills if needed
  *
  * @author Bob Warren
  *

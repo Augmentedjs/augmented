@@ -14,6 +14,10 @@ define([
         });
 
 		describe('supports by native or polyfill', function() {
+
+            it('supports String.repeat', function() {
+				expect(String.prototype.repeat).toBeDefined();
+			});
 			it('supports Object.keys', function() {
 				expect(Object.keys).toBeDefined();
 			});

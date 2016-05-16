@@ -2,42 +2,14 @@ require.config({
 	'baseUrl': '/augmented/scripts/',
 
     'paths': {
-		'jquery': 'lib/jquery-2.1.4.min',
+		'jquery': 'lib/jquery.min',
 		'underscore': 'lib/lodash.min',
 		'backbone': 'lib/backbone-min',
-		'handlebars': 'lib/handlebars-v4.0.2',
-		'text': 'lib/text',
-		'json': 'lib/json',
 
 		'augmented': 'core/augmented',
 		'augmentedPresentation': 'presentation/augmentedPresentation'
 	},
-	'shim': {
-		/*jquery: {
-			'exports': '$'
-		},
-		backbone: {
-			'deps': ['jquery', 'underscore', 'handlebars'],
-			'exports': 'Backbone'
-		},
-		underscore: {
-			'exports': '_'
-		},
-		handlebars: {
-			'exports': 'Handlebars'
-		},
-
-		augmented: {
-			'deps': ['backbone'],
-			'exports': 'Augmented'
-		},
-
-		augmentedPresentation: {
-			'deps': ['augmented'],
-			'exports': 'Presentation'
-		}
-        */
-	}
+	'shim': {}
 });
 
 require(['augmented', 'augmentedPresentation'], function(Augmented, Presentation) {
@@ -67,7 +39,7 @@ require(['augmented', 'augmentedPresentation'], function(Augmented, Presentation
     };
 
     var data = [ { "Name": "Bob", "ID": 123, "Email": "bob@augmentedjs.org" },
-                 { "Name": "Jonathan", "ID": 234, "Email": "jonathon@augmentedjs.org" },
+                 { "Name": "Jonathan", "ID": 234, "Email": "jonathan@augmentedjs.org" },
                  { "Name": "Corey", "ID": 345, "Email": "corey@augmentedjs.org" },
                  { "Name": "Seema", "ID": 456, "Email": "seema@augmentedjs.org" },
                  { "Name": "Jasmine", "ID": 567, "Email": "jasmine@augmentedjs.org" }

@@ -56,7 +56,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = '0.3.0ɑ';
+    Augmented.VERSION = '0.3.0-RC1';
     /**
      * A codename for internal use
      * @constant codename
@@ -186,10 +186,6 @@
         return result;
     };
 
-    /** Helper function to correctly set up the prototype chain for subclasses.
-     * Similar to `goog.inherits`, but uses a hash of prototype properties and
-     * class properties to be extended.
-     */
     var classExtend = function(protoProps, staticProps) {
         var parent = this;
         var child;
@@ -342,7 +338,16 @@
      */
     Augmented.Utility = {};
 
-    Augmented.Utility.classExtend = classExtend;
+    /**
+     * Class Extend -
+     * Helper function to correctly set up the prototype chain for subclasses.<br/>
+     * Similar to `goog.inherits`, but uses a hash of prototype properties and
+     * class properties to be extended.
+     * @param {any} protoProps Properties from prototype
+     * @param {any} staticProps Static Properties to add if provided
+     * @namespace Augmented.Utility
+     */
+    Augmented.Utility.ClassExtend = classExtend;
 
     /**
      * Prints an object nicely
@@ -361,51 +366,71 @@
     };
 
     /**
-     * Sorts an array by key
+     * Sorts an array of objects by propery in object
      * @function Sort
      * @namespace Augmented.Utility
-     * @param {array} array The array to sort
-     * @param {object} key The key to sort by
+     * @param {array} array The object array to sort
+     * @param {object} key The property to sort by
      * @returns {array} The sorted array
      */
     Augmented.Utility.Sort = function(array, key) {
         return array.sort(function(a, b) {
-            var x = a[key]; var y = b[key];
+            var x = a[key], y = b[key];
             return ((x < y) ? -1 : ((x > y) ? 1 : 0));
         });
     };
 
 
     /**
-     * Performs a binary search on the host array. This method can either be
-     * injected into Array.prototype or called with a specified scope like this:
-     * binaryIndexOf.call(someArray, searchElement);
-     *
-     * @param {*} searchElement The item to search for within the array.
-     * @return {Number} The index of the element which defaults to -1 when not found.
+     * Performs a binary search on the host array. vs indexOf<br/>
+     * Binary Serach is a complexity of <em>O(log n)</em> vs <em>O(n)</em> with indexOf
+     * @namespace Augmented.Utility
+     * @param {Array} items The array.
+     * @param {Any} value The item to search for within the array.
+     * @returns {Number} The index of the element which defaults to -1 when not found.
      */
-    Augmented.Utility.binaryIndexOf = function(arr, searchElement) {
-        var minIndex = 0;
-        var maxIndex = arr.length - 1;
-        var currentIndex;
-        var currentElement;
+    Augmented.Utility.BinarySearch = function(items, value){
+        var startIndex  = 0,
+            stopIndex   = items.length - 1,
+            middle      = Math.floor((stopIndex + startIndex)/2);
 
-        while (minIndex <= maxIndex) {
-            currentIndex = (minIndex + maxIndex) / 2 | 0;
-            currentElement = arr[currentIndex];
+        while(items[middle] != value && startIndex < stopIndex){
+            //adjust search area
+            if (value < items[middle]){
+                stopIndex = middle - 1;
+            } else if (value > items[middle]){
+                startIndex = middle + 1;
+            }
+            //recalculate middle
+            middle = Math.floor((stopIndex + startIndex)/2);
+        }
+        //make sure it's the right value
+        return (items[middle] != value) ? -1 : middle;
+    };
 
-            if (currentElement < searchElement) {
-                minIndex = currentIndex + 1;
-            }
-            else if (currentElement > searchElement) {
-                maxIndex = currentIndex - 1;
-            }
-            else {
-                return currentIndex;
+    /**
+     * Quick Sort implimentation for Arrays -
+     * @namespace Augmented.Utility
+     * @param {Array} arr Array to Sort
+     * @returns {Array} Returns a sorted array
+     */
+    Augmented.Utility.QuickSort = function(arr) {
+        //if array is empty
+        if (arr.length === 0) {
+            return [];
+        }
+        var left = [];
+        var right = [];
+        var pivot = arr[0];
+        //go through each element in array
+        for (var i = 1; i < arr.length; i++) {
+            if (arr[i] < pivot) {
+                left.push(arr[i]);
+            } else {
+                right.push(arr[i]);
             }
         }
-
-        return -1;
+        return Augmented.Utility.QuickSort(left).concat(pivot, Augmented.Utility.QuickSort(right));
     };
 
     /**

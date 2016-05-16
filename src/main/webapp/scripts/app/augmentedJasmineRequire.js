@@ -2,7 +2,7 @@ require.config({
 	'baseUrl': 'scripts/',
 
 	'paths': {
-		'jquery': 'lib/jquery-2.1.4.min',
+		'jquery': 'lib/jquery.min',
 		'underscore': 'lib/lodash.min',
 		'backbone': 'lib/backbone-min',
 
@@ -41,7 +41,6 @@ var specs = [ 'core/test/coreSpec',
               'core/test/validationSpec',
               'core/test/localStorageSpec',
               'core/test/utilitySpec',
-              'core/test/resourceBundleSpec',
               'core/test/ajaxSpec',
               'core/test/applicationSpec',
 			  'core/test/securitySpec',
@@ -61,6 +60,7 @@ var specs = [ 'core/test/coreSpec',
               //TODO: redo these to work with the new system
               //'service/test/mockServiceSpec',
 
+              'core/test/resourceBundleSpec',
 			  'legacy/test/applicationContextSpec',
               'legacy/test/polyfillSpec'
             ];
@@ -72,7 +72,6 @@ var specs = [ 'core/test/coreSpec',
 require(['augmented', 'augmentedPresentation', 'boot'], function(Augmented, Presentation) {
     "use strict";
     var app = new Augmented.Presentation.Application("Jasmine Suite");
-    //app.registerStylesheet("styles/main.css");
     app.registerStylesheet("https://fonts.googleapis.com/css?family=Roboto:100,300,400");
     app.start();
 
