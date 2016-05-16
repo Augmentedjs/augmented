@@ -16,12 +16,9 @@ require.config({
 	'baseUrl': '/base',
 
 	'paths': {
-		'jquery': 'scripts/lib/jquery-2.1.4.min',
+		'jquery': 'scripts/lib/jquery.min',
 		'underscore': 'scripts/lib/lodash.min',
 		'backbone': 'scripts/lib/backbone-min',
-		//'handlebars': 'scripts/lib/handlebars-v4.0.2',
-		//'text': 'scripts/lib/text',
-		//'json': 'scripts/lib/json',
 
 		'augmented': 'scripts/core/augmented',
 		'augmentedPresentation': 'scripts/presentation/augmentedPresentation',
@@ -47,7 +44,6 @@ var specs = [ 'core/test/coreSpec',
               'core/test/validationSpec',
               'core/test/localStorageSpec',
               'core/test/utilitySpec',
-              'core/test/resourceBundleSpec',
               'core/test/ajaxSpec',
               'core/test/applicationSpec',
 			  'core/test/securitySpec',
@@ -68,6 +64,7 @@ var specs = [ 'core/test/coreSpec',
               //TODO: redo these to work with the new system
               //'service/test/mockServiceSpec',
 
+              'core/test/resourceBundleSpec',
 			  'legacy/test/applicationContextSpec',
               'legacy/test/polyfillSpec'
 

@@ -24,7 +24,7 @@ module.exports = function(config) {
     {pattern: 'scripts/presentation/augmentedPresentation.js', included: false},
     {pattern: 'scripts/lib/backbone-min.js', included: false},
     {pattern: 'scripts/lib/lodash.min.js', included: false},
-    {pattern: 'scripts/lib/jquery-2.1.4.min.js', included: false},
+    {pattern: 'scripts/lib/jquery.min.js', included: false},
     {pattern: 'scripts/lib/mock-ajax.js', included: false},
     {pattern: 'scripts/bundle/Messages_en-US.properties', included: false},
     {pattern: 'scripts/bundle/Messages_en.properties', included: false},
@@ -37,14 +37,14 @@ module.exports = function(config) {
     {pattern: 'scripts/core/test/localStorageSpec.js', included: false},
     {pattern: 'scripts/core/test/loggerSpec.js', included: false},
     {pattern: 'scripts/core/test/modelSpec.js', included: false},
-////  {pattern: 'scripts/core/test/resourceBundleSpec.js', included: false},
+// deprecated  {pattern: 'scripts/core/test/resourceBundleSpec.js', included: false},
     {pattern: 'scripts/core/test/securitySpec.js', included: false},
 //    {pattern: 'scripts/core/test/testTemplateSpec.js', included: false},
     {pattern: 'scripts/core/test/transformerSpec.js', included: false},
     {pattern: 'scripts/core/test/utilitySpec.js', included: false},
     {pattern: 'scripts/core/test/validationSpec.js', included: false},
     {pattern: 'scripts/core/test/viewSpec.js', included: false},
-//    {pattern: 'scripts/presentation/test/autoTableSpec.js', included: false},
+    {pattern: 'scripts/presentation/test/autoTableSpec.js', included: false},
   {pattern: 'scripts/presentation/test/applicationSpec.js', included: false},
     {pattern: 'scripts/presentation/test/mediationSpec.js', included: false},
     {pattern: 'scripts/presentation/test/presentationSpec.js', included: false},
@@ -67,7 +67,7 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress', 'junit'],
-    
+
     // the default configuration
     junitReporter: {
       outputDir: '', // results will be saved as $outputDir/$browserName.xml
@@ -106,7 +106,7 @@ module.exports = function(config) {
 //      'karma-phantomjs-launcher',
 //      'karma-jasmine'
 //    ],
-//    
+//
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: true,
