@@ -1920,7 +1920,7 @@
      * @extends Augmented.Presentation.AutomaticTable
      * @memberof Augmented.Presentation
      * @example
-     * var myAt = Augmented.Presentation.DirectDOMAutomaticTable.extend({ ... });
+     * var myAt = Augmented.Presentation.AutomaticTable.extend({ ... });
      * var at = new myAt({
      *     schema : schema,
      *     el: "#autoTable",
@@ -1984,7 +1984,7 @@
                         }
                     }
                 } else if (this.$el) {
-                    logger.warn("AUGMENTED: AutoTable no jquery, sorry not rendering.");
+                    logger.warn("AUGMENTED: AutoTable doesn't support jquery, sorry, not rendering.");
                 } else {
                     logger.warn("AUGMENTED: AutoTable no element anchor, not rendering.");
                 }
@@ -2015,7 +2015,7 @@
                         e.appendChild(n);
                     }
                 } else if (this.$el) {
-                    logger.warn("AUGMENTED: AutoTable no jquery render, sorry not rendering.");
+                    logger.warn("AUGMENTED: AutoTable doesn't support jquery, sorry, not rendering.");
                 } else {
                     logger.warn("AUGMENTED: AutoTable no element anchor, not rendering.");
                 }
@@ -2123,9 +2123,21 @@
      * @memberof Augmented.Presentation
      */
     Augmented.D = Augmented.Presentation.Dom = {
+        /**
+         * Gets the height of the browser viewport
+         * @method getViewportHeight
+         * @returns {Number} The height of the viewport
+         * @memberof Augmented.Presentation.Dom
+         */
         getViewportHeight: function() {
             return window.innerHeight;
         },
+        /**
+         * Gets the width of the browser viewport
+         * @method getViewportWidth
+         * @returns {Number} The width of the viewport
+         * @memberof Augmented.Presentation.Dom
+         */
         getViewportWidth: function() {
             return window.innerWidth;
         },
@@ -2236,24 +2248,51 @@
                 myEl.style.visibility = "visible";
             }
         },
+        /**
+         * Sets the class attribute (completely)
+         * @method setClass
+         * @param {Element} el Element or string of element selector
+         * @param {string} cls the class value
+         * @memberof Augmented.Presentation.Dom
+         */
         setClass: function(el, cls) {
             var myEl = this.selector(el);
             if (myEl) {
                 myEl.setAttribute("class", cls);
             }
         },
+        /**
+         * Adds a class attribute
+         * @method addClass
+         * @param {Element} el Element or string of element selector
+         * @param {string} cls the class value
+         * @memberof Augmented.Presentation.Dom
+         */
         addClass: function(el, cls) {
             var myEl = this.selector(el);
             if (myEl) {
                 myEl.classList.add(cls);
             }
         },
+        /**
+         * Remove a class attribute
+         * @method removeClass
+         * @param {Element} el Element or string of element selector
+         * @param {string} cls the class value
+         * @memberof Augmented.Presentation.Dom
+         */
         removeClass: function(el, cls) {
             var myEl = this.selector(el);
             if (myEl) {
                 myEl.classList.remove(cls);
             }
         },
+        /**
+         * Empty a element container
+         * @method empty
+         * @param {Element} el Element or string of element selector
+         * @memberof Augmented.Presentation.Dom
+         */
         empty: function(el) {
             this.setValue(el, "", true);
         },
@@ -2275,7 +2314,20 @@
 
     Augmented.$ = (Augmented.$) ? Augmented.$ : Augmented.Presentation.Dom.selectors;
 
+    /**
+     * Widgets and small presentation modules
+     * @namespace Widget
+     * @memberof Augmented.Presentation
+     */
     Augmented.Presentation.Widget = {
+        /**
+         * List widget - renders a standard list
+         * @method List
+         * @param {Array} data The data to render
+         * @param {boolean} ordered True if the list should be ordered
+         * @returns {Element} Returns a DOM element as a list
+         * @memberof Augmented.Presentation.Widget
+         */
         List: function(data, ordered) {
             var list = (ordered) ? document.createElement("ol") : document.createElement("ul"), i = 0, l, li, t, d;
             if (data && Array.isArray(data)) {
@@ -2290,6 +2342,13 @@
             }
             return list;
         },
+        /**
+         * DescriptionList widget - renders a description list
+         * @method DescriptionList
+         * @param {Array} data The data to render
+         * @returns {Element} Returns a DOM element as a description list
+         * @memberof Augmented.Presentation.Widget
+         */
         DescriptionList: function(data) {
             var list = document.createElement("dl"), i = 0, l, dd, dt, t, keys, key;
             if (data && Augmented.isObject(data)) {
@@ -2310,6 +2369,14 @@
             }
             return list;
         },
+        /**
+         * DataList widget - renders a data list
+         * @method DataList
+         * @param {string} id The id of the parent to attach the list
+         * @param {Array} data The data to render
+         * @returns {Element} Returns a DOM element as a data list
+         * @memberof Augmented.Presentation.Widget
+         */
         DataList: function(id, data) {
             var list = document.createElement("datalist"), i = 0, l, o;
             list.setAttribute("id", id);
@@ -2342,12 +2409,14 @@
      * This is because all events and templates are used on the DOM directly.</em><br/>
      * To add custom events, use customEvents instead of 'events'
      * @constructor Augmented.Presentation.DecoratorView
+     * @memberof Augmented.Presentation
      * @extends Augmented.Presentation.Colleague
      */
     Augmented.Presentation.DecoratorView = Augmented.Presentation.Colleague.extend({
         /**
          * Events Property - Do Not Override
          * @property Events
+         * @memberof Augmented.Presentation.DecoratorView
          */
         events: function(){
             var _events = (this.customEvents) ? this.customEvents : {};
@@ -2391,6 +2460,7 @@
         },
         /**
          * Initialize method - Do Not Override
+         * @memberof Augmented.Presentation.DecoratorView
          * @method initialize
          */
         initialize: function(options) {
@@ -2403,6 +2473,7 @@
         /**
          * Remove method - Does not remove DOM elements only bindings.
          * @method remove
+         * @memberof Augmented.Presentation.DecoratorView
          */
         remove: function() {
             /* off to unbind the events */
@@ -2414,6 +2485,7 @@
         /**
          * _executeFunctionByName method - Private
          * @method _executeFunctionByName
+         * @memberof Augmented.Presentation.DecoratorView
          * @private
          */
         _executeFunctionByName: function(functionName, context /*, args */) {
@@ -2429,6 +2501,7 @@
         /**
          * bindingAttribute method - Returns the binging data attribute name
          * @method bindingAttribute
+         * @memberof Augmented.Presentation.DecoratorView
          * @returns {string} Binding attribute name
          */
         bindingAttribute: function() {
@@ -2439,6 +2512,7 @@
          * @method injectTemplate
          * @param {string} template The template to inject
          * @param {Element} mount The mount point as Document.Element or String
+         * @memberof Augmented.Presentation.DecoratorView
          */
         injectTemplate: function(template, mount) {
             var m = mount;
@@ -2467,6 +2541,7 @@
          * @method removeTemplate
          * @param {Element} mount The mount point as Document.Element or String
          * @param {boolean} onlyContent Only remove the content not the mount point
+         * @memberof Augmented.Presentation.DecoratorView
          */
         removeTemplate: function(mount, onlyContent) {
             if (mount) {
@@ -2486,6 +2561,7 @@
          * boundElement method - returns the bound element from identifer
          * @method boundElement
          * @param {string} id The identifier (not id attribute) of the element
+         * @memberof Augmented.Presentation.DecoratorView
          * @example
          * from HTML: <div data-myMountedView="something" id="anything"></div>
          * from JavaScript: var el = this.boundElement("something");
@@ -2500,6 +2576,7 @@
          * syncBoundElement - Syncs the data of a bound element by firing a change event
          * @method syncBoundElement
          * @param {string} id The identifier (not id attribute) of the element
+         * @memberof Augmented.Presentation.DecoratorView
          */
         syncBoundElement: function(id) {
             if (id) {
@@ -2513,10 +2590,24 @@
                 }
             }
         },
+        /**
+         * addClass - adds a class to a bount element
+         * @method addClass
+         * @param {string} id The identifier (not id attribute) of the element
+         * @param {string} cls The class to add
+         * @memberof Augmented.Presentation.DecoratorView
+         */
         addClass: function(id, cls) {
             var myEl = this.boundElement(id);
             myEl.classList.add(cls);
         },
+        /**
+         * removeClass - remove a class to a bount element
+         * @method removeClass
+         * @param {string} id The identifier (not id attribute) of the element
+         * @param {string} cls The class to remove
+         * @memberof Augmented.Presentation.DecoratorView
+         */
         removeClass: function(id, cls) {
             var myEl = this.boundElement(id);
             myEl.classList.remove(cls);
@@ -2525,6 +2616,7 @@
          * bindModelChange method - binds the model changes to functions
          * @method bindModelChange
          * @param {func} func The function to call when changing (normally render)
+         * @memberof Augmented.Presentation.DecoratorView
          */
         bindModelChange: function(func) {
             if (!this.model) {
@@ -2536,6 +2628,7 @@
          * syncModelChange method - binds the model changes to a specified bound element
          * @method syncModelChange
          * @param {Element} element The element to bind as Document.Element or string
+         * @memberof Augmented.Presentation.DecoratorView
          */
         syncModelChange: function(element) {
             if (!this.model) {
@@ -2551,6 +2644,7 @@
          * _syncData method - syncs the model changes to a specified bound element
          * @method _syncData
          * @param {Element} element The element to bind as Document.Element or string
+         * @memberof Augmented.Presentation.DecoratorView
          * @private
          */
         _syncData: function(element) {
@@ -2616,6 +2710,7 @@
          * unbindModelChange method - unbinds the model changes to elements
          * @method unbindModelChange
          * @param {func} func The function to call when changing (normally render)
+         * @memberof Augmented.Presentation.DecoratorView
          */
         unbindModelChange: function(func) {
             this.model.unBind('change', func, this);
@@ -2624,20 +2719,53 @@
          * unbindModelSync method - unbinds the model changes to a specified bound element
          * @method unbindModelSync
          * @param {Element} element The element to bind as Document.Element or string
+         * @memberof Augmented.Presentation.DecoratorView
          */
         unbindModelSync: function(element) {
             this.model.unBind('change:' + element, this._syncData, this);
         }
     });
 
+    /**
+     * A controller to handle a group of views.  The api is handled simular to views for use in a router.
+     * @constructor Augmented.Presentation.ViewController
+     * @memberof Augmented.Presentation
+     * @extends Augmented.Object
+     */
     Augmented.Presentation.ViewController = Augmented.Object.extend({
         _views: [],
+        /**
+         * initialize - an API for the start of the controller.  It is intended to add initializers here
+         * @method initialize
+         * @memberof Augmented.Presentation.ViewController
+         */
         initialize: function() {},
+        /**
+         * render - an API for the render of the controller.  It is intended to add view render methods here
+         * @method render
+         * @memberof Augmented.Presentation.ViewController
+         */
         render: function() {},
+        /**
+         * remove - an API for the end of the controller.  It is intended to add view removal and cleanup here
+         * @method remove
+         * @memberof Augmented.Presentation.ViewController
+         */
         remove: function() {},
+        /**
+         * manageView - manage a view
+         * @method manageView
+         * @param {Augmented.View} view An instance of a view to manage
+         * @memberof Augmented.Presentation.ViewController
+         */
         manageView: function(view) {
             this._views.push(view);
         },
+        /**
+         * removeAllViews - cleans up all views known (calling thier remove method)
+         * @method removeAllViews
+         * @memberof Augmented.Presentation.ViewController
+         */
         removeAllViews: function() {
             var i = 0, l = this._views.length;
             for (i = 0; i < l; i++) {
@@ -2645,24 +2773,70 @@
             }
             this._views = [];
         },
+        /**
+         * getViews - get the instances of the views known
+         * @method getViews
+         * @returns {Array} Returns an array of view instances
+         * @memberof Augmented.Presentation.ViewController
+         */
         getViews: function () {
             return this._views;
         }
     });
 
-    // dialog
+    /**
+     * A automatic dialog view - creates a dialog with simple configurations to customize
+     * @constructor Augmented.Presentation.DialogView
+     * @memberof Augmented.Presentation
+     * @extends Augmented.Presentation.DecoratorView
+     */
     Augmented.Presentation.DialogView = Augmented.Presentation.DecoratorView.extend({
+        /**
+         * name property - the name of the dialog (required)
+         * @property name
+         * @memberof Augmented.Presentation.DialogView
+         */
         name: "dialog",
+        /**
+         * title property - the title of the dialog
+         * @property title
+         * @memberof Augmented.Presentation.DialogView
+         */
         title: "",
+        /**
+         * body property - the body of the dialog, handled by setBody method
+         * @property body
+         * @memberof Augmented.Presentation.DialogView
+         */
         body: "",
+        /**
+         * style property - the style (form, alert, bigForm, or whatever class you want)
+         * @property style
+         * @memberof Augmented.Presentation.DialogView
+         */
         style: "form",
+        /**
+         * buttons object property - the buttons to match to functions
+         * @property buttons
+         * @memberof Augmented.Presentation.DialogView
+         */
         buttons: {
             //name : callback
         },
-
+        /**
+         * template - sets content of the dialog, handled internally
+         * @method template
+         * @memberof Augmented.Presentation.DialogView
+         */
         template: function() {
             return "<div class=\"blur\"><dialog class=\"" + this.style + "\"><h1>" + this.title + "</h1>" + this.body + this._getButtonGroup() + "</dialog></div>";
         },
+        /**
+         * setBody - sets the body content of the dialog
+         * @method setBody
+         * @param {String} body A string value of th body (supports HTML)
+         * @memberof Augmented.Presentation.DialogView
+         */
         setBody: function(body) {
             this.body = body;
         },
@@ -2675,6 +2849,11 @@
 
             return html + "</div>";
         },
+        /**
+         * render - render the dialog
+         * @method render
+         * @memberof Augmented.Presentation.DialogView
+         */
         render: function() {
             Augmented.Presentation.Dom.setValue(this.el, this.template());
             this.delegateEvents();
@@ -2682,18 +2861,43 @@
             return this;
         },
         // built-in callbacks
+
+        /**
+         * cancel - standard built-in cancel callback.  Calls close method by default
+         * @method cancel
+         * @param {Event} event Event passed in
+         * @memberof Augmented.Presentation.DialogView
+         */
         cancel: function(event) {
-            this.close();
+            this.close(event);
         },
-        open: function() {
+        /**
+         * open - standard built-in open callback.  Calls render method by default
+         * @method open
+         * @param {Event} event Event passed in
+         * @memberof Augmented.Presentation.DialogView
+         */
+        open: function(event) {
             this.render();
         },
-        close: function() {
+        /**
+         * close - standard built-in close callback.  Closes the dialog, triggers the 'close' event
+         * @method close
+         * @param {Event} event Event passed in
+         * @memberof Augmented.Presentation.DialogView
+         */
+        close: function(event) {
             this.trigger("close");
             Augmented.Presentation.Dom.empty(this.el, true);
         }
     });
 
+    /**
+     * A automatic comfirmation dialog view - creates a dialog with yes no buttons
+     * @constructor Augmented.Presentation.ConfirmationDialogView
+     * @memberof Augmented.Presentation
+     * @extends Augmented.Presentation.DialogView
+     */
     Augmented.Presentation.ConfirmationDialogView = Augmented.Presentation.DialogView.extend({
         buttons: {
             //name : callback
@@ -2703,6 +2907,12 @@
         style: "alert"
     });
 
+    /**
+     * A automatic alert dialog view - creates a dialog with cancel button and a message
+     * @constructor Augmented.Presentation.AlertDialogView
+     * @memberof Augmented.Presentation
+     * @extends Augmented.Presentation.DialogView
+     */
     Augmented.Presentation.AlertDialogView = Augmented.Presentation.DialogView.extend({
         buttons: {
             //name : callback

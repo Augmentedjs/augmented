@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Augmented.js Class: Context</title>
+	<title>Augmented.js Class: DialogView</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -84,15 +84,15 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: Context</h1>
+	<h1 class="page-title">Class: DialogView</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Augmented.Security.html">.Security</a>.</span>
+            <span class="ancestors"><a href="Augmented.Presentation.html">.Presentation</a>.</span>
         
-        Context
+        DialogView
         </h2>
         
     
@@ -105,7 +105,7 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="Context"><span class="type-signature"></span>new Context(principal, permissions)</h4>
+    <h4 class="name" id="DialogView"><span class="type-signature"></span>new DialogView()</h4>
     
     
 </dt>
@@ -113,7 +113,7 @@
 
     
     <div class="description">
-        <p>Augmented.Security.Context<br>Used as a security data storage class</p>
+        <p>A automatic dialog view - creates a dialog with simple configurations to customize</p>
     </div>
     
 
@@ -122,80 +122,6 @@
     
 
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>principal</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The principal for this context</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>permissions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Permissions to add to the context</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
     
 
     
@@ -233,8 +159,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1311">line 1311</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2787">line 2787</a>
 			</li>
 		</ul>
 	</dd>
@@ -267,6 +193,15 @@
     </div>
 
     
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="Augmented.Presentation.DecoratorView.html">Augmented.Presentation.DecoratorView</a></li>
+    </ul>
+
 
     
 
@@ -276,6 +211,597 @@
 
     
 
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        <dl>
+            
+<hr>
+<dt class="name" id=".body">
+    <h4><span class="type-signature">&lt;static> </span>body<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>body property - the body of the dialog, handled by setBody method</p>
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>body</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2811">line 2811</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id=".buttons">
+    <h4><span class="type-signature">&lt;static> </span>buttons<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>buttons object property - the buttons to match to functions</p>
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>buttons</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2823">line 2823</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id=".name">
+    <h4><span class="type-signature">&lt;static> </span>name<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>name property - the name of the dialog (required)</p>
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2799">line 2799</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id=".style">
+    <h4><span class="type-signature">&lt;static> </span>style<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>style property - the style (form, alert, bigForm, or whatever class you want)</p>
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>style</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2817">line 2817</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id=".title">
+    <h4><span class="type-signature">&lt;static> </span>title<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>title property - the title of the dialog</p>
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2805">line 2805</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        </dl>
     
 
     
@@ -285,7 +811,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".addPermission"><span class="type-signature">&lt;static> </span>addPermission(permission)</h4>
+    <h4 class="name" id=".cancel"><span class="type-signature">&lt;static> </span>cancel(event)</h4>
     
     
 </dt>
@@ -293,7 +819,7 @@
 
     
     <div class="description">
-        <p>addPermission - Add a new permission for a principal</p>
+        <p>cancel - standard built-in cancel callback.  Calls close method by default</p>
     </div>
     
 
@@ -328,13 +854,13 @@
 
         <tr>
             
-                <td class="name"><code>permission</code></td>
+                <td class="name"><code>event</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Event</span>
 
 
 
@@ -345,7 +871,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>Event passed in</p></td>
         </tr>
 
     
@@ -389,8 +915,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1353">line 1353</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2865">line 2865</a>
 			</li>
 		</ul>
 	</dd>
@@ -423,7 +949,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".getPermissions"><span class="type-signature">&lt;static> </span>getPermissions()</h4>
+    <h4 class="name" id=".close"><span class="type-signature">&lt;static> </span>close(event)</h4>
     
     
 </dt>
@@ -431,231 +957,7 @@
 
     
     <div class="description">
-        <p>getPermissions - Get all the permissions for a principal</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1333">line 1333</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>permissions All permissions</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">array</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".getPrincipal"><span class="type-signature">&lt;static> </span>getPrincipal()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>getPrincipal - get the principal of this context</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1323">line 1323</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>principal The principal of this context</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".hasPermission"><span class="type-signature">&lt;static> </span>hasPermission(permission)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>hasPermission - checks for a permission for this principal</p>
+        <p>close - standard built-in close callback.  Closes the dialog, triggers the 'close' event</p>
     </div>
     
 
@@ -690,13 +992,13 @@
 
         <tr>
             
-                <td class="name"><code>permission</code></td>
+                <td class="name"><code>event</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Event</span>
 
 
 
@@ -707,7 +1009,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>Event passed in</p></td>
         </tr>
 
     
@@ -751,8 +1053,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1374">line 1374</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2883">line 2883</a>
 			</li>
 		</ul>
 	</dd>
@@ -785,7 +1087,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".removePermission"><span class="type-signature">&lt;static> </span>removePermission(permission)</h4>
+    <h4 class="name" id=".open"><span class="type-signature">&lt;static> </span>open(event)</h4>
     
     
 </dt>
@@ -793,7 +1095,7 @@
 
     
     <div class="description">
-        <p>removePermission - Remove a permission for a principal</p>
+        <p>open - standard built-in open callback.  Calls render method by default</p>
     </div>
     
 
@@ -828,13 +1130,13 @@
 
         <tr>
             
-                <td class="name"><code>permission</code></td>
+                <td class="name"><code>event</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Event</span>
 
 
 
@@ -845,7 +1147,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>Event passed in</p></td>
         </tr>
 
     
@@ -889,8 +1191,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1363">line 1363</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2874">line 2874</a>
 			</li>
 		</ul>
 	</dd>
@@ -923,7 +1225,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".setPermissions"><span class="type-signature">&lt;static> </span>setPermissions(permissions)</h4>
+    <h4 class="name" id=".render"><span class="type-signature">&lt;static> </span>render()</h4>
     
     
 </dt>
@@ -931,7 +1233,95 @@
 
     
     <div class="description">
-        <p>setPermissions - Set all permissions for a principal</p>
+        <p>render - render the dialog</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2852">line 2852</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".setBody"><span class="type-signature">&lt;static> </span>setBody(body)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>setBody - sets the body content of the dialog</p>
     </div>
     
 
@@ -966,13 +1356,13 @@
 
         <tr>
             
-                <td class="name"><code>permissions</code></td>
+                <td class="name"><code>body</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">array</span>
+<span class="param-type"><a href="String.html">String</a></span>
 
 
 
@@ -983,7 +1373,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>A string value of th body (supports HTML)</p></td>
         </tr>
 
     
@@ -1027,8 +1417,96 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1343">line 1343</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2834">line 2834</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".template"><span class="type-signature">&lt;static> </span>template()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>template - sets content of the dialog, handled internally</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2826">line 2826</a>
 			</li>
 		</ul>
 	</dd>

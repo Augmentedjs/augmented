@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Augmented.js Class: Context</title>
+	<title>Augmented.js Namespace: Widget</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -84,15 +84,15 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: Context</h1>
+	<h1 class="page-title">Namespace: Widget</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Augmented.Security.html">.Security</a>.</span>
+            <span class="ancestors"><a href="Augmented.Presentation.html">.Presentation</a>.</span>
         
-        Context
+        Widget
         </h2>
         
     
@@ -103,102 +103,10 @@
     <div class="container-overview">
     
         
-<hr>
-<dt>
-    <h4 class="name" id="Context"><span class="type-signature"></span>new Context(principal, permissions)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>Augmented.Security.Context<br>Used as a security data storage class</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
+            <div class="description"><p>Widgets and small presentation modules</p></div>
         
 
         
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>principal</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The principal for this context</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>permissions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Permissions to add to the context</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
 <dl class="details">
     
 
@@ -233,8 +141,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1311">line 1311</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2317">line 2317</a>
 			</li>
 		</ul>
 	</dd>
@@ -248,21 +156,7 @@
 </dl>
 
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
+        
     
     </div>
 
@@ -285,7 +179,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".addPermission"><span class="type-signature">&lt;static> </span>addPermission(permission)</h4>
+    <h4 class="name" id=".DataList"><span class="type-signature">&lt;static> </span>DataList(id, data)</h4>
     
     
 </dt>
@@ -293,7 +187,7 @@
 
     
     <div class="description">
-        <p>addPermission - Add a new permission for a principal</p>
+        <p>DataList widget - renders a data list</p>
     </div>
     
 
@@ -328,7 +222,7 @@
 
         <tr>
             
-                <td class="name"><code>permission</code></td>
+                <td class="name"><code>id</code></td>
             
 
             <td class="type">
@@ -345,7 +239,31 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>The id of the parent to attach the list</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Array.html">Array</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The data to render</p></td>
         </tr>
 
     
@@ -389,96 +307,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1353">line 1353</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".getPermissions"><span class="type-signature">&lt;static> </span>getPermissions()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>getPermissions - Get all the permissions for a principal</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1333">line 1333</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2372">line 2372</a>
 			</li>
 		</ul>
 	</dd>
@@ -507,7 +337,7 @@
     
             
 <div class="param-desc">
-    <p>permissions All permissions</p>
+    <p>Returns a DOM element as a data list</p>
 </div>
 
 
@@ -518,7 +348,7 @@
     </dt>
     <dd>
         
-<span class="param-type">array</span>
+<span class="param-type">Element</span>
 
 
 
@@ -535,7 +365,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".getPrincipal"><span class="type-signature">&lt;static> </span>getPrincipal()</h4>
+    <h4 class="name" id=".DescriptionList"><span class="type-signature">&lt;static> </span>DescriptionList(data)</h4>
     
     
 </dt>
@@ -543,7 +373,7 @@
 
     
     <div class="description">
-        <p>getPrincipal - get the principal of this context</p>
+        <p>DescriptionList widget - renders a description list</p>
     </div>
     
 
@@ -552,6 +382,56 @@
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Array.html">Array</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The data to render</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -589,8 +469,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1323">line 1323</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2345">line 2345</a>
 			</li>
 		</ul>
 	</dd>
@@ -619,7 +499,7 @@
     
             
 <div class="param-desc">
-    <p>principal The principal of this context</p>
+    <p>Returns a DOM element as a description list</p>
 </div>
 
 
@@ -630,7 +510,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></span>
+<span class="param-type">Element</span>
 
 
 
@@ -647,7 +527,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".hasPermission"><span class="type-signature">&lt;static> </span>hasPermission(permission)</h4>
+    <h4 class="name" id=".List"><span class="type-signature">&lt;static> </span>List(data, ordered)</h4>
     
     
 </dt>
@@ -655,7 +535,7 @@
 
     
     <div class="description">
-        <p>hasPermission - checks for a permission for this principal</p>
+        <p>List widget - renders a standard list</p>
     </div>
     
 
@@ -690,13 +570,13 @@
 
         <tr>
             
-                <td class="name"><code>permission</code></td>
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><a href="Array.html">Array</a></span>
 
 
 
@@ -707,7 +587,31 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>The data to render</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ordered</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>True if the list should be ordered</p></td>
         </tr>
 
     
@@ -751,8 +655,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1374">line 1374</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2323">line 2323</a>
 			</li>
 		</ul>
 	</dd>
@@ -777,282 +681,30 @@
     
 
     
-
+    <h5>Returns:</h5>
     
-</dd>
+            
+<div class="param-desc">
+    <p>Returns a DOM element as a list</p>
+</div>
 
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
         
-            
-<hr>
-<dt>
-    <h4 class="name" id=".removePermission"><span class="type-signature">&lt;static> </span>removePermission(permission)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>removePermission - Remove a permission for a principal</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>permission</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
+<span class="param-type">Element</span>
 
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1363">line 1363</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
+    </dd>
 </dl>
 
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
         
-            
-<hr>
-<dt>
-    <h4 class="name" id=".setPermissions"><span class="type-signature">&lt;static> </span>setPermissions(permissions)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>setPermissions - Set all permissions for a principal</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>permissions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1343">line 1343</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
 </dd>

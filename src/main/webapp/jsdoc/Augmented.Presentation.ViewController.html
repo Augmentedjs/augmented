@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Augmented.js Class: Context</title>
+	<title>Augmented.js Class: ViewController</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -84,15 +84,15 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: Context</h1>
+	<h1 class="page-title">Class: ViewController</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Augmented.Security.html">.Security</a>.</span>
+            <span class="ancestors"><a href="Augmented.Presentation.html">.Presentation</a>.</span>
         
-        Context
+        ViewController
         </h2>
         
     
@@ -105,7 +105,7 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="Context"><span class="type-signature"></span>new Context(principal, permissions)</h4>
+    <h4 class="name" id="ViewController"><span class="type-signature"></span>new ViewController()</h4>
     
     
 </dt>
@@ -113,7 +113,7 @@
 
     
     <div class="description">
-        <p>Augmented.Security.Context<br>Used as a security data storage class</p>
+        <p>A controller to handle a group of views.  The api is handled simular to views for use in a router.</p>
     </div>
     
 
@@ -122,80 +122,6 @@
     
 
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>principal</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The principal for this context</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>permissions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Permissions to add to the context</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
     
 
     
@@ -233,8 +159,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1311">line 1311</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2729">line 2729</a>
 			</li>
 		</ul>
 	</dd>
@@ -265,6 +191,17 @@
 
     
     </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="Augmented.Object.html">Augmented.Object</a></li>
+    </ul>
+
 
     
 
@@ -285,7 +222,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".addPermission"><span class="type-signature">&lt;static> </span>addPermission(permission)</h4>
+    <h4 class="name" id=".getViews"><span class="type-signature">&lt;static> </span>getViews()</h4>
     
     
 </dt>
@@ -293,145 +230,7 @@
 
     
     <div class="description">
-        <p>addPermission - Add a new permission for a principal</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>permission</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1353">line 1353</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".getPermissions"><span class="type-signature">&lt;static> </span>getPermissions()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>getPermissions - Get all the permissions for a principal</p>
+        <p>getViews - get the instances of the views known</p>
     </div>
     
 
@@ -477,8 +276,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1333">line 1333</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2776">line 2776</a>
 			</li>
 		</ul>
 	</dd>
@@ -507,7 +306,7 @@
     
             
 <div class="param-desc">
-    <p>permissions All permissions</p>
+    <p>Returns an array of view instances</p>
 </div>
 
 
@@ -518,7 +317,7 @@
     </dt>
     <dd>
         
-<span class="param-type">array</span>
+<span class="param-type"><a href="Array.html">Array</a></span>
 
 
 
@@ -535,7 +334,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".getPrincipal"><span class="type-signature">&lt;static> </span>getPrincipal()</h4>
+    <h4 class="name" id=".initialize"><span class="type-signature">&lt;static> </span>initialize()</h4>
     
     
 </dt>
@@ -543,7 +342,7 @@
 
     
     <div class="description">
-        <p>getPrincipal - get the principal of this context</p>
+        <p>initialize - an API for the start of the controller.  It is intended to add initializers here</p>
     </div>
     
 
@@ -589,8 +388,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1323">line 1323</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2737">line 2737</a>
 			</li>
 		</ul>
 	</dd>
@@ -615,30 +414,6 @@
     
 
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>principal The principal of this context</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Augmented.Security.Principal.html">Augmented.Security.Principal</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
 
     
 </dd>
@@ -647,7 +422,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".hasPermission"><span class="type-signature">&lt;static> </span>hasPermission(permission)</h4>
+    <h4 class="name" id=".manageView"><span class="type-signature">&lt;static> </span>manageView(view)</h4>
     
     
 </dt>
@@ -655,7 +430,7 @@
 
     
     <div class="description">
-        <p>hasPermission - checks for a permission for this principal</p>
+        <p>manageView - manage a view</p>
     </div>
     
 
@@ -690,13 +465,13 @@
 
         <tr>
             
-                <td class="name"><code>permission</code></td>
+                <td class="name"><code>view</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type"><a href="Augmented.View.html">Augmented.View</a></span>
 
 
 
@@ -707,7 +482,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>An instance of a view to manage</p></td>
         </tr>
 
     
@@ -751,8 +526,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1374">line 1374</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2755">line 2755</a>
 			</li>
 		</ul>
 	</dd>
@@ -785,7 +560,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".removePermission"><span class="type-signature">&lt;static> </span>removePermission(permission)</h4>
+    <h4 class="name" id=".remove"><span class="type-signature">&lt;static> </span>remove()</h4>
     
     
 </dt>
@@ -793,7 +568,7 @@
 
     
     <div class="description">
-        <p>removePermission - Remove a permission for a principal</p>
+        <p>remove - an API for the end of the controller.  It is intended to add view removal and cleanup here</p>
     </div>
     
 
@@ -802,56 +577,6 @@
     
 
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>permission</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
     
 
     
@@ -889,8 +614,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1363">line 1363</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2749">line 2749</a>
 			</li>
 		</ul>
 	</dd>
@@ -923,7 +648,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id=".setPermissions"><span class="type-signature">&lt;static> </span>setPermissions(permissions)</h4>
+    <h4 class="name" id=".removeAllViews"><span class="type-signature">&lt;static> </span>removeAllViews()</h4>
     
     
 </dt>
@@ -931,7 +656,7 @@
 
     
     <div class="description">
-        <p>setPermissions - Set all permissions for a principal</p>
+        <p>removeAllViews - cleans up all views known (calling thier remove method)</p>
     </div>
     
 
@@ -940,56 +665,6 @@
     
 
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>permissions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
     
 
     
@@ -1027,8 +702,96 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1343">line 1343</a>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2764">line 2764</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".render"><span class="type-signature">&lt;static> </span>render()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>render - an API for the render of the controller.  It is intended to add view render methods here</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2743">line 2743</a>
 			</li>
 		</ul>
 	</dd>

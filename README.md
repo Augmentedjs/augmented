@@ -1,7 +1,7 @@
 # Augmented.js
 ## The Augmented.js Framework.
-### Version 0.3.0ɑ
-
+### Version 0.3.0
+### "The Hive"
 **aug·ment·ed**
 /ˌôɡˈmentəd /
 *adjective*
