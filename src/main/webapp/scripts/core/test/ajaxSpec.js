@@ -9,7 +9,7 @@ define([
 		});
 
         describe('can fetch', function() {
-    		var uri = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
+    		var uri = window.location.protocol + "//" + window.location.host + window.location.pathname;
     		var success = null;
 
     		beforeEach(function(done) {
