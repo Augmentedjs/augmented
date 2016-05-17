@@ -94,6 +94,16 @@ define([
                     //expect(c2[0].context.cid).not.toEqual(c.cid);
 
 				});
+
+                it('Colleague will not fail to send a message if the mediator is not available', function() {
+                    var ee = null;
+                    try {
+                        c.sendMessage("YouMustNotFail", "fail");
+                    } catch(e) {
+                        ee = e;
+                    }
+					expect(ee).toEqual(null);
+				});
 			});
 		});
 	});

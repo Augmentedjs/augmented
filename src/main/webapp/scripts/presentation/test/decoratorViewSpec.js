@@ -30,6 +30,7 @@ define([
 				});
 
 				afterEach(function() {
+                    d.remove();
 					d = null;
 				});
 

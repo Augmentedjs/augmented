@@ -26,12 +26,15 @@ define([
 				var view = new Augmented.Presentation.Mediator();
 				app.registerMediator(view);
 				expect(app.getMediators().length > 0).toBeTruthy();
+                view.remove();
+                view = null;
 			});
 
 			it('can register an extended Mediator View', function() {
 				var view = Augmented.Presentation.Mediator.extend({ });
 				app.registerMediator(view);
 				expect(app.getMediators().length > 0).toBeTruthy();
+                view = null;
 			});
 
 			it('can return a few registered Mediator Views', function() {
@@ -45,6 +48,12 @@ define([
 				app.registerMediator(view3);
 
 				expect(app.getMediators().length === 3).toBeTruthy();
+                view1.remove();
+                view1 = null;
+                view2.remove();
+                view2 = null;
+                view3.remove();
+                view3 = null;
 			});
 
 			it('has a Stylesheet Registry', function() {

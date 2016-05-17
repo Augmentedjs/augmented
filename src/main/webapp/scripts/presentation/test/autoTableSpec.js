@@ -52,6 +52,7 @@ define([
             });
 
             afterEach(function() {
+                at.remove();
                 at = null;
             });
 
@@ -137,6 +138,8 @@ define([
                 expect(Presentation.BigDataTable).toBeDefined();
                 expect(b instanceof Presentation.BigDataTable).toBeTruthy();
                 expect(b.paginationAPI).toBeDefined();
+                b.remove();
+                b = null;
     		});
 
             it('can create a EditableTable class', function() {
@@ -144,6 +147,8 @@ define([
                 expect(Presentation.EditableTable).toBeDefined();
                 expect(b instanceof Presentation.EditableTable).toBeTruthy();
                 expect(b.editable).toBeTruthy();
+                b.remove();
+                b = null;
     		});
 
             it('can create a EditableBigDataTable class', function() {
@@ -152,6 +157,8 @@ define([
                 expect(b instanceof Presentation.EditableBigDataTable).toBeTruthy();
                 expect(b.editable).toBeTruthy();
                 expect(b.paginationAPI).toBeDefined();
+                b.remove();
+                b = null;
     		});
 
             it('can create a LocalStorageTable class', function() {
@@ -161,6 +168,8 @@ define([
                 expect(b.localStorage).toBeTruthy();
                 expect(b.localStorageKey).toBeDefined();
                 expect(b.uri).toEqual(null);
+                b.remove();
+                b = null;
     		});
 
             it('can create a EditableLocalStorageTable class', function() {
@@ -171,6 +180,8 @@ define([
                 expect(b.localStorageKey).toBeDefined();
                 expect(b.editable).toBeTruthy();
                 expect(b.uri).toEqual(null);
+                b.remove();
+                b = null;
     		});
         });
 	});

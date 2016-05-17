@@ -77,7 +77,11 @@
         _mediator: null,
 
         sendMessage: function(message, data) {
-            this._mediator.trigger(message, data);
+            if (this._mediator) {
+                this._mediator.trigger(message, data);
+            } else {
+                logger.warn("AUGMENTED: No mediator is available, talking to myself.");
+            }
         },
 
         setMediatorMessageQueue: function(e) {

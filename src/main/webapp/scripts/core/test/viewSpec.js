@@ -17,6 +17,7 @@ define([
 
             afterEach(function() {
                 fired  = false;
+                view.remove();
                 view = null;
             });
 
@@ -78,6 +79,7 @@ define([
 
             afterEach(function() {
                 fired  = false;
+                view.remove();
                 view = null;
             });
 

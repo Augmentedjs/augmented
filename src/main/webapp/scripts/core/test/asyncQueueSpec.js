@@ -11,6 +11,7 @@ define([
 		it('can define a queue with a timeout', function() {
 			var q = new Augmented.Utility.AsynchronousQueue(1000);
 			expect(q.getTimeout()).toEqual(1000);
+            q = null;
 		});
 
 		it('can queue a few functions', function() {
@@ -25,6 +26,7 @@ define([
 				function(count) { count++; }
 			);
             expect(s).toBeTruthy();
+            q = null;
 		});
 
         it('can add a few functions to the queue', function() {
@@ -40,6 +42,7 @@ define([
 			);
 
 			expect(Object.keys(q.getQueue()).length).toBeGreaterThan(0);
+            q = null;
 		});
 
         it('can add a few functions to the queue then run them', function() {
@@ -56,6 +59,7 @@ define([
             var s = q.process();
 
             expect(s).toBeTruthy();
+            q = null;
 		});
 
         it('can add a few functions to the queue then run them in sync', function() {
@@ -75,6 +79,7 @@ define([
             var s = q.process();
 
             expect(s).toBeTruthy();
+            q = null;
 		});
 	});
 });

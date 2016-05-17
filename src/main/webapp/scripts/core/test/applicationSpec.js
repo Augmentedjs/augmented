@@ -18,6 +18,7 @@ define([
 			});
 
     		it('can create an instance', function() {
+                app = null;
     		    app = new Augmented.Application();
 
     		    expect(app instanceof Augmented.Application).toBeTruthy();
