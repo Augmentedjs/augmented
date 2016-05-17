@@ -114,7 +114,8 @@
     
     <div class="description">
         <p>Augmented.Presentation.DecoratorView<br/><br>An MVVM view designed around decorating the DOM with bindings.<br>This concept is designed to decouple the view from the backend contract.<br>Although this is achieved via views in general, the idea is:<br/></p>
-<p><blockquote>As a Javascript Developer, I'd like the ability to decorate HTML and control view rendering without the use of CSS selectors</blockquote><br><em>Important to note: This view <strong>gives up</strong> it's template and events!<br>This is because all events and templates are used on the DOM directly.</em><br/><br>To add custom events, use customEvents instead of 'events'</p>
+<p><blockquote>As a Javascript Developer, I'd like the ability to decorate HTML and control view rendering without the use of CSS selectors</blockquote><br><em>Important to note: This view <strong>gives up</strong> it's template and events!<br>This is because all events and templates are used on the DOM directly.</em><br/><br>To add custom events, use customEvents instead of 'events'<br/><br>supported annotations:<br/></p>
+<ul><br><li>data-click</li><br><li>data-function</li><br><li>data-style</li><br><li>data-append-template</li><br><li>data-prepend-template</li><br></ul>
     </div>
     
 
@@ -161,7 +162,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2402">line 2402</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2410">line 2410</a>
 			</li>
 		</ul>
 	</dd>
@@ -214,6 +215,127 @@
 
     
 
+    
+        <h3 class="subsection-title">Members</h3>
+
+        <dl>
+            
+<hr>
+<dt class="name" id=".customEvents">
+    <h4><span class="type-signature">&lt;static> </span>customEvents<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Custom Events Property - merge into built-in events</p>
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>customEvents</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2437">line 2437</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        </dl>
     
 
     
@@ -352,7 +474,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2593">line 2593</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2613">line 2613</a>
 			</li>
 		</ul>
 	</dd>
@@ -440,7 +562,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2501">line 2501</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2521">line 2521</a>
 			</li>
 		</ul>
 	</dd>
@@ -602,7 +724,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2615">line 2615</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2635">line 2635</a>
 			</li>
 		</ul>
 	</dd>
@@ -740,7 +862,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2560">line 2560</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2580">line 2580</a>
 			</li>
 		</ul>
 	</dd>
@@ -829,7 +951,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 
         <tr>
             
-                <td class="name"><code>Events</code></td>
+                <td class="name"><code>events</code></td>
             
 
             <td class="type">
@@ -882,7 +1004,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2421">line 2421</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2443">line 2443</a>
 			</li>
 		</ul>
 	</dd>
@@ -970,7 +1092,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2461">line 2461</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2481">line 2481</a>
 			</li>
 		</ul>
 	</dd>
@@ -1132,7 +1254,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2510">line 2510</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2530">line 2530</a>
 			</li>
 		</ul>
 	</dd>
@@ -1220,7 +1342,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2473">line 2473</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2493">line 2493</a>
 			</li>
 		</ul>
 	</dd>
@@ -1382,7 +1504,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2604">line 2604</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2624">line 2624</a>
 			</li>
 		</ul>
 	</dd>
@@ -1544,7 +1666,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2539">line 2539</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2559">line 2559</a>
 			</li>
 		</ul>
 	</dd>
@@ -1682,7 +1804,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2575">line 2575</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2595">line 2595</a>
 			</li>
 		</ul>
 	</dd>
@@ -1820,7 +1942,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2627">line 2627</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2647">line 2647</a>
 			</li>
 		</ul>
 	</dd>
@@ -1958,7 +2080,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2709">line 2709</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2730">line 2730</a>
 			</li>
 		</ul>
 	</dd>
@@ -2096,7 +2218,7 @@ from JavaScript: var el = this.boundElement(&quot;something&quot;);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2718">line 2718</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2739">line 2739</a>
 			</li>
 		</ul>
 	</dd>

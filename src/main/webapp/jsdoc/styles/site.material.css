@@ -4,7 +4,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
-@import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400");
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,700,100|Roboto+Mono);
 html {
   font-family: "Roboto", "Arial Nue", "Arial", "Verdana", "Helvetica", sans-serif;
   -ms-text-size-adjust: 100%;
@@ -55,7 +55,7 @@ abbr[title] {
 }
 b,
 strong {
-  font-weight: bold;
+  font-weight: 400;
 }
 dfn {
   font-style: italic;
@@ -172,7 +172,7 @@ textarea {
   overflow: auto;
 }
 optgroup {
-  font-weight: bold;
+  font-weight: 400;
 }
 table {
   border-collapse: collapse;
@@ -264,7 +264,7 @@ th {
   display: inline-block;
   font-family: 'Glyphicons Halflings';
   font-style: normal;
-  font-weight: normal;
+  font-weight: 300;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -1072,7 +1072,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "Source Sans Pro", Calibri, Candara, Arial, sans-serif;
+  font-family: "Roboto", "Arial Nue", "Arial", "Verdana", "Helvetica", sans-serif;
   font-size: 15px;
   line-height: 1.42857143;
   color: #333333;
@@ -1203,7 +1203,7 @@ h6 .small,
 .h4 .small,
 .h5 .small,
 .h6 .small {
-  font-weight: normal;
+  font-weight: 300;
   line-height: 1;
   color: #999999;
 }
@@ -1437,7 +1437,7 @@ dd {
   line-height: 1.42857143;
 }
 dt {
-  font-weight: bold;
+  font-weight: 400;
 }
 dd {
   margin-left: 0;
@@ -1522,13 +1522,14 @@ code,
 kbd,
 pre,
 samp {
-  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: "Roboto Mono", Menlo, Monaco, Consolas, "Courier New", monospace;
+font-weight: 400;
 }
 code {
   padding: 2px 4px;
   font-size: 90%;
-  color: #c7254e;
-  background-color: #f9f2f4;
+  color: #f44336;
+  background-color: #fafafa;
   border-radius: 0;
 }
 kbd {
@@ -1542,7 +1543,7 @@ kbd {
 kbd kbd {
   padding: 0;
   font-size: 100%;
-  font-weight: bold;
+  font-weight: 400;
   box-shadow: none;
 }
 pre {
@@ -2498,7 +2499,7 @@ label {
   display: inline-block;
   max-width: 100%;
   margin-bottom: 5px;
-  font-weight: bold;
+  font-weight: 400;
 }
 input[type="search"] {
   -webkit-box-sizing: border-box;
@@ -2641,7 +2642,7 @@ input[type="search"] {
   min-height: 21px;
   padding-left: 20px;
   margin-bottom: 0;
-  font-weight: normal;
+  font-weight: 400;
   cursor: pointer;
 }
 .radio input[type="radio"],
@@ -2663,7 +2664,7 @@ input[type="search"] {
   padding-left: 20px;
   margin-bottom: 0;
   vertical-align: middle;
-  font-weight: normal;
+  font-weight: 300;
   cursor: pointer;
 }
 .radio-inline + .radio-inline,
@@ -3001,7 +3002,7 @@ select[multiple].input-lg {
 .btn {
   display: inline-block;
   margin-bottom: 0;
-  font-weight: normal;
+  font-weight: 300;
   text-align: center;
   vertical-align: middle;
   touch-action: manipulation;
@@ -3398,7 +3399,7 @@ fieldset[disabled] .btn-danger.focus {
 }
 .btn-link {
   color: #2780E3;
-  font-weight: normal;
+  font-weight: 300;
   border-radius: 0;
 }
 .btn-link,
@@ -3547,7 +3548,7 @@ tbody.collapse.in {
   display: block;
   padding: 3px 20px;
   clear: both;
-  font-weight: normal;
+  font-weight: 300;
   line-height: 1.42857143;
   color: #333333;
   white-space: nowrap;
@@ -3892,7 +3893,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .input-group-addon {
   padding: 10px 18px;
   font-size: 15px;
-  font-weight: normal;
+  font-weight: 300;
   line-height: 1;
   color: #333333;
   text-align: center;
@@ -4585,6 +4586,7 @@ fieldset[disabled] .navbar-default .btn-link:focus {
 }
 .navbar-inverse .navbar-brand {
   color: rgba(255, 255, 255, 0.85);
+text-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 }
 .navbar-inverse .navbar-brand:hover,
 .navbar-inverse .navbar-brand:focus {
@@ -4837,7 +4839,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   display: inline;
   padding: .2em .6em .3em;
   font-size: 75%;
-  font-weight: bold;
+  font-weight: 400;
   line-height: 1;
   color: #fff;
   text-align: center;
@@ -4905,7 +4907,7 @@ a.label:focus {
   min-width: 10px;
   padding: 3px 7px;
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 400;
   color: #fff;
   line-height: 1;
   vertical-align: middle;
@@ -4960,7 +4962,7 @@ a.badge:focus {
 .jumbotron p {
   margin-bottom: 15px;
   font-size: 23px;
-  font-weight: 200;
+  font-weight: 100;
 }
 .jumbotron > hr {
   border-top-color: #cccccc;
@@ -5026,7 +5028,7 @@ a.thumbnail.active {
   color: inherit;
 }
 .alert .alert-link {
-  font-weight: bold;
+  font-weight: 400;
 }
 .alert > p,
 .alert > ul {
@@ -5823,7 +5825,7 @@ button.list-group-item-danger.active:focus {
 .close {
   float: right;
   font-size: 22.5px;
-  font-weight: bold;
+  font-weight: 400;
   line-height: 1;
   color: #fff;
   text-shadow: 0 1px 0 #fff;
@@ -5972,9 +5974,9 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: "Source Sans Pro", Calibri, Candara, Arial, sans-serif;
+  font-family: "Roboto Mono", "Source Sans Pro", Calibri, Candara, Arial, sans-serif;
   font-style: normal;
-  font-weight: normal;
+  font-weight: 400;
   letter-spacing: normal;
   line-break: auto;
   line-height: 1.42857143;
@@ -6090,9 +6092,9 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: "Source Sans Pro", Calibri, Candara, Arial, sans-serif;
+  font-family: "Roboto Mono", "Source Sans Pro", Calibri, Candara, Arial, sans-serif;
   font-style: normal;
-  font-weight: normal;
+  font-weight: 400;
   letter-spacing: normal;
   line-break: auto;
   line-height: 1.42857143;

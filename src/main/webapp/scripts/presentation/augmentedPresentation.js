@@ -2400,7 +2400,11 @@
             "click": "data-click",
             "func": "data-function",
             "style": "data-style",
-            "appendTemplate": "data-append-template"
+            "appendTemplate": "data-append-template",
+            "prependTemplate": "data-prepend-template",
+            // TODO: not implimented yet
+            "appendTemplateEach": "data-append-template-each",
+            "prependTemplateEach": "data-prepend-template-each"
     };
 
     /**
@@ -2411,15 +2415,29 @@
      * <blockquote>As a Javascript Developer, I'd like the ability to decorate HTML and control view rendering without the use of CSS selectors</blockquote>
      * <em>Important to note: This view <strong>gives up</strong> it's template and events!
      * This is because all events and templates are used on the DOM directly.</em><br/>
-     * To add custom events, use customEvents instead of 'events'
+     * To add custom events, use customEvents instead of 'events'<br/>
+     * supported annotations:<br/>
+     * <ul>
+     * <li>data-click</li>
+     * <li>data-function</li>
+     * <li>data-style</li>
+     * <li>data-append-template</li>
+     * <li>data-prepend-template</li>
+     * </ul>
      * @constructor Augmented.Presentation.DecoratorView
      * @memberof Augmented.Presentation
      * @extends Augmented.Presentation.Colleague
      */
     Augmented.Presentation.DecoratorView = Augmented.Presentation.Colleague.extend({
         /**
+         * Custom Events Property - merge into built-in events
+         * @property customEvents
+         * @memberof Augmented.Presentation.DecoratorView
+         */
+        customEvents: {},
+        /**
          * Events Property - Do Not Override
-         * @property Events
+         * @property events
          * @memberof Augmented.Presentation.DecoratorView
          */
         events: function(){
@@ -2428,10 +2446,8 @@
                 _events["change input[" + this.bindingAttribute() + "]"] = "changed";
                 _events["change textarea[" + this.bindingAttribute() + "]"] = "changed";
                 _events["change select[" + this.bindingAttribute() + "]"] = "changed";
-                //_events["click button[" + this.bindingAttribute() + "]"] = "click";
                 // regular elements with click bindings
                 _events["click *[" + this.bindingAttribute() + "][" + decoratorAttributeEnum.click + "]"] = "click";
-
             }
             return _events;
         },
@@ -2668,11 +2684,12 @@
                 }
 
                 if (renderStyle) {
-                    var ee,
+                    var ee;
+                    /*,
                     prependTemplateEach = e.getAttribute(decoratorAttributeEnum.prependTemplateEach),
                     appendTemplateEach = e.getAttribute(decoratorAttributeEnum.appendTemplateEach),
                     pEach = prependTemplateEach ? prependTemplateEach : null,
-                    aEach = appendTemplateEach ? appendTemplateEach : null;
+                    aEach = appendTemplateEach ? appendTemplateEach : null;*/
 
                     if (renderStyle === "list" || renderStyle === "unordered-list") {
                         ee = Augmented.Presentation.Widget.List(d, false);
