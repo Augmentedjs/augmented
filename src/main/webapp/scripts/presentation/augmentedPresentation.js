@@ -121,8 +121,8 @@
     	_defaultChannel: "augmentedChannel",
 
         /**
-         * Default identifer Property
-         * @property {string} defaultIdentifier The default identifer for the view
+         * Default identifier Property
+         * @property {string} defaultIdentifier The default identifier for the view
          * @memberof Augmented.Presentation.Mediator
          * @private
          */
@@ -479,10 +479,10 @@
     	},
 
         /**
-    	 * Get the default identifer
+    	 * Get the default identifier
          * @method getDefaultIdentifier
          * @memberof Augmented.Presentation.Mediator
-         * @returns {string} Returns the default identifer
+         * @returns {string} Returns the default identifier
     	 */
         getDefaultIdentifier: function() {
             return this._defaultIdentifier;
@@ -2578,7 +2578,7 @@
             }
         },
         /**
-         * boundElement method - returns the bound element from identifer
+         * boundElement method - returns the bound element from identifier
          * @method boundElement
          * @param {string} id The identifier (not id attribute) of the element
          * @memberof Augmented.Presentation.DecoratorView

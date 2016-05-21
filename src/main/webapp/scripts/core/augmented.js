@@ -383,7 +383,7 @@
 
     /**
      * Performs a binary search on the host array. vs indexOf<br/>
-     * Binary Serach is a complexity of <em>O(log n)</em> vs <em>O(n)</em> with indexOf
+     * Binary Search is a complexity of <em>O(log n)</em> vs <em>O(n)</em> with indexOf
      * @namespace Augmented.Utility
      * @param {Array} items The array.
      * @param {Any} value The item to search for within the array.
