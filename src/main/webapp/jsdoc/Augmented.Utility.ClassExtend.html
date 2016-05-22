@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Augmented.js Namespace: Transformer</title>
+	<title>Augmented.js Class: ClassExtend</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -84,7 +84,7 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Namespace: Transformer</h1>
+	<h1 class="page-title">Class: ClassExtend</h1>
 <section>
 
 <header>
@@ -92,7 +92,7 @@
         <h2>
             <span class="ancestors"><a href="Augmented.Utility.html">.Utility</a>.</span>
         
-        Transformer
+        ClassExtend
         </h2>
         
     
@@ -103,83 +103,9 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Augmented.Utility.Transformer <br/><br>Transform an object, type, or array to another type, object, or array</p></div>
-        
-
-        
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-463">line 463</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
-            
 <hr>
 <dt>
-    <h4 class="name" id=".isType"><span class="type-signature">&lt;static> </span>isType(source)</h4>
+    <h4 class="name" id="ClassExtend"><span class="type-signature"></span>new ClassExtend(protoProps, staticProps)</h4>
     
     
 </dt>
@@ -187,7 +113,7 @@
 
     
     <div class="description">
-        <p>Returns a Augmented.Utility.TransformerType of a passed object</p>
+        <p>Class Extend -<br>Helper function to correctly set up the prototype chain for subclasses.<br/><br>Similar to <code>goog.inherits</code>, but uses a hash of prototype properties and<br>class properties to be extended.</p>
     </div>
     
 
@@ -222,13 +148,13 @@
 
         <tr>
             
-                <td class="name"><code>source</code></td>
+                <td class="name"><code>protoProps</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">any</span>
 
 
 
@@ -239,7 +165,31 @@
 
             
 
-            <td class="description last"><p>The source primitive</p></td>
+            <td class="description last"><p>Properties from prototype</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>staticProps</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">any</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Static Properties to add if provided</p></td>
         </tr>
 
     
@@ -284,7 +234,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-523">line 523</a>
+				 <a href="core_augmented.js.html#sunlight-1-line-341">line 341</a>
 			</li>
 		</ul>
 	</dd>
@@ -309,180 +259,12 @@
     
 
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>type of source as Augmented.Utility.TransformerType</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Augmented.Utility.html#.TransformerType">Augmented.Utility.TransformerType</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
 
     
 </dd>
 
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".transform"><span class="type-signature">&lt;static> </span>transform(source, type)</h4>
     
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>Transform an object, primitive, or array to another object, primitive, or array</p>
     </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>source</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Source primitive to transform</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Augmented.Utility.html#.TransformerType">Augmented.Utility.TransformerType</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Type to transform to</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-477">line 477</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
 
     
 
@@ -495,143 +277,7 @@
     
 
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>returns a transformed object or primitive</p>
-</div>
 
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id=".typeThetransformertypeenum"><span class="type-signature">&lt;static> </span>type The transformer type enum()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>The transformer type enum</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-470">line 470</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Augmented.Utility.html#.TransformerType">Augmented.Utility.TransformerType</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        </dl>
     
 
     

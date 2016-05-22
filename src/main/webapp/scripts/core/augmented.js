@@ -343,16 +343,17 @@
      * Helper function to correctly set up the prototype chain for subclasses.<br/>
      * Similar to `goog.inherits`, but uses a hash of prototype properties and
      * class properties to be extended.
+     * @constructor Augmented.Utility.ClassExtend
      * @param {any} protoProps Properties from prototype
      * @param {any} staticProps Static Properties to add if provided
-     * @namespace Augmented.Utility
+     * @memberof Augmented.Utility
      */
     Augmented.Utility.ClassExtend = classExtend;
 
     /**
      * Prints an object nicely
-     * @function PrettyPrint
-     * @namespace Augmented.Utility
+     * @constructor Augmented.Utility.PrettyPrint
+     * @memberof Augmented.Utility
      * @param {object} obj The object to print
      * @param {boolean} spaces Use spaces instead of tabs
      * @returns {number} number The number of spaces to pad
@@ -367,8 +368,8 @@
 
     /**
      * Sorts an array of objects by propery in object
-     * @function Sort
-     * @namespace Augmented.Utility
+     * @constructor Augmented.Utility.Sort
+     * @memberof Augmented.Utility
      * @param {array} array The object array to sort
      * @param {object} key The property to sort by
      * @returns {array} The sorted array
@@ -384,7 +385,8 @@
     /**
      * Performs a binary search on the host array. vs indexOf<br/>
      * Binary Search is a complexity of <em>O(log n)</em> vs <em>O(n)</em> with indexOf
-     * @namespace Augmented.Utility
+     * @constructor Augmented.Utility.BinarySearch
+     * @memberof Augmented.Utility
      * @param {Array} items The array.
      * @param {Any} value The item to search for within the array.
      * @returns {Number} The index of the element which defaults to -1 when not found.
@@ -410,7 +412,8 @@
 
     /**
      * Quick Sort implimentation for Arrays -
-     * @namespace Augmented.Utility
+     * @constructor Augmented.Utility.QuickSort
+     * @memberof Augmented.Utility
      * @param {Array} arr Array to Sort
      * @returns {Array} Returns a sorted array
      */
@@ -544,7 +547,7 @@
     /**
      * Augmented.isString -
      * checks is a value is a String
-     * @function isString
+     * @constructor isString
      * @memberof Augmented
      * @param {string} variable to check
      * @returns {boolean} true if value is a string
@@ -3114,9 +3117,6 @@
     };
     // End of TV4 fork, will provide base JSON-Schema Draft 4 support and then some
 
-    //var i18nBase = {};
-
-
     /* Assign an object if null */
     //var resourceBundle = (!resourceBundle) ? new i18nBase() : resourceBundle;
 
@@ -4320,7 +4320,7 @@
     /**
      * Augmented.LocalStorageCollection
      * A local storage-based Collection
-     * @constructor Augmented.Collection
+     * @constructor Augmented.LocalStorageCollection
      * @memberof Augmented
      * @extends Augmented.Collection
      */
@@ -4328,19 +4328,19 @@
         /**
          * Base key name for the collection (simular to url for rest-based)
          * @property {string} key The key
-         * @memberof augmentedLocalStorage
+         * @memberof Augmented.LocalStorageCollection
          */
         key: "augmented.localstorage.collection.key",
         /**
          * is Persistant or not
          * @property {boolean} isPersisted Persistant property
-         * @memberof LocalStorageCollection
+         * @memberof Augmented.LocalStorageCollection
          */
         persist: false,
         /**
          * Storage for the collection
          * @property {string} storage The storage used for the collection
-         * @memberof augmentedLocalStorage
+         * @memberof Augmented.LocalStorageCollection
          * @private
          */
         storage: null,
@@ -4357,7 +4357,7 @@
         /**
          * @method fetch Fetch the collection
          * @param {object} options Any options to pass
-         * @memberof Augmented.augmentedLocalStorage
+         * @memberof Augmented.LocalStorageCollection
          */
         fetch: function(options) {
             this.sync('read', this, options);
@@ -4365,7 +4365,7 @@
         /**
          * @method save Save the collection
          * @param {object} options Any options to pass
-         * @memberof Augmented.augmentedLocalStorage
+         * @memberof Augmented.LocalStorageCollection
          */
         save: function(options) {
             this.sync('create', this, options);
@@ -4373,7 +4373,7 @@
         /**
          * @method update Update the collection
          * @param {object} options Any options to pass
-         * @memberof Augmented.augmentedLocalStorage
+         * @memberof LocalStorageCollection
          */
         update: function(options) {
             this.sync('update', this, options);
@@ -4381,7 +4381,7 @@
         /**
          * @method destroy Destroy the collection
          * @param {object} options Any options to pass
-         * @memberof Augmented.augmentedLocalStorage
+         * @memberof Augmented.LocalStorageCollection
          */
         destroy: function(options) {
             this.sync('delete', this, options);
