@@ -3,7 +3,7 @@ define([
 ], function(
 	Presentation
 ) {
-	describe('Given Augmented Presentation', function() {
+	describe('Given Augmented Presentation Decorator View', function() {
 
 		describe('Given a Decorator View', function() {
 			it('Augmented.Presentation.DecoratorView is defined', function() {

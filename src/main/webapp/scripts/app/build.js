@@ -12,9 +12,6 @@
 		jasmine_html: "../lib/jasmine-2.x/jasmine-html",
 		boot: "../lib/jasmine-2.x/boot",
         jasmineajax: "../lib/mock-ajax"
-
-
-
     },
     include: ["jasmine", "jasmine_html", "boot", "jasmineajax"],
     //, "augmentedLegacy"],

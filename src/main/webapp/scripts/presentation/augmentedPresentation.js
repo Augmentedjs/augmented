@@ -2349,7 +2349,7 @@
         /**
          * DescriptionList widget - renders a description list
          * @method DescriptionList
-         * @param {Array} data The data to render
+         * @param {Object} data The data to render
          * @returns {Element} Returns a DOM element as a description list
          * @memberof Augmented.Presentation.Widget
          */
@@ -2791,6 +2791,7 @@
             var i = 0, l = this._views.length;
             for (i = 0; i < l; i++) {
                 this._views[i].remove();
+                this._views.splice(i, 1);
             }
             this._views = [];
         },

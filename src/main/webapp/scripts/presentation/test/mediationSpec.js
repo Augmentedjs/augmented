@@ -3,7 +3,7 @@ define([
 ], function(
 	Presentation
 ) {
-	describe('Given Augmented Presentation', function() {
+	describe('Given Augmented Presentation Mediator', function() {
 
 		describe('Given a Mediation of Views', function() {
 			it('Augmented.Presentation.Mediator is defined', function() {

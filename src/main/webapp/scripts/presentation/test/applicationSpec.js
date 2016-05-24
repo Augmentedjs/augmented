@@ -3,7 +3,7 @@ define([
 ], function(
 	Presentation
 ) {
-	describe('Given Augmented Presentation', function() {
+	describe('Given Augmented Presentation Application', function() {
 
 		describe('Given an Application', function() {
 			var app = null;

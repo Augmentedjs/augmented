@@ -4088,18 +4088,27 @@
          * Load a view safely and remove the last view by calling cleanup, then remove
          * @method loadView
          * @param {Augmented.View} view The View to load
-         * @memberof Augmented
+         * @memberof Augmented.Router
          */
         loadView: function(view) {
+            this.cleanup();
+    		this._view = view;
+            this._view.render();
+    	},
+        /**
+         * remove the last view by calling cleanup, then remove
+         * @method cleanup
+         * @memberof Augmented.Router
+         */
+        cleanup: function() {
             if (this._view) {
                 if (this._view.cleanup) {
                     this._view.cleanup();
                 }
                 this._view.remove();
+                this._view = null;
             }
-    		this._view = view;
-            this._view.render();
-    	}
+        }
     });
 
     Augmented.Object.extend = Augmented.Model.extend = Augmented.Collection.extend = Augmented.Router.extend = Augmented.View.extend = Augmented.History.extend = Augmented.extend;

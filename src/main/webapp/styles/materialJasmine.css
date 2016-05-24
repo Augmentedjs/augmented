@@ -417,7 +417,7 @@ div.jasmine_html-reporter .symbol-summary li.passed {
 }
 
 div.jasmine_html-reporter .symbol-summary li.passed:before {
-    color: #0288d1;
+    color: #2196f3;
     content: "\02022";
 }
 
@@ -426,7 +426,7 @@ div.jasmine_html-reporter .symbol-summary li.failed {
 }
 
 div.jasmine_html-reporter .symbol-summary li.failed:before {
-    color: #d32f2f;
+    color: #f44336;
     content: "\d7";
     font-weight: 400;
     margin-left: 2px;
@@ -472,11 +472,11 @@ div.jasmine_html-reporter .bar {
 }
 
 div.jasmine_html-reporter .bar.failed {
-    background-color: #d32f2f;
+    background-color: #f44336;
 }
 
 div.jasmine_html-reporter .bar.passed {
-    background-color: #0288d1;
+    background-color: #2196f3;
 }
 
 div.jasmine_html-reporter .bar.skipped {
@@ -484,7 +484,7 @@ div.jasmine_html-reporter .bar.skipped {
 }
 
 div.jasmine_html-reporter .bar.errored {
-    background-color: #d32f2f;
+    background-color: #f44336;
 }
 
 div.jasmine_html-reporter .bar.menu {
@@ -563,7 +563,7 @@ div.jasmine_html-reporter .summary > ul.suite {
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
     display: inline-block;
-    min-height: 500px;
+    min-height: 300px;
     margin: 16px;
     /*overflow-y: scroll;*/
     padding: 16px;
@@ -573,6 +573,8 @@ div.jasmine_html-reporter .summary > ul.suite {
     padding-bottom: 8px;
     font-size: 12px;
     vertical-align:top;
+    font-weight: 300;
+    font-family: "Roboto Condensed", "Roboto", "Arial Nue", "Arial", "Verdana", "Helvetica", sans-serif;
 }
 
 div.jasmine_html-reporter div.results div.summary > ul.suite > ul.suite {
@@ -587,21 +589,21 @@ div.jasmine_html-reporter div.results div.summary > ul.suite > ul.suite:last-of-
 }
 
 div.jasmine_html-reporter .summary li.passed a {
-    color: #0288d1;
+    color: #2196f3;
 }
 
 div.jasmine_html-reporter .summary li.passed a:before {
     content: "\02022\00a0";
 }
 
-div.jasmine_html-reporter .summary li.disabled {
-    color: rgba(0,0,0,0.6);
+div.jasmine_html-reporter .summary li.disabled, div.jasmine_html-reporter .summary li.disabled a {
+    color: rgba(0,0,0,0.4);
     font-weight: 100;
     text-decoration: line-through;
 }
 
 div.jasmine_html-reporter .summary li.failed a {
-    color: #d32f2f;
+    color: #f44336;
     font-weight: 400;
     text-decoration: underline;
 }
@@ -644,6 +646,11 @@ div.jasmine_html-reporter div.results div.summary > ul.suite > li.suite-detail:f
     font-weight: 400;
     margin-bottom: 16px;
     text-align: center;
+    font-family: "Roboto","Arial Nue","Arial","Verdana","Helvetica",sans-serif;
+}
+
+div.jasmine_html-reporter div.results div.summary > ul.suite > li.suite-detail:first-child a {
+    color: #4caf50;
 }
 
 div.jasmine_html-reporter .failures .spec-detail {
@@ -670,9 +677,10 @@ div.jasmine_html-reporter .result-message span.result {
 
 div.jasmine_html-reporter .stack-trace {
     /*background: #212121 none repeat scroll 0 0;*/
-    border: 1px solid #666;
-    color: #d32f2f;
-    font-family: monospace;
+    border: 1px solid rgba(0,0,0,0.6);
+    color: #f44336;
+    font-family: "Roboto Mono", monospace;
+    font-weight: 400;
     line-height: 16px;
     margin: 5px 0 0;
     /*max-height: 217px;*/
