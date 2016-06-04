@@ -153,7 +153,7 @@ define(['augmented'], function(Augmented) {
                 expect(i).toEqual(ii);
 			});
 
-            it('can return the index of a item via binary search with last inedex', function() {
+            it('can return the index of a item via binary search with last index', function() {
                 var sorted = Augmented.Utility.QuickSort(arr);
                 var i = Augmented.Utility.BinarySearch(sorted, 34267);
                 var ii = sorted.indexOf(34267);

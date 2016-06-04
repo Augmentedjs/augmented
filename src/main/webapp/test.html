@@ -6,24 +6,26 @@
 		<meta http-equiv="Pragma" content="no-cache" />
 		<meta http-equiv="Expires" content="0" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-		<title>Augmented Test Page</title>
+		<title>Augmented Test Suite - Jasmine Spec Runner</title>
 
-        <link rel="stylesheet" type="text/css" href="styles/full.css" title="Default Style"/>
+		<link rel="shortcut icon" type="image/png" href="images/favicon-32x32.png"/>
+		<link rel="stylesheet" type="text/css" href="styles/materialJasmine.css" title="Default Style"/>
+        <!--
+        <link rel="alternate stylesheet" type="text/css" href="styles/augmentedJasmine.css" title="Adam Jensen"/>
+		<link rel="alternate stylesheet" type="text/css" href="scripts/lib/jasmine-2.x/jasmine-colorblind.css" title="Color Blind"/>
+        <link rel="alternate stylesheet" type="text/css" href="scripts/lib/jasmine-2.x/jasmine.css" title="Original"/>
+        -->
 		<!-- requirejs pulls in all necessary js for this component -->
-		<script data-main="scripts/app/augmentedExampleRequire.js" src="scripts/lib/require.js"></script>
+		<script data-main="scripts/app/augmentedJasmineRequire.js" src="scripts/lib/require.js"></script>
 	</head>
 	<body>
 		<article>
 			<section id="header">
 				<header>
-					<figure><img src="images/aj-bw.png" alt="Adam Jensen"/></figure>
-					<h1>Augmented Test Page</h1>
-					<h2 id="augmented"></h2>
+                    <h1>Augmented.js Test Suite</h1>
+                    <h2 id="augmented" data-testView="version"></h2>
+					<figure><img src="images/jensen-silo-circle-small.png" alt="Adam"/></figure>
 				</header>
-			</section>
-			<section id="body">
-				<div id="main"></div>
-                <div id="autoTable"></div>
 			</section>
 		</article>
 	</body>

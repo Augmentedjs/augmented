@@ -9,7 +9,8 @@ require.config({
 		"augmented": "core/augmented",
 		"augmentedPresentation": "presentation/augmentedPresentation",
 		"augmentedService": "service/augmentedService",
-		"augmentedLegacy": "legacy/legacy",
+        // Deprecated
+		//"augmentedLegacy": "legacy/legacy",
 
 		"jasmine": "lib/jasmine-2.x/jasmine",
 		"jasmine_html": "lib/jasmine-2.x/jasmine-html",
@@ -61,13 +62,16 @@ var specs = [ "core/test/coreSpec",
               "presentation/test/widgetSpec",
               "presentation/test/viewControllerSpec",
               "presentation/test/dialogSpec",
+              "presentation/test/autoFormSpec",
+              "presentation/test/dollar",
 
               //TODO: redo these to work with the new system
               //"service/test/mockServiceSpec",
 
-              "core/test/resourceBundleSpec",
-			  "legacy/test/applicationContextSpec",
-              "legacy/test/polyfillSpec"
+              "core/test/resourceBundleSpec"
+              // Deprecated
+			  //"legacy/test/applicationContextSpec",
+              //"legacy/test/polyfillSpec"
             ];
 
 // Load Jasmine - This will still create all of the normal Jasmine browser globals unless `boot.js` is re-written to use the
@@ -80,7 +84,10 @@ require(["augmented", "augmentedPresentation", "boot"], function(Augmented, Pres
     app.registerStylesheet("https://fonts.googleapis.com/css?family=Roboto:400,300|Roboto+Condensed|Roboto+Mono");
     app.start();
 
-    Augmented.Presentation.Dom.setValue("h2#augmented", "<span class=\"version\">Version " + Augmented.VERSION + " (" + Augmented.codename + ")</span>&emsp;<span class=\"release\">Release (" + Augmented.releasename + ")</span>");
+    Augmented.Presentation.Dom.setValue("h2#augmented",
+        "<span class=\"version\">Version " + Augmented.VERSION +
+        " (" + Augmented.codename + ")</span>&emsp;<span class=\"release\">Release (" +
+        Augmented.releasename + ")</span>");
 
 	// Load the specs
 	require(specs, function() {

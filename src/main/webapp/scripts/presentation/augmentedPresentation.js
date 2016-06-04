@@ -73,7 +73,7 @@
      * @memberof Augmented.Presentation
      * @extends Augmented.View
      */
-    var abstractColleague = Augmented.Presentation.Colleague = Augmented.View.extend({
+    Augmented.Presentation.Colleague = Augmented.View.extend({
         _mediator: null,
 
         sendMessage: function(message, data) {
@@ -830,7 +830,7 @@
      * @extends Augmented.Presentation.Colleague
      * @memberof Augmented.Presentation
      */
-    var AbstractAutoTable = abstractColleague.extend({
+    var AbstractAutoTable = Augmented.Presentation.Colleague.extend({
         // sorting
         /**
          * The sortable property - enable sorting in table
@@ -878,6 +878,18 @@
          * @memberof Augmented.Presentation.AutomaticTable
          */
         paginationAPI: null,
+        /**
+         * The name property
+         * @property {string} name The name of the table
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        name: "",
+        /**
+         * The description property
+         * @property {string} description The description of the table
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        description: "",
         /**
          * Return the current page number
          * @method currentPage
@@ -1602,7 +1614,7 @@
             this.collection.schema = schema;
 
             if (this.uri) {
-                col.url = this.uri;
+                this.collection.url = this.uri;
             }
         },
 
@@ -1637,6 +1649,12 @@
                 }
             }
         },
+        /**
+         * Validate the table
+         * @method validate
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @returns {boolean} Returns true on success of validation
+         */
         validate: function() {
             var messages = (this.collection) ? this.collection.validate() : null;
             if (!this.collection.isValid() && messages && messages.messages) {
@@ -1646,6 +1664,12 @@
             }
             return messages;
         },
+        /**
+         * Is the table valid
+         * @method isValid
+         * @memberof Augmented.Presentation.AutomaticTable
+         * @returns {boolean} Returns true if valid
+         */
         isValid: function() {
             return (this.collection) ? this.collection.isValid() : true;
         }
@@ -2130,7 +2154,7 @@
         /**
          * Gets the height of the browser viewport
          * @method getViewportHeight
-         * @returns {Number} The height of the viewport
+         * @returns {number} The height of the viewport
          * @memberof Augmented.Presentation.Dom
          */
         getViewportHeight: function() {
@@ -2139,7 +2163,7 @@
         /**
          * Gets the width of the browser viewport
          * @method getViewportWidth
-         * @returns {Number} The width of the viewport
+         * @returns {number} The width of the viewport
          * @memberof Augmented.Presentation.Dom
          */
         getViewportWidth: function() {
@@ -2149,7 +2173,7 @@
          * Sets the value of an element<br/>
          * Will detect the correct method to do so by element type
          * @method setValue
-         * @param {Element} el Element or string of element selector
+         * @param {Node} el Element or string of element selector
          * @param {string} value Value to set (or HTML)
          * @param {boolean} onlyText Value will set as text only
          * @memberof Augmented.Presentation.Dom
@@ -2178,7 +2202,7 @@
          * Gets the value of an element<br/>
          * Will detect the correct method to do so by element type
          * @method getValue
-         * @param {Element} el Element or string of element selector
+         * @param {Node} el Element or string of element selector
          * @returns {string} Returns the value of the element (or HTML)
          * @memberof Augmented.Presentation.Dom
          */
@@ -2202,7 +2226,7 @@
          * Supports full query selection
          * @method selector
          * @param {string} query Element or string of element selector
-         * @returns {Element} Returns the element (or first of type)
+         * @returns {Node} Returns the element (or first of type)
          * @memberof Augmented.Presentation.Dom
          */
         selector: function(query) {
@@ -2226,9 +2250,30 @@
             return null;
         },
         /**
+         * Query function<br/>
+         * Supports full query selection but acts like jQuery
+         * @method query
+         * @param {string} query Element or string of element selector
+         * @param {Node} el Element to start from (optional)
+         * @returns {NodeList|Node} Returns all the nodes selected
+         * @memberof Augmented.Presentation.Dom
+         */
+        query: function(query, el) {
+            if (query) {
+                var d = (el) ? el : document;
+                var nodelist = Augmented.isString(query) ? d.querySelectorAll(query) : query;
+
+                if (nodelist.length === 1) {
+                    return nodelist[0];
+                }
+                return nodelist;
+            }
+            return null;
+        },
+        /**
          * Hides an element
          * @method hide
-         * @param {Element} el Element or string of element selector
+         * @param {Node} el Element or string of element selector
          * @memberof Augmented.Presentation.Dom
          */
         hide: function(el) {
@@ -2241,7 +2286,7 @@
         /**
          * Shows an element
          * @method show
-         * @param {Element} el Element or string of element selector
+         * @param {Node} el Element or string of element selector
          * @param {string} display Value to set for 'display' property (optional)
          * @memberof Augmented.Presentation.Dom
          */
@@ -2255,7 +2300,7 @@
         /**
          * Sets the class attribute (completely)
          * @method setClass
-         * @param {Element} el Element or string of element selector
+         * @param {Node} el Element or string of element selector
          * @param {string} cls the class value
          * @memberof Augmented.Presentation.Dom
          */
@@ -2268,7 +2313,7 @@
         /**
          * Adds a class attribute
          * @method addClass
-         * @param {Element} el Element or string of element selector
+         * @param {Node} el Element or string of element selector
          * @param {string} cls the class value
          * @memberof Augmented.Presentation.Dom
          */
@@ -2281,7 +2326,7 @@
         /**
          * Remove a class attribute
          * @method removeClass
-         * @param {Element} el Element or string of element selector
+         * @param {Node} el Element or string of element selector
          * @param {string} cls the class value
          * @memberof Augmented.Presentation.Dom
          */
@@ -2294,7 +2339,7 @@
         /**
          * Empty a element container
          * @method empty
-         * @param {Element} el Element or string of element selector
+         * @param {Node} el Element or string of element selector
          * @memberof Augmented.Presentation.Dom
          */
         empty: function(el) {
@@ -2304,7 +2349,7 @@
          * injectTemplate method - Injects a template element at a mount point
          * @method injectTemplate
          * @param {string} template The template selector
-         * @param {Element} mount The mount point as Document.Element or String
+         * @param {Node} mount The mount point as Document.Element or String
          * @memberof Augmented.Presentation.Dom
          */
         injectTemplate: function(template, mount) {
@@ -2316,7 +2361,19 @@
         }
     };
 
-    Augmented.$ = (Augmented.$) ? Augmented.$ : Augmented.Presentation.Dom.selectors;
+    /**
+     * Augmented jQuery-like selectors usinge native selectors</br/>
+     * Will return a nodelist for all selections unless only one is found.
+     * @method $
+     * @memberof Augmented
+     * @borrows Augmented.Presentation.Dom.query
+     * @example
+     * $("#myElement");
+     * $("section#main header");
+     * - or start from Element:
+     * $("header", mainSectionEl);
+     */
+    Augmented.$ = Augmented.Presentation.Dom.query;
 
     /**
      * Widgets and small presentation modules
@@ -2327,13 +2384,24 @@
         /**
          * List widget - renders a standard list
          * @method List
+         * @param {string} id The id of the parent to attach the list
+         * @param {Object} data The data to render
          * @param {Array} data The data to render
+         * @param {string} binding The binding (used for decorator and optional)
          * @param {boolean} ordered True if the list should be ordered
          * @returns {Element} Returns a DOM element as a list
          * @memberof Augmented.Presentation.Widget
          */
-        List: function(data, ordered) {
+        List: function(id, data, ordered, binding) {
             var list = (ordered) ? document.createElement("ol") : document.createElement("ul"), i = 0, l, li, t, d;
+            if (id) {
+                list.setAttribute("id", id);
+            }
+
+            if (binding && id) {
+                list.setAttribute("data-" + binding, id);
+            }
+
             if (data && Array.isArray(data)) {
                 l = data.length;
                 for (i = 0; i < l; i++) {
@@ -2349,12 +2417,22 @@
         /**
          * DescriptionList widget - renders a description list
          * @method DescriptionList
+         * @param {string} id The id of the parent to attach the list
          * @param {Object} data The data to render
+         * @param {string} binding The binding (used for decorator and optional)
          * @returns {Element} Returns a DOM element as a description list
          * @memberof Augmented.Presentation.Widget
          */
-        DescriptionList: function(data) {
+        DescriptionList: function(id, data, binding) {
             var list = document.createElement("dl"), i = 0, l, dd, dt, t, keys, key;
+            if (id) {
+                list.setAttribute("id", id);
+            }
+
+            if (binding && id) {
+                list.setAttribute("data-" + binding, id);
+            }
+
             if (data && Augmented.isObject(data)) {
                 keys = Object.keys(data);
                 l = keys.length;
@@ -2378,12 +2456,20 @@
          * @method DataList
          * @param {string} id The id of the parent to attach the list
          * @param {Array} data The data to render
+         * @param {string} binding The binding (used for decorator and optional)
          * @returns {Element} Returns a DOM element as a data list
          * @memberof Augmented.Presentation.Widget
          */
-        DataList: function(id, data) {
+        DataList: function(id, data, binding) {
             var list = document.createElement("datalist"), i = 0, l, o;
-            list.setAttribute("id", id);
+            if (id) {
+                list.setAttribute("id", id);
+            }
+
+            if (binding && id) {
+                list.setAttribute("data-" + binding, id);
+            }
+
             if (data && Array.isArray(data)) {
                 l = data.length;
                 for (i = 0; i < l; i++) {
@@ -2393,7 +2479,116 @@
                 }
             }
             return list;
+        },
+        /**
+         * Input widget - renders an input or simular based on type
+         * @method Input
+         * @param {object} field Field property object (required)
+         * @param {string} name The name of the field
+         * @param {string} value The value to preset
+         * @param {string} id The id of the field
+         * @param {string} binding The binding (used for decorator and optional)
+         * @returns {Element} Returns a DOM element as an input
+         * @memberof Augmented.Presentation.Widget
+         */
+        Input: function(field, name, value, id, binding) {
+            if (!field) {
+                return null;
+            }
+            var input, dobj = ((value) ? value : ""), cobj = field, t = field.type;
+
+            if (t === "object") {
+                if (Array.isArray(dobj)) {
+                    var iii = 0, lll = dobj.length, option, tOption;
+                    input = document.createElement("select");
+                    for (iii = 0; iii < lll; iii++) {
+                        option = document.createElement("option");
+                        option.setAttribute("value", dobj[iii]);
+                        tOption = document.createTextNode(dobj[iii]);
+                        option.appendChild(tOption);
+                        input.appendChild(option);
+                    }
+                } else {
+                    input = document.createElement("textarea");
+                    input.value = JSON.stringify(dobj);
+                }
+            } else if (t === "boolean") {
+                input = document.createElement("input");
+                input.setAttribute("type", "checkbox");
+                if (dobj === true) {
+                    input.setAttribute("checked", "checked");
+                }
+                input.value = dobj;
+            } else if (t === "number" || t === "integer") {
+                input = document.createElement("input");
+                input.setAttribute("type", "number");
+                input.value = dobj;
+            } else if (t === "string" && cobj.enum) {
+                input = document.createElement("select");
+                var iiii = 0, llll = cobj.enum.length, option2, tOption2;
+                for (iiii = 0; iiii < llll; iiii++) {
+                    option2 = document.createElement("option");
+                    option2.setAttribute("value", cobj.enum[iiii]);
+                    tOption2 = document.createTextNode(cobj.enum[iiii]);
+                    if (dobj === cobj.enum[iiii]) {
+                        option2.setAttribute("selected", "selected");
+                    }
+                    option2.appendChild(tOption2);
+                    input.appendChild(option2);
+                }
+            } else if (t === "string" && (cobj.format === "email")) {
+                input = document.createElement("input");
+                input.setAttribute("type", "email");
+                input.value = dobj;
+            } else if (t === "string" && (cobj.format === "uri")) {
+                input = document.createElement("input");
+                input.setAttribute("type", "url");
+                input.value = dobj;
+            } else if (t === "string" && (cobj.format === "date-time")) {
+                input = document.createElement("input");
+                input.setAttribute("type", "datetime");
+                input.value = dobj;
+            } else {
+                input = document.createElement("input");
+                input.setAttribute("type", "text");
+                input.value = dobj;
+            }
+
+            if (t === "string" && cobj.pattern) {
+                input.setAttribute("pattern", cobj.pattern);
+            }
+
+            if (cobj.minimum) {
+                input.setAttribute("min", cobj.minimum);
+            }
+
+            if (cobj.maximum) {
+                input.setAttribute("max", cobj.maximum);
+            }
+
+            if (t === "string" && cobj.minlength) {
+                input.setAttribute("minlength", cobj.minlength);
+            }
+
+            if (t === "string" && cobj.maxlength) {
+                input.setAttribute("maxlength", cobj.maxlength);
+            }
+
+            if (name) {
+                input.setAttribute("name", name);
+            }
+
+            if (id) {
+                input.setAttribute("id", id);
+            }
+
+            if (binding && name) {
+                input.setAttribute("data-" + binding, name);
+            }
+
+            return input;
         }
+
     };
 
     var decoratorAttributeEnum = {
@@ -2692,15 +2887,15 @@
                     aEach = appendTemplateEach ? appendTemplateEach : null;*/
 
                     if (renderStyle === "list" || renderStyle === "unordered-list") {
-                        ee = Augmented.Presentation.Widget.List(d, false);
+                        ee = Augmented.Presentation.Widget.List(null, d, false);
                         Augmented.Presentation.Dom.empty(e);
                         e.appendChild(ee);
                     } else if (renderStyle === "ordered-list") {
-                        ee = Augmented.Presentation.Widget.List(d, true);
+                        ee = Augmented.Presentation.Widget.List(null, d, true);
                         Augmented.Presentation.Dom.empty(e);
                         e.appendChild(ee);
                     } else if (renderStyle === "description-list") {
-                        ee = Augmented.Presentation.Widget.DescriptionList(d);
+                        ee = Augmented.Presentation.Widget.DescriptionList(null, d);
                         Augmented.Presentation.Dom.empty(e);
                         e.appendChild(ee);
                     }
@@ -2941,6 +3136,355 @@
             "cancel": "cancel"
         },
         style: "alert"
+    });
+
+    var formCompile = function(e, name, description, fields, model, binding) {
+        var form = document.createElement("form"), fs = document.createElement("formset"), t, i, keys = Object.keys(fields), l = keys.length, input, lb;
+        form.appendChild(fs);
+
+        if (name) {
+            var lg = document.createElement("legend");
+            t = document.createTextNode(name);
+            if (description) {
+                var att = document.createAttribute("title");
+                att.value = description;
+                lg.setAttributeNode(att);
+            }
+            lg.appendChild(t);
+            fs.appendChild(lg);
+        }
+
+        for (i = 0; i < l; i++) {
+            lb = document.createElement("label");
+            lb.setAttribute("for", keys[i]);
+            t = document.createTextNode(keys[i]);
+            lb.appendChild(t);
+            fs.appendChild(lb);
+
+            input = Augmented.Presentation.Widget.Input(fields[keys[i]], keys[i], model[keys[i]], keys[i], binding);
+            if (input) {
+                fs.appendChild(input);
+            }
+        }
+
+        e.appendChild(form);
+    };
+
+    /**
+     * A automatic form view created from a JSON Schema
+     * @constructor Augmented.Presentation.AutomaticForm
+     * @memberof Augmented.Presentation
+     * @extends Augmented.Presentation.DecoratorView
+     */
+    Augmented.Presentation.AutomaticForm = Augmented.Presentation.DecoratorView.extend({
+        // standard functionality
+
+        /**
+         * The crossOrigin property - enables cross origin fetch
+         * @property {boolean} crossOrigin The crossOrigin property
+         * @memberof Augmented.Presentation.AutomaticForm
+         */
+        crossOrigin: false,
+        /**
+         * The fields property
+         * @property {object} fields The fields property
+         * @private
+         * @memberof Augmented.Presentation.AutomaticForm
+         */
+        _fields: {},
+        /**
+         * The URI property
+         * @property {string} uri The URI property
+         * @memberof Augmented.Presentation.AutomaticForm
+         */
+        uri: null,
+        /**
+         * The model property
+         * @property {Augmented.Model} model The model property
+         * @memberof Augmented.Presentation.AutomaticForm
+         * @private
+         */
+        model: null,
+        /**
+         * The initialized property
+         * @property {boolean} isInitalized The initialized property
+         * @memberof Augmented.Presentation.AutomaticForm
+         */
+        isInitalized : false,
+        /**
+         * The name property
+         * @property {string} name The name of the form
+         * @memberof Augmented.Presentation.AutomaticForm
+         */
+        name: "",
+        /**
+         * The description property
+         * @property {string} description The description of the form
+         * @memberof Augmented.Presentation.AutomaticForm
+         */
+        description: "",
+
+        /**
+        * Initialize the form view
+         * @method initialize
+         * @memberof Augmented.Presentation.AutomaticForm
+         * @param {object} options The view options
+         * @returns {boolean} Returns true on success of initalization
+         */
+        initialize: function(options) {
+            this.init();
+
+            if (this.model) {
+                this.model.clear();
+            } else {
+                this.model = new Augmented.Model();
+            }
+            if (options) {
+                if (options.schema) {
+                    // check if this is a schema vs a URI to get a schema
+                    if (Augmented.isObject(options.schema)) {
+                        this.schema = options.schema;
+                    } else {
+                        // is a URI?
+                        var parsedSchema = null;
+                        try {
+                            parsedSchema = JSON.parse(options.schema);
+                            if (parsedSchema && Augmented.isObject(parsedSchema)) {
+                                this.schema = parsedSchema;
+                            }
+                        } catch(e) {
+                            logger.warn("AUGMENTED: AutoForm parsing string schema failed.  URI perhaps?");
+                        }
+                        if (!this.schema) {
+                            this._retrieveSchema(options.schema);
+                            this.isInitalized = false;
+                        }
+                    }
+                }
+
+                if (options.el) {
+                    this.el = options.el;
+                }
+
+                if (options.uri) {
+                    this.uri = options.uri;
+                }
+
+                if (options.data && (Augmented.isObject(options.data))) {
+                    this.model.set(options.data);
+                }
+            }
+
+            if (this.model && this.uri) {
+                this.model.url = this.uri;
+            }
+            if (this.model) {
+                this.model.crossOrigin = this.crossOrigin;
+            }
+            if (this.schema) {
+                if (this.schema.title && (!this.name)) {
+                    this.name = this.schema.title;
+                }
+                if (this.schema.description) {
+                    this.description = this.schema.description;
+                }
+
+                if (!this.isInitalized) {
+                    this._fields = this.schema.properties;
+                    this.model.schema = this.schema;
+                    this.isInitalized = true;
+                }
+
+            } else {
+                this.isInitalized = false;
+                return false;
+            }
+
+            return this.isInitalized;
+        },
+        _retrieveSchema: function(uri){
+            var that = this;
+            var schema = null;
+            Augmented.ajax({
+                url: uri,
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function(data, status) {
+                    if (typeof data === "string") {
+                        schema = JSON.parse(data);
+                    } else {
+                        schema = data;
+                    }
+                    var options = { "schema": schema };
+                    that.initialize(options);
+                },
+                failure: function(data, status) {
+                    logger.warn("AUGMENTED: AutoForm Failed to fetch schema!");
+                }
+            });
+        },
+
+        /**
+         * Sets the URI
+         * @method setURI
+         * @memberof Augmented.Presentation.AutomaticForm
+         * @param {string} uri The URI
+         */
+        setURI: function(uri) {
+            this.uri = uri;
+        },
+        /**
+         * Sets the schema
+         * @method setSchema
+         * @memberof Augmented.Presentation.AutomaticForm
+         * @param {object} schema The JSON schema of the dataset
+         */
+        setSchema: function(schema) {
+            this.schema = schema;
+            this._fields = schema.properties;
+            this.model.reset();
+            this.model.schema = schema;
+
+            if (this.uri) {
+                model.url = this.uri;
+            }
+        },
+
+        /**
+         * Enable/Disable the progress bar
+         * @method showProgressBar
+         * @memberof Augmented.Presentation.AutomaticForm
+         * @param {boolean} show Show or Hide the progress bar
+         */
+        showProgressBar: function(show) {
+            if (this.el) {
+                var e = Augmented.D.selector(this.el);
+                var p = e.querySelector("progress");
+                if (p) {
+                    p.style.display = (show) ? "block" : "none";
+                    p.style.visibility = (show) ? "visible" : "hidden";
+                }
+            }
+        },
+        /**
+         * Show a message related to the form
+         * @method showMessage
+         * @memberof Augmented.Presentation.AutomaticForm
+         * @param {string} message Some message to display
+         */
+        showMessage: function(message) {
+            if (this.el) {
+                var e = Augmented.D.selector(this.el);
+                var p = e.querySelector("p[class=message]");
+                if (p) {
+                    p.innerHTML = message;
+                }
+            }
+        },
+        /**
+         * Validate the form
+         * @method validate
+         * @memberof Augmented.Presentation.AutomaticForm
+         * @returns {boolean} Returns true on success of validation
+         */
+        validate: function() {
+            var messages = (this.model) ? this.model.validate() : null;
+            if (!this.model.isValid() && messages && messages.messages) {
+                this.showMessage(formatValidationMessages(messages.messages));
+            } else {
+                this.showMessage("");
+            }
+            return messages;
+        },
+        /**
+         * Is the form valid
+         * @method isValid
+         * @memberof Augmented.Presentation.AutomaticForm
+         * @returns {boolean} Returns true if valid
+         */
+        isValid: function() {
+            return (this.model) ? this.model.isValid() : true;
+        },
+        /**
+         * Render the form
+         * @method render Renders the form
+         * @memberof Augmented.Presentation.AutomaticForm
+         * @returns {object} Returns the view context ('this')
+         */
+         render: function() {
+             if (!this.isInitalized) {
+                 logger.warn("AUGMENTED: AutoForm Can't render yet, not initialized!");
+                 return this;
+             }
+             var e;
+             if (this.template) {
+                // refresh the form body only
+                this.showProgressBar(true);
+                if (this.el) {
+                    e = Augmented.Presentation.Dom.selector(this.el);
+                    var formset = e.querySelector("formset");
+                    if (e) {
+                        logger.debug("AUGMENTED: AutoForm fields " + JSON.stringify(this._fields));
+
+
+                        /*if (this.model && (!this.model.isEmpty())){
+                            while (tbody.hasChildNodes()) {
+                                 tbody.removeChild(tbody.lastChild);
+                            }
+
+                                 directDOMTableBody(tbody, this.collection.toJSON(), this.columns, this.lineNumbers, this.sortKey);
+
+                        } else {
+                            while (tbody.hasChildNodes()) {
+                                 tbody.removeChild(tbody.lastChild);
+                            }
+                        }*/
+                    }
+                } else if (this.$el) {
+                    logger.warn("AUGMENTED: AutoForm doesn't support jquery, sorry, not rendering.");
+                } else {
+                    logger.warn("AUGMENTED: AutoForm no element anchor, not rendering.");
+                }
+             } else {
+                this.template = "notused";
+                this.showProgressBar(true);
+
+                if (this.el) {
+                    e = Augmented.Presentation.Dom.selector(this.el);
+                    if (e) {
+                        // progress bar
+                        var n = document.createElement("progress");
+                        var t = document.createTextNode("Please wait.");
+                        n.appendChild(t);
+                        e.appendChild(n);
+
+                        // the form
+                        formCompile(e, this.name, this.description, this._fields, this.model.toJSON(), this.name);
+
+                        this._formEl = Augmented.Presentation.Dom.query("form", this.el);
+
+                        // message
+                        n = document.createElement("p");
+                        n.classList.add("message");
+                        e.appendChild(n);
+                    }
+                } else if (this.$el) {
+                    logger.warn("AUGMENTED: AutoForm doesn't support jquery, sorry, not rendering.");
+                } else {
+                    logger.warn("AUGMENTED: AutoForm no element anchor, not rendering.");
+                }
+             }
+             this.delegateEvents();
+
+             this.showProgressBar(false);
+             return this;
+         },
+         reset: function() {
+            if (this._formEl) {
+                this._formEl.reset();
+                this.model.reset();
+            }
+         }
     });
 
     return Augmented.Presentation;

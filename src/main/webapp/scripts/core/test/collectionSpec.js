@@ -43,6 +43,10 @@ define([
             expect(Augmented.Collection).toBeDefined();
         });
 
+        it('can check if empty', function() {
+            expect(c.isEmpty()).toBeTruthy();
+        });
+
         it('can populate data', function() {
             c.add(data);
             expect(c.size()).toEqual(5);

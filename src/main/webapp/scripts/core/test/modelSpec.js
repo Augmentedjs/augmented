@@ -9,27 +9,35 @@ define([
             expect(Augmented.Model).toBeDefined();
         });
 
+        var model;
+        beforeEach(function() {
+            model = new Augmented.Model();
+        });
+        afterEach(function() {
+            model = null;
+        });
+
+        it('can check if empty', function() {
+            expect(model.isEmpty()).toBeTruthy();
+        });
+
         it('without Cross Origin Support will not make Cross Origin requests', function() {
-            var model = new Augmented.Model();
             model.crossOrigin = false;
             expect(model.crossOrigin).toBeFalsy();
         });
 
         it('with Cross Origin Support will make Cross Origin requests', function() {
-            var model = new Augmented.Model();
             model.crossOrigin = true;
             expect(model.crossOrigin).toBeTruthy();
         });
 
         it('with mock can return something', function() {
-            var model = new Augmented.Model();
             model.mock = true;
             model.url = "/info";
             expect(model.fetch()).toBeDefined();
         });
 
         it('can reset with data', function() {
-            var model = new Augmented.Model();
             model.set({ "y": "y" });
             model.reset({ "x": "x" });
 
@@ -38,7 +46,6 @@ define([
         });
 
         it('can set with data', function() {
-            var model = new Augmented.Model();
             model.set({ "x": "x" });
             expect(model.get("x")).toEqual("x");
         });
