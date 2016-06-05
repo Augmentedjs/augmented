@@ -2806,6 +2806,24 @@
             }
         },
         /**
+         * syncAllBoundElements - Syncs the data of all bound elements by firing a change events
+         * @method syncAllBoundElements
+         * @memberof Augmented.Presentation.DecoratorView
+         */
+        syncAllBoundElements: function() {
+            var elements = this.el.querySelectorAll("[" + this.bindingAttribute() + "]");
+            if (elements && elements.length > 0) {
+                var i = 0, l = elements.length, event = new UIEvent("change", {
+                    "view": window,
+                    "bubbles": true,
+                    "cancelable": true
+                });
+                for (i = 0; i < l; i++) {
+                    elements[i].dispatchEvent(event);
+                }
+            }
+        },
+        /**
          * addClass - adds a class to a bount element
          * @method addClass
          * @param {string} id The identifier (not id attribute) of the element
@@ -3475,6 +3493,8 @@
                 }
              }
              this.delegateEvents();
+
+             this.syncAllBoundElements();
 
              this.showProgressBar(false);
              return this;
