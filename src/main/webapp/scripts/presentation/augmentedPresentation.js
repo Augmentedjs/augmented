@@ -2638,25 +2638,25 @@
         events: function(){
             var _events = (this.customEvents) ? this.customEvents : {};
             if (this.name) {
-                _events["change input[" + this.bindingAttribute() + "]"] = "changed";
-                _events["change textarea[" + this.bindingAttribute() + "]"] = "changed";
-                _events["change select[" + this.bindingAttribute() + "]"] = "changed";
+                _events["change input[" + this.bindingAttribute() + "]"] = "_changed";
+                _events["change textarea[" + this.bindingAttribute() + "]"] = "_changed";
+                _events["change select[" + this.bindingAttribute() + "]"] = "_changed";
                 // regular elements with click bindings
-                _events["click *[" + this.bindingAttribute() + "][" + decoratorAttributeEnum.click + "]"] = "click";
+                _events["click *[" + this.bindingAttribute() + "][" + decoratorAttributeEnum.click + "]"] = "_click";
             }
             return _events;
         },
-        changed: function(event) {
+        _changed: function(event) {
             var key = event.currentTarget.getAttribute(this.bindingAttribute());
             var val = event.currentTarget.value;
             if(event.currentTarget.type === "checkbox") {
                 val = (event.currentTarget.checked) ? true : false;
             }
             this.model.set(( (key) ? key : event.currentTarget.name ), val);
-            this.func(event);
+            this._func(event);
             logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
         },
-        click: function(event) {
+        _click: function(event) {
             var func = event.currentTarget.getAttribute(decoratorAttributeEnum.click);
             if (func && this[func]) {
                 this._executeFunctionByName(func, this, event);
@@ -2665,7 +2665,7 @@
             }*/
             this.func(event);
         },
-        func: function(event) {
+        _func: function(event) {
             var func = event.currentTarget.getAttribute(decoratorAttributeEnum.func);
             if (func && this[func]) {
                 this._executeFunctionByName(func, this, event);
