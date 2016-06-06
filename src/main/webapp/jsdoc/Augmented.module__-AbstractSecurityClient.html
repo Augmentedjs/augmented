@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Augmented.js Namespace: AuthenticationFactory</title>
+	<title>Augmented.js Class: AbstractSecurityClient</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -84,15 +84,15 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Namespace: AuthenticationFactory</h1>
+	<h1 class="page-title">Class: AbstractSecurityClient</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Augmented.Security.html">.Security</a>.</span>
+            <span class="ancestors"><a href="Augmented.module__.html">._</a>~</span>
         
-        AuthenticationFactory
+        AbstractSecurityClient
         </h2>
         
     
@@ -103,83 +103,9 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>AuthenticationFactory Class -<br>Returns a client of given type for use with security</p></div>
-        
-
-        
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1630">line 1630</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
-            
 <hr>
 <dt>
-    <h4 class="name" id=".getSecurityClient"><span class="type-signature">&lt;static> </span>getSecurityClient(clientType)</h4>
+    <h4 class="name" id="AbstractSecurityClient"><span class="type-signature"></span>new AbstractSecurityClient()</h4>
     
     
 </dt>
@@ -187,7 +113,7 @@
 
     
     <div class="description">
-        <p>Get an instance of a security client</p>
+        <p>The abstract Security Client - for use to extend your own</p>
     </div>
     
 
@@ -197,10 +123,16 @@
 
     
     
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
     <thead>
     <tr>
         
@@ -222,7 +154,7 @@
 
         <tr>
             
-                <td class="name"><code>clientType</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
@@ -239,17 +171,38 @@
 
             
 
-            <td class="description last"><p>The Client Type to return</p></td>
+            <td class="description last"><p>The client type</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The base uri</p></td>
         </tr>
 
     
     </tbody>
 </table>
+</dl>
 
-    
-
-    
-<dl class="details">
     
 
 	
@@ -284,7 +237,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="core_augmented.js.html">core/augmented.js</a>,
-				 <a href="core_augmented.js.html#sunlight-1-line-1638">line 1638</a>
+				 <a href="core_augmented.js.html#sunlight-1-line-1534">line 1534</a>
 			</li>
 		</ul>
 	</dd>
@@ -309,35 +262,25 @@
     
 
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Returns a security client instance</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Augmented.Security.Client.html">Augmented.Security.Client</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
 
     
 </dd>
 
-        </dl>
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
     
 
     

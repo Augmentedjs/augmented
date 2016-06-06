@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Augmented.js Namespace: Widget</title>
+	<title>Augmented.js Class: AutomaticForm</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -84,7 +84,7 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Namespace: Widget</h1>
+	<h1 class="page-title">Class: AutomaticForm</h1>
 <section>
 
 <header>
@@ -92,7 +92,7 @@
         <h2>
             <span class="ancestors"><a href="Augmented.Presentation.html">.Presentation</a>.</span>
         
-        Widget
+        AutomaticForm
         </h2>
         
     
@@ -103,10 +103,28 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Widgets and small presentation modules</p></div>
-        
+<hr>
+<dt>
+    <h4 class="name" id="AutomaticForm"><span class="type-signature"></span>new AutomaticForm()</h4>
+    
+    
+</dt>
+<dd>
 
-        
+    
+    <div class="description">
+        <p>A automatic form view created from a JSON Schema</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
 <dl class="details">
     
 
@@ -142,7 +160,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2378">line 2378</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3198">line 3198</a>
 			</li>
 		</ul>
 	</dd>
@@ -156,11 +174,34 @@
 </dl>
 
 
-        
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
     
     </div>
 
     
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="Augmented.Presentation.DecoratorView.html">Augmented.Presentation.DecoratorView</a></li>
+    </ul>
+
 
     
 
@@ -173,34 +214,34 @@
     
 
     
-        <h3 class="subsection-title">Methods</h3>
+        <h3 class="subsection-title">Members</h3>
 
         <dl>
             
 <hr>
-<dt>
-    <h4 class="name" id=".DataList"><span class="type-signature">&lt;static> </span>DataList(id, data, binding)</h4>
-    
+<dt class="name" id=".crossOrigin">
+    <h4><span class="type-signature">&lt;static> </span>crossOrigin<span class="type-signature"></span></h4>
+
     
 </dt>
 <dd>
-
     
     <div class="description">
-        <p>DataList widget - renders a data list</p>
+        <p>The crossOrigin property - enables cross origin fetch</p>
     </div>
     
 
     
 
     
-
+<dl class="details">
     
-    
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
     <thead>
     <tr>
         
@@ -222,13 +263,13 @@
 
         <tr>
             
-                <td class="name"><code>id</code></td>
+                <td class="name"><code>crossOrigin</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">boolean</span>
 
 
 
@@ -239,65 +280,14 @@
 
             
 
-            <td class="description last"><p>The id of the parent to attach the list</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Array.html">Array</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The data to render</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>binding</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The binding (used for decorator and optional)</p></td>
+            <td class="description last"><p>The crossOrigin property</p></td>
         </tr>
 
     
     </tbody>
 </table>
+</dl>
 
-    
-
-    
-<dl class="details">
     
 
 	
@@ -332,7 +322,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2454">line 2454</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3212">line 3212</a>
 			</li>
 		</ul>
 	</dd>
@@ -347,70 +337,34 @@
 
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Returns a DOM element as a data list</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Element</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
 </dd>
 
         
             
 <hr>
-<dt>
-    <h4 class="name" id=".DescriptionList"><span class="type-signature">&lt;static> </span>DescriptionList(id, data, binding)</h4>
-    
+<dt class="name" id=".description">
+    <h4><span class="type-signature">&lt;static> </span>description<span class="type-signature"></span></h4>
+
     
 </dt>
 <dd>
-
     
     <div class="description">
-        <p>DescriptionList widget - renders a description list</p>
+        <p>The description property</p>
     </div>
     
 
     
 
     
-
+<dl class="details">
     
-    
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
     <thead>
     <tr>
         
@@ -432,7 +386,7 @@
 
         <tr>
             
-                <td class="name"><code>id</code></td>
+                <td class="name"><code>description</code></td>
             
 
             <td class="type">
@@ -449,65 +403,14 @@
 
             
 
-            <td class="description last"><p>The id of the parent to attach the list</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The data to render</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>binding</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The binding (used for decorator and optional)</p></td>
+            <td class="description last"><p>The description of the form</p></td>
         </tr>
 
     
     </tbody>
 </table>
+</dl>
 
-    
-
-    
-<dl class="details">
     
 
 	
@@ -542,7 +445,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2417">line 2417</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3250">line 3250</a>
 			</li>
 		</ul>
 	</dd>
@@ -557,70 +460,34 @@
 
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Returns a DOM element as a description list</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Element</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
 </dd>
 
         
             
 <hr>
-<dt>
-    <h4 class="name" id=".Input"><span class="type-signature">&lt;static> </span>Input(field, name, value, id, required, binding)</h4>
-    
+<dt class="name" id=".isInitalized">
+    <h4><span class="type-signature">&lt;static> </span>isInitalized<span class="type-signature"></span></h4>
+
     
 </dt>
 <dd>
-
     
     <div class="description">
-        <p>Input widget - renders an input or simular based on type</p>
+        <p>The initialized property</p>
     </div>
     
 
     
 
     
-
+<dl class="details">
     
-    
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
     <thead>
     <tr>
         
@@ -642,13 +509,13 @@
 
         <tr>
             
-                <td class="name"><code>field</code></td>
+                <td class="name"><code>isInitalized</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">boolean</span>
 
 
 
@@ -659,9 +526,108 @@
 
             
 
-            <td class="description last"><p>Field property object (required)</p></td>
+            <td class="description last"><p>The initialized property</p></td>
         </tr>
 
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3238">line 3238</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id=".name">
+    <h4><span class="type-signature">&lt;static> </span>name<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The name property</p>
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
@@ -683,113 +649,14 @@
 
             
 
-            <td class="description last"><p>The name of the field</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The value to preset</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The id of the field</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>required</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>If the field is required</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>binding</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The binding (used for decorator and optional)</p></td>
+            <td class="description last"><p>The name of the form</p></td>
         </tr>
 
     
     </tbody>
 </table>
+</dl>
 
-    
-
-    
-<dl class="details">
     
 
 	
@@ -824,7 +691,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2483">line 2483</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3244">line 3244</a>
 			</li>
 		</ul>
 	</dd>
@@ -839,49 +706,142 @@
 
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Returns a DOM element as an input</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Element</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
 </dd>
 
         
             
 <hr>
+<dt class="name" id=".uri">
+    <h4><span class="type-signature">&lt;static> </span>uri<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>The URI property</p>
+    </div>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The URI property</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3225">line 3225</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<hr>
 <dt>
-    <h4 class="name" id=".List"><span class="type-signature">&lt;static> </span>List(id, data, data, binding, ordered)</h4>
+    <h4 class="name" id=".initialize"><span class="type-signature">&lt;static> </span>initialize(options)</h4>
     
     
 </dt>
@@ -889,7 +849,7 @@
 
     
     <div class="description">
-        <p>List widget - renders a standard list</p>
+        <p>Initialize the form view</p>
     </div>
     
 
@@ -924,13 +884,13 @@
 
         <tr>
             
-                <td class="name"><code>id</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">object</span>
 
 
 
@@ -941,103 +901,7 @@
 
             
 
-            <td class="description last"><p>The id of the parent to attach the list</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Object.html">Object</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The data to render</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Array.html">Array</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The data to render</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>binding</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The binding (used for decorator and optional)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ordered</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>True if the list should be ordered</p></td>
+            <td class="description last"><p>The view options</p></td>
         </tr>
 
     
@@ -1082,7 +946,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
-				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-2384">line 2384</a>
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3259">line 3259</a>
 			</li>
 		</ul>
 	</dd>
@@ -1111,7 +975,7 @@
     
             
 <div class="param-desc">
-    <p>Returns a DOM element as a list</p>
+    <p>Returns true on success of initalization</p>
 </div>
 
 
@@ -1122,7 +986,895 @@
     </dt>
     <dd>
         
-<span class="param-type">Element</span>
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".isValid"><span class="type-signature">&lt;static> </span>isValid()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Is the form valid</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3437">line 3437</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Returns true if valid</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".renderRenderstheform"><span class="type-signature">&lt;static> </span>render Renders the form()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Render the form</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3446">line 3446</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Returns the view context ('this')</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".setSchema"><span class="type-signature">&lt;static> </span>setSchema(schema)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Sets the schema</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>schema</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The JSON schema of the dataset</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3374">line 3374</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".setURI"><span class="type-signature">&lt;static> </span>setURI(uri)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Sets the URI</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The URI</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3365">line 3365</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".showMessage"><span class="type-signature">&lt;static> </span>showMessage(message)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Show a message related to the form</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Some message to display</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3407">line 3407</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".showProgressBar"><span class="type-signature">&lt;static> </span>showProgressBar(show)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Enable/Disable the progress bar</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>show</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Show or Hide the progress bar</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3391">line 3391</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id=".validate"><span class="type-signature">&lt;static> </span>validate()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Validate the form</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="presentation_augmentedPresentation.js.html">presentation/augmentedPresentation.js</a>,
+				 <a href="presentation_augmentedPresentation.js.html#sunlight-1-line-3422">line 3422</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Returns true on success of validation</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
 
 
 
