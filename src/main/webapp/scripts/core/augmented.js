@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 0.3.0
+ * @version 0.4.0
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -66,7 +66,7 @@
      * A release name to help with identification of minor releases
      * @constant releasename
      */
-    Augmented.releasename = "---";
+    Augmented.releasename = "Praxis";
 
     /**
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'

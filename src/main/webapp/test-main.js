@@ -22,8 +22,8 @@ require.config({
 
 		'augmented': 'scripts/core/augmented',
 		'augmentedPresentation': 'scripts/presentation/augmentedPresentation',
-		'augmentedService': 'scripts/service/augmentedService',
-		'augmentedLegacy': 'scripts/legacy/legacy',
+		//'augmentedService': 'scripts/service/augmentedService',
+		//'augmentedLegacy': 'scripts/legacy/legacy',
 
 // 		'jasmine': '../lib/jasmine-2.x/jasmine',
 // 		'jasmine_html': '../lib/jasmine-2.x/jasmine-html',
@@ -40,32 +40,40 @@ require.config({
 });
 
 //Define all of your specs here. These are RequireJS modules.
-var specs = [ 'core/test/coreSpec',
-              'core/test/validationSpec',
-              'core/test/localStorageSpec',
-              'core/test/utilitySpec',
-              'core/test/ajaxSpec',
-              'core/test/applicationSpec',
-			  'core/test/securitySpec',
-			  'core/test/loggerSpec',
-			  'core/test/asyncQueueSpec',
-              'core/test/modelSpec',
-              'core/test/collectionSpec',
-              'core/test/viewSpec',
-              'core/test/transformerSpec',
+var specs = [ "core/test/coreSpec",
+              "core/test/routerSpec",
+              "core/test/validationSpec",
+              "core/test/localStorageSpec",
+              "core/test/utilitySpec",
+              "core/test/ajaxSpec",
+              "core/test/applicationSpec",
+			  "core/test/securitySpec",
+			  "core/test/loggerSpec",
+			  "core/test/asyncQueueSpec",
+              "core/test/modelSpec",
+              "core/test/collectionSpec",
+              "core/test/viewSpec",
+              "core/test/transformerSpec",
+              "core/test/structureSpec",
 
-              'presentation/test/presentationSpec',
-              'presentation/test/autoTableSpec',
-              'presentation/test/applicationSpec',
-              'presentation/test/mediationSpec',
-              'presentation/test/decoratorViewSpec',
-
+              "presentation/test/presentationSpec",
+              "presentation/test/autoTableSpec",
+              "presentation/test/applicationSpec",
+              "presentation/test/mediationSpec",
+              "presentation/test/decoratorViewSpec",
+              "presentation/test/DOMSpec",
+              "presentation/test/widgetSpec",
+              "presentation/test/viewControllerSpec",
+              "presentation/test/dialogSpec",
+              "presentation/test/autoFormSpec",
+              "presentation/test/dollar",
 
               //TODO: redo these to work with the new system
-              //'service/test/mockServiceSpec',
+              //"service/test/mockServiceSpec",
 
-              'core/test/resourceBundleSpec',
-			  'legacy/test/applicationContextSpec',
-              'legacy/test/polyfillSpec'
+              "core/test/resourceBundleSpec"
+              // Deprecated
+			  //"legacy/test/applicationContextSpec",
+              //"legacy/test/polyfillSpec"
 
             ];

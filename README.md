@@ -1,6 +1,6 @@
 # Augmented.js
 ## The Augmented.js Framework.
-### Version 0.3.0
+### Version 0.4.0α
 ### "The Hive"
 **aug·ment·ed**
 /ˌôɡˈmentəd /
@@ -50,19 +50,10 @@ The **Presentation** extension adds extensive abilities to the presentation laye
 
 This extension adds:
 * Mediator patterned PubSub Views
+* MVVM Decorator Views with declaritives
 * Enhanced Application Object
     - PubSub mediation and bootstrapping for Application objects
     - CSS Stylesheet registration and injection
     - breadcrumb management
 * Automatic Tables generated from a JSON schema and data
-
-## Service
-
-The **Service** extension adds additional features based around backend and Ajax.
-
-*This extension module in currently a work in progress.*
-
-Planned features include:
-* Spark support
-* MicroService capability
-* MicroESB
+* Automatic Forms generated from a JSON schema

@@ -66,16 +66,23 @@ define([
                 expect(f.schema).toEqual(schema);
             });
 
-            xit('can populate data', function() {
+            it('can populate data', function() {
     			f.populate(data);
-                expect(f.data).toEqual(data);
+                expect(f.model.toJSON()).toEqual(data);
     		});
 
-            xit('can validate', function() {
+            it('can validate', function() {
     			f.populate(data);
                 var m = f.validate();
                 expect(m).toBeDefined();
                 expect(f.isValid()).toBeTruthy();
+    		});
+
+            it('can invalidate bad data', function() {
+    			f.populate({ "x": "x" });
+                var m = f.validate();
+                expect(m).toBeDefined();
+                expect(f.isValid()).toBeFalsy();
     		});
         });
 	});

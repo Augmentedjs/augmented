@@ -2487,11 +2487,12 @@
          * @param {string} name The name of the field
          * @param {string} value The value to preset
          * @param {string} id The id of the field
+         * @param {boolean} required If the field is required
          * @param {string} binding The binding (used for decorator and optional)
          * @returns {Element} Returns a DOM element as an input
          * @memberof Augmented.Presentation.Widget
          */
-        Input: function(field, name, value, id, binding) {
+        Input: function(field, name, value, id, required, binding) {
             if (!field) {
                 return null;
             }
@@ -2573,6 +2574,11 @@
             if (t === "string" && cobj.maxlength) {
                 input.setAttribute("maxlength", cobj.maxlength);
             }
+
+            if (required) {
+                input.setAttribute("required", "true");
+            }
+
 
             if (name) {
                 input.setAttribute("name", name);
@@ -3156,8 +3162,8 @@
         style: "alert"
     });
 
-    var formCompile = function(e, name, description, fields, model, binding) {
-        var form = document.createElement("form"), fs = document.createElement("formset"), t, i, keys = Object.keys(fields), l = keys.length, input, lb;
+    var formCompile = function(e, name, description, fields, model, required, binding) {
+        var form = document.createElement("form"), fs = document.createElement("formset"), t, i, keys = Object.keys(fields), l = keys.length, input, lb, req;
         form.appendChild(fs);
 
         if (name) {
@@ -3173,13 +3179,14 @@
         }
 
         for (i = 0; i < l; i++) {
+            req = (required.indexOf(keys[i]) !== -1);
             lb = document.createElement("label");
             lb.setAttribute("for", keys[i]);
             t = document.createTextNode(keys[i]);
             lb.appendChild(t);
             fs.appendChild(lb);
 
-            input = Augmented.Presentation.Widget.Input(fields[keys[i]], keys[i], model[keys[i]], keys[i], binding);
+            input = Augmented.Presentation.Widget.Input(fields[keys[i]], keys[i], model[keys[i]], keys[i], req, binding);
             if (input) {
                 fs.appendChild(input);
             }
@@ -3241,6 +3248,13 @@
          * @memberof Augmented.Presentation.AutomaticForm
          */
         description: "",
+        /**
+         * The required fields property
+         * @property {Array} _required The required fields
+         * @memberof Augmented.Presentation.AutomaticForm
+         * @private
+         */
+        _required: [],
 
         /**
         * Initialize the form view
@@ -3305,6 +3319,12 @@
                 }
                 if (this.schema.description) {
                     this.description = this.schema.description;
+                }
+
+                if (this.schema.required) {
+                    this._required = this.schema.required;
+                } else {
+                    this._required = [];
                 }
 
                 if (!this.isInitalized) {
@@ -3435,7 +3455,7 @@
                  return this;
              }
              var e;
-             if (this.template) {
+             /*if (this.template) {
                 // refresh the form body only
                 this.showProgressBar(true);
                 if (this.el) {
@@ -3445,26 +3465,15 @@
                         logger.debug("AUGMENTED: AutoForm fields " + JSON.stringify(this._fields));
 
 
-                        /*if (this.model && (!this.model.isEmpty())){
-                            while (tbody.hasChildNodes()) {
-                                 tbody.removeChild(tbody.lastChild);
-                            }
 
-                                 directDOMTableBody(tbody, this.collection.toJSON(), this.columns, this.lineNumbers, this.sortKey);
-
-                        } else {
-                            while (tbody.hasChildNodes()) {
-                                 tbody.removeChild(tbody.lastChild);
-                            }
-                        }*/
                     }
                 } else if (this.$el) {
                     logger.warn("AUGMENTED: AutoForm doesn't support jquery, sorry, not rendering.");
                 } else {
                     logger.warn("AUGMENTED: AutoForm no element anchor, not rendering.");
                 }
-             } else {
-                this.template = "notused";
+            } else {*/
+                this.template = null;//"notused";
                 this.showProgressBar(true);
 
                 if (this.el) {
@@ -3477,7 +3486,7 @@
                         e.appendChild(n);
 
                         // the form
-                        formCompile(e, this.name, this.description, this._fields, this.model.toJSON(), this.name);
+                        formCompile(e, this.name, this.description, this._fields, this.model.toJSON(), this._required, this.name);
 
                         this._formEl = Augmented.Presentation.Dom.query("form", this.el);
 
@@ -3488,10 +3497,14 @@
                     }
                 } else if (this.$el) {
                     logger.warn("AUGMENTED: AutoForm doesn't support jquery, sorry, not rendering.");
+                    this.showProgressBar(false);
+                    return;
                 } else {
                     logger.warn("AUGMENTED: AutoForm no element anchor, not rendering.");
+                    this.showProgressBar(false);
+                    return;
                 }
-             }
+             //}
              this.delegateEvents();
 
              this.syncAllBoundElements();
@@ -3504,7 +3517,10 @@
                 this._formEl.reset();
                 this.model.reset();
             }
-         }
+        },
+        populate: function(data) {
+            this.model.set(data);
+        }
     });
 
     return Augmented.Presentation;
