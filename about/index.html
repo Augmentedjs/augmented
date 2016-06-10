@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Augmented.js About Page</title>
+        <!-- require.js pulls in all necessary js for this component -->
+		<script data-main="../scripts/app/augmentedRequire.js" src="../scripts/lib/require.js"></script>
+		<style>
+			body { background-color: #eeeeee; color: #333333; font-family: sans-serif; }
+			section header { font-family: serif; color: #333366; }
+			section header figure img { width: 500px; -webkit-filter: drop-shadow(2px 2px 2px #808080); filter: drop-shadow(2px 2px 2px #808080); }
+		</style>
+	</head>
+	<body>
+		<article>
+			<section id="header">
+				<header>
+					<figure><img src="../images/augmentedjs.png" alt="Augmented.js"/></figure>
+					<h1>Augmented.js About Page</h1>
+					<h2 id="augmented"></h2>
+				</header>
+				<p>The Augmented.js framework is up and running!</p>
+			</section>
+			<section id="content">
+				<!-- You should put versions of anything you need here -->
+				<div id="libraries"></div>
+			</section>
+			<section id="info">
+				<header>
+					<p>For more information refer to the following:</p>
+				</header>
+				<ul>
+                    <li><a href="../jsdoc/index.html" >JSDoc of the Framework</a></li>
+					<li><a href="../test.html" >Testing Framework Page</a></li>
+				</ul>
+			</section>
+		</article>
+	</body>
+</html>

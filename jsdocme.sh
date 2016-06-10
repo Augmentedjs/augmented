@@ -1,1 +1,0 @@
-node ~/Desktop/node_modules/jsdoc/jsdoc.js -r -c ~/Desktop/node_modules/ink-docstrap/template/jsdoc.conf.json ~/Documents/workspace-personal/augmented/augmented/src/main/webapp/scripts/*  -d ~/Documents/workspace-personal/augmented/augmented/src/main/webapp/jsdoc/ -t ~/Desktop/node_modules/ink-docstrap/template -R ~/Documents/workspace-personal/augmented/augmented/README.md
