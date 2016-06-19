@@ -2669,7 +2669,7 @@
             }/* else {
                 logger.debug("AUGMENTED: DecoratorView No function bound or no function exists! " + func);
             }*/
-            this.func(event);
+            this._func(event);
         },
         _func: function(event) {
             var func = event.currentTarget.getAttribute(decoratorAttributeEnum.func);
@@ -3010,9 +3010,9 @@
             var i = 0, l = this._views.length;
             for (i = 0; i < l; i++) {
                 this._views[i].remove();
-                this._views.splice(i, 1);
             }
-            this._views = [];
+            this._views.splice(0);
+            //this._views = [];
         },
         /**
          * getViews - get the instances of the views known
