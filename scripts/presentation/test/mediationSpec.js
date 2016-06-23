@@ -91,8 +91,6 @@ define([
 					expect(channels).toBeDefined();
 					expect(channels instanceof Array).toBeTruthy();
 					expect(channels[0].context).toEqual(c);
-                    //expect(c2[0].context.cid).not.toEqual(c.cid);
-
 				});
 
                 it('Colleague will not fail to send a message if the mediator is not available', function() {
