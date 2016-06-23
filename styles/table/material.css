@@ -1,0 +1,149 @@
+/* TABLES */
+table.material {
+  border-collapse: collapse; /* Merges cell borders together */
+  /* Browser default: border-collapse: separate; border-spacing: 2px; */
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  width: 100%;
+  background-color: white;
+  color: rgba(0, 0, 0, 0.85);
+  position: relative;
+}
+table.material td {
+    border: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    font-size: 0.85em;
+}
+
+table.material td input {
+    color: rgba(0, 0, 0, 0.85);
+}
+
+table.material td, table.material th {
+    max-width: 300px;
+    overflow: auto;
+    padding: 8px 16px;
+    height: 25px;
+    line-height: 25px;
+    text-align: left;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+table.material th {
+    border: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    font-size: 0.7em;
+    color: rgba(0,0,0,0.6);
+    padding-top: 5em;
+}
+
+table.material th[data-name="lineNumber"]{
+    width: 25px;
+    text-overflow: ellipsis;
+    text-align: right;
+}
+table.material td.label {
+    color: rgba(0,0,0,1);
+    font-size: 1em;
+    font-weight: 400;
+}
+table.material td:first-child, th:first-child {
+  empty-cells: hide; /* Hide empty cells when they're the first in the row */
+}
+
+table.material caption {
+    color: rgba(0, 0, 0, 1);
+    font-size: 1.25em;
+    font-weight: 400;
+    left: 16px;
+    position: absolute;
+    text-align: left;
+    top: 8px;
+}
+
+table.material th.sorted {
+    color: rgba(0,0,0,1);
+}
+
+table.material th.sorted::before {
+    content: "\21f5\00a0";
+}
+
+table.material th.number, table.material td.number, table.material th.integer, table.material td.integer,
+    table.material th[data-type="number"], table.material th[data-type="integer"] {
+    text-align: right;
+}
+
+/* pagfination styles */
+div.paginationControl.material {
+    display: block;
+    font-size: 10pt;
+    margin: 5px 0 5px 0;
+}
+
+div.paginationControl.material > span {
+    display: inline-block;
+    padding: 3px;
+    border-top: 1px solid white;
+    border-left: 1px solid white;
+    border-right: 1px solid #808080;
+    border-bottom: 1px solid #808080;
+    background-color: #e0e0e0;
+    width: 6em;
+}
+
+div.paginationControl.material > span.first, div.paginationControl.material > span.previous {
+    text-align: left;
+}
+
+div.paginationControl.material > span.current {
+    text-align: center;
+}
+
+div.paginationControl.material > span.last, div.paginationControl.material > span.next {
+    text-align: right;
+}
+
+table.material td input {
+    width: 100%;
+    border: 0px none;
+    height: 100%;
+    display: inline-block;
+    position: relative;
+    background-color: transparent;
+    margin: 0;
+}
+/*
+table.material td input:focus {
+    background-color: rgba(255,255,204,0.85);
+}
+*/
+table.material td:hover {
+    background-color: #fafafa;
+}
+
+table.material ul.errors {
+    color: #f44336;
+}
+
+table.material td select {
+    margin: 0;
+    width: 100%;
+    border: 0;
+    height: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAZBJREFUeJzt0jtOw0AYhdG7AVgQj57XhlkBm6GDAiooIguEQrCxnZnfOUea2jO+XwIAAAAAAAAAAAAAAAAAAAAAAAAAAAAHnbW+wAK28IYmrpM8J7lpfZEZHrJ7w0Xri1RzneQ1yUeSt9SM4CHJe3ZveIkIRrvK1/jDqRbB9/GHI4IR9o1fLYJ944tghKvsftC+H1clgkPji+CAy/w9/nDek9y2ueZBY8YXwR5Txu81ginji+CHx0z7cb1F8J/xh/PY4L7dOU/ylJoRzBn/Kbu3k5oRGH9hlSIw/koqRGD8lc2N4G7Fuxn/SHqMwPhH1lMExm+khwiM31jLCIzfiRYRGL8zcyO4n/At43fqGBEYv3NrRmD8ItaIwPjFLBmB8YtaIgLjFzc3AuNvwJwIjL8Rx4rA+B1bOwLjF7BWBMYvZOkIjF/QUhEYv7C5ERh/A/4bgfE3ZGoExt+gsREYf8P+isD4J+C3CIx/Qn5GYPwTNERg/BN2HuMDAAAAAAAAAAAAAAAAAAAAAAAAAAAADX0C1EVRxOOijgAAAAAASUVORK5CYII=') no-repeat scroll 100% center / 10% auto;
+}
+
+table.material td input:invalid {
+    /*background-color: #ffebee;*/
+    border: 0;
+    border-bottom: 1px dashed #b71c1c;
+    /*color: #b71c1c;*/
+    box-shadow: none;
+}

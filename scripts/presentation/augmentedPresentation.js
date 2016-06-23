@@ -13,7 +13,7 @@
  *
  * @requires augmented.js
  * @module Augmented.Presentation
- * @version 0.3.0
+ * @version 0.4.0
  * @license Apache-2.0
  */
 (function(moduleFactory) {
@@ -413,7 +413,7 @@
             		}
                 } else {
                     logger.warn("AUGMENTED: Mediator: No subscription for channel '" + channel + "' on row " + i);
-                    logger.debug("AUGMENTED: Mediator: subscription " + this._channels[channel]);
+                    //logger.debug("AUGMENTED: Mediator: subscription " + this._channels[channel]);
                 }
     	    }
     	},
@@ -1044,7 +1044,7 @@
          * @private
          * @memberof Augmented.Presentation.AutomaticTable
          */
-        columns: {},
+        _columns: {},
         /**
          * The URI property
          * @property {string} uri The URI property
@@ -1072,7 +1072,7 @@
          */
         isInitalized : false,
         /**
-        * Initialize the table view
+         * Initialize the table view
          * @method initialize
          * @memberof Augmented.Presentation.AutomaticTable
          * @param {object} options The view options
@@ -1170,7 +1170,7 @@
                 }
 
                 if (!this.isInitalized) {
-                    this.columns = this.schema.properties;
+                    this._columns = this.schema.properties;
                     this.collection.schema = this.schema;
                     this.isInitalized = true;
                 }
@@ -1317,11 +1317,11 @@
                     e = (typeof this.el === 'string') ? document.querySelector(this.el) : this.el;
                     var tbody = e.querySelector("tbody"), thead = e.querySelector("thead"), h;
                     if (e) {
-                        if (this.columns && (Object.keys(this.columns).length > 0)){
+                        if (this._columns && (Object.keys(this._columns).length > 0)){
                             if (this.sortable) {
                                 this.unbindSortableColumnEvents();
                             }
-                            h = defaultTableHeader(this.columns, this.lineNumbers, this.sortKey);
+                            h = defaultTableHeader(this._columns, this.lineNumbers, this.sortKey);
                         } else {
                             h = "";
                         }
@@ -1347,12 +1347,12 @@
                     if (this.sortable) {
                         this.unbindSortableColumnEvents();
                     }
-                    this.$el("thead").html(defaultTableHeader(this.columns, this.lineNumbers, this.sortKey));
+                    this.$el("thead").html(defaultTableHeader(this._columns, this.lineNumbers, this.sortKey));
                     var jh = "";
                     if (this.editable) {
-                        jh = editableTableBody(this.collection.toJSON(), this.columns, this.lineNumbers, this.sortKey);
+                        jh = editableTableBody(this.collection.toJSON(), this._columns, this.lineNumbers, this.sortKey);
                     } else {
-                        jh = defaultTableBody(this.collection.toJSON(), this.columns, this.lineNumbers, this.sortKey);
+                        jh = defaultTableBody(this.collection.toJSON(), this._columns, this.lineNumbers, this.sortKey);
                     }
                     if (this.editable) {
                         this.unbindCellChangeEvents();
@@ -1456,12 +1456,12 @@
         exportTo: function(type) {
             var e = "";
             if (type === "csv") {
-                e = csvTableCompile(this.name, this.description, this.columns, this.collection.toJSON());
+                e = csvTableCompile(this.name, this.description, this._columns, this.collection.toJSON());
             } else if (type === "tsv") {
-                e = tsvTableCompile(this.name, this.description, this.columns, this.collection.toJSON());
+                e = tsvTableCompile(this.name, this.description, this._columns, this.collection.toJSON());
             } else {
                 // html
-                e = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), false, null);
+                e = defaultTableCompile(this.name, this.description, this._columns, this.collection.toJSON(), false, null);
             }
             return e;
         },
@@ -1586,7 +1586,7 @@
          * @returns {string} Returns the template
          */
         compileTemplate: function() {
-            var h = defaultTableCompile(this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers, this.sortKey, this.editable);
+            var h = defaultTableCompile(this.name, this.description, this._columns, this.collection.toJSON(), this.lineNumbers, this.sortKey, this.editable);
             if (this.renderPaginationControl) {
                 h = h + defaultPaginationControl(this.currentPage(), this.totalPages());
             }
@@ -1609,7 +1609,7 @@
          */
         setSchema: function(schema) {
             this.schema = schema;
-            this.columns = schema.properties;
+            this._columns = schema.properties;
             this.collection.reset();
             this.collection.schema = schema;
 
@@ -1797,7 +1797,7 @@
                     cobj = (columns[dkey]) ? columns[dkey] : {};
                     dobj = d[dkey];
 
-                    logger.debug("column type: " + JSON.stringify(cobj));
+                    //logger.debug("column type: " + JSON.stringify(cobj));
 
                     t = (typeof dobj);
 
@@ -1962,6 +1962,12 @@
     Augmented.Presentation.AutomaticTable =
         Augmented.Presentation.DirectDOMAutomaticTable =
             AbstractAutoTable.extend({
+        setTheme: function(theme) {
+            var e = document.querySelector(this.el + " > table");
+            if (e) {
+                e.setAttribute("class", theme);
+            }
+        },
         compileTemplate: function() {
             return "";
         },
@@ -1984,12 +1990,12 @@
                         if (this.editable) {
                             this.unbindCellChangeEvents();
                         }
-                        if (this.columns && (Object.keys(this.columns).length > 0)){
+                        if (this._columns && (Object.keys(this._columns).length > 0)){
 
                             while (thead.hasChildNodes()) {
                                 thead.removeChild(thead.lastChild);
                             }
-                            directDOMTableHeader(thead, this.columns, this.lineNumbers, this.sortKey);
+                            directDOMTableHeader(thead, this._columns, this.lineNumbers, this.sortKey);
                         } else {
                             while (thead.hasChildNodes()) {
                                 thead.removeChild(thead.lastChild);
@@ -2001,9 +2007,9 @@
                                 tbody.removeChild(tbody.lastChild);
                             }
                             if (this.editable) {
-                                directDOMEditableTableBody(tbody, this.collection.toJSON(), this.columns, this.lineNumbers, this.sortKey);
+                                directDOMEditableTableBody(tbody, this.collection.toJSON(), this._columns, this.lineNumbers, this.sortKey);
                             } else {
-                                directDOMTableBody(tbody, this.collection.toJSON(), this.columns, this.lineNumbers, this.sortKey);
+                                directDOMTableBody(tbody, this.collection.toJSON(), this._columns, this.lineNumbers, this.sortKey);
                             }
                         } else {
                             while (tbody.hasChildNodes()) {
@@ -2030,7 +2036,7 @@
                         e.appendChild(n);
 
                         // the table
-                        directDOMTableCompile(e, this.name, this.description, this.columns, this.collection.toJSON(), this.lineNumbers, this.sortKey, this.editable);
+                        directDOMTableCompile(e, this.name, this.description, this._columns, this.collection.toJSON(), this.lineNumbers, this.sortKey, this.editable);
 
                         // pagination control
                         if (this.renderPaginationControl) {
@@ -2072,6 +2078,7 @@
      * Shorthand for Augmented.Presentation.AutomaticTable
      * @constructor Augmented.Presentation.AutoTable
      * @extends Augmented.Presentation.AutomaticTable
+     * @memberof Augmented.Presentation
      */
     Augmented.Presentation.AutoTable = Augmented.Presentation.AutomaticTable;
 
@@ -2079,7 +2086,8 @@
      * Augmented.Presentation.BigDataTable
      * Instance class preconfigured for sorting and pagination
      * @constructor Augmented.Presentation.BigDataTable
-     * @extends Augmented.Presentation.DirectDOMAutomaticTable
+     * @extends Augmented.Presentation.AutomaticTable
+     * @memberof Augmented.Presentation
      */
     Augmented.Presentation.BigDataTable = Augmented.Presentation.DirectDOMAutomaticTable.extend({
         renderPaginationControl: true,
@@ -2091,7 +2099,8 @@
      * Augmented.Presentation.EditableTable
      * Instance class preconfigured for editing
      * @constructor Augmented.Presentation.EditableTable
-     * @extends Augmented.Presentation.DirectDOMAutomaticTable
+     * @extends Augmented.Presentation.AutomaticTable
+     * @memberof Augmented.Presentation
      */
     Augmented.Presentation.EditableTable = Augmented.Presentation.DirectDOMAutomaticTable.extend({
         editable: true,
@@ -2102,7 +2111,8 @@
      * Augmented.Presentation.EditableBigDataTable
      * Instance class preconfigured for editing, sorting, and pagination
      * @constructor Augmented.Presentation.EditableBigDataTable
-     * @extends Augmented.Presentation.DirectDOMAutomaticTable
+     * @extends Augmented.Presentation.AutomaticTable
+     * @memberof Augmented.Presentation
      */
     Augmented.Presentation.EditableBigDataTable = Augmented.Presentation.DirectDOMAutomaticTable.extend({
         renderPaginationControl: true,
@@ -2115,7 +2125,8 @@
      * Augmented.Presentation.LocalStorageTable
      * Instance class preconfigured for local storage-based table
      * @constructor Augmented.Presentation.LocalStorageTable
-     * @extends Augmented.Presentation.DirectDOMAutomaticTable
+     * @extends Augmented.Presentation.AutomaticTable
+     * @memberof Augmented.Presentation
      */
     Augmented.Presentation.LocalStorageTable = Augmented.Presentation.DirectDOMAutomaticTable.extend({
         renderPaginationControl: false,
@@ -2129,7 +2140,8 @@
      * Augmented.Presentation.EditableLocalStorageTable
      * Instance class preconfigured for editing, sorting, from local storage
      * @constructor Augmented.Presentation.EditableLocalStorageTable
-     * @extends Augmented.Presentation.DirectDOMAutomaticTable
+     * @extends Augmented.Presentation.AutomaticTable
+     * @memberof Augmented.Presentation
      */
     Augmented.Presentation.EditableLocalStorageTable = Augmented.Presentation.DirectDOMAutomaticTable.extend({
         renderPaginationControl: false,
@@ -2138,6 +2150,169 @@
         editable: true,
         localStorage: true
     });
+
+    /**
+     * Augmented.Presentation.Spreadsheet
+     * Instance class preconfigured for editing for use as a Spreadsheet.<br/>
+     * If a propery for length is not specified, it will buffer 10 lines for editing.
+     * @constructor Augmented.Presentation.Spreadsheet
+     * @extends Augmented.Presentation.AutomaticTable
+     * @memberof Augmented.Presentation
+     */
+    Augmented.Presentation.Spreadsheet = Augmented.Presentation.AutomaticTable.extend({
+        renderPaginationControl: false,
+        lineNumbers: true,
+        sortable: true,
+        editable: true,
+        /**
+         * @propery {number} columns Defines a set of columns in the spreadsheet
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        columns: 5,
+        /**
+         * @propery {number} rows Defines a set of rows in the spreadsheet
+         * @memberof Augmented.Presentation.AutomaticTable
+         */
+        rows: 10,
+        /**
+         * Initialize the table view
+         * @method initialize
+         * @memberof Augmented.Presentation.Spreadsheet
+         * @param {object} options The view options
+         * @returns {boolean} Returns true on success of initalization
+         */
+        initialize: function(options) {
+            this.init();
+
+            if (this.collection) {
+                this.collection.reset();
+            } else if (!this.collection && this.localStorage) {
+                this.collection = new Augmented.LocalStorageCollection();
+            } else if (!this.collection) {
+                this.collection = new Augmented.Collection();
+            }
+            if (options) {
+
+                if (options.schema) {
+                    // check if this is a schema vs a URI to get a schema
+                    if (Augmented.isObject(options.schema)) {
+                        this.schema = options.schema;
+                    } else {
+                        // is a URI?
+                        var parsedSchema = null;
+                        try {
+                            parsedSchema = JSON.parse(options.schema);
+                            if (parsedSchema && Augmented.isObject(parsedSchema)) {
+                                this.schema = parsedSchema;
+                            }
+                        } catch(e) {
+                            logger.warn("AUGMENTED: AutoTable parsing string schema failed.  URI perhaps?");
+                        }
+                        if (!this.schema) {
+                            this.retrieveSchema(options.schema);
+                            this.isInitalized = false;
+                            //return false;
+                        }
+                    }
+                }
+
+                if (options.el) {
+                    this.el = options.el;
+                }
+
+                if (options.uri) {
+                    this.uri = options.uri;
+                    this.collection.url = options.uri;
+                }
+
+                if (options.data && (Array.isArray(options.data))) {
+                    this.populate(options.data);
+                }
+
+                if (options.sortable) {
+                    this.sortable = options.sortable;
+                }
+
+                if (options.lineNumbers) {
+                    this.lineNumbers = options.lineNumbers;
+                }
+
+                if (options.localStorageKey && !options.uri) {
+                    this.localStorageKey = options.localStorageKey;
+                    this.uri = null;
+                }
+            }
+
+            if (this.collection && this.uri) {
+                this.collection.url = this.uri;
+            }
+            if (this.collection) {
+                this.collection.crossOrigin = this.crossOrigin;
+            }
+            if (this.schema) {
+                if (this.schema.title) {
+                    this.name = this.schema.title;
+                }
+                if (this.schema.description) {
+                    this.description = this.schema.description;
+                }
+
+                if (!this.isInitalized) {
+                    this._columns = this.schema.properties;
+                    this.collection.schema = this.schema;
+                }
+            } else {
+                //very basic schema
+                this.schema = {
+                    "$schema": "http://json-schema.org/draft-04/schema#",
+                    "title": "untitled",
+                    "type": "object",
+                    "description": "",
+                    "properties": {
+                    }
+                };
+
+                var i = 0;
+
+                for (i = 0; i < this.columns; i++) {
+                    this.schema.properties[String.fromCharCode(65 + i)] = {
+                        "description": "",
+                        "type": "string"
+                    };
+                }
+
+                this._columns = this.schema.properties;
+                this.collection.schema = this.schema;
+            }
+
+            //buffer
+            this._generate();
+            this.collection.set(this.data);
+
+            this.isInitalized = true;
+
+            return this.isInitalized;
+        },
+        _generate: function() {
+            if (this.schema && this.schema.properties) {
+                var i = 0, ii = 0, keys = Object.keys(this.schema.properties), l = keys.length, obj = {};
+                this.data = [];
+                for (ii = 0; ii < this.rows; ii++) {
+                    obj = {};
+                    for (i = 0; i < l; i++) {
+                        obj[keys[i]] = ""; /*this._makeUpData(
+                            this.schema.properties[keys[i]].type,
+                            this.schema.properties[keys[i]].format,
+                            this.schema.properties[keys[i]].enum
+                        );*/
+                    }
+                    this.data.push(obj);
+                }
+            }
+        },
+
+    });
+
 
     /**
      * DOM related functions - Same as Augmented.Presentation.Dom
@@ -2660,7 +2835,7 @@
             }
             this.model.set(( (key) ? key : event.currentTarget.name ), val);
             this._func(event);
-            logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
+            //logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
         },
         _click: function(event) {
             var func = event.currentTarget.getAttribute(decoratorAttributeEnum.click);
@@ -3450,67 +3625,49 @@
          * @returns {object} Returns the view context ('this')
          */
          render: function() {
-             if (!this.isInitalized) {
-                 logger.warn("AUGMENTED: AutoForm Can't render yet, not initialized!");
-                 return this;
-             }
-             var e;
-             /*if (this.template) {
-                // refresh the form body only
-                this.showProgressBar(true);
-                if (this.el) {
-                    e = Augmented.Presentation.Dom.selector(this.el);
-                    var formset = e.querySelector("formset");
-                    if (e) {
-                        logger.debug("AUGMENTED: AutoForm fields " + JSON.stringify(this._fields));
+            if (!this.isInitalized) {
+                logger.warn("AUGMENTED: AutoForm Can't render yet, not initialized!");
+                return this;
+            }
 
+            this.template = null;//"notused";
+            this.showProgressBar(true);
 
+            if (this.el) {
+                var e = Augmented.Presentation.Dom.selector(this.el);
+                if (e) {
+                    // progress bar
+                    var n = document.createElement("progress");
+                    var t = document.createTextNode("Please wait.");
+                    n.appendChild(t);
+                    e.appendChild(n);
 
-                    }
-                } else if (this.$el) {
-                    logger.warn("AUGMENTED: AutoForm doesn't support jquery, sorry, not rendering.");
-                } else {
-                    logger.warn("AUGMENTED: AutoForm no element anchor, not rendering.");
+                    // the form
+                    formCompile(e, this.name, this.description, this._fields, this.model.toJSON(), this._required, this.name);
+
+                    this._formEl = Augmented.Presentation.Dom.query("form", this.el);
+
+                    // message
+                    n = document.createElement("p");
+                    n.classList.add("message");
+                    e.appendChild(n);
                 }
-            } else {*/
-                this.template = null;//"notused";
-                this.showProgressBar(true);
+            } else if (this.$el) {
+                logger.warn("AUGMENTED: AutoForm doesn't support jquery, sorry, not rendering.");
+                this.showProgressBar(false);
+                return;
+            } else {
+                logger.warn("AUGMENTED: AutoForm no element anchor, not rendering.");
+                this.showProgressBar(false);
+                return;
+            }
 
-                if (this.el) {
-                    e = Augmented.Presentation.Dom.selector(this.el);
-                    if (e) {
-                        // progress bar
-                        var n = document.createElement("progress");
-                        var t = document.createTextNode("Please wait.");
-                        n.appendChild(t);
-                        e.appendChild(n);
+            this.delegateEvents();
 
-                        // the form
-                        formCompile(e, this.name, this.description, this._fields, this.model.toJSON(), this._required, this.name);
+            this.syncAllBoundElements();
 
-                        this._formEl = Augmented.Presentation.Dom.query("form", this.el);
-
-                        // message
-                        n = document.createElement("p");
-                        n.classList.add("message");
-                        e.appendChild(n);
-                    }
-                } else if (this.$el) {
-                    logger.warn("AUGMENTED: AutoForm doesn't support jquery, sorry, not rendering.");
-                    this.showProgressBar(false);
-                    return;
-                } else {
-                    logger.warn("AUGMENTED: AutoForm no element anchor, not rendering.");
-                    this.showProgressBar(false);
-                    return;
-                }
-             //}
-             this.delegateEvents();
-
-             this.syncAllBoundElements();
-
-             this.showProgressBar(false);
-             return this;
+            this.showProgressBar(false);
+            return this;
          },
          reset: function() {
             if (this._formEl) {

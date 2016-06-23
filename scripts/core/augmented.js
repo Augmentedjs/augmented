@@ -807,7 +807,7 @@
      *     });
      */
     Augmented.ajax = Augmented.Ajax.ajax = function(ajaxObject) {
-        logger.debug("AUGMENTED: Ajax object: " + JSON.stringify(ajaxObject));
+        //logger.debug("AUGMENTED: Ajax object: " + JSON.stringify(ajaxObject));
         var xhr = null;
   		if (ajaxObject && ajaxObject.url) {
     	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
@@ -889,10 +889,10 @@
                                 }
                             } else if (xhr.responseType === "json") {
                                 if (xhr.response) {
-                                    logger.debug("AUGMENTED: Ajax (JSON responseType) native JSON.");
+                                    //logger.debug("AUGMENTED: Ajax (JSON responseType) native JSON.");
                                     ajaxObject.success(xhr.response, xhr.status, xhr);
                                 } else if (xhr.responseText) {
-                                    logger.debug("AUGMENTED: Ajax (JSON responseType) parsed JSON from string.");
+                                    //logger.debug("AUGMENTED: Ajax (JSON responseType) parsed JSON from string.");
                                     ajaxObject.success(JSON.parse(xhr.responseText), xhr.status, xhr);
                                 } else {
                                     logger.warn("AUGMENTED: Ajax (" + xhr.responseType + " responseType) did not return anything.");
@@ -3745,7 +3745,7 @@
                 this.validationMessages.valid = true;
 
                 var a = this.toJSON(), i = 0, l = a.length;
-                logger.debug("AUGMENTED: Collection Validate: Beginning with " + l + " models.");
+                //logger.debug("AUGMENTED: Collection Validate: Beginning with " + l + " models.");
                 for (i = 0; i < l; i++) {
                     messages[i] = Augmented.ValidationFramework.validate(a[i], this.schema);
                     if (!messages[i].valid) {
@@ -3753,7 +3753,7 @@
                     }
                 }
 
-                logger.debug("AUGMENTED: Collection Validate: Completed isValid " + this.validationMessages.valid);
+                //logger.debug("AUGMENTED: Collection Validate: Completed isValid " + this.validationMessages.valid);
     	    } else {
     		    this.validationMessages.valid = true;
     	    }
@@ -4343,7 +4343,7 @@
 
     	// true = localStorage, false = sessionStorage
     	if (this.isSupported()) {
-    	    logger.debug("AUGMENTED: localStorage exists");
+    	    //logger.debug("AUGMENTED: localStorage exists");
 
     	    if (this.isPersisted) {
     		this.myStore = localStorage;

@@ -1,0 +1,141 @@
+/* TABLES */
+table.spaceGray {
+  border-collapse: collapse; /* Merges cell borders together */
+  /* Browser default: border-collapse: separate; border-spacing: 2px; */
+  border: 1px solid #546e7a;
+  width: 100%;
+}
+table.spaceGray td {
+    background-color: #eceff1;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+table.spaceGray td input {
+    color: rgba(0, 0, 0, 0.85);
+}
+
+table.spaceGray td, table.spaceGray th {
+    border: 1px solid #546e7a;
+    color: black;
+    max-width: 300px;
+    overflow: auto;
+    padding: 3px;
+    height: 25px;
+    line-height: 25px;
+    text-align: left;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    white-space: normal;
+    word-wrap: break-word;
+    font-size: 1em;
+}
+table.spaceGray th[data-name="lineNumber"]{
+    width: 25px;
+    text-overflow: ellipsis;
+    text-align: right;
+}
+table.spaceGray td.label {
+    color: #607d8b;
+    font-size: 1em;
+    font-weight: 400;
+}
+table.spaceGray td:first-child, th:first-child {
+  empty-cells: hide; /* Hide empty cells when they're the first in the row */
+}
+
+table.spaceGray caption {
+    background-color: #263238;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14pt;
+}
+
+table.spaceGray th {
+    background-color: #607d8b;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 400;
+}
+
+table.spaceGray th.sorted {
+    background-color: #546e7a;
+}
+
+table.spaceGray td.sorted {
+    background-color: #cfd8dc;
+}
+
+table.spaceGray th.sorted::after {
+    content: "\00a0\21f5";
+}
+
+table.spaceGray th.number, table.spaceGray td.number, table.spaceGray th.integer, table.spaceGray td.integer {
+    text-align: right;
+}
+
+/* pagfination styles */
+div.paginationControl.spaceGray {
+    display: block;
+    font-size: 10pt;
+    margin: 5px 0 5px 0;
+}
+
+div.paginationControl.spaceGray > span {
+    display: inline-block;
+    padding: 3px;
+    border-top: 1px solid white;
+    border-left: 1px solid white;
+    border-right: 1px solid #808080;
+    border-bottom: 1px solid #808080;
+    background-color: #e0e0e0;
+    width: 6em;
+}
+
+div.paginationControl.spaceGray > span.first, div.paginationControl.spaceGray > span.previous {
+    text-align: left;
+}
+
+div.paginationControl.spaceGray > span.current {
+    text-align: center;
+}
+
+div.paginationControl.spaceGray > span.last, div.paginationControl.spaceGray > span.next {
+    text-align: right;
+}
+
+table.spaceGray td input {
+    width: 100%;
+    border: 0px none;
+    height: 100%;
+    display: inline-block;
+    position: relative;
+    background-color: rgba(255,255,255,0);
+}
+table.spaceGray td input:focus {
+    background-color: rgba(255,255,204,0.85);
+}
+
+table.spaceGray td:hover {
+    background-color: white;
+}
+
+table.spaceGray ul.errors {
+    color: red;
+}
+
+table.spaceGray td select {
+    margin: 0;
+    width: 100%;
+    border: 0;
+    height: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAZBJREFUeJzt0jtOw0AYhdG7AVgQj57XhlkBm6GDAiooIguEQrCxnZnfOUea2jO+XwIAAAAAAAAAAAAAAAAAAAAAAAAAAAAHnbW+wAK28IYmrpM8J7lpfZEZHrJ7w0Xri1RzneQ1yUeSt9SM4CHJe3ZveIkIRrvK1/jDqRbB9/GHI4IR9o1fLYJ944tghKvsftC+H1clgkPji+CAy/w9/nDek9y2ueZBY8YXwR5Txu81ginji+CHx0z7cb1F8J/xh/PY4L7dOU/ylJoRzBn/Kbu3k5oRGH9hlSIw/koqRGD8lc2N4G7Fuxn/SHqMwPhH1lMExm+khwiM31jLCIzfiRYRGL8zcyO4n/At43fqGBEYv3NrRmD8ItaIwPjFLBmB8YtaIgLjFzc3AuNvwJwIjL8Rx4rA+B1bOwLjF7BWBMYvZOkIjF/QUhEYv7C5ERh/A/4bgfE3ZGoExt+gsREYf8P+isD4J+C3CIx/Qn5GYPwTNERg/BN2HuMDAAAAAAAAAAAAAAAAAAAAAAAAAAAADX0C1EVRxOOijgAAAAAASUVORK5CYII=') no-repeat scroll 100% center / 10% auto;
+}
+
+table.spaceGray td input:invalid {
+    background-color: #ffebee;
+    border: 0;
+    border-bottom: 1px dashed #b71c1c;
+    color: #b71c1c;
+    box-shadow: none;
+}
