@@ -102,6 +102,14 @@ define([
                     }
 					expect(ee).toEqual(null);
 				});
+
+                it('the mediator can observe a colleague with the same message name as cvhannel and not fail', function() {
+                    c.on("monkey", function(d) { this.eeak = d; });
+                    m.observeColleagueAndTrigger(c, "monkey", "monkey");
+                    m.publish("monkey", "monkey", "EEAK!");
+                    m.dismissColleagueTrigger(c, "monkey", "monkey");
+					expect(c.eeak).toEqual("EEAK!");
+				});
 			});
 		});
 	});

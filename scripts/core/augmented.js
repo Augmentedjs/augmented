@@ -12,8 +12,7 @@
 
     // Set up Augmented appropriately for the environment. Start with AMD.
     if (typeof define === 'function' && define.amd) {
-        define([ 'backbone', 'exports'],
-		function(Backbone, exports) {
+        define([ 'backbone', 'exports'], function(Backbone, exports) {
 	    // Export global even in AMD case in case this script is
 	    // loaded with
 	    // others that may still expect a global Augmented.
@@ -22,9 +21,8 @@
 
 	// Next for Node.js or CommonJS.
     } else if (typeof exports !== 'undefined') {
-	    var _ = require('backbone');
-	factory(root, exports, Backbone);
-
+	    var Backbone = require('backbone');
+	    factory(root, exports, Backbone);
 	// Finally, as a browser global.
     } else {
 	    root.Augmented = factory(root, {}, root.Backbone);
@@ -601,6 +599,9 @@
      * @memberof Augmented.Utility
      */
     Augmented.Utility.extend = extend;
+
+    // For Node and Browser.  Requires xhr2 for Node (install in Node or by app)
+    var XMLHttpRequest = (XMLHttpRequest) ? XMLHttpRequest : require('xhr2');
 
     /*
      * Setup the rest of jQuery-like eventing and handlers for native xhr
@@ -3797,7 +3798,7 @@
          * @memberof Augmented.Collection
          */
         save: function (options) {
-            Augmented.sync("create", this, options);
+            this.sync("create", this, options);
         },
         /**
          * Collection.update - Updates the collection as a 'update'
@@ -3805,7 +3806,7 @@
          * @memberof Augmented.Collection
          */
         update: function (options) {
-            Augmented.sync("update", this, options);
+            this.sync("update", this, options);
         },
         /**
          * sortByKey - Sorts the collection by a property key
