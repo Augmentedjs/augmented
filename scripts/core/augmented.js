@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = '0.4.0α';
+    Augmented.VERSION = '0.4.0';
     /**
      * A codename for internal use
      * @constant codename
@@ -4553,7 +4553,12 @@
          */
         storage: null,
         url: null,
-        initialize: function (attributes, options) {
+        /**
+         * @method initialize Initialize the model with needed wireing
+         * @param {object} options Any options to pass
+         * @memberof Augmented.LocalStorageCollection
+         */
+        initialize: function(options) {
             if (options && options.persist) {
                 this.persist = options.persist;
             }
@@ -4561,7 +4566,14 @@
                 this.key = options.key;
             }
             this.storage = Augmented.LocalStorageFactory.getStorage(this.persist,"augmented.localstorage.collection");
+            this.init(options);
         },
+        /**
+         * @method init Custom init method for the model (called at inititlize)
+         * @param {object} options Any options to pass
+         * @memberof Augmented.LocalStorageCollection
+         */
+        init: function(options) {},
         /**
          * @method fetch Fetch the collection
          * @param {object} options Any options to pass
