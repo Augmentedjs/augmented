@@ -38,12 +38,19 @@
     Augmented.Service.VERSION = Augmented.VERSION;
 
     /**
+     * A private logger for use in the framework only
+     * @private
+     */
+    var logger = Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.Type.console, Augmented.Configuration.LoggerLevel);
+
+
+    /**
      * The datasource object for use as an interface for a datasource
      * @namespace DataSource
      * @memberof Augmented.Service
      */
     Augmented.Service.DataSource = function(client) {
-
+        this.connected = false;
         /**
          * @property {object} client The client for use in the DataSource
          * @memberof Augmented.Service.DataSource
@@ -71,10 +78,11 @@
          * @returns {boolean} Returns true if a connection is established
          */
         this.getConnection = function() { return false; };
+        this.closeConnection = function() {};
         this.insert = function(model) {};
         this.remove = function(model) {};
         this.update = function(model) {};
-        this.query = function(query) { return {}; };
+        this.query = function(query) { return null; };
     };
 
     // MongoDB DataSource
@@ -87,24 +95,141 @@
         Augmented.Service.DataSource.apply(this,arguments);
 
         this.getConnection = function(url, collection) {
+            this.connected = false;
             var that = this;
-            if (this.client) {
+            if (this.client && !this.connected) {
                 this.client.connect(url, function(err, db) {
                     if(!err) {
-                        console.log("collection: " + collection);
+                        logger.debug("collection: " + collection);
                         that.collection = db.collection(collection);
                         that.db = db;
                         that.url = url;
+                        that.connected = true;
                     } else {
-                        console.error(err);
+                        logger.error(err);
                         throw new Error(err);
                     }
                 });
                 return true;
             } else {
-                console.error("no client was passed.");
+                logger.error("no client was passed.");
             }
             return false;
+        };
+
+        this.closeConnection = function() {
+            if (this.db && this.connected) {
+                this.db.close();
+                this.connected = false;
+                this.db = null;
+                this.collection = null;
+            }
+        };
+
+        this.query = function(query, callback) {
+            var ret = {};
+            if (this.collection && this.connected) {
+                logger.debug("The query: " + query);
+                this.collection.find(query).toArray(function(err, results) {
+                    if(!err) {
+                        logger.debug("Results: " + JSON.stringify(results));
+                        if (results && results.length > 0) {
+                            ret = results;
+                            if (callback) {
+                                callback(ret);
+                            }
+                        }
+                    } else {
+                        logger.error(err);
+                        throw new Error(err);
+                    }
+                });
+            } else {
+                logger.error("no collection defined or not connected to db.");
+            }
+            logger.debug("ret: " + JSON.stringify(ret));
+            return ret;
+        };
+
+        this.insert = function(data, callback) {
+            var ret = {};
+            if (this.collection && this.connected) {
+                if (Array.isArray(data)) {
+                    this.collection.insertMany(data, function(err, result) {
+                        if(!err) {
+                            logger.debug("Result: " + JSON.stringify(result));
+                            if (result) {
+                                ret = result;
+                                if (callback) {
+                                    callback(ret);
+                                }
+                            }
+                        } else {
+                            logger.error(err);
+                            throw new Error(err);
+                        }
+                    });
+                } else {
+                    this.collection.insertOne(data, function(err, result) {
+                        if(!err) {
+                            logger.debug("Result: " + JSON.stringify(result));
+                            if (result) {
+                                ret = result;
+                                if (callback) {
+                                    callback(ret);
+                                }
+                            }
+                        } else {
+                            logger.error(err);
+                            throw new Error(err);
+                        }
+                    });
+                }
+            } else {
+                logger.error("no collection defined or not connected to db.");
+            }
+            logger.debug("ret: " + JSON.stringify(ret));
+            return ret;
+        };
+
+        this.update = function(query, data, callback) {
+            if (this.collection && this.connected) {
+                this.collection.update(query, data, function(err, result) {
+                    if(!err) {
+                        logger.debug("Result: " + JSON.stringify(result));
+                    } else {
+                        logger.error(err);
+                        throw new Error(err);
+                    }
+                });
+
+                if (callback) {
+                    callback(data);
+                }
+            } else {
+                logger.error("no collection defined or not connected to db.");
+            }
+            return data;
+        };
+
+        this.remove = function(query, callback) {
+            var ret = {};
+            if (this.collection && this.connected) {
+                logger.debug("The query: " + query);
+                this.collection.remove(query, function(err, results) {
+                    if(!err) {
+                        if (callback) {
+                            callback();
+                        }
+                    } else {
+                        logger.error(err);
+                        throw new Error(err);
+                    }
+                });
+            } else {
+                logger.error("no collection defined or not connected to db.");
+            }
+            return ret;
         };
 
     };
@@ -127,6 +252,161 @@
             return null;
         }
     };
+
+    /**
+     * Collection class to handle ORM to a datasource</br/>
+     * <em>Note: Datasource property is required</em>
+     *
+     * @constructor Augmented.Service.Collection
+     * @memberof Augmented.Service
+     */
+    Augmented.Service.Collection = Augmented.Collection.extend({
+        /**
+         * The query to use for the query - defaults to 'id' selection
+         * @method {any} query The query string to use for selection
+         * @memberof Augmented.Service.Collection
+         */
+        query: null,
+        /**
+         * @property {string} url The url for the datasource (if applicable)
+         * @memberof Augmented.Service.Collection
+         */
+        url: "",
+        /**
+         * @method initialize Initialize the model with needed wireing
+         * @param {object} options Any options to pass
+         * @memberof Augmented.Service.Collection
+         */
+        initialize: function(options) {
+            logger.log("initialize");
+            if (options && options.datasource) {
+                this.datasource = options.datasource;
+                this.url = this.datasource.url;
+                this.query = options.query;
+            }
+            this.init(options);
+        },
+        /**
+         * @method init Custom init method for the model (called at inititlize)
+         * @param {object} options Any options to pass
+         * @memberof Augmented.Service.Collection
+         */
+        init: function(options) {},
+        /**
+         * @property {Augmented.Service.DataSource} datasource Datasource instance
+         * @memberof Augmented.Service.Collection
+         */
+        datasource: null,
+        /**
+         * @method sync Sync method to handle datasource functions for the Collection
+         * @param {string} method the operation to perform
+         * @param {object} options Any options to pass
+         * @memberof Augmented.Service.Collection
+         */
+        sync: function(method, options) {
+            logger.debug("sync " + method);
+            if (this.datasource) {
+                var that = this;
+                try {
+                    var j = {}, q;
+                    if (method === "create") {
+                        j = this.toJSON();
+                        this.datasource.insert(j, function() {
+                            that.reset(j);
+                            if (options && options.success && (typeof options.success === "function")) {
+                                options.success();
+                            }
+                        });
+                    } else if (method === "update") {
+                        j = this.toJSON();
+                        if (options && options.query) {
+                            q = options.query;
+                        } else {
+                            q = this.query;
+                        }
+
+                        this.datasource.update(q, j, function() {
+                            //that.reset(j);
+                            if (options && options.success && (typeof options.success === "function")) {
+                                options.success();
+                            }
+                        });
+                    } else if (method === "delete") {
+                        if (options && options.query) {
+                            q = options.query;
+                        } else {
+                            q = this.query;
+                        }
+                        this.datasource.remove(q, function() {
+                            that.reset();
+                            if (options && options.success && (typeof options.success === "function")) {
+                                options.success();
+                            }
+                        });
+                    } else {
+                        // read
+                        logger.log("reading");
+
+                        if (options && options.query) {
+                            q = options.query;
+                        } else {
+                            q = this.query;
+                        }
+
+                        logger.debug("query " + JSON.stringify(q));
+                        this.datasource.query(q, function(data) {
+                            that.reset(data);
+
+                            logger.debug("returned: " + JSON.stringify(j));
+                            if (options && options.success && (typeof options.success === "function")) {
+                                options.success(data);
+                            }
+                        });
+                    }
+                } catch(e) {
+                    if (options && options.error && (typeof options.error === "function")) {
+                        options.error(e);
+                    }
+                    //throw(e);
+                }
+            } else {
+                logger.warn("no datasource");
+            }
+            return {};
+        },
+        /**
+         * @method fetch Fetch the entity
+         * @param {object} options Any options to pass
+         * @memberof Augmented.Service.Collection
+         */
+        fetch: function(options) {
+            this.sync('read', options);
+        },
+        /**
+         * @method save Save the entity
+         * @param {object} options Any options to pass
+         * @memberof Augmented.Service.Collection
+         */
+        save: function(options) {
+            this.sync('create', options);
+        },
+        /**
+         * @method update Update the entity
+         * @param {object} options Any options to pass
+         * @memberof Augmented.Service.Collection
+         */
+        update: function(options) {
+            this.sync('update', options);
+        },
+        /**
+         * @method destroy Destroy the entity
+         * @param {object} options Any options to pass
+         * @memberof Augmented.Service.Collection
+         */
+        destroy: function(options) {
+            this.sync('delete', options);
+        }
+    });
 
     /**
      * Entity class to handle ORM to a datasource</br/>
@@ -154,7 +434,7 @@
          * @memberof Augmented.Service.Entity
          */
         initialize: function(options) {
-            console.log("initialize");
+            logger.log("initialize");
             if (options && options.datasource) {
                 this.datasource = options.datasource;
                 this.url = this.datasource.url;
@@ -180,39 +460,80 @@
          * @memberof Augmented.Service.Entity
          */
         sync: function(method, options) {
-            console.log("sync " + method);
-            console.log("do I have a datasource? " + (this.datasource !== null));
+            logger.debug("sync " + method);
             if (this.datasource) {
-                var j = {}, q;
-                if (method === "create") {
-                    j = this.toJSON();
-                    this.datasource.insert(j);
-                } else if (method === "update") {
-                    j = this.toJSON();
-                    this.datasource.update(j);
-                } else if (method === "delete") {
-                    q = this.query;
-                    if (options && options.query) {
-                        q = options.query;
-                    }
-                    this.datasource.remove(q);
-                    this.reset();
-                } else {
-                    // read
-                    console.log("reading");
+                var that = this;
+                try {
+                    var j = {}, q;
+                    if (method === "create") {
+                        j = that.attributes;
+                        this.datasource.insert(j, function() {
+                            that.reset(j);
+                            if (options && options.success && (typeof options.success === "function")) {
+                                options.success();
+                            }
+                        });
+                    } else if (method === "update") {
+                        j = that.attributes;
 
-                    if (options && options.query) {
-                        q = options.query;
+                        logger.debug("The object: " + JSON.stringify(j));
+
+                        if (options && options.query) {
+                            q = options.query;
+                        } else {
+                            q = this.query;
+                        }
+
+                        this.datasource.update(q, j, function() {
+                            //that.reset(j);
+                            if (options && options.success && (typeof options.success === "function")) {
+                                options.success();
+                            }
+                        });
+                    } else if (method === "delete") {
+                        if (options && options.query) {
+                            q = options.query;
+                        } else {
+                            q = this.query;
+                        }
+                        this.datasource.remove(q, function() {
+                            that.reset();
+                            if (options && options.success && (typeof options.success === "function")) {
+                                options.success();
+                            }
+                        });
                     } else {
-                        q = this.query;
-                    }
+                        // read
+                        logger.log("reading");
 
-                    console.log("query " + JSON.stringify(q));
-                    j = this.datasource.query(q);
-                    this.reset(j);
+                        if (options && options.query) {
+                            q = options.query;
+                        } else {
+                            q = that.query;
+                        }
+
+                        logger.debug("query " + JSON.stringify(q));
+                        this.datasource.query(q, function(data) {
+                            if (Array.isArray(data)) {
+                                that.reset(data[0]);
+                            } else {
+                                that.reset(data);
+                            }
+
+                            logger.debug("returned: " + JSON.stringify(j));
+                            if (options && options.success && (typeof options.success === "function")) {
+                                options.success(data);
+                            }
+                        });
+                    }
+                } catch(e) {
+                    if (options && options.error && (typeof options.error === "function")) {
+                        options.error(e);
+                    }
+                    //throw(e);
                 }
             } else {
-                console.log("no datasource");
+                logger.warn("no datasource");
             }
             return {};
         },

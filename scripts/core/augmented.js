@@ -601,7 +601,7 @@
     Augmented.Utility.extend = extend;
 
     // For Node and Browser.  Requires xhr2 for Node (install in Node or by app)
-    var XMLHttpRequest = (XMLHttpRequest) ? XMLHttpRequest : require('xhr2');
+    //var XMLHttpRequest = (XMLHttpRequest) ? XMLHttpRequest : require('xhr2');
 
     /*
      * Setup the rest of jQuery-like eventing and handlers for native xhr
@@ -979,10 +979,10 @@
      * @memberof Augmented.Logger
      */
     Augmented.Logger.Level = {
-        info: "info",
+        info:  "info",
         debug: "debug",
         error: "error",
-        warn: "warn"
+        warn:  "warn"
     };
 
     /**
