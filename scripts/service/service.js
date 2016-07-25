@@ -440,6 +440,10 @@
                 this.url = this.datasource.url;
                 this.query = options.query;
             }
+            // don't save this as data, but properties via the object base class options copy.
+            this.unset("datasource");
+            this.unset("url");
+            this.unset("query");
             this.init(options);
         },
         /**
