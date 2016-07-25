@@ -1,6 +1,6 @@
 # Augmented.js
 ## The Augmented.js Framework.
-### Version 0.4.0α
+### Version 0.4.0
 ### "Praxis"
 **aug·ment·ed**
 /ˌôɡˈmentəd /
@@ -58,3 +58,13 @@ This extension adds:
     - breadcrumb management
 * Automatic Tables generated from a JSON schema and data
 * Automatic Forms generated from a JSON schema
+
+## Service
+
+The **Service** extension.
+
+This extension adds:
+* ORM style Entities
+* Abstract Datasource interface
+  - MongoDB
+

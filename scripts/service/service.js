@@ -46,7 +46,7 @@
 
     /**
      * The datasource object for use as an interface for a datasource
-     * @namespace DataSource
+     * @interface DataSource
      * @memberof Augmented.Service
      */
     Augmented.Service.DataSource = function(client) {
@@ -78,16 +78,37 @@
          * @returns {boolean} Returns true if a connection is established
          */
         this.getConnection = function() { return false; };
+        /**
+         * @method closeConnection Close a connection to the DataSource
+         * @memberof Augmented.Service.DataSource
+         */
         this.closeConnection = function() {};
-        this.insert = function(model) {};
-        this.remove = function(model) {};
-        this.update = function(model) {};
+        /**
+         * @method insert Insert data to a DataSource
+         * @memberof Augmented.Service.DataSource
+         */
+        this.insert = function(data) {};
+        /**
+         * @method remove Remove data from a DataSource
+         * @memberof Augmented.Service.DataSource
+         */
+        this.remove = function(data) {};
+        /**
+         * @method update Update data in a DataSource
+         * @memberof Augmented.Service.DataSource
+         */
+        this.update = function(data) {};
+        /**
+         * @method query Query from a DataSource
+         * @returns {any} Returns the result of the query
+         * @memberof Augmented.Service.DataSource
+         */
         this.query = function(query) { return null; };
     };
 
     // MongoDB DataSource
     /**
-     * The MongoDB datasource instalce class
+     * The MongoDB datasource instance class
      * @constructor MongoDataSource
      * @memberof Augmented.Service
      */
