@@ -68,8 +68,7 @@ var specs = [ "core/test/coreSpec",
               "presentation/test/autoFormSpec",
               "presentation/test/dollar",
 
-              //TODO: redo these to work with the new system
-              //"service/test/mockServiceSpec",
+              "service/test/entitySpec",
 
               "core/test/resourceBundleSpec"
               // Deprecated
