@@ -46,11 +46,13 @@
 
     /**
      * The datasource object for use as an interface for a datasource
-     * @interface DataSource
+     * @namespace DataSource
      * @memberof Augmented.Service
      */
     Augmented.Service.DataSource = function(client) {
         this.connected = false;
+        this.style = "database";
+
         /**
          * @property {object} client The client for use in the DataSource
          * @memberof Augmented.Service.DataSource
@@ -78,31 +80,10 @@
          * @returns {boolean} Returns true if a connection is established
          */
         this.getConnection = function() { return false; };
-        /**
-         * @method closeConnection Close a connection to the DataSource
-         * @memberof Augmented.Service.DataSource
-         */
         this.closeConnection = function() {};
-        /**
-         * @method insert Insert data to a DataSource
-         * @memberof Augmented.Service.DataSource
-         */
-        this.insert = function(data) {};
-        /**
-         * @method remove Remove data from a DataSource
-         * @memberof Augmented.Service.DataSource
-         */
-        this.remove = function(data) {};
-        /**
-         * @method update Update data in a DataSource
-         * @memberof Augmented.Service.DataSource
-         */
-        this.update = function(data) {};
-        /**
-         * @method query Query from a DataSource
-         * @returns {any} Returns the result of the query
-         * @memberof Augmented.Service.DataSource
-         */
+        this.insert = function(model) {};
+        this.remove = function(model) {};
+        this.update = function(model) {};
         this.query = function(query) { return null; };
     };
 
@@ -126,6 +107,7 @@
                         that.db = db;
                         that.url = url;
                         that.connected = true;
+                        that.style = "database";
                     } else {
                         logger.error(err);
                         throw new Error(err);
@@ -252,8 +234,73 @@
             }
             return ret;
         };
-
     };
+
+
+    /**
+     * The SOLR datasource instance class
+     * @constructor MongoDataSource
+     * @memberof Augmented.Service
+     */
+    Augmented.Service.SOLRDataSource = function() {
+        Augmented.Service.DataSource.apply(this,arguments);
+
+        this.getConnection = function(url, collection) {
+            this.connected = false;
+            var that = this;
+            if (this.client && !this.connected) {
+                this.client.ping(function(err, db){
+                   if(!err) {
+                       logger.debug("collection: " + collection);
+                       that.collection = collection;
+                       that.db = db;
+                       that.url = url;
+                       that.connected = true;
+                       that.style = "search";
+                   } else {
+                       logger.error(err);
+                       throw new Error(err);
+                   }
+                });
+            } else {
+                logger.error("no client was passed.");
+            }
+            return this.connected;
+        };
+
+        this.closeConnection = function() {
+            if (this.db && this.connected) {
+                this.connected = false;
+                this.db = null;
+                this.collection = null;
+            }
+        };
+
+        this.query = function(query, callback) {
+            var ret = {};
+
+            return ret;
+        };
+
+        this.insert = function(data, callback) {
+            var ret = {};
+
+            return ret;
+        };
+
+        this.update = function(query, data, callback) {
+
+            return data;
+        };
+
+        this.remove = function(query, callback) {
+            var ret = {};
+
+            return ret;
+        };
+    };
+
+
     /**
      * The datasource factory to return an instance of a datasource configured by type
      * @namespace DataSourceFactory
@@ -262,13 +309,14 @@
     Augmented.Service.DataSourceFactory = {
         Type: {
             "LocalStorage": "localstorage",
-            "MongoDB": "mongodb"
+            "MongoDB": "mongodb",
+            "SOLR": "solr"
         },
         getDatasource: function(type, client) {
             if (type === "mongodb") {
                 return new Augmented.Service.MongoDataSource(client);
-            } else if (type === "localstorage") {
-
+            } else if (type === "solr") {
+                return new Augmented.Service.SOLRDataSource(client);
             }
             return null;
         }
@@ -501,7 +549,7 @@
                     } else if (method === "update") {
                         j = that.attributes;
 
-                        logger.debug("The object: " + JSON.stringify(j));
+                        //logger.debug("The object: " + JSON.stringify(j));
 
                         if (options && options.query) {
                             q = options.query;
@@ -529,7 +577,7 @@
                         });
                     } else {
                         // read
-                        logger.log("reading");
+                        logger.debug("reading");
 
                         if (options && options.query) {
                             q = options.query;
