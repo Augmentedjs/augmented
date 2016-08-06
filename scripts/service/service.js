@@ -43,10 +43,9 @@
      */
     var logger = Augmented.Logger.LoggerFactory.getLogger(Augmented.Logger.Type.console, Augmented.Configuration.LoggerLevel);
 
-
     /**
      * The datasource object for use as an interface for a datasource
-     * @namespace DataSource
+     * @interface DataSource
      * @memberof Augmented.Service
      */
     Augmented.Service.DataSource = function(client) {
@@ -57,7 +56,6 @@
          * @property {object} client The client for use in the DataSource
          * @memberof Augmented.Service.DataSource
          */
-
         this.client = (client) ? client : null;
         /**
          * @property {string} url The url for the datasource (if applicable)
@@ -80,21 +78,49 @@
          * @returns {boolean} Returns true if a connection is established
          */
         this.getConnection = function() { return false; };
+        /**
+         * @method closeConnection Close a connection to the DataSource (depending on type may not be needed)
+         * @memberof Augmented.Service.DataSource
+         * @returns {boolean} Returns true if a connection is established
+         */
         this.closeConnection = function() {};
-        this.insert = function(model) {};
-        this.remove = function(model) {};
-        this.update = function(model) {};
-        this.query = function(query) { return null; };
+        /**
+         * @method insert Insert data
+         * @memberof Augmented.Service.DataSource
+         * @param {object} data Data to insert
+         */
+        this.insert = function(data) {};
+        /**
+         * @method remove Remove data
+         * @memberof Augmented.Service.DataSource
+         * @param {object} data Data to remove
+         */
+        this.remove = function(data) {};
+        /**
+         * @method update Update data
+         * @memberof Augmented.Service.DataSource
+         * @param {object} data Data to update
+         */
+        this.update = function(data) {};
+        /**
+         * @method query Query data
+         * @memberof Augmented.Service.DataSource
+         * @param {object} query The query object
+         * @param {function} callback A callback to execute during the query
+         * @returns {object} Returns a value from the query or response code
+         */
+        this.query = function(query, callback) { return null; };
     };
 
-    // MongoDB DataSource
     /**
      * The MongoDB datasource instance class
      * @constructor MongoDataSource
+     * @implements {Augmented.Service.DataSource}
+     * @augments Augmented.Service.DataSource
      * @memberof Augmented.Service
      */
-    Augmented.Service.MongoDataSource = function() {
-        Augmented.Service.DataSource.apply(this,arguments);
+    Augmented.Service.MongoDataSource = function(client) {
+        Augmented.Service.DataSource.call(this, client);
 
         this.getConnection = function(url, collection) {
             this.connected = false;
@@ -236,14 +262,19 @@
         };
     };
 
+    Augmented.Service.MongoDataSource.prototype = Object.create(Augmented.Service.DataSource.prototype);
+    Augmented.Service.MongoDataSource.prototype.constructor = Augmented.Service.MongoDataSource;
+
 
     /**
      * The SOLR datasource instance class
-     * @constructor MongoDataSource
+     * @constructor SOLRDataSource
+     * @implements {Augmented.Service.DataSource}
+     * @augments Augmented.Service.DataSource
      * @memberof Augmented.Service
      */
-    Augmented.Service.SOLRDataSource = function() {
-        Augmented.Service.DataSource.apply(this,arguments);
+    Augmented.Service.SOLRDataSource = function(client) {
+        Augmented.Service.DataSource.call(client, this,arguments);
 
         this.getConnection = function(url, collection) {
             this.connected = false;
@@ -299,6 +330,9 @@
             return ret;
         };
     };
+
+    Augmented.Service.SOLRDataSource.prototype = Object.create(Augmented.Service.DataSource.prototype);
+    Augmented.Service.SOLRDataSource.prototype.constructor = Augmented.Service.SOLRDataSource;
 
 
     /**
@@ -482,6 +516,7 @@
      * <em>Note: Datasource property is required</em>
      *
      * @constructor Augmented.Service.Entity
+     * @extends Augmented.Model
      * @memberof Augmented.Service
      */
     Augmented.Service.Entity = Augmented.Model.extend({

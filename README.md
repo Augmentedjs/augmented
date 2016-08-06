@@ -53,9 +53,9 @@ This extension adds:
 * Mediator patterned PubSub Views
 * MVVM Decorator Views with declaratives
 * Enhanced Application Object
-    - PubSub mediation and bootstrapping for Application objects
-    - CSS Stylesheet registration and injection
-    - breadcrumb management
+  - PubSub mediation and bootstrapping for Application objects
+  - CSS Stylesheet registration and injection
+  - breadcrumb management
 * Automatic Tables generated from a JSON schema and data
 * Automatic Forms generated from a JSON schema
 
@@ -67,4 +67,3 @@ This extension adds:
 * ORM style Entities
 * Abstract Datasource interface
   - MongoDB
-

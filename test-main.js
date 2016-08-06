@@ -47,9 +47,9 @@ var specs = [ "core/test/coreSpec",
               "core/test/utilitySpec",
               "core/test/ajaxSpec",
               "core/test/applicationSpec",
-			  "core/test/securitySpec",
-			  "core/test/loggerSpec",
-			  "core/test/asyncQueueSpec",
+			        "core/test/securitySpec",
+			        "core/test/loggerSpec",
+			        "core/test/asyncQueueSpec",
               "core/test/modelSpec",
               "core/test/collectionSpec",
               "core/test/viewSpec",
@@ -69,6 +69,7 @@ var specs = [ "core/test/coreSpec",
               "presentation/test/dollar",
 
               "service/test/entitySpec",
+              "service/test/datasourceSpec",
 
               "core/test/resourceBundleSpec"
               // Deprecated
