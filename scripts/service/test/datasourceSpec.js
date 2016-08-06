@@ -1,4 +1,4 @@
-define(["augmented", "augmentedService", "jasmineajax"], function(Augmented) {
+define(["augmented", "augmentedService"], function(Augmented) {
     describe("Given an Augmented Service DataSourceFactory", function() {
         it("a factory is defined", function() {
             expect(Augmented.Service.DataSourceFactory).toBeDefined();

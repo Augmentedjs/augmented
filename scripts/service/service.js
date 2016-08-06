@@ -8,7 +8,7 @@
  *
  * @author Bob Warren
  *
- * @requires augmented.js
+ * @requires augmented.js ("augmentedjs" in npm)
  * @module Augmented.Service
  * @version 0.4.0
  * @license Apache-2.0
@@ -23,6 +23,7 @@
     }
 }(function(Augmented) {
     "use strict";
+
     /**
      * The base namespece for all of the Service module.
      * @namespace Service
@@ -342,7 +343,7 @@
      */
     Augmented.Service.DataSourceFactory = {
         Type: {
-            "LocalStorage": "localstorage",
+            "Memory": "memory",
             "MongoDB": "mongodb",
             "SOLR": "solr"
         },

@@ -7,31 +7,31 @@ Object.keys(window.__karma__.files).forEach(function(file) {
     // Normalize paths to RequireJS module names.
     // If you require sub-dependencies of test files to be loaded as-is (requiring file extension)
     // then do not normalize the paths
-    var normalizedTestModule = file.replace(/^\/base\/|\.js$/g, '');
+    var normalizedTestModule = file.replace(/^\/base\/|\.js$/g, "");
     allTestFiles.push(normalizedTestModule);
   }
 });
 
 require.config({
-	'baseUrl': '/base',
+	"baseUrl": "/base",
 
-	'paths': {
-		'jquery': 'scripts/lib/jquery.min',
-		'underscore': 'scripts/lib/lodash.min',
-		'backbone': 'scripts/lib/backbone-min',
+	"paths": {
+		"jquery": "scripts/lib/jquery.min",
+		"underscore": "scripts/lib/lodash.min",
+		"backbone": "scripts/lib/backbone-min",
 
-		'augmented': 'scripts/core/augmented',
-		'augmentedPresentation': 'scripts/presentation/augmentedPresentation',
-		//'augmentedService': 'scripts/service/augmentedService',
-		//'augmentedLegacy': 'scripts/legacy/legacy',
+		"augmented": "scripts/core/augmented",
+		"augmentedPresentation": "scripts/presentation/augmentedPresentation",
+		"augmentedService": "scripts/service/service",
+		//"augmentedLegacy": "scripts/legacy/legacy",
 
-// 		'jasmine': '../lib/jasmine-2.x/jasmine',
-// 		'jasmine_html': '../lib/jasmine-2.x/jasmine-html',
-// 		'boot': '../lib/jasmine-2.x/boot',
-        'jasmineajax': 'scripts/lib/mock-ajax'
+// 		"jasmine": "../lib/jasmine-2.x/jasmine",
+// 		"jasmine_html": "../lib/jasmine-2.x/jasmine-html",
+// 		"boot": "../lib/jasmine-2.x/boot",
+        "jasmineajax": "scripts/lib/mock-ajax"
 
 	},
-	'shim': {
+	"shim": {
 
 	},
 	// ask Require.js to load these files (all our tests)
@@ -69,6 +69,7 @@ var specs = [ "core/test/coreSpec",
               "presentation/test/dollar",
 
               "service/test/entitySpec",
+              "service/test/collectionSpec",
               "service/test/datasourceSpec",
 
               "core/test/resourceBundleSpec"

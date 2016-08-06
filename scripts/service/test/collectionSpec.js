@@ -1,12 +1,12 @@
 define(["augmented", "augmentedService"], function(Augmented) {
-    describe("Given an Augmented Service Entity", function() {
+    describe("Given an Augmented Service Collection", function() {
         it("is defined", function() {
-            expect(Augmented.Service.Entity).toBeDefined();
+            expect(Augmented.Service.Collection).toBeDefined();
         });
 
         var e;
         beforeEach(function() {
-            e = new Augmented.Service.Entity();
+            e = new Augmented.Service.Collection();
         });
         afterEach(function() {
             e = null;

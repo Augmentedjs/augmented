@@ -66,6 +66,7 @@ var specs = [ "core/test/coreSpec",
               "presentation/test/dollar",
 
               "service/test/entitySpec",
+			  "service/test/collectionSpec",
               "service/test/datasourceSpec",
 
               "core/test/resourceBundleSpec"

@@ -67,3 +67,4 @@ This extension adds:
 * ORM style Entities
 * Abstract Datasource interface
   - MongoDB
+  - SOLR (work in progress)
