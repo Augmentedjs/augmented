@@ -88,8 +88,7 @@
      */
     Augmented._ = Backbone._;
 
-
-    Augmented.$ = (Backbone.$) ? Backbone.$ : $; // Does $ exist?
+    Augmented.$ = (Backbone.$) ? Backbone.$ : {}; // Does $ exist?
 
     /**
      * Augmented.Configuration - a set of configuration properties for the framework
