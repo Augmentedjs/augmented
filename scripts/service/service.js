@@ -113,6 +113,34 @@
         this.query = function(query, callback) { return null; };
     };
 
+    Augmented.Service.MemoryDataSource = function(client) {
+        Augmented.Service.DataSource.call(this, client);
+
+        this.getConnection = function(url, collection) {
+            this.connected = true;
+            this.collection = collection;
+            this.db = [];
+            this.url = url;
+            this.style = "array";
+            return true;
+        };
+
+        this.closeConnection = function() {
+            if (this.db && this.connected) {
+                this.connected = false;
+                this.db = null;
+                this.collection = null;
+            }
+        };
+
+        this.insert = function(data) {
+            this.db.put(data);
+        };
+
+
+    }
+
+
     /**
      * The MongoDB datasource instance class
      * @constructor MongoDataSource
