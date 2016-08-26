@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 0.4.0
+ * @version 1.0.0
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = '0.4.0';
+    Augmented.VERSION = "1.0.0α";
     /**
      * A codename for internal use
      * @constant codename
@@ -64,7 +64,7 @@
      * A release name to help with identification of minor releases
      * @constant releasename
      */
-    Augmented.releasename = "Praxis";
+    Augmented.releasename = "-to be determined-";
 
     /**
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'
@@ -98,6 +98,7 @@
      * @property {string} MessageBundle - the base name for messages in the framework (default: Messages)
      * @property {number} AsynchronousQueueTimeout the default milisecond timeout (default: 2000)
      * @property {number} ApplicationInitProcessTimeout the application init even timeout (default: 1000)
+     * @todo change logger level to error
      */
     Augmented.Configuration = {
         LoggerLevel: "debug",

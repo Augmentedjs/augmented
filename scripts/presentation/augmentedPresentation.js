@@ -2835,7 +2835,7 @@
             }
             this.model.set(( (key) ? key : event.currentTarget.name ), val);
             this._func(event);
-            //logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
+            logger.debug("AUGMENTED: DecoratorView updated Model: " + JSON.stringify(this.model.toJSON()));
         },
         _click: function(event) {
             var func = event.currentTarget.getAttribute(decoratorAttributeEnum.click);
