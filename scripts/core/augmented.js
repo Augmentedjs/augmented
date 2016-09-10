@@ -261,13 +261,25 @@
         };
     }
 
+    if (!String.prototype.endsWith) {
+        String.prototype.endsWith = function(searchString, position) {
+            var subjectString = this.toString();
+            if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+                position = subjectString.length;
+            }
+            position -= searchString.length;
+            var lastIndex = subjectString.lastIndexOf(searchString, position);
+            return lastIndex !== -1 && lastIndex === position;
+        };
+    }
+
     if (!Array.prototype.find) {
         /**
          * The find() method returns a value in the array, if an element in the array satisfies the provided testing function. Otherwise undefined is returned.
          * <em>ES6 Polyfill</em>
          * @function Array.find
          * @memberof Array
-         * @param {object} predicate Function to execute on each value in the array, taking three arguments:
+         * @param {object} predicate Function to execute on each value in the array
          * @param {object} args Optional. Object to use as this when executing callback.
          * @returns Returns value in the array
          * @example arr.find(callback[, thisArg]);

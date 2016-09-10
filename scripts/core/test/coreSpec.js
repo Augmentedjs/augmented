@@ -113,29 +113,45 @@ define([
 
 		});
 		describe('Given Augmented Array', function() {
-			it('can check if a string is included', function() {
-				var arr = ['x','y','z'];
-				expect(arr.includes('z')).toBeTruthy();
+			describe('Given Array.includes', function() {
+				it('can check if a string is included', function() {
+					var arr = ['x','y','z'];
+					expect(arr.includes('z')).toBeTruthy();
+				});
+				it('can check if a number is included', function() {
+					var arr = [1,2,3];
+					expect(arr.includes(2)).toBeTruthy();
+				});
+	            it('can check if a number is not included', function() {
+					var arr = [1,2,3];
+					expect(arr.includes(5)).toBeFalsy();
+				});
 			});
-			it('can check if a number is included', function() {
-				var arr = [1,2,3];
-				expect(arr.includes(2)).toBeTruthy();
+			describe('Given Array.has', function() {
+				it('can check if it has a string', function() {
+					var arr = ['x','y','z'];
+					expect(arr.has('z')).toBeTruthy();
+				});
+				it('can check if it has a number', function() {
+					var arr = [1,2,3];
+					expect(arr.has(2)).toBeTruthy();
+				});
+	            it('can check if it does not have a number', function() {
+					var arr = [1,2,3];
+					expect(arr.has(5)).toBeFalsy();
+				});
 			});
-            it('can check if a number is not included', function() {
-				var arr = [1,2,3];
-				expect(arr.includes(5)).toBeFalsy();
-			});
-			it('can check if it has a string', function() {
-				var arr = ['x','y','z'];
-				expect(arr.has('z')).toBeTruthy();
-			});
-			it('can check if it has a number', function() {
-				var arr = [1,2,3];
-				expect(arr.has(2)).toBeTruthy();
-			});
-            it('can check if it does not have a number', function() {
-				var arr = [1,2,3];
-				expect(arr.has(5)).toBeFalsy();
+			describe('Given Array.find', function() {
+				var a = [{ "name": "Bubba", "id": 1 }, { "name": "Bill", "id": 2 }, { "name": "MonkeyBone", "id": 3 }], r = null, p = function(aa) { return (aa.id === 2); };
+				it('checks if property is in an array', function() {
+					r = a.find(p);
+	                expect(r).toEqual({ "name": "Bill", "id": 2 });
+	            });
+
+				it('checks if property is not in an array', function() {
+					r = a.find(p);
+	                expect(r).not.toEqual({ "name": "x", "id": 9 });
+	            });
 			});
 		});
 
@@ -187,6 +203,13 @@ define([
             it('checks if function is not a string', function() {
                 expect(Augmented.isString(f)).toBeFalsy();
             });
+			it('checks if a string ends with a set of characters', function() {
+				var file = "test.json";
+				expect(file.endsWith(".json")).toBeTruthy();
+			});
+
         });
+
+
 	});
 });

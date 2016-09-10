@@ -2360,8 +2360,10 @@
 
                 if (myEl && (myEl.nodeType === 1) &&
                         (myEl.nodeName === "input" || myEl.nodeName === "INPUT" ||
-                         myEl.nodeName === "textarea" || myEl.nodeName === "TEXTAREA" ||
-                         myEl.nodeName === "select" || myEl.nodeName === "SELECT")
+                         myEl.nodeName === "textarea" || myEl.nodeName === "TEXTAREA")
+                         /* TODO: Check if setting a select value is used.  If it is, change the API to something else. 
+                         ||
+                         myEl.nodeName === "select" || myEl.nodeName === "SELECT")*/
                     ) {
                     myEl.value = value;
                 } else if (myEl && (myEl.nodeType === 1)) {
