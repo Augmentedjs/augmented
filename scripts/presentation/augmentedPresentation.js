@@ -2361,7 +2361,7 @@
                 if (myEl && (myEl.nodeType === 1) &&
                         (myEl.nodeName === "input" || myEl.nodeName === "INPUT" ||
                          myEl.nodeName === "textarea" || myEl.nodeName === "TEXTAREA")
-                         /* TODO: Check if setting a select value is used.  If it is, change the API to something else. 
+                         /* TODO: Check if setting a select value is used.  If it is, change the API to something else.
                          ||
                          myEl.nodeName === "select" || myEl.nodeName === "SELECT")*/
                     ) {
@@ -2437,7 +2437,11 @@
          */
         query: function(query, el) {
             if (query) {
-                var d = (el) ? el : document;
+                var d = document;
+                if (el) {
+                    d = Augmented.Presentation.Dom.selector(el);
+                }
+
                 var nodelist = Augmented.isString(query) ? d.querySelectorAll(query) : query;
 
                 if (nodelist.length === 1) {
