@@ -11,14 +11,14 @@
  *
  * @author Bob Warren
  *
- * @requires augmented.js
+ * @requires augmentedjs
  * @module Augmented.Presentation
  * @version 0.4.0
  * @license Apache-2.0
  */
 (function(moduleFactory) {
     if (typeof exports === 'object') {
-	    module.exports = moduleFactory(require('augmented'));
+	    module.exports = moduleFactory(require('augmentedjs'));
     } else if (typeof define === 'function' && define.amd) {
 	    define(['augmented'], moduleFactory);
     } else {

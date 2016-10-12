@@ -22,7 +22,7 @@ require.config({
 
 		"augmented": "scripts/core/augmented",
 		"augmentedPresentation": "scripts/presentation/augmentedPresentation",
-		"augmentedService": "scripts/service/service",
+		//"augmentedService": "scripts/service/service",
 		//"augmentedLegacy": "scripts/legacy/legacy",
 
 // 		"jasmine": "../lib/jasmine-2.x/jasmine",
@@ -47,9 +47,9 @@ var specs = [ "core/test/coreSpec",
               "core/test/utilitySpec",
               "core/test/ajaxSpec",
               "core/test/applicationSpec",
-			        "core/test/securitySpec",
-			        "core/test/loggerSpec",
-			        "core/test/asyncQueueSpec",
+	        "core/test/securitySpec",
+	        "core/test/loggerSpec",
+	        "core/test/asyncQueueSpec",
               "core/test/modelSpec",
               "core/test/collectionSpec",
               "core/test/viewSpec",
@@ -67,11 +67,11 @@ var specs = [ "core/test/coreSpec",
               "presentation/test/dialogSpec",
               "presentation/test/autoFormSpec",
               "presentation/test/dollar",
-
+/* moved
               "service/test/entitySpec",
               "service/test/collectionSpec",
               "service/test/datasourceSpec",
-
+*/
               "core/test/resourceBundleSpec"
               // Deprecated
 			  //"legacy/test/applicationContextSpec",

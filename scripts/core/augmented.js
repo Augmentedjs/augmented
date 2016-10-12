@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.0.0α";
+    Augmented.VERSION = "0.4.4";
     /**
      * A codename for internal use
      * @constant codename
@@ -64,7 +64,7 @@
      * A release name to help with identification of minor releases
      * @constant releasename
      */
-    Augmented.releasename = "-to be determined-";
+    Augmented.releasename = "Praxis";
 
     /**
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'
@@ -977,6 +977,7 @@
      */
     Augmented.Logger.Type = {
         console: "console",
+        colorConsole: "colorConsole",
         rest: "rest"
     };
 
@@ -997,6 +998,17 @@
         warn:  "warn"
     };
 
+
+    var pad = function(pad, str, padLeft) {
+      if (typeof str === 'undefined')
+        return pad;
+      if (padLeft) {
+        return (pad + str).slice(-pad.length);
+      } else {
+        return (str + pad).substring(0, pad.length);
+      }
+    }
+
     /**
      * Augmented Logger - abstractLogger
      * @constructor abstractLogger
@@ -1016,8 +1028,10 @@
 
         this.getLogTime = function() {
             var now = new Date();
-            return now.getFullYear() + this.DATE_SEPERATOR + (now.getMonth() + 1) + this.DATE_SEPERATOR + now.getDate() + " " +
-                now.getHours() + this.TIME_SEPERATOR + now.getMinutes() + this.TIME_SEPERATOR + now.getSeconds() + this.TIME_SEPERATOR + now.getMilliseconds();
+            return pad("                        ",
+                now.getFullYear() + this.DATE_SEPERATOR + (now.getMonth() + 1) + this.DATE_SEPERATOR + now.getDate() + " " +
+                    now.getHours() + this.TIME_SEPERATOR + now.getMinutes() + this.TIME_SEPERATOR + now.getSeconds() + this.TIME_SEPERATOR + now.getMilliseconds(),
+                false);
         };
 
         /**
@@ -1038,9 +1052,9 @@
                 } else if (level === Augmented.Logger.Level.error) {
                     this.logMe(this.getLogTime() + this.OPEN_GROUP + Augmented.Logger.Level.error + this.CLOSE_GROUP + message, level);
                 } else if (level === Augmented.Logger.Level.warn) {
-                    this.logMe(this.getLogTime() + this.OPEN_GROUP + Augmented.Logger.Level.warn + this.CLOSE_GROUP + message, level);
+                    this.logMe(this.getLogTime() + this.OPEN_GROUP + Augmented.Logger.Level.warn + " " + this.CLOSE_GROUP + message, level);
                 } else if (this.loggerLevel === Augmented.Logger.Level.debug || this.loggerLevel === Augmented.Logger.Level.info) {
-                    this.logMe(this.getLogTime() + this.OPEN_GROUP + Augmented.Logger.Level.info + this.CLOSE_GROUP + message, level);
+                    this.logMe(this.getLogTime() + this.OPEN_GROUP + Augmented.Logger.Level.info + " " + this.CLOSE_GROUP + message, level);
                 }
             }
         };
@@ -1116,6 +1130,26 @@
         }
     };
 
+    var colorConsoleLogger = function() {
+        abstractLogger.apply(this, arguments);
+    };
+    colorConsoleLogger.prototype = Object.create(abstractLogger.prototype);
+    colorConsoleLogger.prototype.constructor = colorConsoleLogger;
+
+    colorConsoleLogger.prototype.logMe = function(message, level) {
+        if (level === Augmented.Logger.Level.info) {
+            console.info("\x1b[2m" + message + "\x1b[0m");
+        } else if (level === Augmented.Logger.Level.error) {
+            console.error("\x1b[31m" + message + "\x1b[0m");
+        } else if (level === Augmented.Logger.Level.debug) {
+            console.log("\x1b[34m" + message + "\x1b[0m");
+        } else if (level === Augmented.Logger.Level.warn) {
+            console.warn("\x1b[33m" + message + "\x1b[0m");
+        } else {
+            console.log("\x1b[34m" + message + "\x1b[0m");
+        }
+    };
+
     var restLogger = function() {
        abstractLogger.apply(this, arguments);
     };
@@ -1156,6 +1190,8 @@
         getLogger: function(type, level) {
             if (type === Augmented.Logger.Type.console) {
                return new consoleLogger(level);
+            } else if (type === Augmented.Logger.Type.colorConsole) {
+                  return new colorConsoleLogger(level);
             } else if (type === Augmented.Logger.Type.rest) {
                return new restLogger(level);
             }

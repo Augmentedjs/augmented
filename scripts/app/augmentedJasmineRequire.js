@@ -8,7 +8,6 @@ require.config({
 
 		"augmented": "core/augmented",
 		"augmentedPresentation": "presentation/augmentedPresentation",
-		"augmentedService": "service/service",
         // Deprecated
 		//"augmentedLegacy": "legacy/legacy",
 
@@ -64,10 +63,6 @@ var specs = [ "core/test/coreSpec",
               "presentation/test/dialogSpec",
               "presentation/test/autoFormSpec",
               "presentation/test/dollar",
-
-              "service/test/entitySpec",
-			  "service/test/collectionSpec",
-              "service/test/datasourceSpec",
 
               "core/test/resourceBundleSpec"
               // Deprecated

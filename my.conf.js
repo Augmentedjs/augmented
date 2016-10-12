@@ -49,9 +49,11 @@ module.exports = function(config) {
   {pattern: "scripts/presentation/test/applicationSpec.js", included: false},
     {pattern: "scripts/presentation/test/mediationSpec.js", included: false},
     {pattern: "scripts/presentation/test/presentationSpec.js", included: false},
+    /* moved
     {pattern: "scripts/service/test/entitySpec.js", included: false},
     {pattern: "scripts/service/test/collectionSpec.js", included: false},
     {pattern: "scripts/service/test/datasourceSpec.js", included: false},
+    */
       {pattern: "test-main.js", included: true}
     ],
 

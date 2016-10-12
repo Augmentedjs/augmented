@@ -63,8 +63,14 @@ This extension adds:
 
 The **Service** extension.
 
+The Service extension has it's own project under augmented-service.  
+
+Install via NPM:
+npm install augmentedjs-service
+
 This extension adds:
 * ORM style Entities
+* REST Resource class
 * Abstract Datasource interface
   - MongoDB
   - SOLR (work in progress)
