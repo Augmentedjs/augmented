@@ -972,6 +972,7 @@
      * @enum {string}
      * @memberof Augmented.Logger
      * @property {string} console The console logger (HTML5 console)
+     * @property {string} colorConsole The color console logger (HTML5 console)
      * @property {string} rest A REST-based logger
      * @memberof Augmented.Logger
      */

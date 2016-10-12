@@ -1,6 +1,6 @@
 # Augmented.js
 ## The Augmented.js Framework.
-### Version 0.4.0
+### Version 0.4.4
 ### "Praxis"
 **aug·ment·ed**
 /ˌôɡˈmentəd /
