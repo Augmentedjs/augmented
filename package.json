@@ -1,6 +1,6 @@
 {
   "name": "augmentedjs",
-  "version": "0.4.4",
+  "version": "1.0.0",
   "description": "The Augmented.js Framework.",
   "main": "scripts/core/augmented.js",
   "scripts": {
