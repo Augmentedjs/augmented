@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "0.4.4";
+    Augmented.VERSION = "1.0.0";
     /**
      * A codename for internal use
      * @constant codename
@@ -64,7 +64,7 @@
      * A release name to help with identification of minor releases
      * @constant releasename
      */
-    Augmented.releasename = "Praxis";
+    Augmented.releasename = "Typhoon";
 
     /**
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'
