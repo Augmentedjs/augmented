@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.0.0
+ * @version 1.0.1
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.0.0";
+    Augmented.VERSION = "1.0.1";
     /**
      * A codename for internal use
      * @constant codename
@@ -101,7 +101,7 @@
      * @todo change logger level to error
      */
     Augmented.Configuration = {
-        LoggerLevel: "debug",
+        LoggerLevel: "info",
         MessageBundle: "Messages",
         AsynchronousQueueTimeout: 2000,
         ApplicationInitProcessTimeout: 1000
@@ -1139,7 +1139,7 @@
 
     colorConsoleLogger.prototype.logMe = function(message, level) {
         if (level === Augmented.Logger.Level.info) {
-            console.info("\x1b[2m" + message + "\x1b[0m");
+            console.info("\x1b[36m" + message + "\x1b[0m");
         } else if (level === Augmented.Logger.Level.error) {
             console.error("\x1b[31m" + message + "\x1b[0m");
         } else if (level === Augmented.Logger.Level.debug) {
@@ -1147,7 +1147,7 @@
         } else if (level === Augmented.Logger.Level.warn) {
             console.warn("\x1b[33m" + message + "\x1b[0m");
         } else {
-            console.log("\x1b[34m" + message + "\x1b[0m");
+            console.log("\x1b[37m" + message + "\x1b[0m");
         }
     };
 
