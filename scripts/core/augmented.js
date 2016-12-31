@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.0.1
+ * @version 1.1.0
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.0.1";
+    Augmented.VERSION = "1.1.0";
     /**
      * A codename for internal use
      * @constant codename
@@ -394,6 +394,25 @@
      * @memberof Augmented.Utility
      */
     Augmented.Utility.ClassExtend = classExtend;
+
+    /**
+     * Shuffles an Array with Fisher-Yates Shuffle algorithm
+     * @constructor Augmented.Utility.Shuffle
+     * @memberof Augmented.Utility
+     * @param {array} array The array to shuffle
+     * @returns {array} A new shuffled array
+     */
+    Augmented.Utility.Shuffle = function(array) {
+        const l = array.length;
+        var i = 0, temp, j, nArray = array.slice(0);
+        for (i = l - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            temp = nArray[i];
+            nArray[i] = nArray[j];
+            nArray[j] = temp;
+        }
+        return nArray;
+    };
 
     /**
      * Prints an object nicely
@@ -1037,7 +1056,7 @@
 
         /**
          * log a message
-         * @ethod log
+         * @method log
 	     * @memberof abstractLogger
          * @param {string} message The message to log
          * @param {Augmented.Logger.Level} level The level of the log message
