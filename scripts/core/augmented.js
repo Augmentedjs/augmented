@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.2.0
+ * @version 1.2.1
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.2.0";
+    Augmented.VERSION = "1.2.1";
     /**
      * A codename for internal use
      * @constant codename
@@ -5022,6 +5022,18 @@
         this.getDatastore = function() {
             return this.getMetadataItem("datastore");
         }
+
+        /** Sets a datastore
+         * @method setDatastore
+         * @param {object} model A datastore
+         * @memberof Augmented.Application
+         */
+        this.setDatastore = function(ds) {
+            if (model) {
+                this.setMetadataItem("datastore", ds);
+            }
+        };
+
     };
     Augmented.Application.prototype.constructor = Augmented.Application;
 
