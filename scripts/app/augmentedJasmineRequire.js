@@ -7,7 +7,7 @@ require.config({
 		"backbone": "lib/backbone-min",
 
 		"augmented": "core/augmented",
-		"augmentedPresentation": "presentation/augmentedPresentation",
+		//"augmentedPresentation": "presentation/augmentedPresentation",
         // Deprecated
 		//"augmentedLegacy": "legacy/legacy",
 
@@ -51,7 +51,7 @@ var specs = [ "core/test/coreSpec",
               "core/test/viewSpec",
               "core/test/transformerSpec",
               "core/test/structureSpec",
-
+/* moved
               "presentation/test/presentationSpec",
               "presentation/test/autoTableSpec",
               "presentation/test/applicationSpec",
@@ -63,7 +63,7 @@ var specs = [ "core/test/coreSpec",
               "presentation/test/dialogSpec",
               "presentation/test/autoFormSpec",
               "presentation/test/dollar",
-
+*/
               "core/test/resourceBundleSpec"
               // Deprecated
 			  //"legacy/test/applicationContextSpec",
@@ -74,16 +74,15 @@ var specs = [ "core/test/coreSpec",
 // AMD or UMD specs. `boot.js` will do a bunch of configuration and attach it"s initializers to `window.onload()`. Because
 // we are using RequireJS `window.onload()` has already been triggered so we have to manually call it again. This will
 // initialize the HTML Reporter and execute the environment.
-require(["augmented", "augmentedPresentation", "boot"], function(Augmented) {
+require(["augmented", "boot"], function(Augmented) {
     "use strict";
-    var app = new Augmented.Presentation.Application("Jasmine Suite");
-    app.registerStylesheet("https://fonts.googleapis.com/css?family=Roboto:400,300|Roboto+Condensed|Roboto+Mono");
+    var app = new Augmented.Application("Jasmine Suite");
     app.start();
 
-    Augmented.Presentation.Dom.setValue("h2#augmented",
-        "<span class=\"version\">Version " + Augmented.VERSION +
-        " (" + Augmented.codename + ")</span>&emsp;<span class=\"release\">Release (" +
-        Augmented.releasename + ")</span>");
+	var v = document.querySelector("h2#augmented");
+	v.innerHTML = "<span class=\"version\">Version " + Augmented.VERSION +
+		" (" + Augmented.codename + ")</span>&emsp;<span class=\"release\">Release (" +
+		Augmented.releasename + ")</span>";
 
 	// Load the specs
 	require(specs, function() {

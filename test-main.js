@@ -21,7 +21,7 @@ require.config({
 		"backbone": "scripts/lib/backbone-min",
 
 		"augmented": "scripts/core/augmented",
-		"augmentedPresentation": "scripts/presentation/augmentedPresentation",
+		//"augmentedPresentation": "scripts/presentation/augmentedPresentation",
 		//"augmentedService": "scripts/service/service",
 		//"augmentedLegacy": "scripts/legacy/legacy",
 
@@ -55,7 +55,7 @@ var specs = [ "core/test/coreSpec",
               "core/test/viewSpec",
               "core/test/transformerSpec",
               "core/test/structureSpec",
-
+/* moved
               "presentation/test/presentationSpec",
               "presentation/test/autoTableSpec",
               "presentation/test/applicationSpec",
@@ -67,6 +67,7 @@ var specs = [ "core/test/coreSpec",
               "presentation/test/dialogSpec",
               "presentation/test/autoFormSpec",
               "presentation/test/dollar",
+              */
 /* moved
               "service/test/entitySpec",
               "service/test/collectionSpec",

@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.1.0
+ * @version 1.2.0
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -32,8 +32,8 @@
     "use strict";
     /* Extend function for use throughout the framework */
     var extend = function() {
-        var i =0, l = arguments.length;
-    	for (i=1; i<l; i++) {
+        var i = 0, l = arguments.length;
+    	for (i = 1; i < l; i++) {
     	    for(var key in arguments[i]) {
         		if(arguments[i].hasOwnProperty(key)) {
         		    arguments[0][key] = arguments[i][key];
@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.1.0";
+    Augmented.VERSION = "1.2.0";
     /**
      * A codename for internal use
      * @constant codename
@@ -64,7 +64,7 @@
      * A release name to help with identification of minor releases
      * @constant releasename
      */
-    Augmented.releasename = "Typhoon";
+    Augmented.releasename = "Faridah Malik";
 
     /**
      * Runs Augmented.js in 'noConflict' mode, returning the 'Augmented'
@@ -403,8 +403,7 @@
      * @returns {array} A new shuffled array
      */
     Augmented.Utility.Shuffle = function(array) {
-        const l = array.length;
-        var i = 0, temp, j, nArray = array.slice(0);
+        var i = 0, temp, j, nArray = array.slice(0), l = array.length;
         for (i = l - 1; i > 0; i--) {
             j = Math.floor(Math.random() * (i + 1));
             temp = nArray[i];
@@ -4857,6 +4856,8 @@
      * @constructor Augmented.Application
      * @param {string} name Name of the application
      * @memberof Augmented
+     * @example var app = new Augmented.Application("Awesome");
+     * app.start();
      * @example var app = new Augmented.Application();
      * app.setName("My Super Application!");
      * app.setMetadataItem("description", "something very awesome");
@@ -4864,41 +4865,44 @@
      * app.start();
      */
     Augmented.Application = function(name) {
-		var metadata, routers = [];
+		var _metadata, _routers = [];
 
         /**
-         * The router property of the view
+         * The router property of the application
          * @property router
          * @memberof Augmented.Application
          */
         this.router = null;
 
         /**
-         * The started property of the view
+         * The started property of the application
          * @property started
          * @memberof Augmented.Application
          * @returns {boolean} Returns the property of the started Event
          */
         this.started = false;
 
-        if (!metadata) {
-            metadata = new Augmented.Utility.Map();
+        if (!_metadata) {
+            _metadata = new Augmented.Utility.Map();
         } else {
-            metadata.clear();
+            _metadata.clear();
         }
 
+        // preassign a name
         if (name) {
-            metadata.set("name", name);
+            _metadata.set("name", name);
         } else {
-            metadata.set("name", "untitled");
+            _metadata.set("name", "untitled");
         }
+
+        // preset a datastore object
+        _metadata.set("datastore", {});
 
         /** Event for after during startup of the application
          * @method initialize
          * @memberof Augmented.Application
          */
         this.initialize = function() {
-
         };
 
         /** Event for before the startup of the application
@@ -4906,7 +4910,6 @@
          * @memberof Augmented.Application
          */
         this.beforeInitialize = function() {
-
         };
 
         /** Event for after the startup of the application
@@ -4914,7 +4917,6 @@
          * @memberof Augmented.Application
          */
         this.afterInitialize = function() {
-
         };
 
         /** Get the application name
@@ -4939,7 +4941,7 @@
          * @returns Map of metadata in an Augmented.Utility.Map
          */
 		this.getMetadata = function() {
-			return metadata;
+			return _metadata;
 		};
 
         /** Set a specific item in metadata
@@ -4947,7 +4949,7 @@
          * @memberof Augmented.Application
          */
 		this.setMetadataItem = function(key, value) {
-			metadata.set(key, value);
+			_metadata.set(key, value);
 		};
 
         /** Get a specific item in metadata
@@ -4955,7 +4957,7 @@
          * @memberof Augmented.Application
          */
 		this.getMetadataItem = function(key) {
-			return metadata.get(key);
+			return _metadata.get(key);
 		};
 
         /** Register a Router - adds routes to the application
@@ -4963,8 +4965,8 @@
          * @memberof Augmented.Application
          */
         this.registerRouter = function(router) {
-            if (router && routers) {
-                routers.push(router);
+            if (router){
+                this.router = router;
             }
         };
 
@@ -4979,16 +4981,10 @@
                     Augmented.history.start();
                 }
             };
-            var routerStarter = function() {
-                if (routers && routers.length > 0) {
-
-                }
-            };
             this.started = asyncQueue.process(
                 this.beforeInitialize(),
                 this.initialize(),
                 this.afterInitialize(),
-                //routerStarter(),
                 startCheck()
             );
             if (!this.started) {
@@ -5006,6 +5002,26 @@
 		    }
 		    this.started = false;
 		};
+
+        /** creates a custom datastore based on a model
+         * @method createDatastore
+         * @param {Augmented.Model|object} model A custom Model
+         * @memberof Augmented.Application
+         */
+        this.createDatastore = function(model) {
+            if (model) {
+                this.setMetadataItem("datastore", new model());
+            }
+        };
+
+        /** Gets the datastore for the application
+         * @method getDatastore
+         * @returns {Augmented.Model|object} the datastore
+         * @memberof Augmented.Application
+         */
+        this.getDatastore = function() {
+            return this.getMetadataItem("datastore");
+        }
     };
     Augmented.Application.prototype.constructor = Augmented.Application;
 

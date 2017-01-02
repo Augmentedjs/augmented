@@ -1,14 +1,12 @@
 require.config({
-	'baseUrl': '/augmented/scripts/',
+	'baseUrl': 'scripts/',
 
     'paths': {
 		'jquery': 'lib/jquery.min',
 		'underscore': 'lib/lodash.min',
 		'backbone': 'lib/backbone-min',
 
-		'augmented': 'core/augmented',
-		'augmentedPresentation': 'presentation/augmentedPresentation',
-		'augmentedService': 'service/augmentedService'
+		'augmented': 'core/augmented'
 	},
 	'shim': {}
 });
