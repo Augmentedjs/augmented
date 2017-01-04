@@ -1,6 +1,6 @@
 # Augmented.js
 ## The Augmented.js Framework.
-### Version 1.1.x
+### Version 1.2.x
 ### "Typhoon"
 **aug·ment·ed**
 /ˌôɡˈmentəd /
