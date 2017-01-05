@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.2.3
+ * @version 1.2.4
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.2.3";
+    Augmented.VERSION = "1.2.4";
     /**
      * A codename for internal use
      * @constant codename
@@ -1377,10 +1377,12 @@
        * @returns values as an Array
        */
     	this.values = function() {
-    	    var len = this.keys.length;
+    	    var i = 0, len = this.keys.length, key;
     	    var values = new Array(len);
-    	    for (var i = 0; i < len; i++) {
-    		    values[i] = this.data[i];
+
+    	    for (i = 0; i < len; i++) {
+                key = this.keys[i];
+    		    values[i] = this.data[key];
     	    }
     	    return values;
     	};

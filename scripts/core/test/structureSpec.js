@@ -171,7 +171,7 @@ define(['augmented'], function(Augmented) {
             });
         });
 
-		describe('Given AugmentedMap', function() {
+		describe('Given a Map', function() {
             var map;
 
             beforeEach(function() {
