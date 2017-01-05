@@ -11,7 +11,7 @@ define(['augmented'], function(Augmented) {
 
         describe('Given an array of objects', function() {
             var data = [];
-            var map = new Augmented.Utility.AugmentedMap();
+            var map = new Augmented.Utility.Map();
             var indexHash = {};
             var key = "Name";
             var makeUpNames = function(amount) {
@@ -175,7 +175,7 @@ define(['augmented'], function(Augmented) {
             var map;
 
             beforeEach(function() {
-                map = new Augmented.Utility.AugmentedMap();
+                map = new Augmented.Utility.Map();
             });
 
             afterEach(function() {
@@ -183,11 +183,11 @@ define(['augmented'], function(Augmented) {
             });
 
 			it('is defined', function() {
-				expect(Augmented.Utility.AugmentedMap).toBeDefined();
+				expect(Augmented.Utility.Map).toBeDefined();
 			});
 
 			it('can create an instance', function() {
-				expect(map instanceof Augmented.Utility.AugmentedMap).toBeTruthy();
+				expect(map instanceof Augmented.Utility.Map).toBeTruthy();
 			});
 
 			it('can add a string to the map', function() {
@@ -209,11 +209,11 @@ define(['augmented'], function(Augmented) {
 			});
 
 			it('can get an map from the map', function() {
-				map.set("map", new Augmented.Utility.AugmentedMap());
+				map.set("map", new Augmented.Utility.Map());
 
 				var m = map.get("map");
 
-				expect(m instanceof Augmented.Utility.AugmentedMap).toBeTruthy();
+				expect(m instanceof Augmented.Utility.Map).toBeTruthy();
 			});
 
 			it('can get an object to the map', function() {
@@ -267,12 +267,12 @@ define(['augmented'], function(Augmented) {
                 map.set("age", 36);
                 map.set("height", "6.0\"");
 
-                var map2 = new Augmented.Utility.AugmentedMap(map);
+                var map2 = new Augmented.Utility.Map(map);
                 expect(map.values()).toEqual(map2.values());
             });
 
             it('can marshall a map', function() {
-                var map2 = new Augmented.Utility.AugmentedMap();
+                var map2 = new Augmented.Utility.Map();
                 map2.set("name", "Bob");
                 map2.set("age", 36);
                 map2.set("height", "6.0\"");

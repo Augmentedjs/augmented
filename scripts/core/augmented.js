@@ -1359,9 +1359,9 @@
        * @returns Array of entries value objects
        */
     	this.entries = function() {
-    	    var len = this.keys.length;
+    	    var i = 0, len = this.keys.length;
     	    var entries = new Array(len);
-    	    for (var i = 0; i < len; i++) {
+    	    for (i = 0; i < len; i++) {
         		entries[i] = {
         			key : this.keys[i],
         			value : this.data[i]
