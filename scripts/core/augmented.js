@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.2.4
+ * @version 1.3.0
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.2.4";
+    Augmented.VERSION = "1.3.0";
     /**
      * A codename for internal use
      * @constant codename
@@ -4563,6 +4563,16 @@
         } else if (this.isSupported() && this.namespace && persist) {
             this.getItem(this.namespace);
         }
+
+        /**
+         * Gets the namespaced items as a Map
+         * @method getNamespacedItems
+         * @memberof NamespacedAugmentedLocalStorage
+         * @returns {Augmented.Utility.Map} Returns the namespaced storage as Map
+         */
+         this.getNamespacedItems = function() {
+             return this.myNameSpacedStore;
+         }
     };
 
     /**
