@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.3.0
+ * @version 1.4.0
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.3.0";
+    Augmented.VERSION = "1.4.0";
     /**
      * A codename for internal use
      * @constant codename
@@ -384,6 +384,17 @@
     Augmented.Utility = {};
 
     /**
+     * Augmented.isDefined - Checks and returns if a passed variable is defined
+     * @method isDefined
+     * @memberof Augmented
+     * @param {string} variable to check
+     * @returns {boolean} true if value is defined
+     */
+    Augmented.isDefined = function(val) {
+        return typeof val != "undefined";
+    };
+
+    /**
      * Class Extend -
      * Helper function to correctly set up the prototype chain for subclasses.<br/>
      * Similar to `goog.inherits`, but uses a hash of prototype properties and
@@ -443,7 +454,6 @@
             return ((x < y) ? -1 : ((x > y) ? 1 : 0));
         });
     };
-
 
     /**
      * Performs a binary search on the host array. vs indexOf<br/>
@@ -610,7 +620,7 @@
 
     /**
      * Augmented.isString -
-     * checks is a value is a String
+     * checks if a value is a String
      * @method isString
      * @memberof Augmented
      * @param {string} variable to check
