@@ -878,6 +878,7 @@ dialog {
     left: 50%;
     padding: 16px;
     z-index: auto;
+    border: none;
 }
 dialog.alert {
     height: 135px;

@@ -3919,6 +3919,15 @@
          */
         size: function() {
             return this.length;
+        },
+        /**
+         * toString - returns the collection data as a string
+         * @method toString
+         * @memberof Augmented.Collection
+         * @returns {string}returns the collection data as a string
+         */
+        toString: function() {
+            return JSON.stringify(this.toJSON());
         }
     });
 
