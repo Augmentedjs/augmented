@@ -3742,6 +3742,15 @@
          */
         isEmpty: function() {
             return ( (this.attributes) ? (Object.keys(this.attributes).length === 0) : true );
+        },
+        /**
+         * toString - returns the model data as a string
+         * @method toString
+         * @memberof Augmented.Model
+         * @returns {string}returns the model data as a string
+         */
+        toString: function() {
+            return JSON.stringify(this.toJSON());
         }
     });
 
