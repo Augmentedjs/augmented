@@ -1039,13 +1039,13 @@
     }
 
     /**
-     * Augmented Logger - abstractLogger
-     * @constructor abstractLogger
+     * Augmented Abstract Logger
+     * @constructor Augmented.AbstractLogger
      * @param {Augmented.Logger.Level} l The level to initialize the logger with
      * @abstract
-     * @memberof Augmented.Logger
+     * @memberof Augmented
      */
-    var abstractLogger = function(l) {
+    var abstractLogger = Augmented.AbstractLogger = function(l) {
         this.TIME_SEPERATOR = ":";
         this.DATE_SEPERATOR = "-";
         this.OPEN_GROUP = " [ ";
