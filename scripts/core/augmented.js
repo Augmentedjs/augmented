@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.4.1
+ * @version 1.4.5
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.4.1";
+    Augmented.VERSION = "1.4.5";
     /**
      * A codename for internal use
      * @constant codename
@@ -4887,6 +4887,42 @@
         this.getQueue = function() {
             return this.queue;
         };
+    };
+
+    Augmented.Utility.PromiseQueue = function() {
+      var _queue = [];
+
+      /**
+       * @method add The Add method for adding processes to the queue
+       * @memberof Augmented.Utility.PromiseQueue
+       */
+      this.add = function(func, resolve, reject) {
+          const f = function() {
+            var promise = new Promise(function(resolve, reject){
+              var ret = func();
+              if (ret) {
+                resolve();
+              }
+              else {
+                reject();
+              }
+            });
+            return promise;
+          }
+
+          this.queue.push(f);
+      };
+
+      /**
+       * @method clear Clear all processes in the queue
+       * @memberof Augmented.Utility.AsynchronousQueue
+       */
+      this.clear = function() {
+          if (this.queue.length > 0) {
+              this.queue.splice(0, this.queue.length);
+          }
+      };
+
     };
 
     /**

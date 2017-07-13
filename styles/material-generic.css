@@ -827,7 +827,16 @@ button.round {
     width: 36px;
 }
 
-button::before, div.tools i::before {
+.toolbar {
+  display: block;
+  position: relative;
+}
+
+.toolbar > .tools {
+  display: inline-block;
+}
+
+button::before, .tools i::before {
   content: "";
 
   position: absolute;
@@ -850,7 +859,7 @@ button::before, div.tools i::before {
 }
 
 
-button:active:before, div.tools i:active::before {
+button:active:before, .tools i:active::before {
   width: 120%;
   padding-top: 120%;
   transition: width .2s ease-out, padding-top .2s ease-out;

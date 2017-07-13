@@ -47,7 +47,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Augmented.AbstractLocalStorage.html">Augmented.AbstractLocalStorage</a></li><li><a href="Augmented.Application.html">Augmented.Application</a></li><li><a href="Augmented.Collection.html">Augmented.Collection</a></li><li><a href="Augmented.History.html">Augmented.History</a></li><li><a href="Augmented.history_.html">Augmented.history</a></li><li><a href="Augmented.LocalStorageCollection.html">Augmented.LocalStorageCollection</a></li><li><a href="Augmented.Logger.abstractLogger.html">Augmented.Logger.abstractLogger</a></li><li><a href="Augmented.Model.html">Augmented.Model</a></li><li><a href="Augmented.module__-AbstractSecurityClient.html">Augmented._~AbstractSecurityClient</a></li><li><a href="Augmented.Object.html">Augmented.Object</a></li><li><a href="Augmented.PaginatedCollection.html">Augmented.PaginatedCollection</a></li><li><a href="Augmented.Router.html">Augmented.Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">Augmented.Security.Client.ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">Augmented.Security.Client.OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Augmented.Security.Context</a></li><li><a href="Augmented.Security.Entry.html">Augmented.Security.Entry</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">Augmented.Utility.AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">Augmented.Utility.AugmentedMap</a></li><li><a href="Augmented.Utility.BinarySearch.html">Augmented.Utility.BinarySearch</a></li><li><a href="Augmented.Utility.ClassExtend.html">Augmented.Utility.ClassExtend</a></li><li><a href="Augmented.Utility.Map.html">Augmented.Utility.Map</a></li><li><a href="Augmented.Utility.PrettyPrint.html">Augmented.Utility.PrettyPrint</a></li><li><a href="Augmented.Utility.QuickSort.html">Augmented.Utility.QuickSort</a></li><li><a href="Augmented.Utility.SchemaGenerator.html">Augmented.Utility.SchemaGenerator</a></li><li><a href="Augmented.Utility.Shuffle.html">Augmented.Utility.Shuffle</a></li><li><a href="Augmented.Utility.Sort.html">Augmented.Utility.Sort</a></li><li><a href="Augmented.Utility.Stack.html">Augmented.Utility.Stack</a></li><li><a href="Augmented.ValidationFramework.html">Augmented.ValidationFramework</a></li><li><a href="Augmented.View.html">Augmented.View</a></li>
+					<li><a href="Augmented.AbstractLocalStorage.html">Augmented.AbstractLocalStorage</a></li><li><a href="Augmented.AbstractLogger.html">Augmented.AbstractLogger</a></li><li><a href="Augmented.Application.html">Augmented.Application</a></li><li><a href="Augmented.Collection.html">Augmented.Collection</a></li><li><a href="Augmented.History.html">Augmented.History</a></li><li><a href="Augmented.history_.html">Augmented.history</a></li><li><a href="Augmented.LocalStorageCollection.html">Augmented.LocalStorageCollection</a></li><li><a href="Augmented.Model.html">Augmented.Model</a></li><li><a href="Augmented.module__-AbstractSecurityClient.html">Augmented._~AbstractSecurityClient</a></li><li><a href="Augmented.Object.html">Augmented.Object</a></li><li><a href="Augmented.PaginatedCollection.html">Augmented.PaginatedCollection</a></li><li><a href="Augmented.Router.html">Augmented.Router</a></li><li><a href="Augmented.Security.Client.ACLClient.html">Augmented.Security.Client.ACLClient</a></li><li><a href="Augmented.Security.Client.OAUTH2Client.html">Augmented.Security.Client.OAUTH2Client</a></li><li><a href="Augmented.Security.Context.html">Augmented.Security.Context</a></li><li><a href="Augmented.Security.Entry.html">Augmented.Security.Entry</a></li><li><a href="Augmented.Utility.AsynchronousQueue.html">Augmented.Utility.AsynchronousQueue</a></li><li><a href="Augmented.Utility.AugmentedMap.html">Augmented.Utility.AugmentedMap</a></li><li><a href="Augmented.Utility.BinarySearch.html">Augmented.Utility.BinarySearch</a></li><li><a href="Augmented.Utility.ClassExtend.html">Augmented.Utility.ClassExtend</a></li><li><a href="Augmented.Utility.Map.html">Augmented.Utility.Map</a></li><li><a href="Augmented.Utility.PrettyPrint.html">Augmented.Utility.PrettyPrint</a></li><li><a href="Augmented.Utility.QuickSort.html">Augmented.Utility.QuickSort</a></li><li><a href="Augmented.Utility.SchemaGenerator.html">Augmented.Utility.SchemaGenerator</a></li><li><a href="Augmented.Utility.Shuffle.html">Augmented.Utility.Shuffle</a></li><li><a href="Augmented.Utility.Sort.html">Augmented.Utility.Sort</a></li><li><a href="Augmented.Utility.Stack.html">Augmented.Utility.Stack</a></li><li><a href="Augmented.ValidationFramework.html">Augmented.ValidationFramework</a></li><li><a href="Augmented.View.html">Augmented.View</a></li>
 				</ul>
 			</li>
 			
@@ -91,7 +91,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.4.1
+ * @version 1.4.5
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -140,7 +140,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.4.1";
+    Augmented.VERSION = "1.4.5";
     /**
      * A codename for internal use
      * @constant codename
@@ -1125,13 +1125,13 @@
     }
 
     /**
-     * Augmented Logger - abstractLogger
-     * @constructor abstractLogger
+     * Augmented Abstract Logger
+     * @constructor Augmented.AbstractLogger
      * @param {Augmented.Logger.Level} l The level to initialize the logger with
      * @abstract
-     * @memberof Augmented.Logger
+     * @memberof Augmented
      */
-    var abstractLogger = function(l) {
+    var abstractLogger = Augmented.AbstractLogger = function(l) {
         this.TIME_SEPERATOR = ":";
         this.DATE_SEPERATOR = "-";
         this.OPEN_GROUP = " [ ";
@@ -4975,6 +4975,42 @@
         };
     };
 
+    Augmented.Utility.PromiseQueue = function() {
+      var _queue = [];
+
+      /**
+       * @method add The Add method for adding processes to the queue
+       * @memberof Augmented.Utility.PromiseQueue
+       */
+      this.add = function(func, resolve, reject) {
+          const f = function() {
+            var promise = new Promise(function(resolve, reject){
+              var ret = func();
+              if (ret) {
+                resolve();
+              }
+              else {
+                reject();
+              }
+            });
+            return promise;
+          }
+
+          this.queue.push(f);
+      };
+
+      /**
+       * @method clear Clear all processes in the queue
+       * @memberof Augmented.Utility.AsynchronousQueue
+       */
+      this.clear = function() {
+          if (this.queue.length > 0) {
+              this.queue.splice(0, this.queue.length);
+          }
+      };
+
+    };
+
     /**
      * &lt;p>Application Class for use to define an application.&lt;br/>
      * An application contains metadata and initializers for the application.&lt;br/>
@@ -5206,7 +5242,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 	
-		on Mon Feb 27th 2017
+		on Wed Jul 12th 2017
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
