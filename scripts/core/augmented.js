@@ -5,7 +5,7 @@
  *
  * @requires Backbone.js
  * @module Augmented
- * @version 1.4.5
+ * @version 1.4.6
  * @license Apache-2.0
  */
 (function(root, factory) {
@@ -54,7 +54,7 @@
      * The standard version property
      * @constant VERSION
      */
-    Augmented.VERSION = "1.4.5";
+    Augmented.VERSION = "1.4.6";
     /**
      * A codename for internal use
      * @constant codename
@@ -851,6 +851,12 @@
         //logger.debug("AUGMENTED: Ajax object: " + JSON.stringify(ajaxObject));
         var xhr = null;
   		if (ajaxObject && ajaxObject.url) {
+          const type = ajaxObject.type;
+
+          if (!ajaxObject.method && ajaxObject.type) {
+            ajaxObject.method = ajaxObject.type;
+          }
+
     	    var method = (ajaxObject.method) ? ajaxObject.method : 'GET';
     	    var cache = (ajaxObject.cache) ? (ajaxObject.cache) : true;
 
@@ -3751,6 +3757,38 @@
          */
         toString: function() {
             return JSON.stringify(this.toJSON());
+        },
+        /**
+         * fetch - Fetches the model as a 'get'
+         * @method fetch
+         * @memberof Augmented.Model
+         */
+        fetch: function (options) {
+            this.sync("get", this, options);
+        },
+        /**
+         * save - Saves the model as a 'create'
+         * @method save
+         * @memberof Augmented.Model
+         */
+        save: function (options) {
+            this.sync("create", this, options);
+        },
+        /**
+         * update - Updates the model as a 'update'
+         * @method update
+         * @memberof Augmented.Model
+         */
+        update: function (options) {
+            this.sync("update", this, options);
+        },
+        /**
+         * destroy - Deletes the model as a 'delete'
+         * @method destroy
+         * @memberof Augmented.Model
+         */
+        destroy: function (options) {
+            this.sync("delete", this, options);
         }
     });
 
