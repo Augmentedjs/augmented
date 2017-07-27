@@ -32,9 +32,11 @@ define([
         });
 
         it('with mock can return something', function() {
+						var s = false;
             model.mock = true;
             model.url = "/info";
-            expect(model.fetch()).toBeDefined();
+						model.fetch({"success": function() { s = true; }});
+            expect(s).toBeTruthy();
         });
 
         it('can reset with data', function() {

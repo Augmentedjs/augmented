@@ -849,9 +849,9 @@
     */
     Augmented.ajax = Augmented.Ajax.ajax = function(ajaxObject) {
       //logger.debug("AUGMENTED: Ajax object: " + JSON.stringify(ajaxObject));
-      let xhr = null;
+      var xhr = null;
       if (ajaxObject && ajaxObject.url) {
-        const type = ajaxObject.type;
+        var type = ajaxObject.type;
 
         if (!ajaxObject.method && ajaxObject.type) {
           ajaxObject.method = ajaxObject.type;
