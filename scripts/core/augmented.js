@@ -5,7 +5,7 @@
 *
 * @requires Backbone.js
 * @module Augmented
-* @version 1.4.7
+* @version 1.4.8
 * @license Apache-2.0
 */
 (function(root, factory) {
@@ -54,7 +54,7 @@
   * The standard version property
   * @constant VERSION
   */
-  Augmented.VERSION = "1.4.7";
+  Augmented.VERSION = "1.4.8";
   /**
   * A codename for internal use
   * @constant codename
@@ -222,6 +222,7 @@
 
   /**
   * Augmented.sync - Base sync method that can pass special augmented features
+  * TODO: time to migrate this forward
   * @method sync
   * @memberof Augmented
   * @borrows Backbone.sync
@@ -979,7 +980,7 @@
         if (ajaxObject.beforeSend) {
           ajaxObject.beforeSend(xhr);
         }
-        xhr.send();
+        xhr.send(((ajaxObject.data) ? ajaxObject.data : ""));
       }
 
       logger.debug("AUGMENTED: Ajax status (" + xhr.status + ")");
@@ -3632,7 +3633,6 @@
         * <li>CORS</li>
         * <li>Security</li>
         * </ul>
-        * TODO: implement OAUTH 2
         * @constructor Augmented.Model
         * @memberof Augmented
         * @borrows Backbone.Model
@@ -3704,10 +3704,9 @@
           */
           crossOrigin: false,
           /**
-          * Model.sync - rewritten sync method from Backbone.Model.sync
+          * Model.sync - Sync model data to bound REST call
           * @method sync
           * @memberof Augmented.Model
-          * @borrows Model.sync
           */
           sync: function(method, model, options) {
             if (!options) {
@@ -3726,8 +3725,7 @@
               options.mock = this.mock;
             }
 
-            var ret = Augmented.sync(method, model, options);
-            return ret;
+            return Augmented.sync(method, model, options);
           },
           /**
           * Model.reset - clear and rewrite the model with passed data
@@ -3916,8 +3914,7 @@
               options.mock = this.mock;
             }
 
-            var ret = Augmented.sync(method, model, options);
-            return ret;
+            return Augmented.sync(method, model, options);
           },
           /**
           * Collection.save - Saves the collection as a 'create'
