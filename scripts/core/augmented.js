@@ -5,7 +5,7 @@
 *
 * @requires Backbone.js
 * @module Augmented
-* @version 1.4.8
+* @version 1.4.9
 * @license Apache-2.0
 */
 (function(root, factory) {
@@ -54,7 +54,7 @@
   * The standard version property
   * @constant VERSION
   */
-  Augmented.VERSION = "1.4.8";
+  Augmented.VERSION = "1.4.9";
   /**
   * A codename for internal use
   * @constant codename
@@ -3686,7 +3686,7 @@
           * Validates the model
           * @method validate
           * @memberof Augmented.Model
-          * @returns {array} Returns array of message from validation
+          * @returns {array} Returns array of messages from validation
           */
           validate: function() {
             if (this.supportsValidation() && Augmented.ValidationFramework.supportsValidation()) {
@@ -3696,6 +3696,23 @@
               this.validationMessages.valid = true;
             }
             return this.validationMessages;
+          },
+          /**
+          * Gets the validation messages only in an array
+          * @method getValidationMessages
+          * @memberof Augmented.Model
+          * @returns {array} Returns array of messages from validation
+          */
+          getValidationMessages: function() {
+            const messages = [];
+            if (this.validationMessages && this.validationMessages.errors) {
+              const l = this.validationMessages.errors.length;
+              var i = 0;
+              for (i = 0; i < l; i++) {
+                messages.push(this.validationMessages.errors[i].message);
+              }
+            }
+            return messages;
           },
           /**
           * Cross Origin property

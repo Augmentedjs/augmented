@@ -22,20 +22,20 @@ define([
 			});
 		});
 
-        describe('Given the Augmented Validation Framework', function() {
+		describe('Given the Augmented Validation Framework', function() {
 			it('is defined', function() {
 				expect(Augmented.ValidationFramework).toBeDefined();
 			});
 
-            it('can generate a schema from a model', function() {
+			it('can generate a schema from a model', function() {
 				var model = new Augmented.Model();
-                model.set({ "Name": "Bob", "ID": 123, "Email": "bob@augmentedjs.org", "Role": "Architect", "Active": true });
-                var schema = Augmented.ValidationFramework.generateSchema(model);
+				model.set({ "Name": "Bob", "ID": 123, "Email": "bob@augmentedjs.org", "Role": "Architect", "Active": true });
+				var schema = Augmented.ValidationFramework.generateSchema(model);
 				expect(schema).toBeDefined();
-                expect(Augmented.isObject(schema)).toBeTruthy();
+				expect(Augmented.isObject(schema)).toBeTruthy();
 			});
-        });
-        
+		});
+
 		describe('Given an Augmented Collection', function() {
 			it('has an augmented Collection', function() {
 				expect(Augmented.Collection).toBeDefined();
