@@ -5,7 +5,7 @@
 *
 * @requires Backbone.js
 * @module Augmented
-* @version 1.4.9
+* @version 1.4.10
 * @license Apache-2.0
 */
 (function(root, factory) {
@@ -54,7 +54,7 @@
   * The standard version property
   * @constant VERSION
   */
-  Augmented.VERSION = "1.4.9";
+  Augmented.VERSION = "1.4.10";
   /**
   * A codename for internal use
   * @constant codename
@@ -3942,12 +3942,20 @@
             this.sync("create", this, options);
           },
           /**
-          * Collection.update - Updates the collection as a 'update'
+          * Collection.update - Updates the collection as an 'update'
           * @method update
           * @memberof Augmented.Collection
           */
-          update: function (options) {
+          update: function(options) {
             this.sync("update", this, options);
+          },
+          /**
+          * Collection.remove - Remove from the collection as a 'delete'
+          * @method remove
+          * @memberof Augmented.Collection
+          */
+          remove: function(options) {
+            this.sync("delete", this, options);
           },
           /**
           * sortByKey - Sorts the collection by a property key
