@@ -3819,14 +3819,11 @@
         * <li>CORS</li>
         * <li>Security</li>
         * </ul>
-        * TODO: implement OAUTH 2
         * @constructor Augmented.Collection
         * @memberof Augmented
-        * @borrows Backbone.Collection
-        * @see http://backbonejs.org/#Collection
         * @extends Augmented.Object
         */
-        var augmentedCollection = Backbone.Collection.extend({
+        const augmentedCollection = Backbone.Collection.extend({
           /**
           * Schema property
           * @property {object} schema The JSON schema from this collection
