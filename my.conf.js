@@ -11,7 +11,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ["jasmine", "requirejs"],
+    frameworks: ["jasmine", "requirejs", "es6-shim"],
 
 
     // list of files / patterns to load in the browser
@@ -21,9 +21,6 @@ module.exports = function(config) {
   //  {pattern: "scripts/**/*.js", included: false},
   //  {pattern: "scripts/**/*Spec.js", included: false},
     {pattern: "scripts/core/augmented.js", included: false},
-    /*
-    {pattern: "scripts/presentation/augmentedPresentation.js", included: false},
-    */
     {pattern: "scripts/service/service.js", included: false},
     {pattern: "scripts/lib/backbone-min.js", included: false},
     {pattern: "scripts/lib/lodash.min.js", included: false},
@@ -40,25 +37,12 @@ module.exports = function(config) {
     {pattern: "scripts/core/test/localStorageSpec.js", included: false},
     {pattern: "scripts/core/test/loggerSpec.js", included: false},
     {pattern: "scripts/core/test/modelSpec.js", included: false},
-// deprecated  {pattern: "scripts/core/test/resourceBundleSpec.js", included: false},
     {pattern: "scripts/core/test/securitySpec.js", included: false},
-//    {pattern: "scripts/core/test/testTemplateSpec.js", included: false},
     {pattern: "scripts/core/test/transformerSpec.js", included: false},
     {pattern: "scripts/core/test/utilitySpec.js", included: false},
     {pattern: "scripts/core/test/validationSpec.js", included: false},
     {pattern: "scripts/core/test/viewSpec.js", included: false},
-    /* moved
-    {pattern: "scripts/presentation/test/autoTableSpec.js", included: false},
-  {pattern: "scripts/presentation/test/applicationSpec.js", included: false},
-    {pattern: "scripts/presentation/test/mediationSpec.js", included: false},
-    {pattern: "scripts/presentation/test/presentationSpec.js", included: false},
-    */
-    /* moved
-    {pattern: "scripts/service/test/entitySpec.js", included: false},
-    {pattern: "scripts/service/test/collectionSpec.js", included: false},
-    {pattern: "scripts/service/test/datasourceSpec.js", included: false},
-    */
-      {pattern: "test-main.js", included: true}
+    {pattern: "test-main.js", included: true}
     ],
 
 

@@ -5,7 +5,7 @@
 *
 * @requires Backbone.js
 * @module Augmented
-* @version 1.4.10
+* @version 1.4.11
 * @license Apache-2.0
 */
 (function(root, factory) {
@@ -54,7 +54,7 @@
   * The standard version property
   * @constant VERSION
   */
-  Augmented.VERSION = "1.4.10";
+  Augmented.VERSION = "1.4.11";
   /**
   * A codename for internal use
   * @constant codename
@@ -220,6 +220,15 @@
   */
   Augmented.extend = Backbone.Model.extend;
 
+  // Map from CRUD to HTTP for our default `Backbone.sync` implementation.
+  const methodMap = {
+    'create': 'POST',
+    'update': 'PUT',
+    'patch': 'PATCH',
+    'delete': 'DELETE',
+    'read': 'GET'
+  };
+
   /**
   * Augmented.sync - Base sync method that can pass special augmented features
   * TODO: time to migrate this forward
@@ -227,7 +236,72 @@
   * @memberof Augmented
   * @borrows Backbone.sync
   */
-  Augmented.sync = Backbone.sync;
+  Augmented.sync = function(method, model, options) {
+    const type = methodMap[method];
+
+    if (!options) {
+      options = {};
+    }
+
+    // Default JSON-request options.
+    const params = {type: type, dataType: 'json'};
+
+    // Ensure that we have a URL.
+    if (!options.url) {
+      if (model.url) {
+        if (Augmented.isFunction(model.url)) {
+          params.url = model.url();
+        } else {
+          params.url = model.url;
+        }
+      } else {
+        throw new Error('A "url" property or function must be specified');
+      }
+    }
+
+    // Ensure that we have the appropriate request data.
+    if (options.data == null && model && (method === 'create' || method === 'update' || method === 'patch')) {
+      params.contentType = 'application/json';
+      params.data = JSON.stringify(options.attrs || model.toJSON(options));
+    }
+
+    // For older servers, emulate JSON by encoding the request into an HTML-form.
+    if (options.emulateJSON) {
+      params.contentType = 'application/x-www-form-urlencoded';
+      params.data = params.data ? {model: params.data} : {};
+    }
+
+    // For older servers, emulate HTTP by mimicking the HTTP method with `_method`
+    // And an `X-HTTP-Method-Override` header.
+    // not supported
+    /*if (options.emulateHTTP && (type === 'PUT' || type === 'DELETE' || type === 'PATCH')) {
+      params.type = 'POST';
+      if (options.emulateJSON) params.data._method = type;
+      var beforeSend = options.beforeSend;
+      options.beforeSend = function(xhr) {
+        xhr.setRequestHeader('X-HTTP-Method-Override', type);
+        if (beforeSend) return beforeSend.apply(this, arguments);
+      };
+    }*/
+
+    // Don't process data on a non-GET request.
+    if (params.type !== 'GET' && !options.emulateJSON) {
+      params.processData = false;
+    }
+
+    // Pass along `textStatus` and `errorThrown` from jQuery.
+    var error = options.error;
+    options.error = function(xhr, textStatus, errorThrown) {
+      options.textStatus = textStatus;
+      options.errorThrown = errorThrown;
+      if (error) error.call(options.context, xhr, textStatus, errorThrown);
+    };
+
+    // Make the request, allowing the user to override any Ajax options.
+    var xhr = options.xhr = Augmented.ajax(Augmented.Utility.extend(params, options));
+    model.trigger('request', model, xhr, options);
+    return xhr;
+  };
 
   /**
   * Augmented.isFunction -
