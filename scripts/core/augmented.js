@@ -5,7 +5,7 @@
 *
 * @requires Backbone.js
 * @module Augmented
-* @version 1.4.12
+* @version 1.5.0
 * @license Apache-2.0
 */
 (function(root, factory) {
@@ -31,7 +31,7 @@
 }(this, function(root, Augmented, Backbone) {
   "use strict";
   /* Extend function for use throughout the framework */
-  var extend = function() {
+  const extend = function() {
     var i = 0, l = arguments.length;
     for (i = 1; i < l; i++) {
       for(var key in arguments[i]) {
@@ -49,12 +49,12 @@
   * Save the previous value of the `Augmented` variable, so that it can be
   * restored later on, if `noConflict` is used (just like Backbone)
   */
-  var previousAugmented = root.Augmented;
+  const previousAugmented = root.Augmented;
   /**
   * The standard version property
   * @constant VERSION
   */
-  Augmented.VERSION = "1.4.12";
+  Augmented.VERSION = "1.5.0";
   /**
   * A codename for internal use
   * @constant codename
@@ -124,7 +124,7 @@
     return obj !== null && hasOwnProperty.call(obj, key);
   };
 
-  var createAssigner = function(keysFunc, undefinedOnly) {
+  const createAssigner = function(keysFunc, undefinedOnly) {
     return function(obj) {
       var length = arguments.length;
       if (length < 2 || obj === null) return obj;
@@ -183,7 +183,7 @@
     return result;
   };
 
-  var classExtend = function(protoProps, staticProps) {
+  const classExtend = function(protoProps, staticProps) {
     var parent = this;
     var child;
 
@@ -302,7 +302,7 @@
   * @memberof Augmented
   * @returns named property in an object
   */
-  var result = Augmented.result = function(object, property) {
+  const result = Augmented.result = function(object, property) {
     if (object === null) return;
     var value = object[property];
     return Augmented.isFunction(value) ? value.call(object) : value;
@@ -1306,14 +1306,6 @@
     };
 
     /**
-    * ES6-like Map
-    * @constructor Augmented.Utility.AugmentedMap
-    * @param myData {object} Map data to fill map
-    * @memberof Augmented.Utility
-    */
-
-
-    /**
     * ES6-like Map, same as Map
     * @constructor Augmented.Utility.AugmentedMap
     * @param myData {object} Map data to fill map
@@ -1553,6 +1545,27 @@
       if (myData) {
         return this.marshall(myData);
       }
+    };
+
+    /**
+      * filter an oject from array of values
+      *
+      * @method filterObject
+      * @param {object} object Object to filter
+      * @param {array} keys keys to filter from the object
+      * @returns {object} returns a new object with only these keys
+      * @memberof Augmented.Utility
+      */
+    Augmented.Utility.filterObject = function(object, keys) {
+      const newObject = {};
+      if (object && keys) {
+        const l = keys.length;
+        let i = 0;
+        for (i = 0; i < l; i++) {
+          newObject[keys[i]] = object[keys[i]];
+        }
+      }
+      return newObject;
     };
 
     /*
