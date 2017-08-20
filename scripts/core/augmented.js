@@ -5,7 +5,7 @@
 *
 * @requires Backbone.js
 * @module Augmented
-* @version 1.4.11
+* @version 1.4.12
 * @license Apache-2.0
 */
 (function(root, factory) {
@@ -54,7 +54,7 @@
   * The standard version property
   * @constant VERSION
   */
-  Augmented.VERSION = "1.4.11";
+  Augmented.VERSION = "1.4.12";
   /**
   * A codename for internal use
   * @constant codename
@@ -231,10 +231,8 @@
 
   /**
   * Augmented.sync - Base sync method that can pass special augmented features
-  * TODO: time to migrate this forward
   * @method sync
   * @memberof Augmented
-  * @borrows Backbone.sync
   */
   Augmented.sync = function(method, model, options) {
     const type = methodMap[method];
@@ -265,27 +263,8 @@
       params.data = JSON.stringify(options.attrs || model.toJSON(options));
     }
 
-    // For older servers, emulate JSON by encoding the request into an HTML-form.
-    if (options.emulateJSON) {
-      params.contentType = 'application/x-www-form-urlencoded';
-      params.data = params.data ? {model: params.data} : {};
-    }
-
-    // For older servers, emulate HTTP by mimicking the HTTP method with `_method`
-    // And an `X-HTTP-Method-Override` header.
-    // not supported
-    /*if (options.emulateHTTP && (type === 'PUT' || type === 'DELETE' || type === 'PATCH')) {
-      params.type = 'POST';
-      if (options.emulateJSON) params.data._method = type;
-      var beforeSend = options.beforeSend;
-      options.beforeSend = function(xhr) {
-        xhr.setRequestHeader('X-HTTP-Method-Override', type);
-        if (beforeSend) return beforeSend.apply(this, arguments);
-      };
-    }*/
-
     // Don't process data on a non-GET request.
-    if (params.type !== 'GET' && !options.emulateJSON) {
+    if (params.type !== 'GET') {
       params.processData = false;
     }
 
@@ -3853,9 +3832,9 @@
           * @method fetch
           * @memberof Augmented.Model
           */
-          fetch: function (options) {
-            this.sync("get", this, options);
-          },
+          /*fetch: function (options) {
+            this.sync("read", this, options);
+          },*/
           /**
           * save - Saves the model as a 'create'
           * @method save
