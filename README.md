@@ -1,7 +1,7 @@
 # Augmented.js
 ## The Augmented.js Framework.
-### Version 1.4.x
-### "Typhoon"
+### Version 1.5.x
+### "Faridah Malik"
 **aug·ment·ed**
 /ˌôɡˈmentəd /
 *adjective*
