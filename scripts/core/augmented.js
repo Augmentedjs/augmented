@@ -5,7 +5,7 @@
 *
 * @requires Backbone.js
 * @module Augmented
-* @version 1.5.0
+* @version 1.5.1
 * @license Apache-2.0
 */
 (function(root, factory) {
@@ -54,7 +54,7 @@
   * The standard version property
   * @constant VERSION
   */
-  Augmented.VERSION = "1.5.0";
+  Augmented.VERSION = "1.5.1";
   /**
   * A codename for internal use
   * @constant codename
@@ -3775,7 +3775,7 @@
               const l = this.validationMessages.errors.length;
               var i = 0;
               for (i = 0; i < l; i++) {
-                messages.push(this.validationMessages.errors[i].message);
+                messages.push(this.validationMessages.errors[i].message + " from " + this.validationMessages.errors[i].dataPath);
               }
             }
             return messages;
