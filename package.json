@@ -1,12 +1,10 @@
 {
   "name": "augmentedjs",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "The Augmented.js Framework.",
   "main": "scripts/core/augmented.js",
   "scripts": {
-    "test": "karma start my.conf.js",
-    "test-coverage": "npm test && istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
-    "install-local": "npm install -g mocha & npm install -g node-inspector & npm install",
+    "test": "jasmine-node ./test --verbose",
     "docs": "jsdoc ./scripts/core -d ./jsdoc/ -R ./README.md -t ./node_modules/ink-docstrap/template/ -c ./jsdoc.conf.json"
   },
   "repository": {
@@ -24,26 +22,16 @@
     "jasmine-core": "^2.8.0",
     "jquery": "^2.2.0",
     "jsdoc": "^3.5.5",
-    "karma": "^1.7.1",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-firefox-launcher": "^1.0.1",
-    "karma-jasmine": "^1.1.0",
-    "karma-junit-reporter": "^2.0.0",
-    "karma-phantomjs-launcher": "*",
-    "karma-requirejs": "^1.1.0",
-    "phantomjs-prebuilt": "^2.1.15",
     "requirejs": "^2.3.5",
-    "underscore": "^1.8.0"
+    "underscore": "^1.8.0",
+    "jasmine-node": "^2.0.0",
+    "jsdom": "*",
+    "xhr": "^2.4.0"
   },
   "dependencies": {
     "backbone": "^1.3.0",
     "jquery": "^2.2.0",
-    "karma-es6-shim": "^1.0.0",
-    "underscore": "^1.8.0"
-  },
-  "browserDependencies": {
-    "jquery": "^2.2.0",
-    "backbone": "^1.3.0",
+    "request": "^2.83.0",
     "underscore": "^1.8.0"
   },
   "bugs": {
