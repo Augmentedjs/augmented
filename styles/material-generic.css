@@ -836,6 +836,14 @@ button.round {
   display: inline-block;
 }
 
+.toolbar > .tools.spacer {
+  width: 1px;
+  border-left: 1px solid rgba(0,0,0,0.1);
+  margin-left: 9px;
+  margin-right: 6px;
+  height: 20px;
+}
+
 button::before, .tools i::before {
   content: "";
 

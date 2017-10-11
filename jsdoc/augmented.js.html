@@ -91,7 +91,7 @@
 *
 * @requires Backbone.js
 * @module Augmented
-* @version 1.4.11
+* @version 1.5.1
 * @license Apache-2.0
 */
 (function(root, factory) {
@@ -117,7 +117,7 @@
 }(this, function(root, Augmented, Backbone) {
   "use strict";
   /* Extend function for use throughout the framework */
-  var extend = function() {
+  const extend = function() {
     var i = 0, l = arguments.length;
     for (i = 1; i &lt; l; i++) {
       for(var key in arguments[i]) {
@@ -135,12 +135,12 @@
   * Save the previous value of the `Augmented` variable, so that it can be
   * restored later on, if `noConflict` is used (just like Backbone)
   */
-  var previousAugmented = root.Augmented;
+  const previousAugmented = root.Augmented;
   /**
   * The standard version property
   * @constant VERSION
   */
-  Augmented.VERSION = "1.4.11";
+  Augmented.VERSION = "1.5.1";
   /**
   * A codename for internal use
   * @constant codename
@@ -210,7 +210,7 @@
     return obj !== null &amp;&amp; hasOwnProperty.call(obj, key);
   };
 
-  var createAssigner = function(keysFunc, undefinedOnly) {
+  const createAssigner = function(keysFunc, undefinedOnly) {
     return function(obj) {
       var length = arguments.length;
       if (length &lt; 2 || obj === null) return obj;
@@ -269,7 +269,7 @@
     return result;
   };
 
-  var classExtend = function(protoProps, staticProps) {
+  const classExtend = function(protoProps, staticProps) {
     var parent = this;
     var child;
 
@@ -317,10 +317,8 @@
 
   /**
   * Augmented.sync - Base sync method that can pass special augmented features
-  * TODO: time to migrate this forward
   * @method sync
   * @memberof Augmented
-  * @borrows Backbone.sync
   */
   Augmented.sync = function(method, model, options) {
     const type = methodMap[method];
@@ -351,27 +349,8 @@
       params.data = JSON.stringify(options.attrs || model.toJSON(options));
     }
 
-    // For older servers, emulate JSON by encoding the request into an HTML-form.
-    if (options.emulateJSON) {
-      params.contentType = 'application/x-www-form-urlencoded';
-      params.data = params.data ? {model: params.data} : {};
-    }
-
-    // For older servers, emulate HTTP by mimicking the HTTP method with `_method`
-    // And an `X-HTTP-Method-Override` header.
-    // not supported
-    /*if (options.emulateHTTP &amp;&amp; (type === 'PUT' || type === 'DELETE' || type === 'PATCH')) {
-      params.type = 'POST';
-      if (options.emulateJSON) params.data._method = type;
-      var beforeSend = options.beforeSend;
-      options.beforeSend = function(xhr) {
-        xhr.setRequestHeader('X-HTTP-Method-Override', type);
-        if (beforeSend) return beforeSend.apply(this, arguments);
-      };
-    }*/
-
     // Don't process data on a non-GET request.
-    if (params.type !== 'GET' &amp;&amp; !options.emulateJSON) {
+    if (params.type !== 'GET') {
       params.processData = false;
     }
 
@@ -409,7 +388,7 @@
   * @memberof Augmented
   * @returns named property in an object
   */
-  var result = Augmented.result = function(object, property) {
+  const result = Augmented.result = function(object, property) {
     if (object === null) return;
     var value = object[property];
     return Augmented.isFunction(value) ? value.call(object) : value;
@@ -1413,14 +1392,6 @@
     };
 
     /**
-    * ES6-like Map
-    * @constructor Augmented.Utility.AugmentedMap
-    * @param myData {object} Map data to fill map
-    * @memberof Augmented.Utility
-    */
-
-
-    /**
     * ES6-like Map, same as Map
     * @constructor Augmented.Utility.AugmentedMap
     * @param myData {object} Map data to fill map
@@ -1660,6 +1631,27 @@
       if (myData) {
         return this.marshall(myData);
       }
+    };
+
+    /**
+      * filter an oject from array of values
+      *
+      * @method filterObject
+      * @param {object} object Object to filter
+      * @param {array} keys keys to filter from the object
+      * @returns {object} returns a new object with only these keys
+      * @memberof Augmented.Utility
+      */
+    Augmented.Utility.filterObject = function(object, keys) {
+      const newObject = {};
+      if (object &amp;&amp; keys) {
+        const l = keys.length;
+        let i = 0;
+        for (i = 0; i &lt; l; i++) {
+          newObject[keys[i]] = object[keys[i]];
+        }
+      }
+      return newObject;
     };
 
     /*
@@ -3939,9 +3931,9 @@
           * @method fetch
           * @memberof Augmented.Model
           */
-          fetch: function (options) {
-            this.sync("get", this, options);
-          },
+          /*fetch: function (options) {
+            this.sync("read", this, options);
+          },*/
           /**
           * save - Saves the model as a 'create'
           * @method save
@@ -3979,14 +3971,11 @@
         * &lt;li>CORS&lt;/li>
         * &lt;li>Security&lt;/li>
         * &lt;/ul>
-        * TODO: implement OAUTH 2
         * @constructor Augmented.Collection
         * @memberof Augmented
-        * @borrows Backbone.Collection
-        * @see http://backbonejs.org/#Collection
         * @extends Augmented.Object
         */
-        var augmentedCollection = Backbone.Collection.extend({
+        const augmentedCollection = Backbone.Collection.extend({
           /**
           * Schema property
           * @property {object} schema The JSON schema from this collection
@@ -5377,7 +5366,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a>
 	
-		on Mon Aug 14th 2017
+		on Sat Aug 26th 2017
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
