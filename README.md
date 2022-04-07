@@ -1,6 +1,6 @@
 # Augmented.js
 ## The Augmented.js Framework.
-### Version 1.5.x
+### Version 1.5.5 (final)
 ### "Faridah Malik"
 **aug·ment·ed**
 /ˌôɡˈmentəd /
@@ -8,6 +8,8 @@
 adjective: augmented
 
     1. having been made greater in size or value.
+
+**Please note:** _This is a legacy version._  This package reliies on older versions of jQuery (2.x) and Backbone.js.  This framework is no longer supported and is maintained for legacy browsers unable to run **Augmented Next 2.x or 3.x**.  Upgrading is strongly recommended. 
 
 
 **Augmented.js** is a javascript framework based on (but enhances extensively) Backbone.js.  Augmented.js provides a large set of functionality designed to develop single pages applications easier.
