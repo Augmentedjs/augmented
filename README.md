@@ -1,7 +1,11 @@
 # Augmented.js
+
 ## The Augmented.js Framework.
+
 ### Version 1.5.5 (final)
+
 ### "Faridah Malik"
+
 **aug·ment·ed**
 /ˌôɡˈmentəd /
 *adjective*
@@ -9,8 +13,7 @@ adjective: augmented
 
     1. having been made greater in size or value.
 
-**Please note:** _This is a legacy version._  This package reliies on older versions of jQuery (2.x) and Backbone.js.  This framework is no longer supported and is maintained for legacy browsers unable to run **Augmented Next 2.x or 3.x**.  Upgrading is strongly recommended. 
-
+**Please note:** _This is a legacy version._  This package relies on older versions of jQuery (2.x) and Backbone.js.  This framework is no longer supported and is maintained for legacy browsers unable to run **Augmented Next 2.x or 3.x**.  Upgrading is strongly recommended.
 
 **Augmented.js** is a javascript framework based on (but enhances extensively) Backbone.js.  Augmented.js provides a large set of functionality designed to develop single pages applications easier.
 
@@ -19,29 +22,31 @@ The key focus of the project is to tie a number of missing features, patterns, a
 # Modules
 
 *All JSDoc documentation is under the /jsdoc directory in the distribution as well as on the site at:*
-* https://www.augmentedjs.com/jsdoc-core/index.html
-* https://www.augmentedjs.com/jsdoc-pres/index.html
-* https://www.augmentedjs.com/jsdoc-service/index.html
+
+* <https://www.augmentedjs.com/jsdoc-core/index.html>
+* <https://www.augmentedjs.com/jsdoc-pres/index.html>
+* <https://www.augmentedjs.com/jsdoc-service/index.html>
 
 ## Core
 
 A few key features of the **Core** module are:
+
 * Validation framework for Models and Collections
-  - supports JSON Schema Draft 4
+  * supports JSON Schema Draft 4
 * Full i18n Message Bundle support
-  - mimics the Java Resource Bundle API
+  * mimics the Java Resource Bundle API
 * Object extension with eventing support
 * Security wired throughout the framework
-  - Views can lock down
-  - Multiple Security models supported
+  * Views can lock down
+  * Multiple Security models supported
 * Application metadata Object
 * Utilities that support common abilities found in jQuery (only drastically faster)
-  - Ajax (mimics jQuery API)
-  - Very fast Object extends
-  - Array tools
-  - ES6-like Map data structure object
-  - Stack data structure object
-  - O(log n) Search and sort algorithms
+  * Ajax (mimics jQuery API)
+  * Very fast Object extends
+  * Array tools
+  * ES6-like Map data structure object
+  * Stack data structure object
+  * O(log n) Search and sort algorithms
 * HTML5 localStorage factory with namespace protection support
 * Built-in logging factory with console and REST support
 * Async Queue for processing
@@ -55,12 +60,13 @@ And much more!
 The **Presentation** extension adds extensive abilities to the presentation layer.
 
 This extension adds:
+
 * Mediator patterned PubSub Views
 * MVVM Decorator Views with declaratives
 * Enhanced Application Object
-  - PubSub mediation and bootstrapping for Application objects
-  - CSS Stylesheet registration and injection
-  - breadcrumb management
+  * PubSub mediation and bootstrapping for Application objects
+  * CSS Stylesheet registration and injection
+  * breadcrumb management
 * Automatic Tables generated from a JSON schema and data
 * Automatic Forms generated from a JSON schema
 
@@ -74,7 +80,8 @@ Install via NPM:
 npm install augmentedjs-service
 
 This extension adds:
+
 * ORM style Entities
 * REST Resource class
 * Abstract Datasource interface
-  - MongoDB
+  * MongoDB
