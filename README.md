@@ -16,7 +16,10 @@ The key focus of the project is to tie a number of missing features, patterns, a
 
 # Modules
 
-*All JSDoc documentation is under the /jsdoc directory in the distribution as well as on the site at http://www.augmentedjs.com/jsdoc*
+*All JSDoc documentation is under the /jsdoc directory in the distribution as well as on the site at:*
+* https://www.augmentedjs.com/jsdoc-core/index.html
+* https://www.augmentedjs.com/jsdoc-pres/index.html
+* https://www.augmentedjs.com/jsdoc-service/index.html
 
 ## Core
 
@@ -73,4 +76,3 @@ This extension adds:
 * REST Resource class
 * Abstract Datasource interface
   - MongoDB
-  - SOLR (work in progress)
